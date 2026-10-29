@@ -1,1 +1,87 @@
+name: Make tidalfolio video
 
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Script file name inside scripts/ (leave blank to render the next one in queue.txt)"
+        required: false
+        default: ""
+  schedule:
+    # Mon / Wed / Fri at 05:00 UTC (08:00 in Uganda). Edit or delete to change the rhythm.
+    - cron: "0 5 * * 1,3,5"
+
+permissions:
+  contents: write
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install ffmpeg and fonts
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+
+      - name: Install Python packages
+        run: pip install -r requirements.txt
+
+      - name: Write a new script if the queue is empty
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_TEXT_MODEL: ${{ vars.OPENAI_TEXT_MODEL }}
+          PUNCH_UP: ${{ vars.PUNCH_UP || '1' }}
+          SCRIPT_INPUT: ${{ inputs.script }}
+        run: |
+          if [ -z "$SCRIPT_INPUT" ] && [ -n "$OPENAI_API_KEY" ]; then
+            python generate_script.py --ensure 1
+          fi
+
+      - name: Render video
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_TTS_MODEL: ${{ vars.OPENAI_TTS_MODEL }}
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+          FAL_IMAGE_MODEL: ${{ vars.FAL_IMAGE_MODEL }}
+          SCRIPT_INPUT: ${{ inputs.script }}
+        run: |
+          if [ -n "$SCRIPT_INPUT" ]; then
+            python pipeline.py "scripts/$SCRIPT_INPUT"
+          else
+            python pipeline.py --next
+          fi
+
+      - name: Upload to YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          # private (review first), unlisted, or public. Set repo variable UPLOAD_PRIVACY to change.
+          UPLOAD_PRIVACY: ${{ vars.UPLOAD_PRIVACY || 'private' }}
+        run: python upload_youtube.py
+
+      - name: Save finished videos
+        uses: actions/upload-artifact@v4
+        with:
+          name: tidalfolio-videos
+          path: |
+            output/**/video.mp4
+            output/**/thumbnail.png
+            output/**/captions.srt
+            output/**/metadata.md
+            output/**/youtube_url.txt
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Mark queue item as done
+        run: |
+          git config user.name "tidalfolio-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add done.txt queue.txt scripts
+          git diff --cached --quiet || (git commit -m "Update queue and scripts" && git push)
