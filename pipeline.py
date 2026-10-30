@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """tidalfolio auto-video pipeline.
 
-script.json -> narration (TTS) -> images (fal.ai Flux) -> Ken Burns scenes
--> dramatic sound bed + SFX -> captions -> final MP4 + metadata.
+script.json -> narration (TTS, directed per scene) -> images (fal.ai Flux) -> multi-shot scenes
+with camera moves, impact shake/flash -> dramatic sound mix + SFX -> highlighted-word captions
+-> final MP4 (16:9 and 9:16) + thumbnail + upload details.
 
 Usage:
   python pipeline.py scripts/001-bird-banter-kingfishers.json
@@ -18,6 +19,7 @@ import shutil
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -27,8 +29,10 @@ TAIL = 0.55          # silence after narration ends (s)
 MIN_SCENE = 3.0      # shortest allowed scene (s)
 MIN_VIDEO = 90.0     # channel rule: every video runs 1.5 to 2 minutes
 MAX_VIDEO = 120.0
+WORKERS = max(1, min(4, os.cpu_count() or 2))
 
 SIZES = {"16:9": (1920, 1080, "landscape_16_9"), "9:16": (1080, 1920, "portrait_16_9")}
+FOLDERS = {"16:9": "youtube", "9:16": "vertical"}
 
 
 # ----------------------------------------------------------------- helpers
@@ -40,8 +44,7 @@ def run(cmd):
 
 
 def duration(path):
-    out = run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
-               "-of", "csv=p=0", path])
+    out = run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path])
     return float(out.strip())
 
 
@@ -66,8 +69,11 @@ TTS_STYLE = ("Deep, dramatic movie-trailer narrator. Intense and gravely serious
              "dry, never silly. Fast, punchy delivery with short dramatic pauses before punchlines.")
 
 
-def _openai_tts(text, cfg, out_wav):
+def _openai_tts(text, cfg, out_wav, delivery=None):
     import requests
+    instructions = cfg.get("instructions", TTS_STYLE)
+    if delivery:
+        instructions += f" Delivery for this line: {delivery}."
     for attempt in range(3):
         try:
             r = requests.post(
@@ -75,7 +81,7 @@ def _openai_tts(text, cfg, out_wav):
                 headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"},
                 json={"model": os.environ.get("OPENAI_TTS_MODEL") or "gpt-4o-mini-tts",
                       "voice": cfg.get("openai_voice", "onyx"), "input": text,
-                      "instructions": cfg.get("instructions", TTS_STYLE), "response_format": "wav"})
+                      "instructions": instructions, "response_format": "wav"})
             if r.ok and len(r.content) > 1000:
                 raw = out_wav.with_suffix(".raw.wav")
                 raw.write_bytes(r.content)
@@ -91,14 +97,14 @@ def _openai_tts(text, cfg, out_wav):
     return False
 
 
-def make_narration(text, cfg, out_wav, dry):
+def make_narration(text, cfg, out_wav, dry, delivery=None):
     if dry:
         d = max(1.5, len(text.split()) / 2.6)
         run(["ffmpeg", "-y", "-f", "lavfi", "-i", f"sine=frequency=220:duration={d}",
              "-af", "volume=0.08", "-ar", "44100", "-ac", "2", out_wav])
         return
     if os.environ.get("OPENAI_API_KEY") and cfg.get("provider", "openai") == "openai":
-        if _openai_tts(text, cfg, out_wav):
+        if _openai_tts(text, cfg, out_wav, delivery):
             return
         print("      OpenAI voice failed, falling back to the free voice.")
     mp3 = out_wav.with_suffix(".mp3")
@@ -117,15 +123,27 @@ def make_narration(text, cfg, out_wav, dry):
 
 
 # ----------------------------------------------------------------- images
-def build_prompt(script, scene, aspect="16:9"):
+def build_prompt(script, scene, aspect="16:9", variant="a"):
     frame = "tall vertical 9:16 frame" if aspect == "9:16" else "wide 16:9 frame"
-    parts = [script.get("style", "").replace("{frame}", frame)]
-    for key in scene.get("characters", []):
+    base = script.get("style_mirror") if scene.get("look") == "mirror" and script.get("style_mirror") else script.get("style", "")
+    parts = [base.replace("{frame}", frame)]
+    keys = scene.get("characters_b", scene.get("characters", [])) if variant == "b" else scene.get("characters", [])
+    for key in keys:
         desc = script.get("characters", {}).get(key)
         if desc:
             parts.append(desc)
-    parts.append(scene["image_prompt"])
+    parts.append(scene["image_prompt_b"] if variant == "b" else scene["image_prompt"])
     return " ".join(p.strip() for p in parts if p).strip()
+
+
+def bake_vignette(path):
+    """Darken the edges once per image (much cheaper than doing it on every video frame)."""
+    from PIL import Image, ImageChops
+    img = Image.open(path).convert("RGB")
+    g = Image.radial_gradient("L").resize(img.size)            # 0 at the centre -> 255 at the edges
+    g = g.point(lambda v: int(255 - max(0, v - 90) * 0.55))
+    img = ImageChops.multiply(img, Image.merge("RGB", (g, g, g)))
+    img.save(path)
 
 
 def make_image(prompt, size_name, seed, out, dry, idx, aspect):
@@ -134,10 +152,15 @@ def make_image(prompt, size_name, seed, out, dry, idx, aspect):
     w, h, _ = SIZES[aspect]
     if dry:
         from PIL import Image, ImageDraw
-        img = Image.new("RGB", (w // 2, h // 2), (20 + idx * 12 % 200, 60, 110))
+        hue = (sum(map(ord, prompt)) * 7) % 120
+        img = Image.new("RGB", (w // 2, h // 2), (30 + hue, 60 + idx * 5 % 80, 110))
         d = ImageDraw.Draw(img)
+        W, H = img.size
+        d.ellipse([W * .12, H * .3, W * .38, H * .8], fill=(230, 80, 60))      # left "character"
+        d.ellipse([W * .62, H * .3, W * .88, H * .8], fill=(70, 200, 230))     # right "character"
         d.text((40, 40), f"scene {idx + 1}\n{prompt[:160]}", fill=(255, 255, 255))
         img.save(out)
+        bake_vignette(out)
         return
     import requests
     key = os.environ.get("FAL_KEY")
@@ -157,6 +180,7 @@ def make_image(prompt, size_name, seed, out, dry, idx, aspect):
             img = requests.get(url, timeout=120)
             img.raise_for_status()
             out.write_bytes(img.content)
+            bake_vignette(out)
             return
         last = f"{r.status_code} {r.text[:300]}"
         time.sleep(4 * (attempt + 1))
@@ -164,29 +188,48 @@ def make_image(prompt, size_name, seed, out, dry, idx, aspect):
 
 
 # ----------------------------------------------------------------- sound design
+SFX_NAMES = ("hit", "whoosh", "splash", "boom", "sting", "tick", "riser")
+IMPACT = {"hit", "splash", "boom"}
+
+
 def synth_sfx(name, out):
-    """Simple synthesized effects so the pipeline works with zero downloads.
-    Drop your own files in assets/sfx/<name>.wav to override."""
+    """Synthesized effects so the pipeline needs no downloads.
+    Drop your own files in assets/sfx/<name>.wav to override any of them."""
     custom = ROOT / "assets" / "sfx" / f"{name}.wav"
     if custom.exists():
         shutil.copy(custom, out)
         return
+    tail = ["-ar", "44100", "-ac", "2", out]
     if name == "hit":
         run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=f=48:d=1.4", "-f", "lavfi",
              "-i", "anoisesrc=d=1.4:c=brown:a=0.8", "-filter_complex",
              "[0]afade=t=out:st=0.05:d=1.3[a];[1]lowpass=f=500,afade=t=out:d=0.6[b];"
-             "[a][b]amix=inputs=2:normalize=0,volume=2.2,alimiter=limit=0.95",
-             "-ar", "44100", "-ac", "2", out])
+             "[a][b]amix=inputs=2:normalize=0,volume=2.2,alimiter=limit=0.95", *tail])
     elif name == "whoosh":
-        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "anoisesrc=d=0.9:c=pink:a=0.6",
-             "-af", "highpass=f=300,lowpass=f=3500,afade=t=in:d=0.4,afade=t=out:st=0.4:d=0.5,volume=0.9",
-             "-ar", "44100", "-ac", "2", out])
+        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "anoisesrc=d=0.9:c=pink:a=0.6", "-af",
+             "highpass=f=300,lowpass=f=3500,afade=t=in:d=0.4,afade=t=out:st=0.4:d=0.5,volume=0.9", *tail])
     elif name == "splash":
-        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "anoisesrc=d=0.8:c=white:a=0.7",
-             "-af", "highpass=f=1200,afade=t=in:d=0.02,afade=t=out:st=0.05:d=0.7,volume=0.9",
-             "-ar", "44100", "-ac", "2", out])
+        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "anoisesrc=d=0.8:c=white:a=0.7", "-af",
+             "highpass=f=1200,afade=t=in:d=0.02,afade=t=out:st=0.05:d=0.7,volume=0.9", *tail])
+    elif name == "boom":
+        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=f=38:d=2.2", "-f", "lavfi",
+             "-i", "anoisesrc=d=2.2:c=brown:a=0.9", "-filter_complex",
+             "[0]afade=t=out:st=0.02:d=2.1[a];[1]lowpass=f=160,afade=t=out:d=1.4[b];"
+             "[a][b]amix=inputs=2:normalize=0,volume=2.6,aecho=0.8:0.7:90|210:0.35|0.2,alimiter=limit=0.95", *tail])
+    elif name == "sting":      # dissonant stab for shocks, reveals and deadpan punchlines
+        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=f=233.08:d=1.8", "-f", "lavfi", "-i", "sine=f=246.94:d=1.8",
+             "-f", "lavfi", "-i", "sine=f=116.54:d=1.8", "-filter_complex",
+             "[0][1][2]amix=inputs=3:normalize=0,afade=t=in:d=0.01,afade=t=out:st=0.05:d=1.7,"
+             "tremolo=f=7:d=0.5,aecho=0.8:0.6:70|140:0.3|0.15,volume=0.9", *tail])
+    elif name == "tick":       # tiny dry click for a suspense beat
+        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=f=1500:d=0.06", "-af",
+             "afade=t=out:st=0.01:d=0.05,volume=0.7", *tail])
+    elif name == "riser":      # rising sweep that builds into an impact
+        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "aevalsrc=0.4*sin(2*PI*(180*t+260*t*t)):d=1.4:s=44100",
+             "-f", "lavfi", "-i", "anoisesrc=d=1.4:c=pink:a=0.5", "-filter_complex",
+             "[1]highpass=f=800,afade=t=in:d=1.3[n];[0][n]amix=inputs=2:normalize=0,afade=t=in:d=1.2,volume=1.3", *tail])
     else:
-        sys.exit(f"Unknown sfx '{name}'. Use hit, whoosh, splash or add assets/sfx/{name}.wav")
+        sys.exit(f"Unknown sfx '{name}'. Use one of {', '.join(SFX_NAMES)} or add assets/sfx/{name}.wav")
 
 
 def make_bed(total, out):
@@ -195,37 +238,144 @@ def make_bed(total, out):
         run(["ffmpeg", "-y", "-stream_loop", "-1", "-i", music[0], "-t", f"{total:.2f}",
              "-ar", "44100", "-ac", "2", out])
         return
-    run(["ffmpeg", "-y", "-f", "lavfi", "-i", f"sine=f=55:d={total:.2f}",
-         "-f", "lavfi", "-i", f"sine=f=82.4:d={total:.2f}",
-         "-f", "lavfi", "-i", f"anoisesrc=d={total:.2f}:c=brown:a=0.4",
+    T = f"{total:.2f}"      # synthesized: drone + fifth + rumble, pulsing like a heartbeat, swelling over time
+    run(["ffmpeg", "-y",
+         "-f", "lavfi", "-i", f"sine=f=55:d={T}", "-f", "lavfi", "-i", f"sine=f=82.4:d={T}",
+         "-f", "lavfi", "-i", f"sine=f=110:d={T}", "-f", "lavfi", "-i", f"anoisesrc=d={T}:c=brown:a=0.4",
          "-filter_complex",
-         "[0][1]amix=inputs=2:normalize=0[t];[2]lowpass=f=220[n];"
-         "[t][n]amix=inputs=2:normalize=0,tremolo=f=0.35:d=0.5",
+         "[1]volume=0.8[b];[2]tremolo=f=0.25:d=0.6,volume=0.35[c];[3]lowpass=f=220[n];"
+         "[0][b][c][n]amix=inputs=4:normalize=0,tremolo=f=1.9:d=0.55,"
+         f"volume='0.55+0.45*t/{T}':eval=frame",
          "-ar", "44100", "-ac", "2", out])
 
 
-# ----------------------------------------------------------------- video
-def render_scene(img, dur, motion, aspect, out):
+# ----------------------------------------------------------------- shots (the illusion of action)
+FOCUS_X = {"left": 0.32, "center": 0.5, "right": 0.68}
+
+
+def sfx_list(sc):
+    s = sc.get("sfx")
+    return [s] if isinstance(s, str) and s else list(s or [])
+
+
+def n_shots(sc):
+    return max(1, int(round(sc["_dur"] / 2.5)))      # a new framing about every 2.5 seconds
+
+
+def plan_shots(sc, use_b):
+    """Cut each scene into several shots: a wide opening move, a punch-in, a drift; a second image
+    (the same moment a beat later) on action scenes; slam + shake + white flash on impacts."""
+    n = n_shots(sc)
+    sfx = sfx_list(sc)
+    fx = FOCUS_X.get(sc.get("focus"), 0.5)
+    first_b = (n + 1) // 2 if (use_b and n >= 2) else n
+    impact = any(x in IMPACT for x in sfx)
+    whoosh = "whoosh" in sfx
+    motion = sc.get("motion", "zoom_in")
+    shots = []
+    for k in range(n):
+        which = "b" if k >= first_b else "a"
+        pos = k if which == "a" else k - first_b
+        s = dict(img=which, cy=0.5, shake=2.0, flash=False)
+        if k == 0:
+            if motion == "zoom_out":
+                s.update(z0=1.28, z1=1.05, fx0=fx, fx1=fx)
+            elif motion == "pan_left":
+                s.update(z0=1.22, z1=1.22, fx0=min(0.8, fx + 0.22), fx1=max(0.2, fx - 0.22))
+            elif motion == "pan_right":
+                s.update(z0=1.22, z1=1.22, fx0=max(0.2, fx - 0.22), fx1=min(0.8, fx + 0.22))
+            else:
+                s.update(z0=1.04, z1=1.24, fx0=fx, fx1=fx)
+            if sc.get("transition") == "dissolve":      # act change: soft white dissolve, calm camera
+                s.update(shake=2.0, dissolve=True)
+            elif impact:
+                s.update(z0=1.5, z1=1.14, fx0=fx, fx1=fx, shake=34.0, flash=True)
+            elif whoosh:
+                s.update(z0=1.32, z1=1.32, fx0=0.2, fx1=0.8, shake=6.0)
+        elif pos == 0:                                   # first shot of the second frame
+            s.update(z0=1.1, z1=1.32, fx0=fx, fx1=fx)
+        elif pos == 1:                                   # punch-in
+            cx = min(0.8, max(0.2, fx + (0.12 if k % 2 else -0.12)))
+            s.update(z0=1.55, z1=1.72, fx0=cx, fx1=cx, cy=0.44, shake=3.0)
+        else:                                            # drift across the frame
+            a, b = (0.35, 0.65) if k % 2 else (0.65, 0.35)
+            s.update(z0=1.3, z1=1.3, fx0=a, fx1=b)
+        shots.append(s)
+    return shots
+
+
+def render_shot(img, t0, t1, shot, aspect, out):
     w, h, _ = SIZES[aspect]
-    n = max(1, int(round(dur * FPS)))
-    if motion == "zoom_out":
-        z, x, y = f"1.22-0.22*on/{n}", "iw/2-(iw/zoom/2)", "ih/2-(ih/zoom/2)"
-    elif motion == "pan_left":
-        z, x, y = "1.18", f"(iw-iw/zoom)*(1-on/{n})", "ih/2-(ih/zoom/2)"
-    elif motion == "pan_right":
-        z, x, y = "1.18", f"(iw-iw/zoom)*on/{n}", "ih/2-(ih/zoom/2)"
-    else:  # zoom_in (default)
-        z, x, y = f"1+0.22*on/{n}", "iw/2-(iw/zoom/2)", "ih/2-(ih/zoom/2)"
+    f0, f1 = int(round(t0 * FPS)), int(round(t1 * FPS))
+    n = max(1, f1 - f0)                                   # cumulative rounding: no audio drift
+    z = f"{shot['z0']}+({shot['z1']}-{shot['z0']})*on/{n}"
+    cx = f"({shot['fx0']}+({shot['fx1']}-{shot['fx0']})*on/{n})"
+    amp = f"({shot['shake']}*exp(-on/9)+1.5)" if shot["shake"] > 8 else f"{shot['shake']}"
+    x = f"clip({cx}*iw-iw/zoom/2+{amp}*(sin(on*1.9)+0.6*sin(on*4.3)),0,iw-iw/zoom)"
+    y = f"clip({shot['cy']}*ih-ih/zoom/2+{amp}*cos(on*2.3),0,ih-ih/zoom)"
+    flash = "fade=t=in:st=0:d=0.12:color=white," if shot["flash"] else ""
+    if shot.get("dissolve"):
+        flash = "fade=t=in:st=0:d=0.6:color=white,"
     vf = (f"scale={2 * w}:{2 * h}:force_original_aspect_ratio=increase,crop={2 * w}:{2 * h},"
           f"zoompan=z='{z}':x='{x}':y='{y}':d={n}:s={w}x{h}:fps={FPS},"
-          f"eq=contrast=1.08:saturation=1.1,format=yuv420p")
+          f"{flash}eq=contrast=1.1:saturation=1.12,format=yuv420p")
     run(["ffmpeg", "-y", "-i", img, "-vf", vf, "-frames:v", n, "-r", FPS,
          "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", out])
 
 
-FOLDERS = {"16:9": "youtube", "9:16": "vertical"}
+# ----------------------------------------------------------------- captions (big, highlighted word by word)
+def caption_chunks(text, max_words=3):
+    chunks, cur = [], []
+    for w in text.split():
+        cur.append(w)
+        if len(cur) >= max_words or w[-1] in ".!?…" or (w[-1] in ",;:" and len(cur) >= 2):
+            chunks.append(cur)
+            cur = []
+    if cur:
+        chunks.append(cur)
+    return chunks
 
 
+def ass_time(t):
+    cs = int(round(t * 100))
+    h, rem = divmod(cs, 360000)
+    m, rem = divmod(rem, 6000)
+    return f"{h}:{m:02}:{rem // 100:02}.{rem % 100:02}"
+
+
+def make_ass(scenes, aspect, path):
+    w, h, _ = SIZES[aspect]
+    size, marginv = (74, 110) if aspect == "16:9" else (84, 430)
+    head = ("[Script Info]\nScriptType: v4.00+\nWrapStyle: 0\n"
+            f"PlayResX: {w}\nPlayResY: {h}\n\n[V4+ Styles]\n"
+            "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, "
+            "Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, "
+            "MarginL, MarginR, MarginV, Encoding\n"
+            f"Style: Default,DejaVu Sans,{size},&H00FFFFFF,&H000000FF,&H00000000,&H64000000,-1,0,0,0,100,100,0,0,1,7,2,2,60,60,{marginv},1\n\n"
+            "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n")
+    HI, LO = "{\\c&H0000E5FF&}", "{\\c&HFFFFFF&}"          # yellow for the word being spoken
+    POP = "{\\fad(40,0)\\fscx114\\fscy114\\t(0,140,\\fscx100\\fscy100)}"
+    lines = []
+    for sc in scenes:
+        chunks = caption_chunks(sc["narration"])
+        weights = [sum(len(x) for x in c) + 2 * len(c) + (5 if c[-1][-1] in ".!?…" else 0) for c in chunks]
+        t = sc["_start"] + LEAD
+        for c, wt in zip(chunks, weights):
+            d = sc["_narr"] * wt / sum(weights)
+            words = [x.replace("{", "").replace("}", "").upper() for x in c]
+            lens = [len(x) + 1 for x in words]
+            tt = t
+            for k in range(len(words)):
+                dd = d * lens[k] / sum(lens)
+                shown = " ".join((HI + x + LO) if j == k else x for j, x in enumerate(words))
+                lines.append(f"Dialogue: 0,{ass_time(tt)},{ass_time(tt + dd)},Default,,0,0,0,,"
+                             f"{POP if k == 0 else ''}{shown}")
+                tt += dd
+            t += d
+    path.write_text(head + "\n".join(lines) + "\n", encoding="utf-8")
+
+
+# ----------------------------------------------------------------- one aspect ratio, start to finish
 def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
     w, h, size_name = SIZES[aspect]
     folder = FOLDERS[aspect]
@@ -235,25 +385,36 @@ def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
     out_dir.mkdir(parents=True, exist_ok=True)
     work.mkdir(parents=True, exist_ok=True)
     print(f"=== {folder} ({aspect}) ===")
+    allow_b = script.get("second_frames", True)
 
-    # images
     print("[2/5] images")
+    jobs = []
     for i, sc in enumerate(scenes):
-        make_image(build_prompt(script, sc, aspect), size_name, seed, work / f"img_{i:02}.png", dry, i, aspect)
+        sc["_use_b"] = bool(allow_b and sc.get("image_prompt_b") and n_shots(sc) >= 2)
+        jobs.append((build_prompt(script, sc, aspect, "a"), size_name, seed, work / f"img_{i:02}.png", dry, i, aspect))
+        if sc["_use_b"]:   # same seed as the first frame, so the characters and framing stay consistent
+            jobs.append((build_prompt(script, sc, aspect, "b"), size_name, seed, work / f"img_{i:02}b.png", dry, i, aspect))
+    with ThreadPoolExecutor(WORKERS) as ex:
+        list(ex.map(lambda j: make_image(*j), jobs))
+    print(f"      {len(jobs)} images")
 
-    # scenes with Ken Burns motion
-    print("[3/5] scene clips")
-    motions = ["zoom_in", "pan_right", "zoom_out", "pan_left"]
-    listing = []
+    print("[3/5] shots")
+    shot_jobs, listing = [], []
     for i, sc in enumerate(scenes):
-        clip = work / f"clip_{i:02}.mp4"
-        render_scene(work / f"img_{i:02}.png", sc["_dur"], sc.get("motion", motions[i % 4]), aspect, clip)
-        listing.append(f"file '{clip.resolve()}'")
+        shots = plan_shots(sc, sc["_use_b"])
+        step = sc["_dur"] / len(shots)
+        for k, shot in enumerate(shots):
+            img = work / (f"img_{i:02}b.png" if shot["img"] == "b" else f"img_{i:02}.png")
+            clip = work / f"clip_{i:02}_{k}.mp4"
+            shot_jobs.append((img, sc["_start"] + k * step, sc["_start"] + (k + 1) * step, shot, aspect, clip))
+            listing.append(f"file '{clip.resolve()}'")
+    with ThreadPoolExecutor(WORKERS) as ex:
+        list(ex.map(lambda j: render_shot(*j), shot_jobs))
+    print(f"      {len(shot_jobs)} shots")
     (work / "clips.txt").write_text("\n".join(listing))
     silent = work / "silent.mp4"
     run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", work / "clips.txt", "-c", "copy", silent])
 
-    # audio: narration track + dramatic bed + SFX hits
     print("[4/5] sound design")
     nar_inputs, nar_filter = [], []
     for i, sc in enumerate(scenes):
@@ -268,55 +429,63 @@ def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
 
     bed = work / "bed.wav"
     make_bed(total, bed)
-    mix_inputs = ["-i", narration, "-i", bed]
-    mix_filter = ["[1]volume=0.20[bed]"]
-    labels = ["[0]", "[bed]"]
-    k = 2
+
+    events = []                                           # (sfx name, start seconds, volume)
     for i, sc in enumerate(scenes):
-        for name in ([sc["sfx"]] if isinstance(sc.get("sfx"), str) else sc.get("sfx", [])):
-            f = work / f"sfx_{name}.wav"
-            if not f.exists():
-                synth_sfx(name, f)
-            ms = int(sc["_start"] * 1000)
-            mix_inputs += ["-i", f]
-            mix_filter.append(f"[{k}]adelay={ms}|{ms},volume=0.85[s{k}]")
-            labels.append(f"[s{k}]")
-            k += 1
-    mix_filter.append(f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0:duration=longest,"
-                      f"afade=t=out:st={max(0, total - 1.5):.2f}:d=1.5,alimiter=limit=0.95[mix]")
+        names = sfx_list(sc)
+        events += [(n, sc["_start"], 0.85) for n in names]
+        if i > 0 and any(n in ("hit", "boom") for n in names) and "riser" not in names:
+            events.append(("riser", max(0.0, sc["_start"] - 1.3), 0.5))   # tension builds into every big impact
+
+    mix_inputs = ["-i", narration, "-i", bed]
+    fl = ["[0]highpass=f=70,equalizer=f=140:t=q:w=1:g=3,equalizer=f=3200:t=q:w=1.2:g=2,"
+          "acompressor=threshold=0.1:ratio=3:attack=5:release=90:makeup=3,"
+          "aecho=0.8:0.55:55|120:0.22|0.1,alimiter=limit=0.95,asplit=2[nar][nsc]",
+          "[1]volume=0.4[bedv]",
+          "[bedv][nsc]sidechaincompress=threshold=0.03:ratio=10:attack=15:release=350[bed]"]
+    labels, k = ["[nar]", "[bed]"], 2
+    for name, t_s, vol in events:
+        f = work / f"sfx_{name}.wav"
+        if not f.exists():
+            synth_sfx(name, f)
+        ms = int(t_s * 1000)
+        mix_inputs += ["-i", f]
+        fl.append(f"[{k}]adelay={ms}|{ms},volume={vol}[s{k}]")
+        labels.append(f"[s{k}]")
+        k += 1
+    fl.append(f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0:duration=longest,"
+              f"afade=t=out:st={max(0, total - 1.5):.2f}:d=1.5,"
+              "loudnorm=I=-15:TP=-1.5:LRA=6,alimiter=limit=0.95[mix]")
     mixed = work / "mix.wav"
-    run(["ffmpeg", "-y", *mix_inputs, "-filter_complex", ";".join(mix_filter),
+    run(["ffmpeg", "-y", *mix_inputs, "-filter_complex", ";".join(fl),
          "-map", "[mix]", "-t", f"{total:.2f}", "-ar", "44100", "-ac", "2", mixed])
 
-    # captions + final mux
     print("[5/5] captions + final video")
     srt, idx = [], 1
-    for sc in scenes:
+    for sc in scenes:                                      # plain .srt, e.g. for YouTube's own caption track
         words = sc["narration"].split()
-        parts = -(-len(words) // 7) or 1            # at most ~7 words per caption
-        size = -(-len(words) // parts) or 1         # balanced chunk sizes
+        parts = -(-len(words) // 7) or 1
+        size = -(-len(words) // parts) or 1
         chunks = [words[j:j + size] for j in range(0, len(words), size)] or [[""]]
         per = sc["_narr"] / len(chunks)
         for c, chunk in enumerate(chunks):
-            s = sc["_start"] + LEAD + c * per
-            srt += [str(idx), f"{srt_time(s)} --> {srt_time(s + per)}", " ".join(chunk), ""]
+            s0 = sc["_start"] + LEAD + c * per
+            srt += [str(idx), f"{srt_time(s0)} --> {srt_time(s0 + per)}", " ".join(chunk), ""]
             idx += 1
-    srt_path = out_dir / "captions.srt"
-    srt_path.write_text("\n".join(srt))
+    (out_dir / "captions.srt").write_text("\n".join(srt))
+    ass_path = out_dir / "captions.ass"
+    make_ass(scenes, aspect, ass_path)
 
     final = out_dir / "video.mp4"
-    burn = script.get("burn_captions", True) and has_filter("subtitles")
+    burn = script.get("burn_captions", True) and has_filter("ass")
     cmd = ["ffmpeg", "-y", "-i", silent, "-i", mixed]
     if burn:
-        size, margin = (13, 22) if aspect == "16:9" else (8, 70)
-        style = f"FontName=DejaVu Sans,FontSize={size},Bold=1,Outline=3,Shadow=0,Alignment=2,MarginV={margin}"
-        esc = str(srt_path).replace("\\", "/").replace(":", "\\:")
-        cmd += ["-vf", f"subtitles='{esc}':force_style='{style}'",
-                "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p"]
+        esc = str(ass_path).replace("\\", "/").replace(":", "\\:")
+        cmd += ["-vf", f"ass='{esc}'", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p"]
     else:
         cmd += ["-c:v", "copy"]
         if script.get("burn_captions", True):
-            print("      (subtitles filter not available: captions.srt written but not burned in)")
+            print("      (ass filter not available: captions not burned in)")
     cmd += ["-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", final]
     run(cmd)
 
@@ -344,7 +513,7 @@ def render(script_path, dry):
     for i, sc in enumerate(scenes):
         wav = narr_dir / f"narr_{i:02}.wav"
         if not wav.exists():
-            make_narration(sc["narration"], voice_cfg, wav, dry)
+            make_narration(sc["narration"], voice_cfg, wav, dry, sc.get("delivery"))
         nd = duration(wav)
         d = max(MIN_SCENE, LEAD + nd + TAIL)
         sc["_narr"], sc["_start"], sc["_dur"] = nd, t, d
@@ -409,6 +578,13 @@ def main():
         if not todo:
             print("Queue is empty: nothing to render. Add scripts to queue.txt.")
             return
+        missing = [q for q in todo if not (ROOT / "scripts" / q).exists()]
+        for q in missing:
+            print(f"WARNING: queue.txt lists scripts/{q} but that file is not in the repository. "
+                  "Upload it into a folder named 'scripts', or add OPENAI_API_KEY so a new script is written.")
+        todo = [q for q in todo if q not in missing]
+        if not todo:
+            sys.exit("No script file found for anything in queue.txt (see warnings above).")
         name = todo[0]
         render(ROOT / "scripts" / name, a.dry_run)
         if not a.dry_run:

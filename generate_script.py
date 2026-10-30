@@ -38,18 +38,18 @@ SFX = {"hit", "whoosh", "splash", "boom", "sting", "tick", "riser"}
 FOCUS = {"left", "center", "right"}
 WORDS_PER_SEC = 2.4          # conservative narration speed
 LEAD, TAIL, MIN_SCENE = 0.30, 0.55, 3.0
-MIN_RUNTIME = 98.0           # channel rule: 1.5 to 2 minutes; keep a margin on both sides
-MAX_RUNTIME = 114.0
+MIN_RUNTIME = 110.0          # channel rule: at least 90s, almost 120s. The estimate runs ~7s high, so 110-124 lands at roughly 103-117s real
+MAX_RUNTIME = 124.0
 
 
 def system_prompt():
     return f"""You write scripts for "tidalfolio", a YouTube/TikTok comedy channel about animals, plants, insects, birds, fish and reptiles.
-Videos are image sequences with a dramatic narrator, no on-screen people.
+Videos are image sequences with a dramatic narrator. The only people allowed are the plain stick-figure everyman characters of the MIRROR act (rule 9).
 
 CHANNEL RULES (all mandatory):
 - Audience is all ages INCLUDING adults. Humour must be witty and dry, never childish, never cartoonish or babyish. No baby talk, no puns on every line.
 - Narrator voice is dramatic and intense: movie-trailer gravity applied to tiny animal conflicts. Fast-paced, action-oriented.
-- Total runtime must be between {MIN_RUNTIME:.0f} and {MAX_RUNTIME:.0f} seconds. Each scene lasts about 0.85 seconds plus its narration at {WORDS_PER_SEC} words per second, so write 21 to 26 scenes with 6 to 14 words of narration each (roughly 210 to 250 words in total).
+- Total runtime must be between {MIN_RUNTIME:.0f} and {MAX_RUNTIME:.0f} seconds. Each scene lasts about 0.85 seconds plus its narration at {WORDS_PER_SEC} words per second, so write 24 to 28 scenes with 6 to 14 words of narration each (roughly 245 to 275 words in total). Aim for a finished video of about 110 to 118 seconds: never under 90, never over 120.
 - STORY ENGINE (the most important rule; a funny video with no story gets watched once and forgotten):
   1. STAKES FIRST. Scene 1 narration (max 14 words) states a high-stakes premise a stranger understands instantly, e.g. "A kingfisher had three days to repay a debt to a crow." Never open with scenery, a greeting or the channel name.
   2. ONE PROTAGONIST who WANTS something badly, faces an obstacle, and has something to lose if they fail. Name them. The viewer must be able to say "I hope Marco..." about them.
@@ -59,6 +59,7 @@ CHANNEL RULES (all mandatory):
   6. AN OPEN THREAD: end with one unresolved consequence or question that makes a Part 2 necessary. The final scene narration is the haunting line; the sign-off "This is tidalfolio." may follow only in the same final scene.
   7. THE SHAREABLE MOMENT: one line or image so absurd or striking that a viewer would show a friend. Mark it with "shareable_scene" (1-based).
   8. A LESSON FOR HUMANS. Every episode teaches one real human lesson (courage, generosity, pride, patience, honesty, jealousy, loyalty, fear, greed, forgiveness, humility, curiosity...) through what the animals do and what it costs them. The lesson is the reason the protagonist's choice at the emotional beat matters, so story and lesson are one thing. SHOW it through consequence; never lecture. Forbidden: "the moral is", "remember kids", "lesson learned", any sermon. At most one understated line (a character's remark or the narrator's dry observation) may point at it, and the last haunting line must stay unresolved, not preachy. Write the lesson as ONE plain sentence in story.lesson (max 25 words), something an adult would nod at and a child could repeat. Never reuse a lesson already used on the channel.
+  9. THE MIRROR (the lesson reaches humans). About two thirds in, right after the animal story has shown its lesson in action (after the emotional beat and the choice), cut away for 3 to 5 consecutive scenes to a short HUMAN vignette: a plain stick-figure everyman (white round head, simple grey clothes, thin dark outline) in an ordinary modern place (office, shop, kitchen, school, bus stop) facing the SAME lesson in a small everyday situation, with the same shape of choice and the same kind of consequence. It must be a complete miniature (want, choice, consequence), never a recap. The first mirror narration is a short dry bridge like "Humans live by this river too." (adapt the animal's world). Then cut back to the animal story for the ending twist. The mirror scenes are not the first scene, not among the last three, and never explain the lesson. Give each mirror scene "look": "mirror"; put "transition": "dissolve" on the first mirror scene and on the first animal scene after it. Define the mirror art style in top-level "style_mirror" (flat, clean 2D editorial illustration, expressive round-headed stick figures, warm light, {{frame}}, no text, no watermark) and add the human characters (e.g. "human", "colleague") to "characters".
 - Each image_prompt describes ONE frozen moment and states each visible character's exact action and expression beat by beat (what the body, wings, beak, legs, eyes are doing). No broad summaries. Under 600 characters each. Prefer dramatic or slow-motion moments (frozen splashes, mid-air collisions, extreme close-ups).
 - Characters: 2 to 4 recurring characters (plus the witness), each with a locked visual description (species, colours, size, distinctive feature, build). The "characters" list in a scene uses the keys from the characters object. Use the same key whenever that character appears.
 - Animals are never harmed: slapstick mishaps only. No real people, brands, logos or text in images.
@@ -83,9 +84,10 @@ Reply with ONE JSON object only, in exactly this shape:
   "title": "Series Name #N: Episode Title",
   "characters": {{"key": "Name: locked visual description"}},
   "story": {{"protagonist": "key", "want": "...", "risk": "what they lose", "lesson": "one plain sentence, the human lesson the story shows", "reversals": ["...", "...", "..."], "emotional_beat_scene": 1-based, "open_thread": "the unresolved question for Part 2"}},
+  "style_mirror": "art style for the mirror act scenes",
   "thumbnail_scene": 1-based number of the funniest, most striking frame (it is the thumbnail),
   "shareable_scene": 1-based,
-  "scenes": [{{"narration": "...", "delivery": "hushed, ominous", "characters": ["key"], "image_prompt": "...", "image_prompt_b": "optional next frame", "focus": "center", "motion": "zoom_in", "sfx": "hit"}}],
+  "scenes": [{{"narration": "...", "delivery": "hushed, ominous", "characters": ["key"], "image_prompt": "...", "image_prompt_b": "optional next frame", "focus": "center", "motion": "zoom_in", "sfx": "hit", "look": "mirror (mirror-act scenes only)", "transition": "dissolve (only on the first scene of each act change)"}}],
   "youtube": {{"title": "<=90 chars, curiosity-driven", "description": "2-4 sentences: the story teaser, then one sentence that hints at the lesson without spelling it out, then a subscribe line", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers apply the lesson to their own life (e.g. 'Would you have given it away? Be honest.')"}},
   "tiktok": {{"caption": "<=140 chars hook", "hashtags": ["5-6 hashtags starting with #"]}}
 }}"""
@@ -147,11 +149,21 @@ def estimate_runtime(scenes):
 def validate(d):
     errs = []
     chars, scenes = d.get("characters"), d.get("scenes")
-    if not isinstance(chars, dict) or not 2 <= len(chars) <= 6:
-        errs.append("characters must be an object with 2 to 5 entries")
+    if not isinstance(chars, dict) or not 2 <= len(chars) <= 9:
+        errs.append("characters must be an object with 2 to 9 entries (animals, witness and the mirror-act humans)")
         chars = chars if isinstance(chars, dict) else {}
     if not isinstance(scenes, list) or not 18 <= len(scenes) <= 32 or not all(isinstance(s, dict) for s in scenes):
-        return errs + ["scenes must be a list of 18 to 32 scenes (aim for 21 to 26)"]
+        return errs + ["scenes must be a list of 18 to 32 scenes (aim for 24 to 28)"]
+    if not isinstance(d.get("style_mirror"), str) or len(d["style_mirror"].split()) < 8:
+        errs.append("style_mirror (the mirror act's art style) is required")
+    mir = [i for i, s in enumerate(scenes) if s.get("look") == "mirror"]
+    if not 3 <= len(mir) <= 5 or mir != list(range(mir[0], mir[0] + len(mir))):
+        errs.append('the mirror act needs 3 to 5 consecutive scenes with "look": "mirror"')
+    else:
+        if mir[0] < len(scenes) * 0.4 or mir[-1] > len(scenes) - 4:
+            errs.append("the mirror act must sit in the middle-to-late story, with at least 3 animal scenes after it")
+        if scenes[mir[0]].get("transition") != "dissolve" or scenes[mir[-1] + 1].get("transition") != "dissolve":
+            errs.append('put "transition": "dissolve" on the first mirror scene and on the first scene after it')
     if "witness" not in chars:
         errs.append('characters must include a "witness" (a silent deadpan bystander creature)')
     elif sum("witness" in s.get("characters", []) for s in scenes) < 5:
@@ -243,6 +255,7 @@ Checklist:
 5. Keep it all-ages and not childish. No animal is harmed.
 6. Protect the story engine: stakes in the first line, a protagonist who wants something, three escalating reversals, one sincere emotional beat with no joke, a haunting last line and an open thread. If any is weak, fix it first; story beats jokes.
 7. Protect the lesson (story.lesson): it must be shown through the protagonist's choice and its cost, never preached. If it is vague or preachy, make it concrete and quiet.
+8. Keep the MIRROR act (the human stick-figure vignette, scenes with look "mirror", style_mirror, dissolve transitions) intact and make sure it is a real miniature of the same lesson, not a recap.
 8. Keep delivery, focus, sfx, image_prompt_b and the story/shareable_scene fields.
 Return ONLY the full improved JSON."""
 
