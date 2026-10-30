@@ -87,10 +87,19 @@ Reply with ONE JSON object only, in exactly this shape:
   "style_mirror": "art style for the mirror act scenes",
   "thumbnail_scene": 1-based number of the funniest, most striking frame (it is the thumbnail),
   "shareable_scene": 1-based,
-  "scenes": [{{"narration": "...", "delivery": "hushed, ominous", "characters": ["key"], "image_prompt": "...", "image_prompt_b": "optional next frame", "focus": "center", "motion": "zoom_in", "sfx": "hit", "look": "mirror (mirror-act scenes only)", "transition": "dissolve (only on the first scene of each act change)"}}],
+  "scenes": [{{"narration": "...", "delivery": "hushed, ominous", "characters": ["key"], "image_prompt": "...", "image_prompt_b": "optional next frame", "focus": "center", "motion": "zoom_in", "sfx": "hit"}}],
   "youtube": {{"title": "<=90 chars, curiosity-driven", "description": "2-4 sentences: the story teaser, then one sentence that hints at the lesson without spelling it out, then a subscribe line", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers apply the lesson to their own life (e.g. 'Would you have given it away? Be honest.')"}},
   "tiktok": {{"caption": "<=140 chars hook", "hashtags": ["5-6 hashtags starting with #"]}}
-}}"""
+}}
+
+MIRROR SCENES carry two extra fields, written exactly like this (the literal word, nothing added): "look": "mirror". The first mirror scene and the first animal scene after the mirror act also get "transition": "dissolve". No other scene has "look" or "transition".
+
+FINAL CHECKLIST (count before you answer):
+- "witness" is listed in the "characters" array of at least 6 scenes.
+- At least 8 scenes have "image_prompt_b"; at least 6 scenes have "sfx".
+- Every key in a scene's "characters" array exists in the top-level "characters" object. Define "human" (and any colleague/boss) there if the mirror act uses them.
+- "motion" is only zoom_in, zoom_out, pan_left or pan_right. "sfx" is only hit, whoosh, splash, boom, sting, tick or riser.
+- 3 to 5 consecutive mirror scenes, in the second half, with at least 3 animal scenes after them."""
 
 
 def previous_thread(series):
@@ -146,7 +155,60 @@ def estimate_runtime(scenes):
     return sum(max(MIN_SCENE, LEAD + len(s["narration"].split()) / WORDS_PER_SEC + TAIL) for s in scenes)
 
 
+HUMAN_DEFAULTS = {
+    "human": "Sam: a plain white round-headed stick figure in a grey hoodie and black trousers, thin dark outline, big worried eyes.",
+    "colleague": "Jo: a plain white round-headed stick figure in a navy sweater with a lanyard, thin dark outline, tired eyes.",
+    "boss": "The boss: a tall friendly stick figure with brown hair in a blue shirt, thin dark outline, warm smile.",
+    "customer": "The customer: a plain white round-headed stick figure in a green coat, thin dark outline, patient eyes.",
+    "shopkeeper": "The shopkeeper: a plain white round-headed stick figure in a brown apron, thin dark outline, tired smile.",
+    "stranger": "The stranger: a plain white round-headed stick figure in a grey scarf and coat, thin dark outline, calm eyes.",
+}
+
+
+def repair(d):
+    """Fix the mechanical mistakes a model keeps making, so retries are spent only on real story problems."""
+    scenes, chars = d.get("scenes"), d.get("characters")
+    if not isinstance(scenes, list) or not isinstance(chars, dict):
+        return
+    cycle = ["zoom_in", "pan_right", "zoom_out", "pan_left"]
+    for i, s in enumerate(scenes):
+        if not isinstance(s, dict):
+            continue
+        m = str(s.get("motion", "")).strip().lower().replace(" ", "_").replace("-", "_")
+        s["motion"] = m if m in MOTIONS else cycle[i % 4]
+        sfx = s.get("sfx")
+        if isinstance(sfx, list):
+            sfx = next((x for x in sfx if isinstance(x, str) and x.strip().lower() in SFX), None)
+        sfx = sfx.strip().lower() if isinstance(sfx, str) else None
+        if sfx in SFX:
+            s["sfx"] = sfx
+        else:
+            s.pop("sfx", None)
+        if s.get("focus") not in FOCUS:
+            s.pop("focus", None)
+        look = str(s.get("look", "")).strip().lower()
+        if look.startswith("mirror"):
+            s["look"] = "mirror"
+        else:
+            s.pop("look", None)
+        if str(s.get("transition", "")).strip().lower().startswith("dissolve"):
+            s["transition"] = "dissolve"
+        else:
+            s.pop("transition", None)
+        if not isinstance(s.get("characters"), list):
+            s["characters"] = []
+        for c in s["characters"]:
+            if isinstance(c, str) and c not in chars and c in HUMAN_DEFAULTS:
+                chars[c] = HUMAN_DEFAULTS[c]       # the model used a human key without defining it
+    mir = [i for i, s in enumerate(scenes) if isinstance(s, dict) and s.get("look") == "mirror"]
+    if 3 <= len(mir) <= 5 and mir == list(range(mir[0], mir[0] + len(mir))):
+        scenes[mir[0]]["transition"] = "dissolve"
+        if mir[-1] + 1 < len(scenes):
+            scenes[mir[-1] + 1]["transition"] = "dissolve"
+
+
 def validate(d):
+    repair(d)
     errs = []
     chars, scenes = d.get("characters"), d.get("scenes")
     if not isinstance(chars, dict) or not 2 <= len(chars) <= 9:
@@ -162,11 +224,11 @@ def validate(d):
     else:
         if mir[0] < len(scenes) * 0.4 or mir[-1] > len(scenes) - 4:
             errs.append("the mirror act must sit in the middle-to-late story, with at least 3 animal scenes after it")
-        if scenes[mir[0]].get("transition") != "dissolve" or scenes[mir[-1] + 1].get("transition") != "dissolve":
+        elif scenes[mir[0]].get("transition") != "dissolve" or scenes[mir[-1] + 1].get("transition") != "dissolve":
             errs.append('put "transition": "dissolve" on the first mirror scene and on the first scene after it')
     if "witness" not in chars:
         errs.append('characters must include a "witness" (a silent deadpan bystander creature)')
-    elif sum("witness" in s.get("characters", []) for s in scenes) < 5:
+    elif sum("witness" in s.get("characters", []) for s in scenes) < 6:
         errs.append('the "witness" must appear in at least 6 scenes (list it in the scene "characters")')
     for i, s in enumerate(scenes, 1):
         for k in ("narration", "image_prompt", "motion"):
@@ -202,8 +264,8 @@ def validate(d):
     if len(scenes[0].get("narration", "").split()) > 14:
         errs.append("scene 1 narration must be a stakes-first hook of at most 14 words")
     if sum(bool(s.get("image_prompt_b")) for s in scenes) < 6:
-        errs.append("give image_prompt_b (the next-frame image) in at least 8 scenes so the video has action")
-    if sum(bool(s.get("sfx")) for s in scenes) < 5:
+        errs.append("give image_prompt_b (the next-frame image) in at least 6 scenes so the video has action")
+    if sum(bool(s.get("sfx")) for s in scenes) < 6:
         errs.append("use sfx in at least 6 scenes")
     if sum(bool(s.get("delivery")) for s in scenes) < len(scenes) - 1:
         errs.append("every scene needs a delivery note")
@@ -225,7 +287,7 @@ def validate(d):
     return errs
 
 
-def call_openai(messages):
+def call_openai(messages, temperature=1.0):
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
         sys.exit("OPENAI_API_KEY is not set. Add it as a GitHub secret (see README).")
@@ -234,7 +296,7 @@ def call_openai(messages):
     for attempt in range(4):
         r = requests.post("https://api.openai.com/v1/chat/completions", timeout=180,
                           headers={"Authorization": f"Bearer {key}"},
-                          json={"model": model, "messages": messages, "temperature": 1.0,
+                          json={"model": model, "messages": messages, "temperature": temperature,
                                 "response_format": {"type": "json_object"}})
         if r.ok:
             return r.json()["choices"][0]["message"]["content"]
@@ -291,7 +353,7 @@ def write_one(series=None, idea=None):
     messages = [{"role": "system", "content": system_prompt()}, {"role": "user", "content": user}]
     data, errs = None, []
     for attempt in range(4):
-        raw = call_openai(messages)
+        raw = call_openai(messages, 1.0 if attempt == 0 else 0.5)   # calmer on retries: fix, don't reinvent
         try:
             data = json.loads(raw)
             errs = validate(data)
@@ -299,9 +361,10 @@ def write_one(series=None, idea=None):
             data, errs = None, [f"reply was not valid JSON ({e})"]
         if not errs:
             break
-        print(f"  attempt {attempt + 1} rejected: {'; '.join(errs[:4])}")
+        print(f"  attempt {attempt + 1} rejected: {'; '.join(errs)}")
         messages += [{"role": "assistant", "content": raw},
-                     {"role": "user", "content": "Fix these problems and return the full corrected JSON:\n- " + "\n- ".join(errs)}]
+                     {"role": "user", "content": "Fix ONLY these problems and return the full JSON with everything else unchanged "
+                      "(keep every character key defined in the top-level \"characters\" object):\n- " + "\n- ".join(errs)}]
     else:
         sys.exit("Could not get a valid script after 4 attempts. Last problems: " + "; ".join(errs))
 
