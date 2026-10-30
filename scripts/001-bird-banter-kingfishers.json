@@ -1,8 +1,13 @@
 {
   "slug": "001-bird-banter-kingfishers",
-  "title": "Bird Banter #1: The Kingfisher Feud",
+  "title": "Bird Banter #1: The Kingfisher Debt",
+  "aspects": [
+    "16:9",
+    "9:16"
+  ],
   "seed": 7,
-  "thumbnail_scene": 18,
+  "thumbnail_scene": 9,
+  "shareable_scene": 16,
   "burn_captions": true,
   "voice": {
     "voice": "en-GB-RyanNeural",
@@ -10,264 +15,327 @@
     "pitch": "-8Hz"
   },
   "style": "Cinematic stylized animated-film look, richly detailed 3D render, dramatic rim lighting, shallow depth of field, expressive but realistic bird faces, warm sunrise colour grade, {frame}, no text, no watermark.",
+  "story": {
+    "protagonist": "marco",
+    "want": "to catch one perfect fish by sunset to keep his father's branch",
+    "risk": "losing the branch and his father's legacy",
+    "reversals": [
+      "Nia steals the trout",
+      "Nia only wanted the branch to see her nest",
+      "Marco gives away the fish and the river's last rule rewards it"
+    ],
+    "emotional_beat_scene": 13,
+    "open_thread": "Whose egg is it, why does it hum, and how was the turtle on both banks?",
+    "lesson": "Giving away the thing you most need, to someone who needs it more, is how you keep what matters."
+  },
   "characters": {
     "marco": "Marco: a large male common kingfisher with brilliant electric-blue back, orange chest, thick black beak, a slightly ruffled blue crest, proud puffed-out chest and fierce amber eyes.",
     "nia": "Nia: a smaller female common kingfisher with brilliant turquoise back, orange chest, black beak with a hint of red at the base, sleek smooth head feathers and sharp determined dark eyes.",
-    "minnow": "A tiny silver minnow with big shiny eyes and a smug little smirk.",
     "turtle": "A huge calm old river turtle with a mossy shell, half-closed sleepy eyes and a peaceful expression.",
-    "witness": "The Witness: a small plump green frog with heavy-lidded eyes and a permanently blank, unimpressed expression, sitting perfectly still on a lily pad."
+    "witness": "The Witness: a small plump green frog with heavy-lidded eyes and a permanently blank, unimpressed expression, sitting perfectly still on a lily pad.",
+    "egg": "A single pale speckled egg resting in a small twig nest, with a faint warm glow that seems slightly too bright."
   },
   "scenes": [
     {
-      "narration": "Dawn. A quiet river. And one perfect branch... worth fighting for.",
-      "image_prompt": "Wide establishing shot of a misty river at sunrise, golden light through fog, a single mossy branch stretching over the calm water, empty and glowing, ripples on the surface.",
-      "motion": "zoom_in",
-      "sfx": "whoosh"
-    },
-    {
-      "narration": "Marco has ruled this branch for three years. Undefeated. Unbothered.",
+      "narration": "Marco had until sunset to catch one fish, or lose everything.",
+      "delivery": "hushed, ominous, trailer gravity",
       "characters": [
         "marco",
         "witness"
       ],
-      "image_prompt": "Marco lands on the branch from the left with wings flared wide, then stands proud with chest puffed out and chin raised, low-angle heroic shot, sunrise behind him. In the background, a small frog on a lily pad watches with a completely blank expression.",
-      "motion": "pan_right"
+      "image_prompt": "Extreme close-up of Marco perched on a weathered branch above a golden river at low sun, amber eyes locked on the water, chest puffed with fierce resolve. In the soft background the frog sits motionless on a lily pad staring blankly.",
+      "motion": "zoom_in",
+      "sfx": "tick",
+      "focus": "left",
+      "image_prompt_b": "Same shot a moment later: Marco leans forward, wings half-spread, beak pointed down at the water, ripple beginning below him; the frog has not moved at all."
     },
     {
-      "narration": "Three thousand dives. Zero rivals.",
+      "narration": "The branch was his father's. Three thousand dives, all from this one spot.",
+      "delivery": "quiet, proud, a little heavy",
       "characters": [
         "marco"
       ],
-      "image_prompt": "Marco in a perfect head-first dive just above the water, wings tucked, long golden rim light, concentric ripples below, heroic movie-poster composition, slow-motion droplets frozen around his beak.",
-      "motion": "pan_left",
-      "sfx": "whoosh"
-    },
-    {
-      "narration": "Then she arrived.",
-      "characters": [
-        "nia"
-      ],
-      "image_prompt": "Nia lands hard on the far end of the same branch with wings spread wide and feathers fluttering, mist swirling around her, dramatic backlight.",
-      "motion": "zoom_in",
-      "sfx": "hit"
-    },
-    {
-      "narration": "Nia. Quiet. Efficient. Once out-stared a heron. The heron left.",
-      "characters": [
-        "nia"
-      ],
-      "image_prompt": "Tight portrait of Nia perched upright, beak level, unblinking dark eyes locked on the camera, a blurred grey heron silhouette flying away in the misty background.",
-      "motion": "zoom_in"
-    },
-    {
-      "narration": "Neither blinked. Neither breathed. Neither had a plan.",
-      "characters": [
-        "marco",
-        "nia",
-        "witness"
-      ],
-      "image_prompt": "Extreme close-up of Marco on the left and Nia on the right, beaks almost touching, eyes locked in a fierce staredown, tense expressions, shallow focus on their eyes. In the background, a small frog on a lily pad watches with a completely blank expression.",
-      "motion": "zoom_in"
-    },
-    {
-      "narration": "Marco opened with intimidation. He puffed up to twice his size.",
-      "characters": [
-        "marco",
-        "nia"
-      ],
-      "image_prompt": "Marco on the left with every feather fluffed out, chest inflated to double size, wings half-spread, chin raised; Nia on the right perfectly still, one eye slightly narrowed, unimpressed.",
-      "motion": "zoom_out"
-    },
-    {
-      "narration": "Nia responded by sitting down. The most aggressive move in river history.",
-      "characters": [
-        "nia",
-        "marco",
-        "witness"
-      ],
-      "image_prompt": "Nia calmly settling down onto the branch, feet tucked, feathers smooth, a faint smug tilt to her head, staring straight at Marco, who stands stiffly puffed up behind her, thrown off. In the background, a small frog on a lily pad watches with a completely blank expression.",
-      "motion": "pan_right"
-    },
-    {
-      "narration": "And then... lunch.",
-      "characters": [
-        "minnow",
-        "witness"
-      ],
-      "image_prompt": "Below the branch, the river surface breaks as a tiny silver minnow pops up between the two birds, sparkling water droplets frozen in mid-air, the minnow looking innocent. In the background, a small frog on a lily pad watches with a completely blank expression.",
+      "image_prompt": "Low angle of the old branch, its bark worn smooth in one spot where talons have gripped it for generations; Marco stands on the worn patch, small against a huge orange sky, a single faded blue feather caught in the bark beside him.",
       "motion": "zoom_out",
-      "sfx": "splash"
+      "focus": "center"
     },
     {
-      "narration": "Both heads snapped around. This was no longer about the branch.",
+      "narration": "Across the river, Nia watched. She wanted that branch more.",
+      "delivery": "narrowed, suspicious whisper",
       "characters": [
-        "marco",
-        "nia"
-      ],
-      "image_prompt": "Marco and Nia both snap their heads down toward the water at the exact same moment, eyes wide, beaks open, motion blur on their heads, dramatic tension.",
-      "motion": "pan_left",
-      "sfx": "whoosh"
-    },
-    {
-      "narration": "Marco struck first. A masterpiece of confidence... and terrible aim.",
-      "characters": [
-        "marco"
-      ],
-      "image_prompt": "Marco launches off the branch in a head-first dive, beak pointed down, wings tucked back, determined expression, water below, slow-motion feel with trailing spray.",
-      "motion": "zoom_in"
-    },
-    {
-      "narration": "Nia struck faster. She had been planning this since birth.",
-      "characters": [
-        "nia"
-      ],
-      "image_prompt": "Nia dives in a perfect arrow-straight line, wings swept back, beak like a spear, eyes locked on the target, tiny speed lines in the air and a thin trail of mist.",
-      "motion": "zoom_in",
-      "sfx": "whoosh"
-    },
-    {
-      "narration": "They met in the middle. Physics took notes.",
-      "characters": [
-        "marco",
         "nia",
-        "minnow",
         "witness"
       ],
-      "image_prompt": "Marco and Nia collide head-on in mid-air just above the water in an explosion of blue and turquoise feathers, the tiny minnow squeezed safely in the gap between them, comic shock on both faces, frozen moment. In the background, a small frog on a lily pad watches with a completely blank expression.",
-      "motion": "zoom_in",
-      "sfx": "hit"
-    },
-    {
-      "narration": "The minnow escaped. Smirking. Legally, it was smirking.",
-      "characters": [
-        "minnow"
-      ],
-      "image_prompt": "Splash fountain behind, the smug silver minnow swimming away underwater toward the camera with a clear confident smirk, two blurry soaked birds flailing in the background.",
+      "image_prompt": "Nia perched on a far bank reed staring across the water with intense unblinking dark eyes, wings tucked tight; in the foreground reeds the frog is also staring, at Nia, with total blankness.",
       "motion": "pan_right",
-      "sfx": "splash"
+      "sfx": "whoosh",
+      "focus": "right",
+      "image_prompt_b": "Same shot: Nia has silently shifted one step closer along the reed, her gaze unchanged; the frog's head has turned exactly the same amount."
     },
     {
-      "narration": "Soaked. Humiliated. And somehow still arguing.",
-      "characters": [
-        "marco",
-        "nia",
-        "witness"
-      ],
-      "image_prompt": "Marco and Nia sitting on a wet rock, completely soaked with drooping dripping feathers, Marco pointing a wing at Nia, Nia glaring back with her beak open mid-argument. In the background, a small frog on a lily pad watches with a completely blank expression.",
-      "motion": "zoom_out"
-    },
-    {
-      "narration": "Terms were agreed. Next fish wins the branch. Neither meant it.",
-      "characters": [
-        "marco",
-        "nia"
-      ],
-      "image_prompt": "Marco and Nia on the wet rock pressing wingtips together in a grudging handshake, both squinting suspiciously at each other, water dripping from their beaks, golden morning light.",
-      "motion": "zoom_in"
-    },
-    {
-      "narration": "But the minnow had brought friends. Seventeen. Zero fear.",
-      "characters": [
-        "minnow",
-        "witness"
-      ],
-      "image_prompt": "The river surface covered with seventeen tiny silver minnow heads poking up in rows, each with the same smug smirk, sunlight sparkling on the ripples, a wide symmetrical comic composition. In the background, a small frog on a lily pad watches with a completely blank expression.",
-      "motion": "zoom_out",
-      "sfx": "splash"
-    },
-    {
-      "narration": "Marco dove. Marco surfaced. With a boot.",
-      "characters": [
-        "marco"
-      ],
-      "image_prompt": "Marco rising out of the river in a burst of spray with an old muddy rubber boot clamped on his beak, wings spread, utterly serious expression, droplets frozen in slow motion.",
-      "motion": "zoom_in",
-      "sfx": "splash"
-    },
-    {
-      "narration": "Nia dove once. She surfaced with the biggest trout in a decade.",
-      "characters": [
-        "nia"
-      ],
-      "image_prompt": "Nia exploding out of the water holding an enormous silver trout in her beak, wings wide, spray fanning out around her in slow motion, sunrise rim light, triumphant heroic pose.",
-      "motion": "zoom_in",
-      "sfx": "splash"
-    },
-    {
-      "narration": "Marco watched. Something cracked. Possibly his pride.",
-      "characters": [
-        "marco",
-        "witness"
-      ],
-      "image_prompt": "Close-up of Marco on the rock, the muddy boot still hanging from his beak, eyes wide and glassy, crest drooping, a single water droplet running down his face, Nia and her trout blurred in the distance. In the background, a small frog on a lily pad watches with a completely blank expression.",
-      "motion": "zoom_in"
-    },
-    {
-      "narration": "They flew back. Nia with a trophy. Marco with a boot.",
-      "characters": [
-        "marco",
-        "nia"
-      ],
-      "image_prompt": "Nia and Marco flying side by side toward the branch across the glowing river, Nia carrying the big silver trout, Marco still carrying the muddy boot, determined faces, wide cinematic shot.",
-      "motion": "pan_left",
-      "sfx": "whoosh"
-    },
-    {
-      "narration": "But fate had one final move.",
-      "characters": [
-        "turtle"
-      ],
-      "image_prompt": "Dramatic reveal: a huge calm turtle is sitting on the middle of the branch, eyes closed, sunrise glowing around its shell, perfectly relaxed, the branch bending slightly under its weight.",
-      "motion": "zoom_in",
-      "sfx": "hit"
-    },
-    {
-      "narration": "A turtle. Calm. Unbothered. Wearing the other boot.",
+      "narration": "The old turtle, keeper of the river, set the terms.",
+      "delivery": "slow, grave, like a judge",
       "characters": [
         "turtle",
         "marco",
         "nia"
       ],
-      "image_prompt": "Over-the-shoulder shot from behind Marco and Nia, both hovering with stunned faces, looking at the sleeping turtle on their branch: the turtle has a matching muddy rubber boot on one back flipper, a perfect pair to the boot hanging from Marco, golden hour light.",
-      "motion": "zoom_out"
+      "image_prompt": "The huge old mossy turtle on a flat rock mid-river, eyes half closed, presiding; Marco and Nia stand on either side at a respectful distance, both rigid and anxious, tiny beside the shell.",
+      "motion": "zoom_in",
+      "focus": "center"
     },
     {
-      "narration": "Nobody asked how. Nia split the trout. Marco kept the boot. This is tidalfolio.",
+      "narration": "One perfect fish. Delivered before the last light. No exceptions.",
+      "delivery": "each sentence heavier, final word flat",
+      "characters": [
+        "turtle",
+        "marco"
+      ],
+      "image_prompt": "Close on the turtle's ancient face, one eye slowly opening, a glowing sunset reflected in it; in the blurred foreground Marco gulps, beak slightly open.",
+      "motion": "zoom_in",
+      "sfx": "boom",
+      "focus": "center"
+    },
+    {
+      "narration": "Marco dived. The river gave him a boot.",
+      "delivery": "tense, then dry as dust",
+      "characters": [
+        "marco"
+      ],
+      "image_prompt": "Marco bursting up from the water in a frozen spray of droplets, clutching one enormous waterlogged brown leather boot in his beak, eyes wide with disbelief, river mud on his crest.",
+      "motion": "zoom_out",
+      "sfx": "splash",
+      "focus": "center",
+      "image_prompt_b": "Same moment: the boot has swung forward, pouring water in an arc over a very unimpressed Marco."
+    },
+    {
+      "narration": "Second dive. A rusted can. A stern pike.",
+      "delivery": "fast, clipped",
       "characters": [
         "marco",
+        "witness"
+      ],
+      "image_prompt": "Marco hovering over the water mid-dive, a rusted tin can on his head, as a large grey pike's face rises silently from the surface glaring up at him; the frog watches from the lily pad with zero expression.",
+      "motion": "pan_left",
+      "sfx": "hit",
+      "focus": "center",
+      "image_prompt_b": "Same shot: the can has slid over Marco's eyes, the pike is now eye-level, nose to beak."
+    },
+    {
+      "narration": "Third dive. Eleven seconds underwater. Nobody breathed.",
+      "delivery": "slow, building, whispered",
+      "characters": [
         "nia",
         "witness"
       ],
-      "image_prompt": "Marco and Nia sitting side by side on a low rock sharing the silver trout, the muddy boot beside Marco, the turtle asleep on the distant branch at sunrise. In the foreground, the small frog on its lily pad stares straight into the camera with a calm, knowing expression, as if it knew all along.",
-      "motion": "zoom_in"
+      "image_prompt": "Nia and the frog on the bank staring at a perfectly still, dark river surface with a single ring of ripples, both frozen with identical tension; golden light on the water.",
+      "motion": "zoom_in",
+      "sfx": "riser",
+      "focus": "right"
+    },
+    {
+      "narration": "He surfaced with a trout. Silver. Magnificent. Perfect.",
+      "delivery": "triumphant, breathless, reverent",
+      "characters": [
+        "marco"
+      ],
+      "image_prompt": "Marco rocketing out of the water in a glittering crown of droplets, a huge silver speckled trout flashing in his beak, wings blazing blue and orange against the sunset, a rainbow in the spray.",
+      "motion": "zoom_in",
+      "sfx": "sting",
+      "focus": "center",
+      "image_prompt_b": "Same shot at peak height: Marco banking toward the bank, trout dripping gold, sun flaring behind him."
+    },
+    {
+      "narration": "Then Nia struck. The trout vanished into the sky.",
+      "delivery": "explosive, fast",
+      "characters": [
+        "nia",
+        "marco"
+      ],
+      "image_prompt": "Nia a blur of turquoise diving in from the side, snatching the trout out of Marco's beak mid-air; Marco's beak is still frozen open in the shape of the fish, feathers flying in all directions.",
+      "motion": "pan_left",
+      "sfx": "hit",
+      "focus": "left",
+      "image_prompt_b": "Same shot: Nia already climbing away with the trout, a single turquoise feather drifting down, Marco staring at his empty beak."
+    },
+    {
+      "narration": "Marco chased her across the river, wingtips skimming the water.",
+      "delivery": "urgent, relentless",
+      "characters": [
+        "marco",
+        "nia"
+      ],
+      "image_prompt": "Marco skimming inches above the river at full speed, wingtips cutting twin white wakes, Nia a little ahead above the far trees, the sunset smeared into gold streaks.",
+      "motion": "pan_right",
+      "sfx": "whoosh",
+      "focus": "right",
+      "image_prompt_b": "Same shot closer: Marco's beak almost touching her tail feathers, the wake behind him spraying upward."
+    },
+    {
+      "narration": "She landed on a dead branch, and did not eat.",
+      "delivery": "slower, puzzled, quiet",
+      "characters": [
+        "nia",
+        "marco"
+      ],
+      "image_prompt": "Nia perched on a bare dead branch holding the trout in her beak untouched, staring down not at Marco but at something below; Marco landing behind her, mid-flap, confusion on his face.",
+      "motion": "zoom_in",
+      "focus": "center"
+    },
+    {
+      "narration": "Beneath her, a nest. Empty, except for one pale egg.",
+      "delivery": "soft, sincere, no irony",
+      "characters": [
+        "egg",
+        "nia"
+      ],
+      "image_prompt": "Looking down into a small twig nest in the roots below the dead branch holding one lone pale speckled egg; Nia's shadow falls across it; warm evening light makes the egg glow faintly.",
+      "motion": "zoom_in",
+      "focus": "center",
+      "image_prompt_b": "Same nest, the camera slightly closer: a single drop of water falls from the trout onto the egg's shell."
+    },
+    {
+      "narration": "From his branch, she could see the nest. From hers, never.",
+      "delivery": "gently, as a confession",
+      "characters": [
+        "nia",
+        "marco"
+      ],
+      "image_prompt": "Nia looking across the river to Marco's old branch in the distance, framed through gold reeds, an unmistakable longing in her face; Marco beside her following her gaze and slowly understanding.",
+      "motion": "pan_left",
+      "focus": "left"
+    },
+    {
+      "narration": "Marco looked at the trout. He looked at the egg.",
+      "delivery": "very still, the quietest line",
+      "characters": [
+        "marco",
+        "egg"
+      ],
+      "image_prompt": "Close-up of Marco's amber eye reflecting both the silver trout and the glowing egg, a single tear-like drop of river water on his beak.",
+      "motion": "zoom_in",
+      "focus": "center"
+    },
+    {
+      "narration": "He laid the trout beside the egg. Said nothing. Flew home.",
+      "delivery": "plain, almost whispered",
+      "characters": [
+        "marco",
+        "nia",
+        "egg"
+      ],
+      "image_prompt": "Marco gently placing the huge silver trout in the nest beside the glowing egg, Nia watching with her beak open in shock, a warm halo of light around the three.",
+      "motion": "zoom_in",
+      "focus": "center",
+      "image_prompt_b": "Same moment: Marco already lifting away, wings beating, Nia still frozen, the trout shining beside the egg."
+    },
+    {
+      "narration": "The turtle was waiting. \"You have no fish,\" he said. Calmly.",
+      "delivery": "level, merciless",
+      "characters": [
+        "turtle",
+        "marco"
+      ],
+      "image_prompt": "Marco landing before the huge mossy turtle on the flat rock, empty-beaked and defeated, the sun halfway under the horizon behind them; the turtle regards him with ancient patience.",
+      "motion": "zoom_in",
+      "sfx": "hit",
+      "focus": "center"
+    },
+    {
+      "narration": "Marco nodded. The branch was no longer his.",
+      "delivery": "heavy, resigned",
+      "characters": [
+        "marco"
+      ],
+      "image_prompt": "Marco turning slowly away from the river, head lowered, long shadow stretching behind him across the old branch, the faded blue feather still caught in the bark.",
+      "motion": "pan_right",
+      "sfx": "boom",
+      "focus": "left"
+    },
+    {
+      "narration": "But the river had one more rule.",
+      "delivery": "a beat of hush, then lifted",
+      "characters": [
+        "turtle",
+        "witness"
+      ],
+      "image_prompt": "The turtle's eye opening slightly wider, the faintest hint of a smile on his shell-hard face, as the frog on the lily pad slowly rotates its head toward him.",
+      "motion": "zoom_in",
+      "sfx": "sting",
+      "focus": "center"
+    },
+    {
+      "narration": "The branch belongs to whoever gives away the perfect fish.",
+      "delivery": "warm, unhurried",
+      "characters": [
+        "turtle",
+        "marco",
+        "nia"
+      ],
+      "image_prompt": "Nia gently landing on Marco's worn branch while Marco stands beside her, both small and stunned beneath the huge turtle, the sky turning violet.",
+      "motion": "zoom_out",
+      "focus": "center",
+      "image_prompt_b": "Same scene: Marco and Nia now sharing the branch, shoulder to shoulder, the turtle looking pleased."
+    },
+    {
+      "narration": "At dusk, the egg began to hum.",
+      "delivery": "low, wondering",
+      "characters": [
+        "egg",
+        "witness"
+      ],
+      "image_prompt": "Close on the nest in near darkness; the pale egg now glowing steadily, a ring of faint ripples spreading across the water around it; the frog sits at the edge of frame fully illuminated by the egg's light.",
+      "motion": "zoom_in",
+      "sfx": "riser",
+      "focus": "center"
+    },
+    {
+      "narration": "The turtle, who had not moved all day, was on the far bank.",
+      "delivery": "completely sincere, no wink",
+      "characters": [
+        "turtle",
+        "witness"
+      ],
+      "image_prompt": "Wide dusk shot: the huge turtle sitting calmly on the far bank in deep blue light exactly where nothing was before; on the flat rock where he was is still a perfect wet turtle-shaped patch; the frog watching.",
+      "motion": "pan_left",
+      "sfx": "sting",
+      "focus": "right"
+    },
+    {
+      "narration": "Nobody asked how. The river keeps accounts. This is tidalfolio.",
+      "delivery": "calm, short, final",
+      "characters": [
+        "witness",
+        "egg"
+      ],
+      "image_prompt": "The frog sitting on the lily pad, wearing the enormous brown leather boot, staring directly into the camera with a blank face; behind it the glowing egg rests quietly in the nest.",
+      "motion": "zoom_in",
+      "focus": "center"
     }
   ],
   "youtube": {
-    "title": "Two Kingfishers. One Branch. ZERO Dignity. (Bird Banter #1)",
-    "description": "Marco has ruled this branch for three years. Then Nia showed up. Then seventeen minnows. Then a boot. Then a turtle. Nobody has fully explained what happened.\n\nBird Banter is a tidalfolio series: funny animals, wild moments, endless smiles.\n\nSubscribe for more.",
+    "title": "He Had Until Sunset To Catch One Fish (Bird Banter #1)",
+    "description": "A kingfisher, a debt to the river, a rival who wants his branch, and one egg that hums at dusk. Sometimes the only way to keep what you love is to let it go. Part 2 is coming. Subscribe for more wild moments.",
     "tags": [
       "funny animals",
       "bird comedy",
       "kingfisher",
-      "animal comedy",
+      "animal story",
       "tidalfolio",
       "bird banter",
-      "wildlife humor"
+      "wildlife humor",
+      "animal comedy"
     ],
-    "pinned_comment": "Nobody asked how the turtle got the other boot. We are asking. Theories below."
+    "pinned_comment": "Would you have given the fish away? Be honest. And who was the egg?"
   },
   "tiktok": {
-    "caption": "Three years undefeated. Then a boot. Then a turtle. Nobody asked how. #BirdBanter",
+    "caption": "He gave up the perfect fish. Then the egg started humming. Part 2 soon. #BirdBanter",
     "hashtags": [
       "#funnyanimals",
       "#kingfisher",
-      "#birdsoftiktok",
+      "#storytime",
       "#animalcomedy",
       "#tidalfolio"
     ]
-  },
-  "aspects": [
-    "16:9",
-    "9:16"
-  ]
+  }
 }
