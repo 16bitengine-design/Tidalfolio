@@ -5,7 +5,7 @@
   python generate_script.py --count 3           # write 3 new scripts now
   python generate_script.py --series "Funny Animals" --idea "a goat who refuses to leave a car roof"
 
-Needs OPENAI_API_KEY. Model: OPENAI_TEXT_MODEL (default gpt-4o-mini; set a stronger model for funnier scripts).
+Needs OPENAI_API_KEY. Model: OPENAI_TEXT_MODEL (default gpt-4o-mini; set a stronger model for better stories).
 Every script is checked against the channel rules before it is saved; failures are retried with feedback.
 """
 import argparse
@@ -34,7 +34,8 @@ STYLE = ("Cinematic stylized animated-film look, richly detailed 3D render, dram
          "shallow depth of field, expressive but realistic animal faces, {frame}, no text, no watermark.")
 
 MOTIONS = {"zoom_in", "zoom_out", "pan_left", "pan_right"}
-SFX = {"hit", "whoosh", "splash"}
+SFX = {"hit", "whoosh", "splash", "boom", "sting", "tick", "riser"}
+FOCUS = {"left", "center", "right"}
 WORDS_PER_SEC = 2.4          # conservative narration speed
 LEAD, TAIL, MIN_SCENE = 0.30, 0.55, 3.0
 MIN_RUNTIME = 98.0           # channel rule: 1.5 to 2 minutes; keep a margin on both sides
@@ -48,14 +49,25 @@ Videos are image sequences with a dramatic narrator, no on-screen people.
 CHANNEL RULES (all mandatory):
 - Audience is all ages INCLUDING adults. Humour must be witty and dry, never childish, never cartoonish or babyish. No baby talk, no puns on every line.
 - Narrator voice is dramatic and intense: movie-trailer gravity applied to tiny animal conflicts. Fast-paced, action-oriented.
-- Total runtime must be between {MIN_RUNTIME:.0f} and {MAX_RUNTIME:.0f} seconds. Each scene lasts about 0.85 seconds plus its narration at {WORDS_PER_SEC} words per second, so write 21 to 26 scenes with 6 to 14 words of narration each (roughly 210 to 250 words in total). A new image every 4 to 6 seconds keeps the pace fast.
-- One clear story: a hook in the first 5 seconds, three escalating attempts or complications, a reversal, then a punchline ending. Last line lands the joke; it may include the sign-off "This is tidalfolio." only in the final scene.
+- Total runtime must be between {MIN_RUNTIME:.0f} and {MAX_RUNTIME:.0f} seconds. Each scene lasts about 0.85 seconds plus its narration at {WORDS_PER_SEC} words per second, so write 21 to 26 scenes with 6 to 14 words of narration each (roughly 210 to 250 words in total).
+- STORY ENGINE (the most important rule; a funny video with no story gets watched once and forgotten):
+  1. STAKES FIRST. Scene 1 narration (max 14 words) states a high-stakes premise a stranger understands instantly, e.g. "A kingfisher had three days to repay a debt to a crow." Never open with scenery, a greeting or the channel name.
+  2. ONE PROTAGONIST who WANTS something badly, faces an obstacle, and has something to lose if they fail. Name them. The viewer must be able to say "I hope Marco..." about them.
+  3. THREE ESCALATING REVERSALS. Each one changes the situation and makes it worse or stranger; each must flip what the viewer hopes for. No scene may merely repeat the previous one.
+  4. ONE REAL EMOTIONAL BEAT in the middle third (loyalty, shame, fear, tenderness, a sacrifice) played straight with no joke for that scene, so the later jokes land harder.
+  5. A HAUNTING LAST LINE: calm, short, quietly impossible or unresolved. The comedy stays dry; the feeling is dread or wonder.
+  6. AN OPEN THREAD: end with one unresolved consequence or question that makes a Part 2 necessary. The final scene narration is the haunting line; the sign-off "This is tidalfolio." may follow only in the same final scene.
+  7. THE SHAREABLE MOMENT: one line or image so absurd or striking that a viewer would show a friend. Mark it with "shareable_scene" (1-based).
+  8. A LESSON FOR HUMANS. Every episode teaches one real human lesson (courage, generosity, pride, patience, honesty, jealousy, loyalty, fear, greed, forgiveness, humility, curiosity...) through what the animals do and what it costs them. The lesson is the reason the protagonist's choice at the emotional beat matters, so story and lesson are one thing. SHOW it through consequence; never lecture. Forbidden: "the moral is", "remember kids", "lesson learned", any sermon. At most one understated line (a character's remark or the narrator's dry observation) may point at it, and the last haunting line must stay unresolved, not preachy. Write the lesson as ONE plain sentence in story.lesson (max 25 words), something an adult would nod at and a child could repeat. Never reuse a lesson already used on the channel.
 - Each image_prompt describes ONE frozen moment and states each visible character's exact action and expression beat by beat (what the body, wings, beak, legs, eyes are doing). No broad summaries. Under 600 characters each. Prefer dramatic or slow-motion moments (frozen splashes, mid-air collisions, extreme close-ups).
-- Characters: 2 to 4 recurring characters, each with a locked visual description (species, colours, size, distinctive feature, build). The "characters" list in a scene uses the keys from the characters object. Use the same key whenever that character appears.
+- Characters: 2 to 4 recurring characters (plus the witness), each with a locked visual description (species, colours, size, distinctive feature, build). The "characters" list in a scene uses the keys from the characters object. Use the same key whenever that character appears.
 - Animals are never harmed: slapstick mishaps only. No real people, brands, logos or text in images.
-- Each scene picks a motion from: zoom_in, zoom_out, pan_left, pan_right. Optional sfx from: hit, whoosh, splash (use at impacts, entrances, water).
+- Each scene picks a motion from: zoom_in, zoom_out, pan_left, pan_right. Optional sfx from: hit, whoosh, splash, boom, sting, tick, riser (hit/splash/boom at impacts; sting at a shock or reveal; tick for suspense; riser before a big reveal; use at least 6 scenes).
+- Each scene has a "delivery": a 3 to 8 word acting note for the narrator (e.g. "hushed, ominous", "fast and furious", "deadpan, flat", "breaking slightly, sincere", "slow, haunted whisper"). Vary it. The emotional beat uses sincere delivery.
+- Each scene may have "focus": left, center or right: where the camera should aim in the image.
+- Make the images feel like ACTION: in at least 8 scenes also give "image_prompt_b" (and "characters_b" if the cast differs): the SAME moment a half second later (the next frame of the action, e.g. wings now fully open, splash now at its peak). The video cuts between the two images so the scene moves. Same location and characters, only the action advances.
 
-HUMOUR CRAFT (this is what makes the video work; a viewer should smile or laugh several times):
+HUMOUR CRAFT (a viewer should smile or laugh several times):
 - Deadpan gravity vs trivial stakes: the narrator treats a squabble over a branch like the fall of an empire, and never winks at the audience.
 - Specifics beat generalities: "seventeen minnows", "three thousand dives", "once out-stared a heron". Invent precise, absurd numbers, histories and rules.
 - Rule of three where the third item breaks the pattern. Understatement after a big action ("Physics took notes.").
@@ -70,11 +82,43 @@ Reply with ONE JSON object only, in exactly this shape:
 {{
   "title": "Series Name #N: Episode Title",
   "characters": {{"key": "Name: locked visual description"}},
-  "thumbnail_scene": 1-based number of the funniest, most absurd frame (it is the thumbnail),
-  "scenes": [{{"narration": "...", "characters": ["key"], "image_prompt": "...", "motion": "zoom_in", "sfx": "hit"}}],
-  "youtube": {{"title": "<=90 chars, curiosity-driven", "description": "2-4 sentences + subscribe line", "tags": ["8-12 tags"], "pinned_comment": "a question that invites comments"}},
+  "story": {{"protagonist": "key", "want": "...", "risk": "what they lose", "lesson": "one plain sentence, the human lesson the story shows", "reversals": ["...", "...", "..."], "emotional_beat_scene": 1-based, "open_thread": "the unresolved question for Part 2"}},
+  "thumbnail_scene": 1-based number of the funniest, most striking frame (it is the thumbnail),
+  "shareable_scene": 1-based,
+  "scenes": [{{"narration": "...", "delivery": "hushed, ominous", "characters": ["key"], "image_prompt": "...", "image_prompt_b": "optional next frame", "focus": "center", "motion": "zoom_in", "sfx": "hit"}}],
+  "youtube": {{"title": "<=90 chars, curiosity-driven", "description": "2-4 sentences: the story teaser, then one sentence that hints at the lesson without spelling it out, then a subscribe line", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers apply the lesson to their own life (e.g. 'Would you have given it away? Be honest.')"}},
   "tiktok": {{"caption": "<=140 chars hook", "hashtags": ["5-6 hashtags starting with #"]}}
 }}"""
+
+
+def previous_thread(series):
+    """Open thread and last line of the latest episode of this series, for Part 2 continuity."""
+    last = None
+    for f in sorted(SCRIPTS.glob("*.json")):
+        try:
+            d = json.loads(f.read_text())
+        except Exception:
+            continue
+        if d.get("title", "").startswith(series):
+            last = d
+    if not last:
+        return ""
+    thread = (last.get("story") or {}).get("open_thread", "")
+    end = last["scenes"][-1]["narration"] if last.get("scenes") else ""
+    wit = (last.get("characters") or {}).get("witness", "")
+    return (f"\nPrevious episode of this series ended with: \"{end}\" Open thread: {thread or 'none recorded'}. "
+            f"You may pay it off or deepen it, but this episode must still stand alone. "
+            + (f"Reuse the witness: {wit}" if wit else ""))
+
+
+def used_lessons():
+    out = []
+    for f in sorted(SCRIPTS.glob("*.json")):
+        try:
+            out.append(((json.loads(f.read_text()).get("story") or {}).get("lesson") or "").strip())
+        except Exception:
+            continue
+    return [x for x in out if x]
 
 
 def existing():
@@ -103,10 +147,10 @@ def estimate_runtime(scenes):
 def validate(d):
     errs = []
     chars, scenes = d.get("characters"), d.get("scenes")
-    if not isinstance(chars, dict) or not 2 <= len(chars) <= 5:
-        errs.append("characters must be an object with 2 to 4 entries")
+    if not isinstance(chars, dict) or not 2 <= len(chars) <= 6:
+        errs.append("characters must be an object with 2 to 5 entries")
         chars = chars if isinstance(chars, dict) else {}
-    if not isinstance(scenes, list) or not 18 <= len(scenes) <= 32:
+    if not isinstance(scenes, list) or not 18 <= len(scenes) <= 32 or not all(isinstance(s, dict) for s in scenes):
         return errs + ["scenes must be a list of 18 to 32 scenes (aim for 21 to 26)"]
     if "witness" not in chars:
         errs.append('characters must include a "witness" (a silent deadpan bystander creature)')
@@ -118,6 +162,10 @@ def validate(d):
                 errs.append(f"scene {i} missing {k}")
         if s.get("motion") not in MOTIONS:
             errs.append(f"scene {i} motion must be one of {sorted(MOTIONS)}")
+        if s.get("focus") not in (None, "") and s.get("focus") not in FOCUS:
+            errs.append(f"scene {i} focus must be one of {sorted(FOCUS)}")
+        if s.get("image_prompt_b") is not None and not str(s["image_prompt_b"]).strip():
+            s.pop("image_prompt_b")
         if s.get("sfx") not in (None, "") and s.get("sfx") not in SFX:
             errs.append(f"scene {i} sfx must be one of {sorted(SFX)}")
         for c in s.get("characters", []):
@@ -127,12 +175,34 @@ def validate(d):
             errs.append(f"scene {i} image_prompt is too long (max 700 chars)")
         if len(s.get("narration", "").split()) > 20:
             errs.append(f"scene {i} narration is too long (max 18 words; split it into two scenes)")
+    st = d.get("story")
+    if not isinstance(st, dict) or not all(st.get(k) for k in ("protagonist", "want", "risk", "open_thread")) \
+            or not isinstance(st.get("reversals"), list) or len(st["reversals"]) < 3:
+        errs.append("story block needs protagonist, want, risk, 3 reversals and open_thread")
+    elif st["protagonist"] not in chars:
+        errs.append("story.protagonist must be a key in characters")
+    if isinstance(st, dict):
+        lesson = str(st.get("lesson", "")).strip()
+        if not lesson or len(lesson.split()) > 25 or len(lesson.split()) < 5:
+            errs.append("story.lesson must be one plain sentence of 5 to 25 words: the human lesson the story teaches")
+        elif re.search(r"\bthe moral\b|\blesson learned\b|\bremember,? kids\b", json.dumps(scenes).lower()):
+            errs.append("the narration must not preach: remove phrases like 'the moral is' or 'lesson learned'; show the lesson through consequence")
+    if len(scenes[0].get("narration", "").split()) > 14:
+        errs.append("scene 1 narration must be a stakes-first hook of at most 14 words")
+    if sum(bool(s.get("image_prompt_b")) for s in scenes) < 6:
+        errs.append("give image_prompt_b (the next-frame image) in at least 8 scenes so the video has action")
+    if sum(bool(s.get("sfx")) for s in scenes) < 5:
+        errs.append("use sfx in at least 6 scenes")
+    if sum(bool(s.get("delivery")) for s in scenes) < len(scenes) - 1:
+        errs.append("every scene needs a delivery note")
     if not errs:
         rt = estimate_runtime(scenes)
         if rt < MIN_RUNTIME:
             errs.append(f"estimated runtime {rt:.0f}s is under {MIN_RUNTIME:.0f}s: add scenes or lengthen narration")
         if rt > MAX_RUNTIME:
             errs.append(f"estimated runtime {rt:.0f}s is over {MAX_RUNTIME:.0f}s: cut scenes or shorten narration")
+        if not 1 <= int(d.get("shareable_scene", 0) or 0) <= len(scenes):
+            errs.append("shareable_scene must be a valid scene number")
         if not 1 <= int(d.get("thumbnail_scene", 0) or 0) <= len(scenes):
             errs.append("thumbnail_scene must be a valid scene number")
     for k in ("youtube", "tiktok"):
@@ -163,14 +233,17 @@ def call_openai(messages):
     sys.exit(f"OpenAI request failed: {last}")
 
 
-PUNCH_UP_PROMPT = """You are a ruthless comedy script editor for a deadpan animal-comedy channel. Below is a valid draft script (JSON).
-Rewrite it to be funnier while keeping the exact same JSON structure, character keys, and every rule from the original brief (length window, 6-14 words of narration per scene, beat-by-beat image prompts, silent witness in 6+ scenes, ending that leaves the viewer pondering).
+PUNCH_UP_PROMPT = """You are a ruthless script editor for a deadpan animal-comedy channel. Below is a valid draft script (JSON).
+Rewrite it to be better while keeping the exact same JSON structure, character keys, and every rule from the original brief (length window, 6-14 words of narration per scene, beat-by-beat image prompts, silent witness in 6+ scenes, ending that leaves the viewer pondering).
 Checklist:
 1. Cut every joke that is merely cute; replace it with something specific, absurd and deadpan.
 2. Sharpen the narrator: more gravity, more precise numbers, understatement after big moments.
 3. Add or improve one small silent visual gag in each image_prompt.
 4. Make sure a planted detail pays off in the final three scenes with an unexplained, quietly impossible twist, and the last line is short, calm and leaves a question hanging. Do not explain it.
 5. Keep it all-ages and not childish. No animal is harmed.
+6. Protect the story engine: stakes in the first line, a protagonist who wants something, three escalating reversals, one sincere emotional beat with no joke, a haunting last line and an open thread. If any is weak, fix it first; story beats jokes.
+7. Protect the lesson (story.lesson): it must be shown through the protagonist's choice and its cost, never preached. If it is vague or preachy, make it concrete and quiet.
+8. Keep delivery, focus, sfx, image_prompt_b and the story/shareable_scene fields.
 Return ONLY the full improved JSON."""
 
 
@@ -199,6 +272,8 @@ def write_one(series=None, idea=None):
     user = (f"Write the next episode of the series \"{series}\" (episode #{ep}). "
             f"Series theme: {SERIES[series]}.\n"
             + (f"Episode idea to develop: {idea}\n" if idea else "Invent a fresh, specific premise.\n")
+            + previous_thread(series) + "\n"
+            + ("Lessons already used on the channel (teach a different one):\n- " + "\n- ".join(used_lessons()) + "\n" if used_lessons() else "")
             + ("Do NOT reuse these existing episodes or their premises:\n- " + "\n- ".join(titles) if titles else ""))
     messages = [{"role": "system", "content": system_prompt()}, {"role": "user", "content": user}]
     data, errs = None, []
@@ -226,6 +301,7 @@ def write_one(series=None, idea=None):
     script = {
         "slug": slug, "title": title, "aspects": ["16:9", "9:16"],
         "seed": random.randint(1, 999999), "thumbnail_scene": int(data["thumbnail_scene"]),
+        "story": data.get("story"), "shareable_scene": int(data.get("shareable_scene", 1)),
         "burn_captions": True,
         "voice": {"voice": "en-GB-RyanNeural", "rate": "-10%", "pitch": "-8Hz"},
         "style": STYLE, "characters": data["characters"], "scenes": data["scenes"],
@@ -243,7 +319,7 @@ def unrendered():
     def lines(p):
         return [l.strip() for l in p.read_text().splitlines() if l.strip() and not l.startswith("#")] if p.exists() else []
     done = set(lines(ROOT / "done.txt"))
-    return [q for q in lines(ROOT / "queue.txt") if q not in done]
+    return [q for q in lines(ROOT / "queue.txt") if q not in done and (SCRIPTS / q).exists()]
 
 
 def main():
