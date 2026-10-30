@@ -6,8 +6,8 @@
     "9:16"
   ],
   "seed": 7,
-  "thumbnail_scene": 9,
-  "shareable_scene": 16,
+  "thumbnail_scene": 8,
+  "shareable_scene": 14,
   "burn_captions": true,
   "voice": {
     "voice": "en-GB-RyanNeural",
@@ -24,7 +24,7 @@
       "Nia only wanted the branch to see her nest",
       "Marco gives away the fish and the river's last rule rewards it"
     ],
-    "emotional_beat_scene": 13,
+    "emotional_beat_scene": 12,
     "open_thread": "Whose egg is it, why does it hum, and how was the turtle on both banks?",
     "lesson": "Giving away the thing you most need, to someone who needs it more, is how you keep what matters."
   },
@@ -33,7 +33,10 @@
     "nia": "Nia: a smaller female common kingfisher with brilliant turquoise back, orange chest, black beak with a hint of red at the base, sleek smooth head feathers and sharp determined dark eyes.",
     "turtle": "A huge calm old river turtle with a mossy shell, half-closed sleepy eyes and a peaceful expression.",
     "witness": "The Witness: a small plump green frog with heavy-lidded eyes and a permanently blank, unimpressed expression, sitting perfectly still on a lily pad.",
-    "egg": "A single pale speckled egg resting in a small twig nest, with a faint warm glow that seems slightly too bright."
+    "egg": "A single pale speckled egg resting in a small twig nest, with a faint warm glow that seems slightly too bright.",
+    "human": "Sam: a plain white round-headed stick figure in a grey hoodie and black trousers, thin dark outline, big worried eyes, small scar on the left cheek.",
+    "colleague": "Jo: a plain white round-headed stick figure in a navy sweater with a lanyard, thin dark outline, tired eyes, messy stack of papers always nearby.",
+    "boss": "The boss: a tall friendly stick figure with brown hair in a blue shirt and lanyard, thin dark outline, warm smile."
   },
   "scenes": [
     {
@@ -109,19 +112,6 @@
       "image_prompt_b": "Same moment: the boot has swung forward, pouring water in an arc over a very unimpressed Marco."
     },
     {
-      "narration": "Second dive. A rusted can. A stern pike.",
-      "delivery": "fast, clipped",
-      "characters": [
-        "marco",
-        "witness"
-      ],
-      "image_prompt": "Marco hovering over the water mid-dive, a rusted tin can on his head, as a large grey pike's face rises silently from the surface glaring up at him; the frog watches from the lily pad with zero expression.",
-      "motion": "pan_left",
-      "sfx": "hit",
-      "focus": "center",
-      "image_prompt_b": "Same shot: the can has slid over Marco's eyes, the pike is now eye-level, nose to beak."
-    },
-    {
       "narration": "Third dive. Eleven seconds underwater. Nobody breathed.",
       "delivery": "slow, building, whispered",
       "characters": [
@@ -195,17 +185,6 @@
       "image_prompt_b": "Same nest, the camera slightly closer: a single drop of water falls from the trout onto the egg's shell."
     },
     {
-      "narration": "From his branch, she could see the nest. From hers, never.",
-      "delivery": "gently, as a confession",
-      "characters": [
-        "nia",
-        "marco"
-      ],
-      "image_prompt": "Nia looking across the river to Marco's old branch in the distance, framed through gold reeds, an unmistakable longing in her face; Marco beside her following her gaze and slowly understanding.",
-      "motion": "pan_left",
-      "focus": "left"
-    },
-    {
       "narration": "Marco looked at the trout. He looked at the egg.",
       "delivery": "very still, the quietest line",
       "characters": [
@@ -228,18 +207,6 @@
       "motion": "zoom_in",
       "focus": "center",
       "image_prompt_b": "Same moment: Marco already lifting away, wings beating, Nia still frozen, the trout shining beside the egg."
-    },
-    {
-      "narration": "The turtle was waiting. \"You have no fish,\" he said. Calmly.",
-      "delivery": "level, merciless",
-      "characters": [
-        "turtle",
-        "marco"
-      ],
-      "image_prompt": "Marco landing before the huge mossy turtle on the flat rock, empty-beaked and defeated, the sun halfway under the horizon behind them; the turtle regards him with ancient patience.",
-      "motion": "zoom_in",
-      "sfx": "hit",
-      "focus": "center"
     },
     {
       "narration": "Marco nodded. The branch was no longer his.",
@@ -278,6 +245,60 @@
       "image_prompt_b": "Same scene: Marco and Nia now sharing the branch, shoulder to shoulder, the turtle looking pleased."
     },
     {
+      "narration": "Humans live by this river too.",
+      "delivery": "quiet, knowing",
+      "characters": [
+        "human"
+      ],
+      "look": "mirror",
+      "transition": "dissolve",
+      "image_prompt": "Dissolve into a dim empty open-plan office at dusk: Sam sits alone at a desk under one lamp, one finished report in front of him, shoulders slumped, eyes on a wall clock reading 6:58; city lights beyond the window.",
+      "motion": "zoom_out",
+      "focus": "center"
+    },
+    {
+      "narration": "One report. One deadline. And Jo, drowning two desks away.",
+      "delivery": "low, steady",
+      "characters": [
+        "human",
+        "colleague"
+      ],
+      "look": "mirror",
+      "image_prompt": "Wide office view: Sam in the foreground holding his finished report against his chest; two desks behind him Jo buries her face in her hands behind a collapsing tower of unfinished papers, a cold mug tipped on its side.",
+      "image_prompt_b": "Same view: Sam's head has turned toward Jo, eyebrows raised; Jo's tower of papers has slid one more layer, a single page floating to the floor.",
+      "motion": "pan_right",
+      "focus": "right",
+      "sfx": "tick"
+    },
+    {
+      "narration": "Sam looked at his report. He looked at Jo. He walked over.",
+      "delivery": "slow, sincere, no joke",
+      "characters": [
+        "human",
+        "colleague"
+      ],
+      "look": "mirror",
+      "image_prompt": "Close two-shot: Sam gently sets his finished report on Jo's desk, his hand still on the corner and his face quietly pained; Jo looks up in disbelief, eyes wide and wet.",
+      "motion": "zoom_in",
+      "focus": "center",
+      "sfx": "sting"
+    },
+    {
+      "narration": "Next morning, the boss asked who had saved the project.",
+      "delivery": "warm, building",
+      "characters": [
+        "human",
+        "colleague",
+        "boss"
+      ],
+      "look": "mirror",
+      "image_prompt": "Bright morning office: the boss stands between the desks holding Jo's report with a big smile; Jo points past the boss straight at Sam, who sits at the back with an astonished blank face and a coffee halfway to his mouth.",
+      "image_prompt_b": "Same office a beat later: the boss is walking toward Sam with an outstretched hand and a huge grin; Sam's coffee has dropped to the desk, spilling.",
+      "motion": "pan_left",
+      "focus": "left",
+      "sfx": "whoosh"
+    },
+    {
       "narration": "At dusk, the egg began to hum.",
       "delivery": "low, wondering",
       "characters": [
@@ -287,7 +308,8 @@
       "image_prompt": "Close on the nest in near darkness; the pale egg now glowing steadily, a ring of faint ripples spreading across the water around it; the frog sits at the edge of frame fully illuminated by the egg's light.",
       "motion": "zoom_in",
       "sfx": "riser",
-      "focus": "center"
+      "focus": "center",
+      "transition": "dissolve"
     },
     {
       "narration": "The turtle, who had not moved all day, was on the far bank.",
@@ -337,5 +359,6 @@
       "#animalcomedy",
       "#tidalfolio"
     ]
-  }
+  },
+  "style_mirror": "Flat clean 2D editorial illustration, expressive plain white round-headed stick figures with thin dark outlines, warm dusk office light and soft shadows, simple detailed modern interiors, {frame}, no text, no watermark."
 }
