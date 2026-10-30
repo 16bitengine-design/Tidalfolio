@@ -1,0 +1,362 @@
+{
+  "slug": "002-the-cow-heist",
+  "title": "Funny Animals #1: The Cow Heist",
+  "aspects": [
+    "16:9",
+    "9:16"
+  ],
+  "seed": 927298,
+  "thumbnail_scene": 23,
+  "story": {
+    "protagonist": "cow",
+    "want": "to secure a coveted patch of lush grass.",
+    "risk": "losing her home and status in the herd.",
+    "lesson": "Trusting others can lead to unexpected alliances.",
+    "reversals": [
+      "The fox convinces the cow to steal the grass for a reward, staking her future.",
+      "The sheep, eager to join, inadvertently alerts a rival with a nervous bleat.",
+      "In a showdown, betrayal surfaces, tearing apart the trio before they act."
+    ],
+    "emotional_beat_scene": 10,
+    "open_thread": "The fox has its own hidden agenda. What will it cost?"
+  },
+  "shareable_scene": 5,
+  "burn_captions": true,
+  "voice": {
+    "voice": "en-GB-RyanNeural",
+    "rate": "-10%",
+    "pitch": "-8Hz"
+  },
+  "style": "Cinematic stylized animated-film look, richly detailed 3D render, dramatic rim lighting, shallow depth of field, expressive but realistic animal faces, {frame}, no text, no watermark.",
+  "characters": {
+    "cow": "A hefty brown cow with a white blaze across her face, determined gaze",
+    "fox": "A sleek red fox with a bushy tail and cunning eyes, always scheming",
+    "sheep": "A fluffy white sheep, nervous and wide-eyed, with a penchant for outlandish plans",
+    "witness": "A small, unbothered snail slowly crawling over a fence post",
+    "human": "A plain round-headed stick figure, grey clothes, with a serious expression",
+    "colleague": "Another plain round-headed stick figure, slightly disheveled, looking anxious",
+    "boss": "A stick figure with a slight frown, arms crossed, radiating authority"
+  },
+  "scenes": [
+    {
+      "narration": "A cow dreamed of the brightest green grass on the farm.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "cow"
+      ],
+      "image_prompt": "A determined brown cow gazes longingly over a fence, a single leaf floats past her.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "sfx": "tick"
+    },
+    {
+      "narration": "But an ancient rival held the turf just beyond her reach.",
+      "delivery": "fast and furious",
+      "characters": [
+        "cow",
+        "fox"
+      ],
+      "image_prompt": "A menacing black sheep stands over vibrant grass, glaring at the cow, eying a rubber chicken nearby.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "sfx": "hit",
+      "image_prompt_b": "The menacing black sheep stands over vibrant grass, glaring at the cow, wings now fully open, ready to pounce on the rubber chicken nearby."
+    },
+    {
+      "narration": "Desperate, she sought a cunning ally—an old fox in the thicket.",
+      "delivery": "deadpan, flat",
+      "characters": [
+        "cow",
+        "fox",
+        "witness"
+      ],
+      "image_prompt": "The cow and the sly red fox exchange furtive looks under the trees, while the snail in the background slips off the post.",
+      "focus": "center",
+      "motion": "pan_left",
+      "sfx": "whoosh",
+      "image_prompt_b": "The cow and the sly red fox exchange furtive looks under the trees, while the snail in the background slips off the post, now fully on the ground."
+    },
+    {
+      "narration": "He devised a heist, promising a share of the spoils.",
+      "delivery": "fast and furious",
+      "characters": [
+        "cow",
+        "fox"
+      ],
+      "image_prompt": "The fox gestures dramatically at the grass, while the cow is distracted by a passing butterfly.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "sfx": "riser",
+      "image_prompt_b": "The fox gestures dramatically at the grass, while the cow is now transfixed by the passing butterfly, mouth agape in awe."
+    },
+    {
+      "narration": "As they plotted, a nervous sheep overheard their scheme.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "sheep",
+        "cow",
+        "fox"
+      ],
+      "image_prompt": "The sheep peeks from behind a rock, tiny birds flee at its sudden movement.",
+      "focus": "center",
+      "motion": "pan_right",
+      "sfx": "tick"
+    },
+    {
+      "narration": "She wanted in, but her mouth got ahead of her.",
+      "delivery": "fast and furious",
+      "characters": [
+        "sheep",
+        "cow",
+        "fox"
+      ],
+      "image_prompt": "The sheep excitedly erupts from hiding, flailing its limbs as it speaks, startling a nearby rabbit.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "sfx": "boom",
+      "image_prompt_b": "The sheep excitedly bursts from hiding, limbs flailing wildly as it speaks, startling the nearby rabbit who jumps high in surprise."
+    },
+    {
+      "narration": "But secrets slipped from more than just one mouth.",
+      "delivery": "deadpan, flat",
+      "characters": [
+        "cow",
+        "sheep"
+      ],
+      "image_prompt": "A rival sheep lurks nearby, ears perked, licking an ice cream cone while overhearing them.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "sfx": "sting",
+      "image_prompt_b": "The rival sheep, still lurking nearby, perks its ears further, taking a big lick of the ice cream cone while watching intently."
+    },
+    {
+      "narration": "A fierce rivalry erupted, changing everything for the trio.",
+      "delivery": "fast and furious",
+      "characters": [
+        "cow",
+        "sheep",
+        "fox",
+        "witness"
+      ],
+      "image_prompt": "The cow, sheep, and fox glare at the rival sheep, prepared for confrontation while the witness munches on a grass blade.",
+      "focus": "center",
+      "motion": "pan_left",
+      "sfx": "hit",
+      "image_prompt_b": "The cow, sheep, and fox glare at the rival sheep, now tense and prepared for confrontation, while the witness continues munching on a grass blade."
+    },
+    {
+      "narration": "As chaos ensued, the cow's loyalty was tested amidst the fray.",
+      "delivery": "sincere",
+      "characters": [
+        "cow",
+        "sheep"
+      ],
+      "image_prompt": "The cow looks worried while the sheep gazes up, mouth agape, a carrot between them.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "sfx": "tick"
+    },
+    {
+      "narration": "Would she sacrifice her chance for the greater good?",
+      "delivery": "sincere",
+      "characters": [
+        "cow",
+        "sheep"
+      ],
+      "image_prompt": "The cow looks at the sheep, concerned, while a tumbleweed rolls in between them, symbolizing uncertainty.",
+      "focus": "center",
+      "motion": "pan_right",
+      "sfx": "tick"
+    },
+    {
+      "narration": "In a last-ditch move, the fox decided to betray them.",
+      "delivery": "fast and furious",
+      "characters": [
+        "fox",
+        "sheep",
+        "cow"
+      ],
+      "image_prompt": "The fox smirks slyly, adjusting a tiny, mischievous hat as the other two remain oblivious.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "sfx": "sting",
+      "image_prompt_b": "The fox smirks slyly, adjusting a tiny, mischievous hat, now with a glint of mischief in its eyes as the other two remain oblivious."
+    },
+    {
+      "narration": "Trust broke like fragile soil, shattering their hopes.",
+      "delivery": "sincere",
+      "characters": [
+        "cow",
+        "sheep",
+        "witness"
+      ],
+      "image_prompt": "Shock fills the cow’s eyes while the sheep gasps, a cloud of uncertain butterflies swirls around them. The witness looks on blankly.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "sfx": "tick"
+    },
+    {
+      "narration": "In a frenzy, the rivals closed in on their moment of triumph.",
+      "delivery": "fast and furious",
+      "characters": [
+        "cow",
+        "sheep",
+        "witness"
+      ],
+      "image_prompt": "Chaos erupts around them as the rival sheep approaches, the snail miraculously holding a tiny flag.",
+      "focus": "center",
+      "motion": "pan_left",
+      "sfx": "boom",
+      "image_prompt_b": "Chaos erupts around them as the rival sheep approaches, the snail miraculously holding a tiny flag, waving it energetically."
+    },
+    {
+      "narration": "As the dust settled, loyalty hung thin in the air.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "cow",
+        "sheep"
+      ],
+      "image_prompt": "The cow and sheep stand wearied and uncertain, a single cloud lingers eerily above them.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "sfx": "tick"
+    },
+    {
+      "narration": "Humans live by this river too.",
+      "delivery": "deadpan, flat",
+      "characters": [],
+      "image_prompt": "A single dramatic frozen moment captures the tension of this story beat, characters mid-action: Humans live by this river too.",
+      "focus": "center",
+      "motion": "zoom_in"
+    },
+    {
+      "narration": "A colleague grapples with a work challenge.",
+      "delivery": "deadpan, flat",
+      "characters": [
+        "colleague"
+      ],
+      "image_prompt": "A plain stick figure colleague stares at a mountain of paperwork, a coffee cup teetering precariously on top.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "look": "mirror",
+      "transition": "dissolve"
+    },
+    {
+      "narration": "His boss demands impossible results, testing his loyalty.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "boss"
+      ],
+      "image_prompt": "The stick figure boss looms over the colleague, arms crossed, while a passing cat gives a disapproving glance.",
+      "focus": "center",
+      "motion": "pan_left",
+      "look": "mirror"
+    },
+    {
+      "narration": "Caught between demands, the colleague seeks advice from a friend.",
+      "delivery": "fast and furious",
+      "characters": [
+        "human"
+      ],
+      "image_prompt": "A stick figure human whispers animatedly to another, exaggeratedly expressive hands creating a whirlpool of gestures.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "look": "mirror"
+    },
+    {
+      "narration": "A difficult choice could break or strengthen ties.",
+      "delivery": "sincere",
+      "characters": [
+        "human"
+      ],
+      "image_prompt": "The stick figures eye each other meaningfully, an invisible thread barely holding them together.",
+      "focus": "center",
+      "motion": "pan_right",
+      "look": "mirror"
+    },
+    {
+      "narration": "What will he do when loyalty is put to the test?",
+      "delivery": "hushed, ominous",
+      "characters": [],
+      "image_prompt": "A single dramatic frozen moment captures the uncertainty of this story beat: What will he do when loyalty is put to the test?",
+      "focus": "center",
+      "motion": "zoom_in",
+      "transition": "dissolve"
+    },
+    {
+      "narration": "Rivalry dissolved, the cow's patch of grass vanished mysteriously.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "cow",
+        "sheep",
+        "witness"
+      ],
+      "image_prompt": "The grass patch is gone, leaving the cow and sheep bewildered, while the snail munches on an unbothered leaf.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "sfx": "sting"
+    },
+    {
+      "narration": "Suddenly, a flock of birds spirals down ... with a message.",
+      "delivery": "deadpan, flat",
+      "characters": [
+        "cow",
+        "sheep"
+      ],
+      "image_prompt": "A gigantic flock of birds swirls down above them, each carrying tiny colorful envelopes.",
+      "focus": "center",
+      "motion": "zoom_in"
+    },
+    {
+      "narration": "Betrayal had a cost unknown to their kind.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "cow",
+        "sheep",
+        "witness"
+      ],
+      "image_prompt": "The cow and sheep gaze skyward, both wide-eyed, while the witness frowns and holds a tiny crystal ball.",
+      "focus": "center",
+      "motion": "pan_left"
+    },
+    {
+      "narration": "Nobody knew it was written in forgotten language.",
+      "delivery": "calm, short",
+      "characters": [],
+      "image_prompt": "A single dramatic frozen moment portrays the characters in action: Nobody knew it was written in forgotten language.",
+      "focus": "center",
+      "motion": "zoom_out"
+    },
+    {
+      "narration": "This is tidalfolio.",
+      "delivery": "calm, short",
+      "characters": [],
+      "image_prompt": "A single dramatic frozen moment captures the essence: This is tidalfolio.",
+      "focus": "center",
+      "motion": "zoom_out"
+    }
+  ],
+  "youtube": {
+    "title": "A Cow's High-Stakes Dilemma",
+    "description": "In a world of grassy rivalries, a cow teams up with a cunning fox to reclaim her turf. But the price of loyalty is heavy. Subscribe to discover the unexpected plot twists!",
+    "tags": [
+      "animals",
+      "funny",
+      "comedy",
+      "farmland",
+      "betrayal",
+      "loyalty"
+    ],
+    "pinned_comment": "Would you trust a scheming friend? Reflect on your own alliances."
+  },
+  "tiktok": {
+    "caption": "A stick figure cow in a turf war will leave you guessing!",
+    "hashtags": [
+      "#FunnyAnimals",
+      "#CowHeist",
+      "#Comedy",
+      "#AnimalsInConflict",
+      "#AbsurdHumor"
+    ]
+  }
+}
