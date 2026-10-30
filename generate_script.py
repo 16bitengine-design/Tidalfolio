@@ -179,6 +179,18 @@ def repair(d):
     for i, s in enumerate(scenes):
         if not isinstance(s, dict):
             continue
+        for want, alts in (("image_prompt", ("imagePrompt", "image", "prompt", "image_description", "visual", "visuals", "image_prompt_a")),
+                           ("image_prompt_b", ("imagePromptB", "image_prompt_2", "next_frame", "image_prompt_next", "second_frame", "image_b"))):
+            if not (isinstance(s.get(want), str) and s[want].strip()):
+                for a in alts:
+                    if isinstance(s.get(a), str) and s[a].strip():
+                        s[want] = s[a]
+                        break
+        if not (isinstance(s.get("image_prompt"), str) and s["image_prompt"].strip()) \
+                and isinstance(s.get("narration"), str) and s["narration"].strip():
+            # still missing: build a plain frame from the narration so one forgotten field does not sink the script
+            s["image_prompt"] = ("A single dramatic frozen moment that shows this story beat, characters mid-action with "
+                                 "clear expressions: " + s["narration"].strip())
         m = str(s.get("motion", "")).strip().lower().replace(" ", "_").replace("-", "_")
         s["motion"] = m if m in MOTIONS else cycle[i % 4]
         sfx = s.get("sfx")
@@ -317,8 +329,6 @@ def validate(d):
             errs.append("the narration must not preach: remove phrases like 'the moral is' or 'lesson learned'; show the lesson through consequence")
     if len(scenes[0].get("narration", "").split()) > 14:
         errs.append("scene 1 narration must be a stakes-first hook of at most 14 words")
-    if sum(bool(s.get("image_prompt_b")) for s in scenes) < 6:
-        errs.append("give image_prompt_b (the next-frame image) in at least 6 scenes so the video has action")
     if sum(bool(s.get("sfx")) for s in scenes) < 6:
         errs.append("use sfx in at least 6 scenes")
     if sum(bool(s.get("delivery")) for s in scenes) < len(scenes) - 1:
@@ -393,6 +403,36 @@ def punch_up(data):
     return better
 
 
+def ensure_next_frames(data, target=8):
+    """The model rarely gives enough 'next frame' images. Ask for just those, in one small focused call;
+    if that fails, derive a plain 'half a second later' frame so the scene still moves."""
+    scenes = data["scenes"]
+    have = sum(bool(s.get("image_prompt_b")) for s in scenes)
+    if have >= target:
+        return
+    action = ("hit", "splash", "boom", "whoosh", "sting", "riser")
+    cand = [i for i, s in enumerate(scenes) if not s.get("image_prompt_b")]
+    cand.sort(key=lambda i: (scenes[i].get("look") == "mirror", scenes[i].get("sfx") not in action, i))
+    pick = sorted(cand[:target - have])
+    frames = {}
+    try:
+        listing = "\n".join(f"{i + 1}: {scenes[i]['image_prompt']}" for i in pick)
+        raw = call_openai([
+            {"role": "system", "content": "You write next-frame image prompts for an animated comedy. Reply with ONE JSON object only."},
+            {"role": "user", "content": "For each numbered image prompt below, write the SAME moment half a second later: same location, same "
+             "characters, same framing, only the action advances (wings now open, splash at its peak, expression changed). "
+             "State each visible character's exact action. Under 450 characters each, no text in the image.\n"
+             'Reply as {"frames": {"<number>": "<next frame prompt>"}}.\n\n' + listing}], 0.7)
+        frames = (json.loads(raw).get("frames") or {})
+    except (json.JSONDecodeError, AttributeError, SystemExit):
+        frames = {}
+    for i in pick:
+        f = frames.get(str(i + 1))
+        if not (isinstance(f, str) and f.strip()):
+            f = "The same moment half a second later, the action has advanced one beat: " + scenes[i]["image_prompt"]
+        scenes[i]["image_prompt_b"] = f.strip()
+
+
 def write_one(series=None, idea=None):
     titles, counts = existing()
     if not series:
@@ -428,6 +468,7 @@ def write_one(series=None, idea=None):
         sys.exit("Could not get a valid script after 4 attempts. Last problems: " + "; ".join(errs))
 
     data = punch_up(data)
+    ensure_next_frames(data)
     n = next_number()
     title = data.get("title") or f"{series} #{ep}"
     if not title.startswith(series):
