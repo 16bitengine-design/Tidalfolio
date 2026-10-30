@@ -165,6 +165,11 @@ HUMAN_DEFAULTS = {
 }
 
 
+DEFAULT_STYLE_MIRROR = ("Flat clean 2D editorial illustration, expressive plain white round-headed stick figures with thin "
+                        "dark outlines, warm dusk light and soft shadows, simple detailed modern interiors, {frame}, "
+                        "no text, no watermark.")
+
+
 def repair(d):
     """Fix the mechanical mistakes a model keeps making, so retries are spent only on real story problems."""
     scenes, chars = d.get("scenes"), d.get("characters")
@@ -200,11 +205,59 @@ def repair(d):
         for c in s["characters"]:
             if isinstance(c, str) and c not in chars and c in HUMAN_DEFAULTS:
                 chars[c] = HUMAN_DEFAULTS[c]       # the model used a human key without defining it
-    mir = [i for i, s in enumerate(scenes) if isinstance(s, dict) and s.get("look") == "mirror"]
+    if not isinstance(d.get("style_mirror"), str) or len(d["style_mirror"].split()) < 8:
+        d["style_mirror"] = DEFAULT_STYLE_MIRROR
+    scenes = [s for s in scenes if isinstance(s, dict)]
+
+    # the model often forgets the "look" flag even when it wrote the human vignette: detect the stick-figure
+    # scenes from their characters, and mark them
+    def is_human(k):
+        return k in HUMAN_DEFAULTS or "stick figure" in str(chars.get(k, "")).lower()
+    mir = [i for i, s in enumerate(scenes) if s.get("look") == "mirror"]
+    if not (3 <= len(mir) <= 5 and mir == list(range(mir[0], mir[0] + len(mir)))):
+        for s in scenes:
+            s.pop("look", None)
+        run, best = [], []
+        for i, s in enumerate(scenes + [{}]):
+            cs = s.get("characters") or []
+            if cs and all(is_human(c) for c in cs):
+                run.append(i)
+            else:
+                if len(run) > len(best):
+                    best = run
+                run = []
+        if len(best) >= 3:
+            for i in best[:5]:
+                scenes[i]["look"] = "mirror"
+        mir = [i for i, s in enumerate(scenes) if s.get("look") == "mirror"]
     if 3 <= len(mir) <= 5 and mir == list(range(mir[0], mir[0] + len(mir))):
         scenes[mir[0]]["transition"] = "dissolve"
         if mir[-1] + 1 < len(scenes):
             scenes[mir[-1] + 1]["transition"] = "dissolve"
+
+    # the silent witness: find it under another key, then credit scenes whose image prompt already shows it,
+    # then add it to the background of extra animal scenes if it is still short of 6
+    if "witness" not in chars:
+        alt = next((k for k, v in chars.items() if "witness" in str(v).lower() or "witness" in k.lower()), None)
+        if alt:
+            chars["witness"] = chars.pop(alt)
+            for s in scenes:
+                s["characters"] = ["witness" if c == alt else c for c in s.get("characters", [])]
+    if "witness" in chars:
+        for s in scenes:
+            if "witness" not in s["characters"] and "witness" in str(s.get("image_prompt", "")).lower():
+                s["characters"].append("witness")
+        have = sum("witness" in s["characters"] for s in scenes)
+        if have < 6:
+            gag = " In the background the Witness watches, blank and unmoved."
+            cand = [i for i, s in enumerate(scenes)
+                    if s.get("look") != "mirror" and "witness" not in s["characters"]
+                    and len(str(s.get("image_prompt", ""))) + len(gag) <= 690]
+            need = min(6 - have, len(cand))
+            for j in range(need):
+                s = scenes[cand[int((j + 0.5) * len(cand) / need)]]
+                s["characters"].append("witness")
+                s["image_prompt"] = str(s["image_prompt"]).rstrip() + gag
 
 
 def validate(d):
@@ -215,7 +268,8 @@ def validate(d):
         errs.append("characters must be an object with 2 to 9 entries (animals, witness and the mirror-act humans)")
         chars = chars if isinstance(chars, dict) else {}
     if not isinstance(scenes, list) or not 18 <= len(scenes) <= 32 or not all(isinstance(s, dict) for s in scenes):
-        return errs + ["scenes must be a list of 18 to 32 scenes (aim for 24 to 28)"]
+        n = len(scenes) if isinstance(scenes, list) else 0
+        return errs + [f"your reply has {n} scenes in a top-level \"scenes\" array; it must have 18 to 32 (write exactly 26)"]
     if not isinstance(d.get("style_mirror"), str) or len(d["style_mirror"].split()) < 8:
         errs.append("style_mirror (the mirror act's art style) is required")
     mir = [i for i, s in enumerate(scenes) if s.get("look") == "mirror"]
@@ -346,6 +400,11 @@ def write_one(series=None, idea=None):
     ep = counts[series] + 1
     user = (f"Write the next episode of the series \"{series}\" (episode #{ep}). "
             f"Series theme: {SERIES[series]}.\n"
+            "REQUIRED STRUCTURE: write exactly 26 scenes. Scenes 1-16 are the animal story (the emotional beat is around "
+            "scene 11-12). Scenes 17, 18, 19 and 20 are the human MIRROR vignette: only plain stick-figure humans "
+            "(keys like \"human\", \"colleague\", \"boss\", defined in \"characters\"), no animals, each with \"look\": \"mirror\"; "
+            "scene 17 and scene 21 also carry \"transition\": \"dissolve\". Scenes 21-26 return to the animals for the twist. "
+            "The \"witness\" key must be listed in the \"characters\" array of at least 6 animal scenes.\n"
             + (f"Episode idea to develop: {idea}\n" if idea else "Invent a fresh, specific premise.\n")
             + previous_thread(series) + "\n"
             + ("Lessons already used on the channel (teach a different one):\n- " + "\n- ".join(used_lessons()) + "\n" if used_lessons() else "")
