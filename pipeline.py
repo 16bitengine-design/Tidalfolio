@@ -27,8 +27,8 @@ FPS = 30
 LEAD = 0.30          # silence before narration starts in each scene (s)
 TAIL = 0.55          # silence after narration ends (s)
 MIN_SCENE = 3.0      # shortest allowed scene (s)
-MIN_VIDEO = 90.0     # channel rule: every video runs 1.5 to 2 minutes
-MAX_VIDEO = 120.0
+MIN_VIDEO = 60.0     # channel rule: every video runs 60 to 90 seconds
+MAX_VIDEO = 90.0
 WORKERS = max(1, min(4, os.cpu_count() or 2))
 
 SIZES = {"16:9": (1920, 1080, "landscape_16_9"), "9:16": (1080, 1920, "portrait_16_9")}
@@ -232,21 +232,139 @@ def synth_sfx(name, out):
         sys.exit(f"Unknown sfx '{name}'. Use one of {', '.join(SFX_NAMES)} or add assets/sfx/{name}.wav")
 
 
-def make_bed(total, out):
-    music = sorted((ROOT / "assets" / "music").glob("*.mp3")) if (ROOT / "assets" / "music").exists() else []
-    if music:  # your own royalty-free track: loop + trim
-        run(["ffmpeg", "-y", "-stream_loop", "-1", "-i", music[0], "-t", f"{total:.2f}",
-             "-ar", "44100", "-ac", "2", out])
+AUDIO_EXT = ("*.mp3", "*.wav", "*.m4a", "*.ogg")
+
+
+def find_audio(folder, stem):
+    """First file called <stem>.<mp3|wav|m4a|ogg> inside folder, or None."""
+    for ext in AUDIO_EXT:
+        hit = sorted(folder.glob(stem + ext[1:]))
+        if hit:
+            return hit[0]
+    return None
+
+
+# ---- emotion -> how loud the music should be (1.0 = full, 0.0 = silent) ----------------------
+# The words come from each scene's "delivery" (or an explicit "music" override in the script).
+# Rule of thumb: music swells on feeling, dips so a deadpan joke can land, hides in hushed suspense.
+EMOTION_LEVELS = [
+    (("triumph", "intense", "urgent", "frantic", "epic", "climax"), 0.90),
+    (("sincere", "tender", "earnest", "soft", "warm", "gentle", "heartfelt", "reflective", "contemplative"), 0.75),
+    (("ominous", "conspiratorial", "hushed", "suspense", "whisper", "dread"), 0.45),
+    (("dry", "deadpan", "blunt", "neutral", "detached", "flat", "calm"), 0.28),
+]
+DEFAULT_LEVEL = 0.5
+MUSIC_BASE = 0.8        # overall music gain at level 1.0, before the narration ducking
+RAMP = 0.7              # seconds taken to glide from one scene's level to the next
+
+
+def scene_level(sc, idx, script):
+    """Music level for one scene. Priority: explicit script override > emotional beat > delivery words."""
+    m = sc.get("music")
+    if isinstance(m, dict) and "level" in m:
+        return max(0.0, min(1.0, float(m["level"])))
+    words = ""
+    if isinstance(m, dict) and m.get("emotion"):
+        words = str(m["emotion"]).lower()
+    elif isinstance(m, str):
+        words = m.lower()
+    else:
+        words = str(sc.get("delivery", "")).lower()
+    level = DEFAULT_LEVEL
+    for keys, lv in EMOTION_LEVELS:
+        if any(k in words for k in keys):
+            level = lv
+            break
+    beat = script.get("story", {}).get("emotional_beat_scene")
+    if beat is not None and idx + 1 == int(beat):
+        level = max(level, 0.85)                       # the heart of the story: let the music swell
+    if idx == len(script["scenes"]) - 1:
+        level = max(level, 0.7)                        # last line: leave the viewer with the feeling
+    return level
+
+
+def write_envelope(scenes, script, total, path):
+    """Write the music loudness curve as a mono wav (8 kHz, value = gain 0..1) that ffmpeg multiplies in."""
+    import array
+    import wave
+    sr = 8000
+    levels = [scene_level(sc, i, script) for i, sc in enumerate(scenes)]
+    keys = [(0.0, levels[0])]
+    for i in range(1, len(scenes)):
+        b = scenes[i]["_start"]
+        keys += [(max(keys[-1][0], b - RAMP), levels[i - 1]), (b + RAMP, levels[i])]
+    keys.append((total + 1.0, levels[-1]))
+    data = array.array("h")
+    k = 0
+    for n in range(int((total + 1.0) * sr)):
+        t = n / sr
+        while k < len(keys) - 2 and t > keys[k + 1][0]:
+            k += 1
+        (t0, v0), (t1, v1) = keys[k], keys[k + 1]
+        v = v1 if t1 <= t0 else v0 + (v1 - v0) * min(1.0, max(0.0, (t - t0) / (t1 - t0)))
+        data.append(int(max(0.0, min(1.0, v)) * 32767))
+    with wave.open(str(path), "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(sr)
+        w.writeframes(data.tobytes())
+    return levels
+
+
+def make_bed(total, out, scenes=None, script=None):
+    """The channel's signature theme, on EVERY video:
+         assets/music/theme/intro.*  -> plays once at the start
+         assets/music/theme/loop.*   -> seamless loop under the whole video
+         assets/music/theme/outro.*  -> resolves at the very end
+       The loop's loudness follows the emotion of each scene (see EMOTION_LEVELS). The narrator-driven
+       ducking is applied afterwards in the final mix."""
+    theme = ROOT / "assets" / "music" / "theme"
+    loop = find_audio(theme, "loop") if theme.exists() else None
+    if loop is None:   # old behaviour: any single track dropped into assets/music
+        folder = ROOT / "assets" / "music"
+        found = [p for ext in AUDIO_EXT for p in sorted(folder.glob(ext))] if folder.exists() else []
+        loop = found[0] if found else None
+    T = f"{total:.2f}"
+    if loop is not None:
+        base = out.with_suffix(".loop.wav")
+        run(["ffmpeg", "-y", "-stream_loop", "-1", "-i", loop, "-t", T, "-ar", "44100", "-ac", "2", base])
+    else:              # synthesized fallback: drone + fifth + rumble, pulsing like a heartbeat
+        base = out.with_suffix(".loop.wav")
+        run(["ffmpeg", "-y",
+             "-f", "lavfi", "-i", f"sine=f=55:d={T}", "-f", "lavfi", "-i", f"sine=f=82.4:d={T}",
+             "-f", "lavfi", "-i", f"sine=f=110:d={T}", "-f", "lavfi", "-i", f"anoisesrc=d={T}:c=brown:a=0.4",
+             "-filter_complex",
+             "[1]volume=0.8[b];[2]tremolo=f=0.25:d=0.6,volume=0.35[c];[3]lowpass=f=220[n];"
+             "[0][b][c][n]amix=inputs=4:normalize=0,tremolo=f=1.9:d=0.55",
+             "-ar", "44100", "-ac", "2", base])
+    if scenes is None or script is None:
+        shutil.copy(base, out)
         return
-    T = f"{total:.2f}"      # synthesized: drone + fifth + rumble, pulsing like a heartbeat, swelling over time
-    run(["ffmpeg", "-y",
-         "-f", "lavfi", "-i", f"sine=f=55:d={T}", "-f", "lavfi", "-i", f"sine=f=82.4:d={T}",
-         "-f", "lavfi", "-i", f"sine=f=110:d={T}", "-f", "lavfi", "-i", f"anoisesrc=d={T}:c=brown:a=0.4",
-         "-filter_complex",
-         "[1]volume=0.8[b];[2]tremolo=f=0.25:d=0.6,volume=0.35[c];[3]lowpass=f=220[n];"
-         "[0][b][c][n]amix=inputs=4:normalize=0,tremolo=f=1.9:d=0.55,"
-         f"volume='0.55+0.45*t/{T}':eval=frame",
-         "-ar", "44100", "-ac", "2", out])
+    env = out.with_suffix(".env.wav")
+    levels = write_envelope(scenes, script, total, env)
+    print("      music levels per scene: " + " ".join(f"{v:.2f}" for v in levels))
+    parts = [f"[0]volume={MUSIC_BASE}[l]",
+             "[1]aresample=44100,aformat=channel_layouts=stereo[e]",
+             "[l][e]amultiply[loop]"]
+    inputs = ["-i", base, "-i", env]
+    labels, k = ["[loop]"], 2
+    intro = find_audio(theme, "intro") if theme.exists() else None
+    outro = find_audio(theme, "outro") if theme.exists() else None
+    if intro:       # the signature motif, full and clear, once at the start
+        inputs += ["-i", intro]
+        parts.append(f"[{k}]aresample=44100,aformat=channel_layouts=stereo,volume=0.9[in]")
+        labels.append("[in]")
+        k += 1
+    if outro:       # the resolving chord, ending exactly with the video
+        od = duration(outro)
+        inputs += ["-i", outro]
+        ms = int(max(0.0, total - od) * 1000)
+        parts.append(f"[{k}]aresample=44100,aformat=channel_layouts=stereo,volume=0.9,adelay={ms}|{ms}[ou]")
+        labels.append("[ou]")
+        k += 1
+    parts.append(f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0:duration=longest[bed]")
+    run(["ffmpeg", "-y", *inputs, "-filter_complex", ";".join(parts), "-map", "[bed]",
+         "-t", T, "-ar", "44100", "-ac", "2", out])
 
 
 # ----------------------------------------------------------------- shots (the illusion of action)
@@ -460,7 +578,7 @@ def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
          "-map", "[nar]", "-ar", "44100", "-ac", "2", narration])
 
     bed = work / "bed.wav"
-    make_bed(total, bed)
+    make_bed(total, bed, scenes, script)
 
     events = []                                           # (sfx name, start seconds, volume)
     for i, sc in enumerate(scenes):
@@ -473,8 +591,8 @@ def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
     fl = ["[0]highpass=f=70,equalizer=f=140:t=q:w=1:g=3,equalizer=f=3200:t=q:w=1.2:g=2,"
           "acompressor=threshold=0.1:ratio=3:attack=5:release=90:makeup=3,"
           "aecho=0.8:0.55:55|120:0.22|0.1,alimiter=limit=0.95,asplit=2[nar][nsc]",
-          "[1]volume=0.4[bedv]",
-          "[bedv][nsc]sidechaincompress=threshold=0.03:ratio=10:attack=15:release=350[bed]"]
+          "[1]volume=1.0[bedv]",
+          "[bedv][nsc]sidechaincompress=threshold=0.03:ratio=5:attack=20:release=500[bed]"]
     labels, k = ["[nar]", "[bed]"], 2
     for name, t_s, vol in events:
         f = work / f"sfx_{name}.wav"
