@@ -70,7 +70,7 @@ CHANNEL RULES (all mandatory):
 - Animals are never harmed: slapstick mishaps only. No real people, brands, logos or text in images.
 - Each scene picks a motion from: zoom_in, zoom_out, pan_left, pan_right. Optional "camera": "impact" (a hard silent camera slam with shake and a white flash on a collision or shock) or "whoosh" (the camera whips across for an entrance). Use impact in at most 5 scenes and whoosh in at most 3.
 - Each scene has a "delivery": a 3 to 8 word acting note for the grandmother (e.g. "dry, deadpan", "hushed, conspiratorial", "slow, amused", "quietly sincere, softer", "low, haunted whisper"). Vary it. The emotional beat uses sincere delivery.
-- POP-UPS bring each illustration to life: small things that bounce in over the picture on the beat of the joke. Give at least 12 scenes a "popups" list (1 to 3 each). Kinds: "bubble" (a speech bubble with a short spoken line or reaction, max 4 words, e.g. "MINE.", "That was SPRING."; "tail" is "left" or "right"), "label" (a plain card for a time jump or a title, max 5 words, e.g. "Six hours later"), "sticker" (a small painted prop that pops in, with a "prompt" of max 12 words naming ONE object, e.g. "a single empty fishbone"). Use at most 10 stickers in the whole script and at least 6 bubbles. Each pop-up has "at" (seconds after the scene starts, between 0.8 and the scene's narration length), "x" and "y" (centre as fractions of the frame; y between 0.15 and 0.6 so it never covers the captions), "size" (width as a fraction of the frame, 0.16 to 0.3) and optional "hold" (seconds shown, 1.2 to 2.5). Pop-ups are the joke's punctuation: a bubble the witness never says, a label that undercuts the narrator. Never put text inside an image_prompt.
+- POP-UPS bring each illustration to life: small things that bounce in over the picture on the beat of the joke. Aim to give 12 or more scenes a "popups" list (1 to 3 each). Kinds: "bubble" (a speech bubble with a short spoken line or reaction, max 4 words, e.g. "MINE.", "That was SPRING."; "tail" is "left" or "right"), "label" (a plain card for a time jump or a title, max 5 words, e.g. "Six hours later"), "sticker" (a small painted prop that pops in, with a "prompt" of max 12 words naming ONE object, e.g. "a single empty fishbone"). Use at most 10 stickers in the whole script and at least 6 bubbles in total. Each pop-up has "at" (seconds after the scene starts, between 0.8 and the scene's narration length), "x" and "y" (centre as fractions of the frame; y between 0.15 and 0.6 so it never covers the captions), "size" (width as a fraction of the frame, 0.16 to 0.3) and optional "hold" (seconds shown, 1.2 to 2.5). Pop-ups are the joke's punctuation: a bubble the witness never says, a label that undercuts the narrator. Never put text inside an image_prompt.
 - Each scene may have "focus": left, center or right: where the camera should aim in the image.
 - Make the images feel like ACTION: in at least 8 scenes also give "image_prompt_b" (and "characters_b" if the cast differs): the SAME moment a half second later (the next frame of the action, e.g. wings now fully open, splash now at its peak). The video cuts between the two images so the scene moves. Same location and characters, only the action advances.
 
@@ -103,7 +103,7 @@ MIRROR SCENES carry two extra fields, written exactly like this (the literal wor
 
 FINAL CHECKLIST (count before you answer):
 - "witness" is listed in the "characters" array of at least 6 scenes.
-- At least 8 scenes have "image_prompt_b"; at least 12 scenes have "popups", at least 6 bubbles and at most 10 stickers in total.
+- At least 8 scenes have "image_prompt_b"; about 12 scenes have "popups" (at least 6 bubbles, at most 10 stickers). The story, the lesson and the runtime matter more than pop-ups.
 - Every key in a scene's "characters" array exists in the top-level "characters" object. Define "human" (and any colleague/boss) there if the mirror act uses them.
 - "motion" is only zoom_in, zoom_out, pan_left or pan_right. "camera" is only impact or whoosh. No sound effects anywhere.
 - 3 to 5 consecutive mirror scenes, in the second half, with at least 3 animal scenes after them."""
@@ -229,6 +229,8 @@ def repair(d):
                                  "clear expressions: " + s["narration"].strip())
         m = str(s.get("motion", "")).strip().lower().replace(" ", "_").replace("-", "_")
         s["motion"] = m if m in MOTIONS else cycle[i % 4]
+        if isinstance(s.get("narration"), str):            # no sound effects or *stage directions* in her lines
+            s["narration"] = re.sub(r"\s*\*[^*]{1,40}\*\s*", " ", s["narration"]).strip()
         legacy = s.pop("sfx", None)                       # sound effects are gone: an old tag only becomes a camera hint
         cam = s.get("camera") or legacy
         if isinstance(cam, list):
@@ -368,15 +370,7 @@ def validate(d):
             errs.append("the narration must not preach: remove phrases like 'the moral is' or 'lesson learned'; show the lesson through consequence")
     if len(scenes[0].get("narration", "").split()) > 14:
         errs.append("scene 1 narration must be a stakes-first hook of at most 14 words")
-    pops = [p for s in scenes for p in s.get("popups", [])]
-    if sum(bool(s.get("popups")) for s in scenes) < 12:
-        errs.append('give at least 12 scenes a "popups" list (speech bubbles, labels and sticker props that bounce in)')
-    if sum(p["kind"] == "bubble" for p in pops) < 6:
-        errs.append("use at least 6 speech bubbles in total")
-    if sum(p["kind"] == "sticker" for p in pops) > MAX_STICKERS:
-        errs.append(f"use at most {MAX_STICKERS} stickers in the whole script")
-    if re.search(r"\*[a-z ]+\*|\b(sound effect|sfx)\b", json.dumps([s["narration"] for s in scenes]).lower()):
-        errs.append("the narration must not contain sound effects or *stage directions*: the only audio is her voice and music")
+    # pop-ups are never a reason to reject a story: ensure_popups() adds or trims them afterwards
     if sum(bool(s.get("delivery")) for s in scenes) < len(scenes) - 1:
         errs.append("every scene needs a delivery note")
     if not errs:
@@ -478,6 +472,56 @@ def ensure_next_frames(data, target=8):
         scenes[i]["image_prompt_b"] = f.strip()
 
 
+def ensure_popups(data, target=12, min_bubbles=6):
+    """The model often skips or under-fills pop-ups. Add them with one small focused call; if that fails,
+    keep the script as it is (a video without pop-ups still renders)."""
+    scenes = data["scenes"]
+    have = [i for i, s in enumerate(scenes) if s.get("popups")]
+    bubbles = sum(p["kind"] == "bubble" for s in scenes for p in s.get("popups", []))
+    stickers = sum(p["kind"] == "sticker" for s in scenes for p in s.get("popups", []))
+    if len(have) >= target and bubbles >= min_bubbles and stickers <= MAX_STICKERS:
+        return
+    need = max(target - len(have), 3)
+    free = [i for i, s in enumerate(scenes) if not s.get("popups") and 0 < i < len(scenes) - 1]
+    pick = sorted(free[int((j + 0.5) * len(free) / need)] for j in range(min(need, len(free))))
+    try:
+        listing = "\n".join(
+            f"{i + 1} (narration lasts about {len(scenes[i]['narration'].split()) / WORDS_PER_SEC:.1f}s): "
+            f"{scenes[i]['narration']} | picture: {scenes[i]['image_prompt'][:160]}" for i in pick)
+        raw = call_openai([
+            {"role": "system", "content": "You add pop-ups to the scenes of an illustrated animal comedy narrated by a dry grandmother. Reply with ONE JSON object only."},
+            {"role": "user", "content": (
+                "For each numbered scene below write 1 or 2 pop-ups that land the joke or the feeling. Kinds: "
+                '"bubble" (a short spoken reaction, max 4 words, e.g. "MINE." or "That was SPRING.", with "tail": "left" or "right"), '
+                '"label" (a plain card, max 5 words, e.g. "Six hours later"), "sticker" (a small painted prop, "prompt" = ONE object in max 12 words). '
+                "Use mostly bubbles (at least 6 bubbles in all), at most 4 stickers in all. Each has: kind, at (seconds after the scene starts, between 0.8 and "
+                "the narration length), x and y (centre as fractions of the frame; y between 0.15 and 0.6), size (0.16 to 0.3), text or prompt. "
+                'Reply as {"popups": {"<scene number>": [ {...}, {...} ]}}.\n\n' + listing)}], 0.8)
+        added = (json.loads(raw).get("popups") or {})
+    except (json.JSONDecodeError, AttributeError, SystemExit):
+        print("  could not add pop-ups: continuing without them")
+        return
+    for i in pick:
+        items = clean_popups(added.get(str(i + 1)))
+        if items:
+            scenes[i]["popups"] = items
+    left = MAX_STICKERS                                  # never more than MAX_STICKERS in the whole script
+    for s in scenes:
+        keep = []
+        for p in s.get("popups", []):
+            if p["kind"] == "sticker":
+                if left <= 0:
+                    continue
+                left -= 1
+            keep.append(p)
+        if keep:
+            s["popups"] = keep
+        else:
+            s.pop("popups", None)
+    n = sum(bool(s.get("popups")) for s in scenes)
+    print(f"  pop-ups on {n} scenes")
+
+
 def write_one(series=None, idea=None):
     titles, counts = existing()
     if not series:
@@ -510,10 +554,17 @@ def write_one(series=None, idea=None):
                      {"role": "user", "content": "Fix ONLY these problems and return the full JSON with everything else unchanged "
                       "(keep every character key defined in the top-level \"characters\" object):\n- " + "\n- ".join(errs)}]
     else:
-        sys.exit("Could not get a valid script after 4 attempts. Last problems: " + "; ".join(errs))
+        # a story that is only a little short is still a good story: the video renderer stretches the pauses to
+        # reach 90 seconds, so do not throw the whole run away for it
+        short_only = bool(data) and all("runtime" in e and "under" in e for e in errs)
+        if short_only and estimate_runtime(data["scenes"]) >= 92:
+            print(f"  accepting a slightly short script (~{estimate_runtime(data['scenes']):.0f}s estimated): the renderer stretches pauses")
+        else:
+            sys.exit("Could not get a valid script after 4 attempts. Last problems: " + "; ".join(errs))
 
     data = punch_up(data)
     ensure_next_frames(data)
+    ensure_popups(data)
     n = next_number()
     title = data.get("title") or f"{series} #{ep}"
     if not title.startswith(series):
