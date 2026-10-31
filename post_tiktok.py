@@ -4,7 +4,8 @@
 Buffer cannot take file uploads, only a public https URL, so the video is first uploaded to Cloudinary
 (free tier) and that URL is handed to Buffer's createPost.
 
-Secrets needed: BUFFER_API_KEY, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.
+Secrets needed: BUFFER_API_KEY, CLOUDINARY_CLOUD_NAME, plus EITHER the variable CLOUDINARY_UPLOAD_PRESET (unsigned preset)
+OR the secrets CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.
 Optional: BUFFER_CHANNEL_ID (otherwise the first TikTok channel in your Buffer account is used).
 
   python post_tiktok.py            # post the video named in output/LAST_SLUG
@@ -54,19 +55,35 @@ def find_tiktok_channel(key):
 
 
 def host_video(path, public_id):
-    cloud, k, secret = (os.environ.get(x, "") for x in
-                        ("CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"))
-    if not (cloud and k and secret):
-        sys.exit("Cloudinary secrets are missing (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET).")
-    ts = str(int(time.time()))
-    sig = hashlib.sha1(f"public_id={public_id}&timestamp={ts}{secret}".encode()).hexdigest()
+    """Upload to Cloudinary. Preferred: an UNSIGNED upload preset (CLOUDINARY_UPLOAD_PRESET), which needs no API
+    key. Otherwise a signed upload with CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET (the key must be allowed to upload)."""
+    cloud = os.environ.get("CLOUDINARY_CLOUD_NAME", "").strip()
+    preset = os.environ.get("CLOUDINARY_UPLOAD_PRESET", "").strip()
+    k = os.environ.get("CLOUDINARY_API_KEY", "").strip()
+    secret = os.environ.get("CLOUDINARY_API_SECRET", "").strip()
+    if not cloud:
+        sys.exit("CLOUDINARY_CLOUD_NAME is missing.")
+    if preset:
+        data = {"upload_preset": preset, "public_id": public_id}
+    elif k and secret:
+        ts = str(int(time.time()))
+        sig = hashlib.sha1(f"public_id={public_id}&timestamp={ts}{secret}".encode()).hexdigest()
+        data = {"api_key": k, "timestamp": ts, "public_id": public_id, "signature": sig}
+    else:
+        sys.exit("Cloudinary is not configured: set CLOUDINARY_UPLOAD_PRESET (an unsigned preset), "
+                 "or CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.")
     with open(path, "rb") as f:
         r = requests.post(f"https://api.cloudinary.com/v1_1/{cloud}/video/upload", timeout=1800,
-                          data={"api_key": k, "timestamp": ts, "public_id": public_id, "signature": sig},
-                          files={"file": f})
+                          data=data, files={"file": f})
     if not r.ok:
-        sys.exit(f"Cloudinary upload failed ({r.status_code}): {r.text[:500]}\n"
-                 "(The free plan limits video size; if this is a size error, set \"aspects\": [\"9:16\"] only or compress the video.)")
+        hint = ""
+        if r.status_code in (401, 403):
+            hint = ("\nThe Cloudinary key is not allowed to upload (or the secret/cloud name is wrong). Fix: in Cloudinary, "
+                    "Settings > Upload > Upload presets, add an UNSIGNED preset, then add the repo variable "
+                    "CLOUDINARY_UPLOAD_PRESET with its name; or create an API key with full permissions.")
+        elif r.status_code in (400, 413):
+            hint = "\nIf this is a size error, lower MAX_VIDEO_MB or use only the 9:16 aspect."
+        sys.exit(f"Cloudinary upload failed ({r.status_code}): {r.text[:500]}{hint}")
     return r.json()["secure_url"]
 
 
