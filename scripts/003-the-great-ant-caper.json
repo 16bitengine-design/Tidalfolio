@@ -1,0 +1,362 @@
+{
+  "slug": "003-the-great-ant-caper",
+  "title": "Tiny Troublemakers #1: The Great Ant Caper",
+  "aspects": [
+    "16:9",
+    "9:16"
+  ],
+  "seed": 395670,
+  "thumbnail_scene": 13,
+  "story": {
+    "protagonist": "ant",
+    "want": "to bring food back to the colony during a shortage",
+    "risk": "the entire colony's survival hangs in the balance",
+    "lesson": "Clearing obstacles for others can lead to unexpected results.",
+    "reversals": [
+      "The ant finds its food guarded by a spider conspicuously sharpening its fangs.",
+      "The spider suggests an exchange, but the ant scoffs and refuses.",
+      "The spider traps the ant in a web, gleefully blocking its escape."
+    ],
+    "emotional_beat_scene": 7,
+    "open_thread": "Could the spider actually be trustworthy?"
+  },
+  "shareable_scene": 15,
+  "burn_captions": true,
+  "voice": {
+    "openai_voice": "sage",
+    "deepen": 0.94,
+    "voice": "en-GB-SoniaNeural",
+    "rate": "-12%",
+    "pitch": "-10Hz"
+  },
+  "music_prompt": "a wry, warm instrumental bed with a light, playful rhythm supporting the tale",
+  "style": "Hand-painted storybook illustration, rich watercolor and ink on textured paper, warm cinematic light, expressive animals with very human emotions, dry wit, sophisticated and a little melancholic rather than childish, the main subjects kept in the middle of the frame with room above them, {frame}, no text, no letters, no watermark.",
+  "characters": {
+    "ant": "a small red ant with a determined expression, carrying a crumb twice its size",
+    "spider": "a tiny black spider with long legs, zealous and calculating, weaving quickly",
+    "witness": "a small green beetle, sluggishly observing with wide eyes, barely moving",
+    "human": "a simple round-headed stick figure in a white shirt, looking perplexed",
+    "colleague": "another plain stick figure, dressed in grey, with a raised brow",
+    "boss": "a strict-looking stick figure in a suit with crossed arms"
+  },
+  "scenes": [
+    {
+      "narration": "An ant desperately needed food to save its colony.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "ant",
+        "witness"
+      ],
+      "image_prompt": "The ant stands resolute with a crumb on its back, eyes narrowed at a mountain. The beetle observes, motionless, as a leaf rains down.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.5,
+          "x": 0.5,
+          "y": 0.3,
+          "size": 0.2,
+          "hold": 1.5,
+          "text": "So heavy!",
+          "tail": "left"
+        }
+      ],
+      "image_prompt_b": "The ant stands resolute with a crumb on its back, eyes wide as the mountain looms closer. The beetle shifts slightly, still observing, while the leaf continues to fall, closer to the ground."
+    },
+    {
+      "narration": "But a cunning spider lurked nearby, hungry for a snack.",
+      "delivery": "dry, deadpan",
+      "characters": [
+        "spider",
+        "witness"
+      ],
+      "image_prompt": "The spider peeks from behind a leaf, eyes narrowing at the ant's crumb. A single strand of web drips into the beetle's eyeline.",
+      "focus": "right",
+      "motion": "zoom_out",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.8,
+          "x": 0.6,
+          "y": 0.4,
+          "size": 0.2,
+          "hold": 1.5,
+          "text": "Snagged!",
+          "tail": "left"
+        }
+      ],
+      "image_prompt_b": "The spider fully reveals itself, eyes wide with greed as it watches the ant's crumb. The single strand of web now drapes across the beetle's face, causing it to blink in confusion."
+    },
+    {
+      "narration": "The ant trudged forward, its resolve glistening.",
+      "delivery": "calm, steady",
+      "characters": [
+        "ant",
+        "witness"
+      ],
+      "image_prompt": "The ant races with determination, while the beetle rolls a pebble absentmindedly, questioning the ant's sanity.",
+      "focus": "center",
+      "motion": "pan_left",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.0,
+          "x": 0.4,
+          "y": 0.25,
+          "size": 0.15,
+          "hold": 1.2,
+          "text": "Keep going!",
+          "tail": "left"
+        }
+      ],
+      "image_prompt_b": "The ant dashes forward with intense focus, while the beetle pauses, staring at the ant with a raised eyebrow, a pebble still poised in its grasp."
+    },
+    {
+      "narration": "But the spider spun webs across the path, cunningly placed.",
+      "delivery": "hushed, conspiratorial",
+      "characters": [
+        "spider",
+        "witness"
+      ],
+      "image_prompt": "The spider stretches silk across a bush, its legs twitching with satisfaction. The beetle yawns, unfazed by the drama.",
+      "focus": "left",
+      "motion": "pan_right",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.3,
+          "x": 0.3,
+          "y": 0.25,
+          "size": 0.2,
+          "hold": 1.5,
+          "text": "Not again!",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "The ant saw the trap but felt the hunger of its colony.",
+      "delivery": "low, earnest",
+      "characters": [
+        "ant"
+      ],
+      "image_prompt": "The ant halts in contemplation, its body trembling slightly, a few sweat beads rolling down. No sign of the beetle now.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.5,
+          "x": 0.5,
+          "y": 0.3,
+          "size": 0.2,
+          "hold": 1.5,
+          "text": "Think fast!",
+          "tail": "left"
+        }
+      ],
+      "image_prompt_b": "The ant remains still, eyes darting, its body trembling more visibly now, beads of sweat pooling. The beetle is still absent, leaving the ant in solitude."
+    },
+    {
+      "narration": "For the colony's future, it had to be brave.",
+      "delivery": "sincere, softer",
+      "characters": [
+        "ant"
+      ],
+      "image_prompt": "The ant stands tall, staring intently at the web, ignoring the stress knots in its antennae.",
+      "focus": "center",
+      "motion": "zoom_in"
+    },
+    {
+      "narration": "It dashed forward through the webs, narrowly escaping.",
+      "delivery": "dry, deadpan",
+      "characters": [
+        "ant",
+        "spider",
+        "witness"
+      ],
+      "image_prompt": "The ant shoots through the web, startling the spider, while the beetle drops its pebble in surprise.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.6,
+          "x": 0.4,
+          "y": 0.3,
+          "size": 0.2,
+          "hold": 1.5,
+          "text": "Just made it!",
+          "tail": "left"
+        }
+      ],
+      "image_prompt_b": "The ant bursts through the web, causing the spider to recoil with wide eyes, while the beetle finally drops its pebble, mouth agape in shock."
+    },
+    {
+      "narration": "Cornered, it finally decided to negotiate with the spider.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "ant",
+        "spider"
+      ],
+      "image_prompt": "The ant stands firm before the spider, inching closer, while the spider flicks a thread playfully.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact",
+      "image_prompt_b": "The ant stands firm, inching closer to the spider, which flicks a thread with a mischievous glint in its eye, both creatures locked in a tense standoff."
+    },
+    {
+      "narration": "The spider offered to share the food, sensing an opportunity.",
+      "delivery": "dry, conspiratorial",
+      "characters": [
+        "spider",
+        "ant"
+      ],
+      "image_prompt": "The spider gestures expansively to an unseen stash of food. The ant scowls, holding its crumb possessively.",
+      "focus": "center",
+      "motion": "pan_left",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.4,
+          "x": 0.35,
+          "y": 0.4,
+          "size": 0.2,
+          "hold": 1.5,
+          "text": "What's the catch?",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "Humans live by this river too.",
+      "delivery": "hushed, serious",
+      "characters": [
+        "human"
+      ],
+      "image_prompt": "The human sits at a desk, a mountain of papers casting shadows over their brow, contemplating a large coffee cup.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "transition": "dissolve",
+      "look": "mirror"
+    },
+    {
+      "narration": "Its colleague advises, 'You can't do everything alone.'",
+      "delivery": "low, blunt",
+      "characters": [
+        "human",
+        "colleague"
+      ],
+      "image_prompt": "The colleague stands arms crossed, lips pursed, while the desk seems to tower ominously over them.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.9,
+          "x": 0.5,
+          "y": 0.25,
+          "size": 0.2,
+          "hold": 1.6,
+          "text": "Help me!",
+          "tail": "left"
+        }
+      ],
+      "look": "mirror"
+    },
+    {
+      "narration": "Yet, the boss watches closely from afar, arms crossed.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "boss"
+      ],
+      "image_prompt": "The boss leans on their desk, the sharpness of their frown matching the stack of papers before them.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "look": "mirror"
+    },
+    {
+      "narration": "The human realizes they must seek help, but feels hesitant.",
+      "delivery": "quietly sincere, softer",
+      "characters": [
+        "human"
+      ],
+      "image_prompt": "The human bites their lip, caught between the mountain of papers and the colleague, lost in thought.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "look": "mirror"
+    },
+    {
+      "narration": "The ant, finally trusting the spider, makes a deal.",
+      "delivery": "dry, serious",
+      "characters": [
+        "ant",
+        "spider"
+      ],
+      "image_prompt": "The ant extends a leg to shake the spider's, both appearing apprehensive, surrounded by intriguing food bits.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "transition": "dissolve"
+    },
+    {
+      "narration": "The pile of food suddenly vanishes, leaving only webs.",
+      "delivery": "calm, neutral",
+      "characters": [
+        "ant",
+        "spider",
+        "witness"
+      ],
+      "image_prompt": "The ant stands confused at a web-covered emptiness, while the beetle stands unmoving, oblivious.",
+      "focus": "center",
+      "motion": "zoom_out"
+    },
+    {
+      "narration": "The journey to cooperation leaves many questions unresolved.",
+      "delivery": "calm, detached",
+      "characters": [
+        "ant",
+        "witness"
+      ],
+      "image_prompt": "The ant scratches its head in bewilderment as the beetle tilts its head, keenly observing.",
+      "focus": "center",
+      "motion": "zoom_out"
+    },
+    {
+      "narration": "Nobody asked what happened to the food.",
+      "delivery": "hushed, contemplative",
+      "characters": [],
+      "image_prompt": "The scene stays empty, filled with floating webs and a shimmering light that hints at something lurking.",
+      "focus": "center",
+      "motion": "zoom_out"
+    }
+  ],
+  "youtube": {
+    "title": "The Great Ant Caper: Tiny Insect Chaos",
+    "description": "Watch as an ant attempts to save its colony from starvation but must navigate a cunning spider. Cooperation can lead to surprising outcomes, or could it? Don't forget to subscribe!",
+    "tags": [
+      "insects",
+      "ant",
+      "spider",
+      "humor",
+      "tiny creatures",
+      "cooperation",
+      "chaos",
+      "nature"
+    ],
+    "pinned_comment": "Would you trust a spider when your needs are dire? Be honest."
+  },
+  "tiktok": {
+    "caption": "Tiny ants, cunning spiders, and a web of trust. What happens next? #Ants #Spiders #NatureComedy #TinyChaos #Trust",
+    "hashtags": [
+      "#insects",
+      "#animals",
+      "#funny",
+      "#tinycreatures",
+      "#nature"
+    ]
+  }
+}
