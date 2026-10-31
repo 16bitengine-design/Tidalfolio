@@ -49,6 +49,7 @@ jobs:
           OPENAI_TTS_MODEL: ${{ vars.OPENAI_TTS_MODEL }}
           FAL_KEY: ${{ secrets.FAL_KEY }}
           FAL_IMAGE_MODEL: ${{ vars.FAL_IMAGE_MODEL }}
+          MUSIC_GENERATE: ${{ vars.MUSIC_GENERATE || '1' }}   # 0 = never generate music; use assets/music/ only
           SCRIPT_INPUT: ${{ inputs.script }}
         run: |
           if [ -n "$SCRIPT_INPUT" ]; then

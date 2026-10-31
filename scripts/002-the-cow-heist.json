@@ -23,11 +23,13 @@
   "shareable_scene": 5,
   "burn_captions": true,
   "voice": {
-    "voice": "en-GB-RyanNeural",
-    "rate": "-10%",
-    "pitch": "-8Hz"
+    "openai_voice": "sage",
+    "deepen": 0.94,
+    "voice": "en-GB-SoniaNeural",
+    "rate": "-12%",
+    "pitch": "-10Hz"
   },
-  "style": "Cinematic stylized animated-film look, richly detailed 3D render, dramatic rim lighting, shallow depth of field, expressive but realistic animal faces, {frame}, no text, no watermark.",
+  "style": "Hand-painted storybook illustration, rich watercolor and ink on textured paper, warm cinematic light, expressive animals with very human emotions, dry wit, sophisticated and a little melancholic rather than childish, the main subjects kept in the middle of the frame with room above them, {frame}, no text, no letters, no watermark.",
   "characters": {
     "cow": "A hefty brown cow with a white blaze across her face, determined gaze",
     "fox": "A sleek red fox with a bushy tail and cunning eyes, always scheming",
@@ -46,8 +48,7 @@
       ],
       "image_prompt": "A determined brown cow gazes longingly over a fence, a single leaf floats past her.",
       "focus": "center",
-      "motion": "zoom_in",
-      "sfx": "tick"
+      "motion": "zoom_in"
     },
     {
       "narration": "But an ancient rival held the turf just beyond her reach.",
@@ -59,8 +60,8 @@
       "image_prompt": "A menacing black sheep stands over vibrant grass, glaring at the cow, eying a rubber chicken nearby.",
       "focus": "center",
       "motion": "zoom_out",
-      "sfx": "hit",
-      "image_prompt_b": "The menacing black sheep stands over vibrant grass, glaring at the cow, wings now fully open, ready to pounce on the rubber chicken nearby."
+      "image_prompt_b": "The menacing black sheep stands over vibrant grass, glaring at the cow, wings now fully open, ready to pounce on the rubber chicken nearby.",
+      "camera": "impact"
     },
     {
       "narration": "Desperate, she sought a cunning ally—an old fox in the thicket.",
@@ -73,8 +74,8 @@
       "image_prompt": "The cow and the sly red fox exchange furtive looks under the trees, while the snail in the background slips off the post.",
       "focus": "center",
       "motion": "pan_left",
-      "sfx": "whoosh",
-      "image_prompt_b": "The cow and the sly red fox exchange furtive looks under the trees, while the snail in the background slips off the post, now fully on the ground."
+      "image_prompt_b": "The cow and the sly red fox exchange furtive looks under the trees, while the snail in the background slips off the post, now fully on the ground.",
+      "camera": "whoosh"
     },
     {
       "narration": "He devised a heist, promising a share of the spoils.",
@@ -86,7 +87,6 @@
       "image_prompt": "The fox gestures dramatically at the grass, while the cow is distracted by a passing butterfly.",
       "focus": "center",
       "motion": "zoom_in",
-      "sfx": "riser",
       "image_prompt_b": "The fox gestures dramatically at the grass, while the cow is now transfixed by the passing butterfly, mouth agape in awe."
     },
     {
@@ -99,8 +99,7 @@
       ],
       "image_prompt": "The sheep peeks from behind a rock, tiny birds flee at its sudden movement.",
       "focus": "center",
-      "motion": "pan_right",
-      "sfx": "tick"
+      "motion": "pan_right"
     },
     {
       "narration": "She wanted in, but her mouth got ahead of her.",
@@ -113,8 +112,8 @@
       "image_prompt": "The sheep excitedly erupts from hiding, flailing its limbs as it speaks, startling a nearby rabbit.",
       "focus": "center",
       "motion": "zoom_in",
-      "sfx": "boom",
-      "image_prompt_b": "The sheep excitedly bursts from hiding, limbs flailing wildly as it speaks, startling the nearby rabbit who jumps high in surprise."
+      "image_prompt_b": "The sheep excitedly bursts from hiding, limbs flailing wildly as it speaks, startling the nearby rabbit who jumps high in surprise.",
+      "camera": "impact"
     },
     {
       "narration": "But secrets slipped from more than just one mouth.",
@@ -126,7 +125,6 @@
       "image_prompt": "A rival sheep lurks nearby, ears perked, licking an ice cream cone while overhearing them.",
       "focus": "center",
       "motion": "zoom_out",
-      "sfx": "sting",
       "image_prompt_b": "The rival sheep, still lurking nearby, perks its ears further, taking a big lick of the ice cream cone while watching intently."
     },
     {
@@ -141,8 +139,8 @@
       "image_prompt": "The cow, sheep, and fox glare at the rival sheep, prepared for confrontation while the witness munches on a grass blade.",
       "focus": "center",
       "motion": "pan_left",
-      "sfx": "hit",
-      "image_prompt_b": "The cow, sheep, and fox glare at the rival sheep, now tense and prepared for confrontation, while the witness continues munching on a grass blade."
+      "image_prompt_b": "The cow, sheep, and fox glare at the rival sheep, now tense and prepared for confrontation, while the witness continues munching on a grass blade.",
+      "camera": "impact"
     },
     {
       "narration": "As chaos ensued, the cow's loyalty was tested amidst the fray.",
@@ -153,8 +151,7 @@
       ],
       "image_prompt": "The cow looks worried while the sheep gazes up, mouth agape, a carrot between them.",
       "focus": "center",
-      "motion": "zoom_in",
-      "sfx": "tick"
+      "motion": "zoom_in"
     },
     {
       "narration": "Would she sacrifice her chance for the greater good?",
@@ -165,8 +162,7 @@
       ],
       "image_prompt": "The cow looks at the sheep, concerned, while a tumbleweed rolls in between them, symbolizing uncertainty.",
       "focus": "center",
-      "motion": "pan_right",
-      "sfx": "tick"
+      "motion": "pan_right"
     },
     {
       "narration": "In a last-ditch move, the fox decided to betray them.",
@@ -179,7 +175,6 @@
       "image_prompt": "The fox smirks slyly, adjusting a tiny, mischievous hat as the other two remain oblivious.",
       "focus": "center",
       "motion": "zoom_out",
-      "sfx": "sting",
       "image_prompt_b": "The fox smirks slyly, adjusting a tiny, mischievous hat, now with a glint of mischief in its eyes as the other two remain oblivious."
     },
     {
@@ -192,8 +187,7 @@
       ],
       "image_prompt": "Shock fills the cow’s eyes while the sheep gasps, a cloud of uncertain butterflies swirls around them. The witness looks on blankly.",
       "focus": "center",
-      "motion": "zoom_in",
-      "sfx": "tick"
+      "motion": "zoom_in"
     },
     {
       "narration": "In a frenzy, the rivals closed in on their moment of triumph.",
@@ -206,8 +200,8 @@
       "image_prompt": "Chaos erupts around them as the rival sheep approaches, the snail miraculously holding a tiny flag.",
       "focus": "center",
       "motion": "pan_left",
-      "sfx": "boom",
-      "image_prompt_b": "Chaos erupts around them as the rival sheep approaches, the snail miraculously holding a tiny flag, waving it energetically."
+      "image_prompt_b": "Chaos erupts around them as the rival sheep approaches, the snail miraculously holding a tiny flag, waving it energetically.",
+      "camera": "impact"
     },
     {
       "narration": "As the dust settled, loyalty hung thin in the air.",
@@ -218,8 +212,7 @@
       ],
       "image_prompt": "The cow and sheep stand wearied and uncertain, a single cloud lingers eerily above them.",
       "focus": "center",
-      "motion": "zoom_out",
-      "sfx": "tick"
+      "motion": "zoom_out"
     },
     {
       "narration": "Humans live by this river too.",
@@ -293,8 +286,7 @@
       ],
       "image_prompt": "The grass patch is gone, leaving the cow and sheep bewildered, while the snail munches on an unbothered leaf.",
       "focus": "center",
-      "motion": "zoom_out",
-      "sfx": "sting"
+      "motion": "zoom_out"
     },
     {
       "narration": "Suddenly, a flock of birds spirals down ... with a message.",

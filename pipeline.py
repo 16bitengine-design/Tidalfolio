@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """tidalfolio auto-video pipeline.
 
-script.json -> narration (TTS, directed per scene) -> images (fal.ai Flux) -> multi-shot scenes
-with camera moves, impact shake/flash -> dramatic sound mix + SFX -> highlighted-word captions
+script.json -> narration (a deep older woman, TTS directed per scene) -> storybook illustrations
+(fal.ai Flux) -> multi-shot scenes with camera moves -> pop-ups (speech bubbles, labels, painted props)
+-> music bed under her voice (music only, no sound effects) -> highlighted-word captions
 -> final MP4 (16:9 and 9:16) + thumbnail + upload details.
 
 Usage:
@@ -12,6 +13,7 @@ Usage:
 """
 import argparse
 import asyncio
+import hashlib
 import json
 import os
 import re
@@ -21,6 +23,8 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+
+import popups
 
 ROOT = Path(__file__).resolve().parent
 FPS = 30
@@ -65,8 +69,23 @@ async def _edge_tts(text, voice, rate, pitch, out):
     await edge_tts.Communicate(text, voice, rate=rate, pitch=pitch).save(str(out))
 
 
-TTS_STYLE = ("Deep, dramatic movie-trailer narrator. Intense and gravely serious, with perfect comic timing: "
-             "dry, never silly. Fast, punchy delivery with short dramatic pauses before punchlines.")
+TTS_STYLE = ("The voice of a woman in her sixties: deep, low and slightly raspy, warm and unhurried, like a grandmother "
+             "telling a story she has told many times and still finds funny. Dry and deadpan, never sing-song, never "
+             "robotic, never a cheerful announcer. Short pauses before the punchline, and now and then a small "
+             "amused breath or sigh. Gravity about tiny things is what makes it funny.")
+OPENAI_VOICE = "sage"        # also worth trying: coral, fable, shimmer. Set per script with voice.openai_voice
+DEEPEN = 0.94                # below 1.0 lowers the pitch without changing the speed (0.90 to 1.0). voice.deepen overrides
+EDGE_VOICE, EDGE_RATE, EDGE_PITCH = "en-GB-SoniaNeural", "-12%", "-10Hz"   # free fallback voice, also a woman
+
+
+def _deepen(src, dst, factor):
+    """Lower the pitch by `factor` while keeping the speed (resample down, then speed the tempo back up)."""
+    if abs(factor - 1.0) < 0.005:
+        run(["ffmpeg", "-y", "-i", src, "-ar", "44100", "-ac", "2", dst])
+        return
+    run(["ffmpeg", "-y", "-i", src, "-af",
+         f"aresample=44100,asetrate=44100*{factor},aresample=44100,atempo={1 / factor:.5f}",
+         "-ar", "44100", "-ac", "2", dst])
 
 
 def _openai_tts(text, cfg, out_wav, delivery=None):
@@ -80,12 +99,12 @@ def _openai_tts(text, cfg, out_wav, delivery=None):
                 "https://api.openai.com/v1/audio/speech", timeout=120,
                 headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"},
                 json={"model": os.environ.get("OPENAI_TTS_MODEL") or "gpt-4o-mini-tts",
-                      "voice": cfg.get("openai_voice", "onyx"), "input": text,
+                      "voice": cfg.get("openai_voice", OPENAI_VOICE), "input": text,
                       "instructions": instructions, "response_format": "wav"})
             if r.ok and len(r.content) > 1000:
                 raw = out_wav.with_suffix(".raw.wav")
                 raw.write_bytes(r.content)
-                run(["ffmpeg", "-y", "-i", raw, "-ar", "44100", "-ac", "2", out_wav])
+                _deepen(raw, out_wav, float(cfg.get("deepen", DEEPEN)))
                 raw.unlink()
                 return True
             print(f"      OpenAI TTS {r.status_code}: {r.text[:200]}")
@@ -111,8 +130,8 @@ def make_narration(text, cfg, out_wav, dry, delivery=None):
     last = None
     for attempt in range(4):
         try:
-            asyncio.run(_edge_tts(text, cfg.get("voice", "en-GB-RyanNeural"),
-                                  cfg.get("rate", "-8%"), cfg.get("pitch", "-6Hz"), mp3))
+            asyncio.run(_edge_tts(text, cfg.get("voice", EDGE_VOICE),
+                                  cfg.get("rate", EDGE_RATE), cfg.get("pitch", EDGE_PITCH), mp3))
             break
         except Exception as e:  # network hiccup
             last = e
@@ -162,6 +181,12 @@ def make_image(prompt, size_name, seed, out, dry, idx, aspect):
         img.save(out)
         bake_vignette(out)
         return
+    fal_generate(prompt, size_name, out, seed, f"scene {idx + 1}")
+    bake_vignette(out)
+
+
+def fal_generate(prompt, size_name, out, seed=7, what="image"):
+    """One image from fal.ai, saved to `out`. Used for scene illustrations and for pop-up props."""
     import requests
     key = os.environ.get("FAL_KEY")
     if not key:
@@ -180,82 +205,109 @@ def make_image(prompt, size_name, seed, out, dry, idx, aspect):
             img = requests.get(url, timeout=120)
             img.raise_for_status()
             out.write_bytes(img.content)
-            bake_vignette(out)
             return
         last = f"{r.status_code} {r.text[:300]}"
         time.sleep(4 * (attempt + 1))
-    sys.exit(f"Image generation failed for scene {idx + 1}: {last}")
+    sys.exit(f"Image generation failed for {what}: {last}")
 
 
-# ----------------------------------------------------------------- sound design
-SFX_NAMES = ("hit", "whoosh", "splash", "boom", "sting", "tick", "riser")
-IMPACT = {"hit", "splash", "boom"}
+# ----------------------------------------------------------------- music (the only thing under her voice)
+# No sound effects anywhere. The bed is, in order of preference:
+#   1. a track from assets/music/ (yours, licensed or royalty-free; one is picked per video)
+#   2. a track generated once per video with fal.ai (needs FAL_KEY; set MUSIC_GENERATE=0 to turn off)
+#   3. a quiet synthesized pad, only so the pipeline still runs (add real music to assets/music/)
+MUSIC_PROMPT = ("gentle dry-humoured acoustic folk, plucked nylon guitar and soft upright bass, slow tempo, "
+                "wry and warm, instrumental, no vocals, no drums, seamless loop")
+MUSIC_VOLUME = 0.5           # before it ducks under her voice
+MUSIC_FADE = 2.0             # crossfade at each loop seam (s)
 
 
-def synth_sfx(name, out):
-    """Synthesized effects so the pipeline needs no downloads.
-    Drop your own files in assets/sfx/<name>.wav to override any of them."""
-    custom = ROOT / "assets" / "sfx" / f"{name}.wav"
-    if custom.exists():
-        shutil.copy(custom, out)
-        return
-    tail = ["-ar", "44100", "-ac", "2", out]
-    if name == "hit":
-        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=f=48:d=1.4", "-f", "lavfi",
-             "-i", "anoisesrc=d=1.4:c=brown:a=0.8", "-filter_complex",
-             "[0]afade=t=out:st=0.05:d=1.3[a];[1]lowpass=f=500,afade=t=out:d=0.6[b];"
-             "[a][b]amix=inputs=2:normalize=0,volume=2.2,alimiter=limit=0.95", *tail])
-    elif name == "whoosh":
-        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "anoisesrc=d=0.9:c=pink:a=0.6", "-af",
-             "highpass=f=300,lowpass=f=3500,afade=t=in:d=0.4,afade=t=out:st=0.4:d=0.5,volume=0.9", *tail])
-    elif name == "splash":
-        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "anoisesrc=d=0.8:c=white:a=0.7", "-af",
-             "highpass=f=1200,afade=t=in:d=0.02,afade=t=out:st=0.05:d=0.7,volume=0.9", *tail])
-    elif name == "boom":
-        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=f=38:d=2.2", "-f", "lavfi",
-             "-i", "anoisesrc=d=2.2:c=brown:a=0.9", "-filter_complex",
-             "[0]afade=t=out:st=0.02:d=2.1[a];[1]lowpass=f=160,afade=t=out:d=1.4[b];"
-             "[a][b]amix=inputs=2:normalize=0,volume=2.6,aecho=0.8:0.7:90|210:0.35|0.2,alimiter=limit=0.95", *tail])
-    elif name == "sting":      # dissonant stab for shocks, reveals and deadpan punchlines
-        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=f=233.08:d=1.8", "-f", "lavfi", "-i", "sine=f=246.94:d=1.8",
-             "-f", "lavfi", "-i", "sine=f=116.54:d=1.8", "-filter_complex",
-             "[0][1][2]amix=inputs=3:normalize=0,afade=t=in:d=0.01,afade=t=out:st=0.05:d=1.7,"
-             "tremolo=f=7:d=0.5,aecho=0.8:0.6:70|140:0.3|0.15,volume=0.9", *tail])
-    elif name == "tick":       # tiny dry click for a suspense beat
-        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=f=1500:d=0.06", "-af",
-             "afade=t=out:st=0.01:d=0.05,volume=0.7", *tail])
-    elif name == "riser":      # rising sweep that builds into an impact
-        run(["ffmpeg", "-y", "-f", "lavfi", "-i", "aevalsrc=0.4*sin(2*PI*(180*t+260*t*t)):d=1.4:s=44100",
-             "-f", "lavfi", "-i", "anoisesrc=d=1.4:c=pink:a=0.5", "-filter_complex",
-             "[1]highpass=f=800,afade=t=in:d=1.3[n];[0][n]amix=inputs=2:normalize=0,afade=t=in:d=1.2,volume=1.3", *tail])
+def music_library():
+    d = ROOT / "assets" / "music"
+    return sorted(p for pat in ("*.mp3", "*.wav", "*.m4a", "*.ogg") for p in d.glob(pat)) if d.exists() else []
+
+
+def loop_to_length(src, total, out):
+    """Repeat a track, crossfading each seam, until it covers `total` seconds."""
+    n = duration(src)
+    if n >= total + 0.5:
+        run(["ffmpeg", "-y", "-i", src, "-t", f"{total:.2f}", "-ar", "44100", "-ac", "2", out])
+    elif n <= 3 * MUSIC_FADE:
+        run(["ffmpeg", "-y", "-stream_loop", "-1", "-i", src, "-t", f"{total:.2f}", "-ar", "44100", "-ac", "2", out])
     else:
-        sys.exit(f"Unknown sfx '{name}'. Use one of {', '.join(SFX_NAMES)} or add assets/sfx/{name}.wav")
-
-
-def make_bed(total, out):
-    music = sorted((ROOT / "assets" / "music").glob("*.mp3")) if (ROOT / "assets" / "music").exists() else []
-    if music:  # your own royalty-free track: loop + trim
-        run(["ffmpeg", "-y", "-stream_loop", "-1", "-i", music[0], "-t", f"{total:.2f}",
+        reps = int(-(-(total - MUSIC_FADE) // (n - MUSIC_FADE))) + 1
+        ins = [x for _ in range(reps) for x in ("-i", src)]
+        fl, prev = [], "[0]"
+        for k in range(1, reps):
+            nxt = f"[a{k}]"
+            fl.append(f"{prev}[{k}]acrossfade=d={MUSIC_FADE}:c1=tri:c2=tri{nxt}")
+            prev = nxt
+        run(["ffmpeg", "-y", *ins, "-filter_complex", ";".join(fl), "-map", prev, "-t", f"{total:.2f}",
              "-ar", "44100", "-ac", "2", out])
-        return
-    T = f"{total:.2f}"      # synthesized: drone + fifth + rumble, pulsing like a heartbeat, swelling over time
-    run(["ffmpeg", "-y",
-         "-f", "lavfi", "-i", f"sine=f=55:d={T}", "-f", "lavfi", "-i", f"sine=f=82.4:d={T}",
-         "-f", "lavfi", "-i", f"sine=f=110:d={T}", "-f", "lavfi", "-i", f"anoisesrc=d={T}:c=brown:a=0.4",
-         "-filter_complex",
-         "[1]volume=0.8[b];[2]tremolo=f=0.25:d=0.6,volume=0.35[c];[3]lowpass=f=220[n];"
-         "[0][b][c][n]amix=inputs=4:normalize=0,tremolo=f=1.9:d=0.55,"
-         f"volume='0.55+0.45*t/{T}':eval=frame",
+
+
+def fal_music(prompt, seconds, out):
+    """One music track from fal.ai (Stable Audio). Returns False on any problem so the caller can fall back."""
+    try:
+        import requests
+        r = requests.post("https://fal.run/fal-ai/stable-audio", timeout=300,
+                          headers={"Authorization": f"Key {os.environ['FAL_KEY']}"},
+                          json={"prompt": prompt, "seconds_total": min(int(seconds), 47)})
+        if not r.ok:
+            print(f"      music generation failed ({r.status_code}): {r.text[:160]}")
+            return False
+        j = r.json()
+        url = (j.get("audio_file") or j.get("audio") or {}).get("url")
+        audio = requests.get(url, timeout=180)
+        audio.raise_for_status()
+        out.write_bytes(audio.content)
+        return True
+    except Exception as e:
+        print(f"      music generation failed: {e}")
+        return False
+
+
+def synth_pad(total, out):
+    """Placeholder only: a warm, very quiet chord so a video still renders when no real music is available."""
+    T = f"{total:.2f}"
+    freqs = (110, 164.81, 220, 261.63, 329.63)
+    ins = [x for f in freqs for x in ("-f", "lavfi", "-i", f"sine=f={f}:d={T}")]
+    run(["ffmpeg", "-y", *ins, "-filter_complex",
+         f"amix=inputs={len(freqs)}:normalize=0,tremolo=f=0.18:d=0.35,lowpass=f=1400,volume=0.6",
          "-ar", "44100", "-ac", "2", out])
+
+
+def make_bed(total, out, slug, prompt, dry):
+    lib = music_library()
+    if lib:
+        pick = lib[int(hashlib.sha1(slug.encode()).hexdigest(), 16) % len(lib)]
+        loop_to_length(pick, total, out)
+        return f"music: {pick.name}"
+    if not dry and os.environ.get("FAL_KEY") and os.environ.get("MUSIC_GENERATE", "1") != "0":
+        gen = out.with_name("music_generated.mp3")
+        if gen.exists() or fal_music(prompt, total, gen):
+            loop_to_length(gen, total, out)
+            return "music: generated with fal.ai"
+    synth_pad(total, out)
+    return "music: PLACEHOLDER pad (add a licensed track to assets/music/)"
 
 
 # ----------------------------------------------------------------- shots (the illusion of action)
 FOCUS_X = {"left": 0.32, "center": 0.5, "right": 0.68}
 
 
-def sfx_list(sc):
-    s = sc.get("sfx")
-    return [s] if isinstance(s, str) and s else list(s or [])
+IMPACT = {"impact", "hit", "splash", "boom"}      # camera slam + shake + white flash (silent: no sound is played)
+ENTRANCE = {"whoosh"}                              # camera whips across the frame
+
+
+def camera_hints(sc):
+    """What a scene asks of the camera. New scripts use "camera": "impact" | "whoosh". Old scripts' "sfx" tags
+    are still read as camera hints only; no sound effect is ever played."""
+    out = set()
+    for key in ("camera", "sfx"):
+        v = sc.get(key)
+        out |= {v} if isinstance(v, str) and v else set(v or [])
+    return out
 
 
 def n_shots(sc):
@@ -266,11 +318,11 @@ def plan_shots(sc, use_b):
     """Cut each scene into several shots: a wide opening move, a punch-in, a drift; a second image
     (the same moment a beat later) on action scenes; slam + shake + white flash on impacts."""
     n = n_shots(sc)
-    sfx = sfx_list(sc)
+    hints = camera_hints(sc)
     fx = FOCUS_X.get(sc.get("focus"), 0.5)
     first_b = (n + 1) // 2 if (use_b and n >= 2) else n
-    impact = any(x in IMPACT for x in sfx)
-    whoosh = "whoosh" in sfx
+    impact = bool(hints & IMPACT)
+    whoosh = bool(hints & ENTRANCE)
     motion = sc.get("motion", "zoom_in")
     shots = []
     for k in range(n):
@@ -376,7 +428,7 @@ def make_ass(scenes, aspect, path):
 
 
 # ----------------------------------------------------------------- one aspect ratio, start to finish
-def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
+def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry, bed):
     w, h, size_name = SIZES[aspect]
     folder = FOLDERS[aspect]
     seed = int(script.get("seed", 7))
@@ -415,7 +467,7 @@ def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
     silent = work / "silent.mp4"
     run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", work / "clips.txt", "-c", "copy", silent])
 
-    print("[4/5] sound design")
+    print("[4/5] narration + music mix (no sound effects)")
     nar_inputs, nar_filter = [], []
     for i, sc in enumerate(scenes):
         nar_inputs += ["-i", narr_dir / f"narr_{i:02}.wav"]
@@ -427,37 +479,18 @@ def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
     run(["ffmpeg", "-y", *nar_inputs, "-filter_complex", ";".join(nar_filter),
          "-map", "[nar]", "-ar", "44100", "-ac", "2", narration])
 
-    bed = work / "bed.wav"
-    make_bed(total, bed)
-
-    events = []                                           # (sfx name, start seconds, volume)
-    for i, sc in enumerate(scenes):
-        names = sfx_list(sc)
-        events += [(n, sc["_start"], 0.85) for n in names]
-        if i > 0 and any(n in ("hit", "boom") for n in names) and "riser" not in names:
-            events.append(("riser", max(0.0, sc["_start"] - 1.3), 0.5))   # tension builds into every big impact
-
-    mix_inputs = ["-i", narration, "-i", bed]
-    fl = ["[0]highpass=f=70,equalizer=f=140:t=q:w=1:g=3,equalizer=f=3200:t=q:w=1.2:g=2,"
-          "acompressor=threshold=0.1:ratio=3:attack=5:release=90:makeup=3,"
-          "aecho=0.8:0.55:55|120:0.22|0.1,alimiter=limit=0.95,asplit=2[nar][nsc]",
-          "[1]volume=0.4[bedv]",
-          "[bedv][nsc]sidechaincompress=threshold=0.03:ratio=10:attack=15:release=350[bed]"]
-    labels, k = ["[nar]", "[bed]"], 2
-    for name, t_s, vol in events:
-        f = work / f"sfx_{name}.wav"
-        if not f.exists():
-            synth_sfx(name, f)
-        ms = int(t_s * 1000)
-        mix_inputs += ["-i", f]
-        fl.append(f"[{k}]adelay={ms}|{ms},volume={vol}[s{k}]")
-        labels.append(f"[s{k}]")
-        k += 1
-    fl.append(f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0:duration=longest,"
-              f"afade=t=out:st={max(0, total - 1.5):.2f}:d=1.5,"
-              "loudnorm=I=-15:TP=-1.5:LRA=6,alimiter=limit=0.95[mix]")
+    # her voice, warmed up a little (no echo: she is telling a story in a kitchen, not a canyon), over the music
+    # bed, which ducks whenever she speaks
+    fl = ["[0]highpass=f=70,equalizer=f=140:t=q:w=1:g=3,equalizer=f=3200:t=q:w=1.2:g=1.5,"
+          "acompressor=threshold=0.1:ratio=3:attack=5:release=120:makeup=3,"
+          "alimiter=limit=0.95,asplit=2[nar][nsc]",
+          f"[1]volume={MUSIC_VOLUME}[bedv]",
+          "[bedv][nsc]sidechaincompress=threshold=0.03:ratio=8:attack=15:release=450[mbed]",
+          f"[nar][mbed]amix=inputs=2:normalize=0:duration=longest,"
+          f"afade=t=out:st={max(0, total - 2.5):.2f}:d=2.5,"
+          "loudnorm=I=-15:TP=-1.5:LRA=6,alimiter=limit=0.95[mix]"]
     mixed = work / "mix.wav"
-    run(["ffmpeg", "-y", *mix_inputs, "-filter_complex", ";".join(fl),
+    run(["ffmpeg", "-y", "-i", narration, "-i", bed, "-filter_complex", ";".join(fl),
          "-map", "[mix]", "-t", f"{total:.2f}", "-ar", "44100", "-ac", "2", mixed])
 
     print("[5/5] captions + final video")
@@ -476,17 +509,29 @@ def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
     ass_path = out_dir / "captions.ass"
     make_ass(scenes, aspect, ass_path)
 
+    # pop-ups: speech bubbles, labels and painted props that bounce in over the illustration
+    sticker_dir = out_root / "stickers"
+    pops = popups.build(scenes, w, h, work, sticker_dir, dry,
+                        lambda prompt, size, out: fal_generate(prompt, size, out, seed, "pop-up prop"))
+    print(f"      {len(pops)} pop-ups")
+
     final = out_dir / "video.mp4"
     burn = script.get("burn_captions", True) and has_filter("ass")
-    cmd = ["ffmpeg", "-y", "-i", silent, "-i", mixed]
+    if script.get("burn_captions", True) and not burn:
+        print("      (ass filter not available: captions not burned in)")
+    cmd = ["ffmpeg", "-y", "-i", silent, "-i", mixed, *popups.overlay_inputs(pops, FPS)]
+    chains = popups.overlay_graph(pops, "0:v", 2, "vpop")
+    last = "vpop" if pops else "0:v"
     if burn:
         esc = str(ass_path).replace("\\", "/").replace(":", "\\:")
-        cmd += ["-vf", f"ass='{esc}'", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p"]
+        chains.append(f"[{last}]ass='{esc}'[vout]")
+        last = "vout"
+    if chains:
+        cmd += ["-filter_complex", ";".join(chains), "-map", f"[{last}]", "-map", "1:a",
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p"]
     else:
-        cmd += ["-c:v", "copy"]
-        if script.get("burn_captions", True):
-            print("      (ass filter not available: captions not burned in)")
-    cmd += ["-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", final]
+        cmd += ["-map", "0:v", "-map", "1:a", "-c:v", "copy"]
+    cmd += ["-c:a", "aac", "-b:a", "192k", "-t", f"{total:.2f}", "-movflags", "+faststart", final]
     run(cmd)
 
     thumb = int(script.get("thumbnail_scene", 1)) - 1
@@ -506,6 +551,14 @@ def render(script_path, dry):
     narr_dir.mkdir(parents=True, exist_ok=True)
     scenes = script["scenes"]
     voice_cfg = script.get("voice", {})
+
+    # narration made with an older voice setting must not be reused: remember which voice made these files
+    sig = json.dumps([voice_cfg, TTS_STYLE, OPENAI_VOICE, DEEPEN, EDGE_VOICE, dry], sort_keys=True)
+    sig_file = narr_dir / "voice_signature.txt"
+    if sig_file.exists() and sig_file.read_text() != sig:
+        for old in narr_dir.glob("narr_*.wav"):
+            old.unlink()
+    sig_file.write_text(sig)
 
     # narration first (shared by every aspect): cheap, and tells us the runtime before paying for images
     print(f"[1/5] narration ({len(scenes)} scenes)")
@@ -536,8 +589,12 @@ def render(script_path, dry):
     if total > MAX_VIDEO:
         print(f"      WARNING: {total:.1f}s is over the {MAX_VIDEO:.0f}s target. Trim the script if you want it shorter.")
 
+    # one music bed per video, shared by both formats
+    bed = out_root / "bed.wav"
+    print(f"[music] {make_bed(total, bed, slug, script.get('music_prompt') or MUSIC_PROMPT, dry)}")
+
     for aspect in aspects:
-        render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry)
+        render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry, bed)
 
     write_metadata(script, out_root / "metadata.md", total)
     (out_root / "metadata.json").write_text(json.dumps(

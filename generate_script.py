@@ -30,11 +30,15 @@ SERIES = {
     "Wild Moments": "reptiles, amphibians and the odd plant, treated like epic nature-documentary thrillers",
 }
 
-STYLE = ("Cinematic stylized animated-film look, richly detailed 3D render, dramatic rim lighting, "
-         "shallow depth of field, expressive but realistic animal faces, {frame}, no text, no watermark.")
+STYLE = ("Hand-painted storybook illustration, rich watercolor and ink on textured paper, warm cinematic light, "
+         "expressive animals with very human emotions, dry wit, sophisticated and a little melancholic rather than "
+         "childish, the main subjects kept in the middle of the frame with room above them, {frame}, "
+         "no text, no letters, no watermark.")
 
 MOTIONS = {"zoom_in", "zoom_out", "pan_left", "pan_right"}
-SFX = {"hit", "whoosh", "splash", "boom", "sting", "tick", "riser"}
+CAMERA = {"impact", "whoosh"}      # silent camera moves only: no sound effects exist on this channel
+POP_KINDS = {"bubble", "label", "sticker"}
+MAX_STICKERS = 10
 FOCUS = {"left", "center", "right"}
 WORDS_PER_SEC = 2.4          # conservative narration speed
 LEAD, TAIL, MIN_SCENE = 0.30, 0.55, 3.0
@@ -44,11 +48,12 @@ MAX_RUNTIME = 124.0
 
 def system_prompt():
     return f"""You write scripts for "tidalfolio", a YouTube/TikTok comedy channel about animals, plants, insects, birds, fish and reptiles.
-Videos are image sequences with a dramatic narrator. The only people allowed are the plain stick-figure everyman characters of the MIRROR act (rule 9).
+Videos are illustrated storybook scenes with pop-ups, told by one narrator: a deep-voiced older woman in her sixties, a grandmother telling a story she has told many times and still finds funny. The only people allowed are the plain stick-figure everyman characters of the MIRROR act (rule 9).
 
 CHANNEL RULES (all mandatory):
 - Audience is all ages INCLUDING adults. Humour must be witty and dry, never childish, never cartoonish or babyish. No baby talk, no puns on every line.
-- Narrator voice is dramatic and intense: movie-trailer gravity applied to tiny animal conflicts. Fast-paced, action-oriented.
+- Narrator voice: the grandmother. Warm, unhurried and bone-dry, treating tiny animal conflicts with total seriousness, never winking. She may open with a short aside ("Now, listen.") and may use a small "mm." or a sigh, but never baby talk, never a trailer voice, never shouting. Write sentences she could say aloud with a pause before the punchline. The pace of the story stays brisk and action-oriented even though she is calm.
+- There is NO sound design: no sound effects exist. The only audio is her voice and a music bed. Never write sound effects, onomatopoeia or "*crash*" in the narration.
 - Total runtime must be between {MIN_RUNTIME:.0f} and {MAX_RUNTIME:.0f} seconds. Each scene lasts about 0.85 seconds plus its narration at {WORDS_PER_SEC} words per second, so write 24 to 28 scenes with 6 to 14 words of narration each (roughly 245 to 275 words in total). Aim for a finished video of about 110 to 118 seconds: never under 90, never over 120.
 - STORY ENGINE (the most important rule; a funny video with no story gets watched once and forgotten):
   1. STAKES FIRST. Scene 1 narration (max 14 words) states a high-stakes premise a stranger understands instantly, e.g. "A kingfisher had three days to repay a debt to a crow." Never open with scenery, a greeting or the channel name.
@@ -63,8 +68,9 @@ CHANNEL RULES (all mandatory):
 - Each image_prompt describes ONE frozen moment and states each visible character's exact action and expression beat by beat (what the body, wings, beak, legs, eyes are doing). No broad summaries. Under 600 characters each. Prefer dramatic or slow-motion moments (frozen splashes, mid-air collisions, extreme close-ups).
 - Characters: 2 to 4 recurring characters (plus the witness), each with a locked visual description (species, colours, size, distinctive feature, build). The "characters" list in a scene uses the keys from the characters object. Use the same key whenever that character appears.
 - Animals are never harmed: slapstick mishaps only. No real people, brands, logos or text in images.
-- Each scene picks a motion from: zoom_in, zoom_out, pan_left, pan_right. Optional sfx from: hit, whoosh, splash, boom, sting, tick, riser (hit/splash/boom at impacts; sting at a shock or reveal; tick for suspense; riser before a big reveal; use at least 6 scenes).
-- Each scene has a "delivery": a 3 to 8 word acting note for the narrator (e.g. "hushed, ominous", "fast and furious", "deadpan, flat", "breaking slightly, sincere", "slow, haunted whisper"). Vary it. The emotional beat uses sincere delivery.
+- Each scene picks a motion from: zoom_in, zoom_out, pan_left, pan_right. Optional "camera": "impact" (a hard silent camera slam with shake and a white flash on a collision or shock) or "whoosh" (the camera whips across for an entrance). Use impact in at most 5 scenes and whoosh in at most 3.
+- Each scene has a "delivery": a 3 to 8 word acting note for the grandmother (e.g. "dry, deadpan", "hushed, conspiratorial", "slow, amused", "quietly sincere, softer", "low, haunted whisper"). Vary it. The emotional beat uses sincere delivery.
+- POP-UPS bring each illustration to life: small things that bounce in over the picture on the beat of the joke. Give at least 12 scenes a "popups" list (1 to 3 each). Kinds: "bubble" (a speech bubble with a short spoken line or reaction, max 4 words, e.g. "MINE.", "That was SPRING."; "tail" is "left" or "right"), "label" (a plain card for a time jump or a title, max 5 words, e.g. "Six hours later"), "sticker" (a small painted prop that pops in, with a "prompt" of max 12 words naming ONE object, e.g. "a single empty fishbone"). Use at most 10 stickers in the whole script and at least 6 bubbles. Each pop-up has "at" (seconds after the scene starts, between 0.8 and the scene's narration length), "x" and "y" (centre as fractions of the frame; y between 0.15 and 0.6 so it never covers the captions), "size" (width as a fraction of the frame, 0.16 to 0.3) and optional "hold" (seconds shown, 1.2 to 2.5). Pop-ups are the joke's punctuation: a bubble the witness never says, a label that undercuts the narrator. Never put text inside an image_prompt.
 - Each scene may have "focus": left, center or right: where the camera should aim in the image.
 - Make the images feel like ACTION: in at least 8 scenes also give "image_prompt_b" (and "characters_b" if the cast differs): the SAME moment a half second later (the next frame of the action, e.g. wings now fully open, splash now at its peak). The video cuts between the two images so the scene moves. Same location and characters, only the action advances.
 
@@ -85,9 +91,10 @@ Reply with ONE JSON object only, in exactly this shape:
   "characters": {{"key": "Name: locked visual description"}},
   "story": {{"protagonist": "key", "want": "...", "risk": "what they lose", "lesson": "one plain sentence, the human lesson the story shows", "reversals": ["...", "...", "..."], "emotional_beat_scene": 1-based, "open_thread": "the unresolved question for Part 2"}},
   "style_mirror": "art style for the mirror act scenes",
+  "music_prompt": "one sentence describing a wry, warm instrumental music bed that suits this story (no vocals, no drums)",
   "thumbnail_scene": 1-based number of the funniest, most striking frame (it is the thumbnail),
   "shareable_scene": 1-based,
-  "scenes": [{{"narration": "...", "delivery": "hushed, ominous", "characters": ["key"], "image_prompt": "...", "image_prompt_b": "optional next frame", "focus": "center", "motion": "zoom_in", "sfx": "hit"}}],
+  "scenes": [{{"narration": "...", "delivery": "hushed, ominous", "characters": ["key"], "image_prompt": "...", "image_prompt_b": "optional next frame", "focus": "center", "motion": "zoom_in", "camera": "impact", "popups": [{{"kind": "bubble", "text": "MINE.", "at": 1.5, "x": 0.3, "y": 0.28, "size": 0.2, "tail": "left", "hold": 1.6}}, {{"kind": "sticker", "prompt": "a small hourglass", "at": 3.0, "x": 0.5, "y": 0.35, "size": 0.18}}]}}],
   "youtube": {{"title": "<=90 chars, curiosity-driven", "description": "2-4 sentences: the story teaser, then one sentence that hints at the lesson without spelling it out, then a subscribe line", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers apply the lesson to their own life (e.g. 'Would you have given it away? Be honest.')"}},
   "tiktok": {{"caption": "<=140 chars hook", "hashtags": ["5-6 hashtags starting with #"]}}
 }}
@@ -96,9 +103,9 @@ MIRROR SCENES carry two extra fields, written exactly like this (the literal wor
 
 FINAL CHECKLIST (count before you answer):
 - "witness" is listed in the "characters" array of at least 6 scenes.
-- At least 8 scenes have "image_prompt_b"; at least 6 scenes have "sfx".
+- At least 8 scenes have "image_prompt_b"; at least 12 scenes have "popups", at least 6 bubbles and at most 10 stickers in total.
 - Every key in a scene's "characters" array exists in the top-level "characters" object. Define "human" (and any colleague/boss) there if the mirror act uses them.
-- "motion" is only zoom_in, zoom_out, pan_left or pan_right. "sfx" is only hit, whoosh, splash, boom, sting, tick or riser.
+- "motion" is only zoom_in, zoom_out, pan_left or pan_right. "camera" is only impact or whoosh. No sound effects anywhere.
 - 3 to 5 consecutive mirror scenes, in the second half, with at least 3 animal scenes after them."""
 
 
@@ -170,6 +177,35 @@ DEFAULT_STYLE_MIRROR = ("Flat clean 2D editorial illustration, expressive plain 
                         "no text, no watermark.")
 
 
+def clean_popups(raw):
+    """Keep well-formed pop-ups only, with numbers clamped, so one sloppy field never sinks a script."""
+    out = []
+    for p in raw if isinstance(raw, list) else []:
+        if not isinstance(p, dict) or p.get("kind") not in POP_KINDS:
+            continue
+        try:
+            q = {"kind": p["kind"], "at": round(min(max(float(p.get("at", 1.5)), 0.8), 9.0), 2),
+                 "x": round(min(max(float(p.get("x", 0.5)), 0.12), 0.88), 2),
+                 "y": round(min(max(float(p.get("y", 0.3)), 0.15), 0.6), 2),
+                 "size": round(min(max(float(p.get("size", 0.22)), 0.14), 0.34), 2)}
+            if p.get("hold") is not None:
+                q["hold"] = round(min(max(float(p["hold"]), 1.0), 3.0), 2)
+        except (TypeError, ValueError):
+            continue
+        if p["kind"] == "sticker":
+            q["prompt"] = str(p.get("prompt", "")).strip()[:120]
+            if not q["prompt"]:
+                continue
+        else:
+            q["text"] = str(p.get("text", "")).strip()[:40]
+            if not q["text"]:
+                continue
+            if p["kind"] == "bubble":
+                q["tail"] = "right" if p.get("tail") == "right" else "left"
+        out.append(q)
+    return out[:3]
+
+
 def repair(d):
     """Fix the mechanical mistakes a model keeps making, so retries are spent only on real story problems."""
     scenes, chars = d.get("scenes"), d.get("characters")
@@ -193,14 +229,19 @@ def repair(d):
                                  "clear expressions: " + s["narration"].strip())
         m = str(s.get("motion", "")).strip().lower().replace(" ", "_").replace("-", "_")
         s["motion"] = m if m in MOTIONS else cycle[i % 4]
-        sfx = s.get("sfx")
-        if isinstance(sfx, list):
-            sfx = next((x for x in sfx if isinstance(x, str) and x.strip().lower() in SFX), None)
-        sfx = sfx.strip().lower() if isinstance(sfx, str) else None
-        if sfx in SFX:
-            s["sfx"] = sfx
+        legacy = s.pop("sfx", None)                       # sound effects are gone: an old tag only becomes a camera hint
+        cam = s.get("camera") or legacy
+        if isinstance(cam, list):
+            cam = next((x for x in cam if isinstance(x, str)), None)
+        cam = cam.strip().lower() if isinstance(cam, str) else None
+        cam = {"hit": "impact", "boom": "impact", "splash": "impact"}.get(cam, cam)
+        if cam in CAMERA:
+            s["camera"] = cam
         else:
-            s.pop("sfx", None)
+            s.pop("camera", None)
+        s["popups"] = clean_popups(s.get("popups"))
+        if not s["popups"]:
+            s.pop("popups")
         if s.get("focus") not in FOCUS:
             s.pop("focus", None)
         look = str(s.get("look", "")).strip().lower()
@@ -306,8 +347,6 @@ def validate(d):
             errs.append(f"scene {i} focus must be one of {sorted(FOCUS)}")
         if s.get("image_prompt_b") is not None and not str(s["image_prompt_b"]).strip():
             s.pop("image_prompt_b")
-        if s.get("sfx") not in (None, "") and s.get("sfx") not in SFX:
-            errs.append(f"scene {i} sfx must be one of {sorted(SFX)}")
         for c in s.get("characters", []):
             if c not in chars:
                 errs.append(f"scene {i} uses unknown character key '{c}'")
@@ -329,8 +368,15 @@ def validate(d):
             errs.append("the narration must not preach: remove phrases like 'the moral is' or 'lesson learned'; show the lesson through consequence")
     if len(scenes[0].get("narration", "").split()) > 14:
         errs.append("scene 1 narration must be a stakes-first hook of at most 14 words")
-    if sum(bool(s.get("sfx")) for s in scenes) < 6:
-        errs.append("use sfx in at least 6 scenes")
+    pops = [p for s in scenes for p in s.get("popups", [])]
+    if sum(bool(s.get("popups")) for s in scenes) < 12:
+        errs.append('give at least 12 scenes a "popups" list (speech bubbles, labels and sticker props that bounce in)')
+    if sum(p["kind"] == "bubble" for p in pops) < 6:
+        errs.append("use at least 6 speech bubbles in total")
+    if sum(p["kind"] == "sticker" for p in pops) > MAX_STICKERS:
+        errs.append(f"use at most {MAX_STICKERS} stickers in the whole script")
+    if re.search(r"\*[a-z ]+\*|\b(sound effect|sfx)\b", json.dumps([s["narration"] for s in scenes]).lower()):
+        errs.append("the narration must not contain sound effects or *stage directions*: the only audio is her voice and music")
     if sum(bool(s.get("delivery")) for s in scenes) < len(scenes) - 1:
         errs.append("every scene needs a delivery note")
     if not errs:
@@ -382,7 +428,7 @@ Checklist:
 6. Protect the story engine: stakes in the first line, a protagonist who wants something, three escalating reversals, one sincere emotional beat with no joke, a haunting last line and an open thread. If any is weak, fix it first; story beats jokes.
 7. Protect the lesson (story.lesson): it must be shown through the protagonist's choice and its cost, never preached. If it is vague or preachy, make it concrete and quiet.
 8. Keep the MIRROR act (the human stick-figure vignette, scenes with look "mirror", style_mirror, dissolve transitions) intact and make sure it is a real miniature of the same lesson, not a recap.
-8. Keep delivery, focus, sfx, image_prompt_b and the story/shareable_scene fields.
+8. Keep delivery, focus, camera, popups, music_prompt, image_prompt_b and the story/shareable_scene fields. The narrator is a dry, deep-voiced grandmother: sharpen her lines, never turn her into a trailer voice, and write no sound effects.
 Return ONLY the full improved JSON."""
 
 
@@ -410,9 +456,8 @@ def ensure_next_frames(data, target=8):
     have = sum(bool(s.get("image_prompt_b")) for s in scenes)
     if have >= target:
         return
-    action = ("hit", "splash", "boom", "whoosh", "sting", "riser")
     cand = [i for i, s in enumerate(scenes) if not s.get("image_prompt_b")]
-    cand.sort(key=lambda i: (scenes[i].get("look") == "mirror", scenes[i].get("sfx") not in action, i))
+    cand.sort(key=lambda i: (scenes[i].get("look") == "mirror", scenes[i].get("camera") not in CAMERA, i))
     pick = sorted(cand[:target - have])
     frames = {}
     try:
@@ -479,7 +524,8 @@ def write_one(series=None, idea=None):
         "seed": random.randint(1, 999999), "thumbnail_scene": int(data["thumbnail_scene"]),
         "story": data.get("story"), "shareable_scene": int(data.get("shareable_scene", 1)),
         "burn_captions": True,
-        "voice": {"voice": "en-GB-RyanNeural", "rate": "-10%", "pitch": "-8Hz"},
+        "voice": {"openai_voice": "sage", "deepen": 0.94, "voice": "en-GB-SoniaNeural", "rate": "-12%", "pitch": "-10Hz"},
+        "music_prompt": str(data.get("music_prompt") or "").strip() or None,
         "style": STYLE, "characters": data["characters"], "scenes": data["scenes"],
         "youtube": data["youtube"], "tiktok": data["tiktok"],
     }

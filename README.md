@@ -1,6 +1,6 @@
 # tidalfolio auto-video pipeline
 
-Turns a script file into a finished video: AI images, a directed dramatic narrator, several camera moves and cuts per scene, impact shake and flash, a sound mix with effects, highlighted-word captions, a thumbnail and upload details. It makes a 16:9 version for YouTube and a 9:16 version for TikTok and Shorts. It runs free on GitHub Actions.
+Turns a script file into a finished video: hand-painted storybook illustrations with pop-ups (speech bubbles, labels and painted props that bounce in), a deep older-woman narrator, several camera moves and cuts per scene, a music bed (music only, no sound effects), highlighted-word captions, a thumbnail and upload details. It makes a 16:9 version for YouTube and a 9:16 version for TikTok and Shorts. It runs free on GitHub Actions.
 
 ## One-time setup (about 10 minutes)
 
@@ -17,7 +17,7 @@ Add a repository secret named `OPENAI_API_KEY`. Then:
 - **Scripts write themselves.** Before each render, if no unrendered script is left in `queue.txt`, `generate_script.py` writes the next episode, rotating through your five series (the least-used one goes next) and avoiding earlier titles. It continues from the previous episode's open thread, so episodes feel like a series. New scripts are saved back to the repo, so you can read or edit them.
 - **Story rules.** Every script must teach one human lesson (courage, generosity, pride, patience, honesty and so on), shown through what the animals do and what it costs them, never preached. Scripts that say "the moral is" are rejected, and a lesson already used on the channel is not reused. The lesson is saved in the script's `story.lesson`, hinted at in the YouTube description, and turned into a pinned-comment question. Every script also has a **mirror act**: about two thirds in, it cuts for 3 to 5 scenes to a plain stick-figure human living the same lesson in an ordinary place (office, shop, kitchen), in a flat illustration style set by `style_mirror`, with a soft white dissolve in and out, then returns to the animals for the ending twist. Every script must also have: a stakes-first first line, one named protagonist who wants something and can lose it, three escalating reversals, one sincere emotional beat with no joke, a haunting last line, and an open thread that needs a Part 2. It also needs a shareable moment, a silent "witness" creature in the background of 6+ scenes, and a planted detail that returns in the last three scenes as an unexplained twist. Scripts that break a rule are rejected and rewritten (up to four attempts).
 - **Punch-up pass.** After the first draft a second pass has ChatGPT act as an editor and strengthen the story and jokes. If that pass breaks a rule, the first draft is kept. Set the repository variable `PUNCH_UP` to `0` to skip it.
-- **Directed narrator.** With the key present, narration uses OpenAI's text-to-speech (`gpt-4o-mini-tts`, deep "onyx" voice). Each scene carries a `delivery` note ("hushed, ominous", "fast and furious", "breaking slightly, sincere") that is passed to the voice as acting direction. If OpenAI's voice fails, the free voice is used instead.
+- **The narrator is a deep-voiced woman in her sixties.** With the key present, narration uses OpenAI's text-to-speech (`gpt-4o-mini-tts`, voice `sage`) with instructions to sound like a grandmother telling a story she finds funny: low, slightly raspy, warm, dry and unhurried. The pitch is then lowered 6% without changing the speed (`voice.deepen` in the script, 0.90 to 1.0; lower is deeper). Each scene carries a `delivery` note ("dry, deadpan", "hushed, conspiratorial", "quietly sincere") that is passed to the voice as acting direction. If OpenAI's voice fails, a free British woman's voice (`en-GB-SoniaNeural`) is used instead. To pick the best voice, render a short test with `voice.openai_voice` set to `sage`, `coral`, `fable` and `shimmer`, and keep the one that sounds oldest and deepest.
 - Optional repository variables: `OPENAI_TEXT_MODEL` (default `gpt-4o-mini`; choose a stronger model if the stories feel weak) and `OPENAI_TTS_MODEL`.
 - Write scripts on demand: `python generate_script.py --count 5`, or `--series "Underwater Laughs" --idea "a crab who claims every shell"`. Without the key, add scripts by hand as described below.
 
@@ -58,25 +58,40 @@ Script fields:
   - `motion`: `zoom_in`, `zoom_out`, `pan_left`, `pan_right`.
   - `look`: set to `mirror` on mirror-act scenes so they use `style_mirror` instead of `style`.
   - `transition`: set to `dissolve` on the first scene of an act change for a soft white dissolve.
-  - `sfx`: `hit`, `splash`, `boom` (impacts), `whoosh` (entrances), `sting` (shock or reveal), `tick` (suspense), `riser` (build-up). A riser is added before every hit or boom automatically.
+  - `camera`: `impact` (a silent hard camera slam with shake and a white flash) or `whoosh` (the camera whips across for an entrance). Old scripts' `sfx` tags are still read as camera hints; **no sound effect is ever played.**
+  - `popups`: a list of things that bounce in over the picture on the beat of the joke (details below).
+- `music_prompt` (optional): one sentence describing the music bed if it is generated.
 - `aspects`: `["16:9", "9:16"]` renders both formats (images are generated again for each, so image cost doubles). Use `["16:9"]` to render YouTube only.
 - `story` (including `lesson`), `shareable_scene`: notes used by the script writer; they do not change the video.
 - Target length is almost 2 minutes (about 110 to 118 seconds), and never under 90 seconds or over 120. The pipeline measures the real narration before paying for images: if a video is a little short it stretches the pauses, if it is more than about 25% short it stops, and if it runs over 2 minutes it warns you.
 
+## Pop-ups
+
+Each scene can carry up to three pop-ups. They pop in with a bounce, breathe while they are on screen, and shrink away. Three kinds:
+
+```
+{"kind": "bubble",  "text": "MINE.", "at": 1.5, "x": 0.3, "y": 0.28, "size": 0.2, "tail": "left"}
+{"kind": "label",   "text": "Six hours later", "at": 1.0, "x": 0.5, "y": 0.16, "size": 0.34}
+{"kind": "sticker", "prompt": "a small hourglass", "at": 3.0, "x": 0.5, "y": 0.35, "size": 0.18}
+```
+
+`at` is seconds after the scene starts. `x` and `y` are the centre as fractions of the frame (keep `y` between 0.15 and 0.6 so captions stay clear). `size` is the width as a fraction of the frame. Optional `hold` is seconds on screen. A bubble is a speech bubble with a tail, a label is a plain card (time jumps, titles), and a sticker is a small painted prop generated by fal.ai on a white background, then cut out. Stickers cost one extra image each, so a script uses at most 10. New scripts get their pop-ups from the script writer; hand-written scripts can add them to any scene.
+
 ## What makes the videos move
 
-Stills cannot truly animate, so each scene is cut into shots about every 2.5 seconds: a wide opening move, a punch-in, a drift, and (on action scenes) a cut to the second frame. Impacts slam in with a camera shake and a white flash, entrances whip across the frame, and tension risers build into every big hit. The narrator is compressed and normalized to broadcast loudness, and the music bed ducks under every spoken line.
+Stills cannot truly animate, so each scene is cut into shots about every 2.5 seconds: a wide opening move, a punch-in, a drift, and (on action scenes) a cut to the second frame. Impacts slam in with a silent camera shake and a white flash, entrances whip across the frame, and pop-ups bounce in on the jokes. The narrator is compressed and normalized to broadcast loudness, and the music bed ducks under every spoken line. There are no sound effects.
 
 ## Settings you can change
 
 - **Narrator voice:** `voice` block in the script (`openai_voice`, plus `voice`, `rate`, `pitch` for the free fallback voice). The free voice uses the unofficial `edge-tts` package, so if it ever breaks, swap `make_narration()` in `pipeline.py` for another TTS service.
+- **Look:** the `style` field of each script sets the illustration style for every image (new scripts get a hand-painted storybook watercolor-and-ink look; the mirror act keeps its flat stick-figure style). The same style is added to every prompt, which keeps scenes looking alike.
 - **Image model:** the default is `fal-ai/flux/schnell` (cheapest, fast). For better quality add a repository variable named `FAL_IMAGE_MODEL` set to `fal-ai/flux/dev`. Check fal.ai for current prices.
-- **Music and sound effects:** the pipeline synthesizes a pulsing drone and the effects so it works out of the box. For better sound, add a royalty-free track to `assets/music/` and/or your own `hit.wav`, `boom.wav`, `sting.wav` etc. to `assets/sfx/`. Only use audio you have the licence for.
+- **Music (the only sound besides her voice):** the pipeline uses, in order, (1) a track from `assets/music/` (mp3, wav, m4a or ogg; with several tracks one is picked per video, and short tracks are looped with a crossfade), (2) a track generated once per video with fal.ai (`fal-ai/stable-audio`, needs `FAL_KEY`; set the repository variable `MUSIC_GENERATE` to `0` to turn this off), (3) a very quiet placeholder pad, so a video still renders. **For good music, add licensed or royalty-free tracks to `assets/music/`.** Only use audio you have the licence for, and check the licence terms of any generated music before monetizing. Gentle, dry, acoustic tracks suit the grandmother's voice best.
 - **Captions:** big highlighted-word captions are burned in (`"burn_captions": false` turns them off). `captions.srt` is always written, for YouTube's own caption track.
 
 ## Cost
 
-Images are the biggest cost: about 23 scenes plus up to 14 second frames, in two formats, is roughly 70 images per video. Check fal.ai's current per-image price for the model you pick (`flux/schnell` is cheapest). To halve the image cost, set `"aspects": ["16:9"]`. OpenAI usage (script writing and narration) is typically a few cents per video, but check OpenAI's current pricing.
+Images are the biggest cost: about 23 scenes plus up to 14 second frames, in two formats, is roughly 70 images per video, plus up to 10 pop-up stickers (generated once per video and shared by both formats). Check fal.ai's current per-image price for the model you pick (`flux/schnell` is cheapest). To halve the image cost, set `"aspects": ["16:9"]`. OpenAI usage (script writing and narration) is typically a few cents per video, but check OpenAI's current pricing.
 
 ## Test without spending anything
 
@@ -89,7 +104,8 @@ Dry run uses placeholder images and tone "narration" to check timing and assembl
 ## Honest limits
 
 - AI images can vary between scenes. Locked character descriptions and a fixed seed help but do not guarantee identical animals. Skim each video before posting.
-- Stills with camera moves are not real animation. It is a stronger illusion than a slideshow, but it will not match real video.
+- Stills with camera moves and pop-ups are not real animation. The animals inside each painting stay still; the movement comes from the camera, the cuts between two frames, and the pop-ups.
+- The older-woman voice depends on OpenAI's voices and the acting instructions. It will sound like a warm, low-voiced woman, but it may not sound exactly sixty. Compare voices and the `deepen` setting on a short test.
 - The story quality depends on the text model. The default is the cheapest; set `OPENAI_TEXT_MODEL` to a stronger one if episodes feel flat.
 - **TikTok is not automated.** TikTok's official posting API limits content from unaudited apps to private viewing, and public posting needs an app audit. Until you get that, upload `vertical/video.mp4` from your phone using the caption and hashtags in `metadata.md` (about a minute per video), or use a scheduling tool that already has TikTok access.
 - The YouTube upload code was written against Google's documented upload flow but could not be tested against a real account here. Run the first video as `private` and check it.
