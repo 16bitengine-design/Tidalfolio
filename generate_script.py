@@ -38,12 +38,12 @@ STYLE = ("Hand-painted storybook illustration, rich watercolor and ink on textur
 MOTIONS = {"zoom_in", "zoom_out", "pan_left", "pan_right"}
 CAMERA = {"impact", "whoosh"}      # silent camera moves only: no sound effects exist on this channel
 POP_KINDS = {"bubble", "label", "sticker"}
-MAX_STICKERS = 10
+MAX_STICKERS = 8
 FOCUS = {"left", "center", "right"}
 WORDS_PER_SEC = 2.4          # conservative narration speed
 LEAD, TAIL, MIN_SCENE = 0.30, 0.55, 3.0
-MIN_RUNTIME = 110.0          # channel rule: at least 90s, almost 120s. The estimate runs ~7s high, so 110-124 lands at roughly 103-117s real
-MAX_RUNTIME = 124.0
+MIN_RUNTIME = 72.0           # channel rule: every video runs 60 to 90 seconds. The estimate runs ~5s high, so 72-90 lands at roughly 67-85s real
+MAX_RUNTIME = 90.0
 
 
 def system_prompt():
@@ -54,7 +54,7 @@ CHANNEL RULES (all mandatory):
 - Audience is all ages INCLUDING adults. Humour must be witty and dry, never childish, never cartoonish or babyish. No baby talk, no puns on every line.
 - Narrator voice: the grandmother. Warm, unhurried and bone-dry, treating tiny animal conflicts with total seriousness, never winking. She may open with a short aside ("Now, listen.") and may use a small "mm." or a sigh, but never baby talk, never a trailer voice, never shouting. Write sentences she could say aloud with a pause before the punchline. The pace of the story stays brisk and action-oriented even though she is calm.
 - There is NO sound design: no sound effects exist. The only audio is her voice and a music bed. Never write sound effects, onomatopoeia or "*crash*" in the narration.
-- Total runtime must be between {MIN_RUNTIME:.0f} and {MAX_RUNTIME:.0f} seconds. Each scene lasts about 0.85 seconds plus its narration at {WORDS_PER_SEC} words per second, so write 24 to 28 scenes with 6 to 14 words of narration each (roughly 245 to 275 words in total). Aim for a finished video of about 110 to 118 seconds: never under 90, never over 120.
+- Total runtime must be between {MIN_RUNTIME:.0f} and {MAX_RUNTIME:.0f} seconds. Each scene lasts about 0.85 seconds plus its narration at {WORDS_PER_SEC} words per second, so write 16 to 20 scenes with 6 to 12 words of narration each (roughly 140 to 175 words in total). Aim for a finished video of about 75 to 85 seconds: never under 60, never over 90.
 - STORY ENGINE (the most important rule; a funny video with no story gets watched once and forgotten):
   1. STAKES FIRST. Scene 1 narration (max 14 words) states a high-stakes premise a stranger understands instantly, e.g. "A kingfisher had three days to repay a debt to a crow." Never open with scenery, a greeting or the channel name.
   2. ONE PROTAGONIST who WANTS something badly, faces an obstacle, and has something to lose if they fail. Name them. The viewer must be able to say "I hope Marco..." about them.
@@ -70,16 +70,16 @@ CHANNEL RULES (all mandatory):
 - Animals are never harmed: slapstick mishaps only. No real people, brands, logos or text in images.
 - Each scene picks a motion from: zoom_in, zoom_out, pan_left, pan_right. Optional "camera": "impact" (a hard silent camera slam with shake and a white flash on a collision or shock) or "whoosh" (the camera whips across for an entrance). Use impact in at most 5 scenes and whoosh in at most 3.
 - Each scene has a "delivery": a 3 to 8 word acting note for the grandmother (e.g. "dry, deadpan", "hushed, conspiratorial", "slow, amused", "quietly sincere, softer", "low, haunted whisper"). Vary it. The emotional beat uses sincere delivery.
-- POP-UPS bring each illustration to life: small things that bounce in over the picture on the beat of the joke. Aim to give 12 or more scenes a "popups" list (1 to 3 each). Kinds: "bubble" (a speech bubble with a short spoken line or reaction, max 4 words, e.g. "MINE.", "That was SPRING."; "tail" is "left" or "right"), "label" (a plain card for a time jump or a title, max 5 words, e.g. "Six hours later"), "sticker" (a small painted prop that pops in, with a "prompt" of max 12 words naming ONE object, e.g. "a single empty fishbone"). Use at most 10 stickers in the whole script and at least 6 bubbles in total. Each pop-up has "at" (seconds after the scene starts, between 0.8 and the scene's narration length), "x" and "y" (centre as fractions of the frame; y between 0.15 and 0.6 so it never covers the captions), "size" (width as a fraction of the frame, 0.16 to 0.3) and optional "hold" (seconds shown, 1.2 to 2.5). Pop-ups are the joke's punctuation: a bubble the witness never says, a label that undercuts the narrator. Never put text inside an image_prompt.
+- POP-UPS bring each illustration to life: small things that bounce in over the picture on the beat of the joke. Aim to give 8 or more scenes a "popups" list (1 to 3 each). Kinds: "bubble" (a speech bubble with a short spoken line or reaction, max 4 words, e.g. "MINE.", "That was SPRING."; "tail" is "left" or "right"), "label" (a plain card for a time jump or a title, max 5 words, e.g. "Six hours later"), "sticker" (a small painted prop that pops in, with a "prompt" of max 12 words naming ONE object, e.g. "a single empty fishbone"). Use at most 8 stickers in the whole script and at least 5 bubbles in total. Each pop-up has "at" (seconds after the scene starts, between 0.8 and the scene's narration length), "x" and "y" (centre as fractions of the frame; y between 0.15 and 0.6 so it never covers the captions), "size" (width as a fraction of the frame, 0.16 to 0.3) and optional "hold" (seconds shown, 1.2 to 2.5). Pop-ups are the joke's punctuation: a bubble the witness never says, a label that undercuts the narrator. Never put text inside an image_prompt.
 - Each scene may have "focus": left, center or right: where the camera should aim in the image.
-- Make the images feel like ACTION: in at least 8 scenes also give "image_prompt_b" (and "characters_b" if the cast differs): the SAME moment a half second later (the next frame of the action, e.g. wings now fully open, splash now at its peak). The video cuts between the two images so the scene moves. Same location and characters, only the action advances.
+- Make the images feel like ACTION: in at least 6 scenes also give "image_prompt_b" (and "characters_b" if the cast differs): the SAME moment a half second later (the next frame of the action, e.g. wings now fully open, splash now at its peak). The video cuts between the two images so the scene moves. Same location and characters, only the action advances.
 
 HUMOUR CRAFT (a viewer should smile or laugh several times):
 - Deadpan gravity vs trivial stakes: the narrator treats a squabble over a branch like the fall of an empire, and never winks at the audience.
 - Specifics beat generalities: "seventeen minnows", "three thousand dives", "once out-stared a heron". Invent precise, absurd numbers, histories and rules.
 - Rule of three where the third item breaks the pattern. Understatement after a big action ("Physics took notes.").
 - Every image_prompt contains at least one small visual gag a viewer can spot (a bystander reacting, an object out of place, a wildly overserious expression). Keep gags visual and silent, never text.
-- SILENT WITNESS running gag: one extra creature (use the character key "witness", e.g. a small frog, a snail, a crow) watches the action from the background with zero expression in at least 6 scenes, spread across the video. Its reactions are never explained.
+- SILENT WITNESS running gag: one extra creature (use the character key "witness", e.g. a small frog, a snail, a crow) watches the action from the background with zero expression in at least 5 scenes, spread across the video. Its reactions are never explained.
 - Callbacks: one odd object or fact planted early must return later in a way that raises a question.
 - Jokes are original and observational. No memes, no catchphrases, no baby talk, no sarcasm aimed at the viewer.
 
@@ -102,8 +102,8 @@ Reply with ONE JSON object only, in exactly this shape:
 MIRROR SCENES carry two extra fields, written exactly like this (the literal word, nothing added): "look": "mirror". The first mirror scene and the first animal scene after the mirror act also get "transition": "dissolve". No other scene has "look" or "transition".
 
 FINAL CHECKLIST (count before you answer):
-- "witness" is listed in the "characters" array of at least 6 scenes.
-- At least 8 scenes have "image_prompt_b"; about 12 scenes have "popups" (at least 6 bubbles, at most 10 stickers). The story, the lesson and the runtime matter more than pop-ups.
+- "witness" is listed in the "characters" array of at least 5 scenes.
+- At least 6 scenes have "image_prompt_b"; about 8 scenes have "popups" (at least 5 bubbles, at most 8 stickers). The story, the lesson and the runtime matter more than pop-ups.
 - Every key in a scene's "characters" array exists in the top-level "characters" object. Define "human" (and any colleague/boss) there if the mirror act uses them.
 - "motion" is only zoom_in, zoom_out, pan_left or pan_right. "camera" is only impact or whoosh. No sound effects anywhere.
 - 3 to 5 consecutive mirror scenes, in the second half, with at least 3 animal scenes after them."""
@@ -303,12 +303,12 @@ def repair(d):
             if "witness" not in s["characters"] and "witness" in str(s.get("image_prompt", "")).lower():
                 s["characters"].append("witness")
         have = sum("witness" in s["characters"] for s in scenes)
-        if have < 6:
+        if have < 5:
             gag = " In the background the Witness watches, blank and unmoved."
             cand = [i for i, s in enumerate(scenes)
                     if s.get("look") != "mirror" and "witness" not in s["characters"]
                     and len(str(s.get("image_prompt", ""))) + len(gag) <= 690]
-            need = min(6 - have, len(cand))
+            need = min(5 - have, len(cand))
             for j in range(need):
                 s = scenes[cand[int((j + 0.5) * len(cand) / need)]]
                 s["characters"].append("witness")
@@ -322,9 +322,9 @@ def validate(d):
     if not isinstance(chars, dict) or not 2 <= len(chars) <= 9:
         errs.append("characters must be an object with 2 to 9 entries (animals, witness and the mirror-act humans)")
         chars = chars if isinstance(chars, dict) else {}
-    if not isinstance(scenes, list) or not 18 <= len(scenes) <= 32 or not all(isinstance(s, dict) for s in scenes):
+    if not isinstance(scenes, list) or not 14 <= len(scenes) <= 24 or not all(isinstance(s, dict) for s in scenes):
         n = len(scenes) if isinstance(scenes, list) else 0
-        return errs + [f"your reply has {n} scenes in a top-level \"scenes\" array; it must have 18 to 32 (write exactly 26)"]
+        return errs + [f"your reply has {n} scenes in a top-level \"scenes\" array; it must have 14 to 24 (write exactly 18)"]
     if not isinstance(d.get("style_mirror"), str) or len(d["style_mirror"].split()) < 8:
         errs.append("style_mirror (the mirror act's art style) is required")
     mir = [i for i, s in enumerate(scenes) if s.get("look") == "mirror"]
@@ -337,8 +337,8 @@ def validate(d):
             errs.append('put "transition": "dissolve" on the first mirror scene and on the first scene after it')
     if "witness" not in chars:
         errs.append('characters must include a "witness" (a silent deadpan bystander creature)')
-    elif sum("witness" in s.get("characters", []) for s in scenes) < 6:
-        errs.append('the "witness" must appear in at least 6 scenes (list it in the scene "characters")')
+    elif sum("witness" in s.get("characters", []) for s in scenes) < 5:
+        errs.append('the "witness" must appear in at least 5 scenes (list it in the scene "characters")')
     for i, s in enumerate(scenes, 1):
         for k in ("narration", "image_prompt", "motion"):
             if not isinstance(s.get(k), str) or not s[k].strip():
@@ -412,7 +412,7 @@ def call_openai(messages, temperature=1.0):
 
 
 PUNCH_UP_PROMPT = """You are a ruthless script editor for a deadpan animal-comedy channel. Below is a valid draft script (JSON).
-Rewrite it to be better while keeping the exact same JSON structure, character keys, and every rule from the original brief (length window, 6-14 words of narration per scene, beat-by-beat image prompts, silent witness in 6+ scenes, ending that leaves the viewer pondering).
+Rewrite it to be better while keeping the exact same JSON structure, character keys, and every rule from the original brief (length window of 60 to 90 seconds, 6-12 words of narration per scene, beat-by-beat image prompts, silent witness in 5+ scenes, ending that leaves the viewer pondering).
 Checklist:
 1. Cut every joke that is merely cute; replace it with something specific, absurd and deadpan.
 2. Sharpen the narrator: more gravity, more precise numbers, understatement after big moments.
@@ -443,7 +443,7 @@ def punch_up(data):
     return better
 
 
-def ensure_next_frames(data, target=8):
+def ensure_next_frames(data, target=6):
     """The model rarely gives enough 'next frame' images. Ask for just those, in one small focused call;
     if that fails, derive a plain 'half a second later' frame so the scene still moves."""
     scenes = data["scenes"]
@@ -472,7 +472,7 @@ def ensure_next_frames(data, target=8):
         scenes[i]["image_prompt_b"] = f.strip()
 
 
-def ensure_popups(data, target=12, min_bubbles=6):
+def ensure_popups(data, target=8, min_bubbles=5):
     """The model often skips or under-fills pop-ups. Add them with one small focused call; if that fails,
     keep the script as it is (a video without pop-ups still renders)."""
     scenes = data["scenes"]
@@ -494,7 +494,7 @@ def ensure_popups(data, target=12, min_bubbles=6):
                 "For each numbered scene below write 1 or 2 pop-ups that land the joke or the feeling. Kinds: "
                 '"bubble" (a short spoken reaction, max 4 words, e.g. "MINE." or "That was SPRING.", with "tail": "left" or "right"), '
                 '"label" (a plain card, max 5 words, e.g. "Six hours later"), "sticker" (a small painted prop, "prompt" = ONE object in max 12 words). '
-                "Use mostly bubbles (at least 6 bubbles in all), at most 4 stickers in all. Each has: kind, at (seconds after the scene starts, between 0.8 and "
+                "Use mostly bubbles (at least 5 bubbles in all), at most 3 stickers in all. Each has: kind, at (seconds after the scene starts, between 0.8 and "
                 "the narration length), x and y (centre as fractions of the frame; y between 0.15 and 0.6), size (0.16 to 0.3), text or prompt. "
                 'Reply as {"popups": {"<scene number>": [ {...}, {...} ]}}.\n\n' + listing)}], 0.8)
         added = (json.loads(raw).get("popups") or {})
@@ -529,11 +529,12 @@ def write_one(series=None, idea=None):
     ep = counts[series] + 1
     user = (f"Write the next episode of the series \"{series}\" (episode #{ep}). "
             f"Series theme: {SERIES[series]}.\n"
-            "REQUIRED STRUCTURE: write exactly 26 scenes. Scenes 1-16 are the animal story (the emotional beat is around "
-            "scene 11-12). Scenes 17, 18, 19 and 20 are the human MIRROR vignette: only plain stick-figure humans "
+            "REQUIRED STRUCTURE: write exactly 18 scenes. Scenes 1-11 are the animal story (the emotional beat is around "
+            "scene 8). Scenes 12, 13 and 14 are the human MIRROR vignette: only plain stick-figure humans "
             "(keys like \"human\", \"colleague\", \"boss\", defined in \"characters\"), no animals, each with \"look\": \"mirror\"; "
-            "scene 17 and scene 21 also carry \"transition\": \"dissolve\". Scenes 21-26 return to the animals for the twist. "
-            "The \"witness\" key must be listed in the \"characters\" array of at least 6 animal scenes.\n"
+            "scene 12 and scene 15 also carry \"transition\": \"dissolve\". Scenes 15-18 return to the animals for the twist. "
+            "Keep the narration brisk: the whole video must run 60 to 90 seconds. "
+            "The \"witness\" key must be listed in the \"characters\" array of at least 5 animal scenes.\n"
             + (f"Episode idea to develop: {idea}\n" if idea else "Invent a fresh, specific premise.\n")
             + previous_thread(series) + "\n"
             + ("Lessons already used on the channel (teach a different one):\n- " + "\n- ".join(used_lessons()) + "\n" if used_lessons() else "")
@@ -554,11 +555,12 @@ def write_one(series=None, idea=None):
                      {"role": "user", "content": "Fix ONLY these problems and return the full JSON with everything else unchanged "
                       "(keep every character key defined in the top-level \"characters\" object):\n- " + "\n- ".join(errs)}]
     else:
-        # a story that is only a little short is still a good story: the video renderer stretches the pauses to
-        # reach 90 seconds, so do not throw the whole run away for it
-        short_only = bool(data) and all("runtime" in e and "under" in e for e in errs)
-        if short_only and estimate_runtime(data["scenes"]) >= 92:
-            print(f"  accepting a slightly short script (~{estimate_runtime(data['scenes']):.0f}s estimated): the renderer stretches pauses")
+        # a story that is only a little off the length window is still a good story: the video renderer stretches
+        # the pauses to reach 60 seconds, and a few seconds over the estimate still lands under 90 real seconds
+        runtime_only = bool(data) and all("runtime" in e for e in errs)
+        est = estimate_runtime(data["scenes"]) if runtime_only else 0
+        if runtime_only and MIN_RUNTIME - 6 <= est <= MAX_RUNTIME + 3:
+            print(f"  accepting a script that is slightly off the window (~{est:.0f}s estimated, target {MIN_RUNTIME:.0f}-{MAX_RUNTIME:.0f}s)")
         else:
             sys.exit("Could not get a valid script after 4 attempts. Last problems: " + "; ".join(errs))
 

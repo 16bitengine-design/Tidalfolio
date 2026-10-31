@@ -23,7 +23,7 @@ FONTS = [
 STICKER_STYLE = ("Hand-painted storybook sticker illustration, thick dark ink outline, watercolor fill, "
                  "one single object centered, isolated on a pure plain white background, no shadow, no text")
 POP_IN, POP_OUT, HOLD = 0.35, 0.20, 1.8
-MAX_STICKERS = 10
+MAX_STICKERS = 8
 KINDS = ("bubble", "label", "sticker")
 INK, PAPER = (40, 30, 25, 255), (255, 252, 240, 255)
 

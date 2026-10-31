@@ -31,8 +31,8 @@ FPS = 30
 LEAD = 0.30          # silence before narration starts in each scene (s)
 TAIL = 0.55          # silence after narration ends (s)
 MIN_SCENE = 3.0      # shortest allowed scene (s)
-MIN_VIDEO = 90.0     # channel rule: every video runs 1.5 to 2 minutes
-MAX_VIDEO = 120.0
+MIN_VIDEO = 60.0     # channel rule: every video runs between 60 and 90 seconds
+MAX_VIDEO = 90.0
 WORKERS = max(1, min(4, os.cpu_count() or 2))
 
 SIZES = {"16:9": (1920, 1080, "landscape_16_9"), "9:16": (1080, 1920, "portrait_16_9")}
@@ -587,7 +587,8 @@ def render(script_path, dry):
         total = t
         print(f"      stretched pauses to reach {total:.1f}s")
     if total > MAX_VIDEO:
-        print(f"      WARNING: {total:.1f}s is over the {MAX_VIDEO:.0f}s target. Trim the script if you want it shorter.")
+        print(f"      WARNING: {total:.1f}s is over the {MAX_VIDEO:.0f}s limit (videos must run {MIN_VIDEO:.0f} to {MAX_VIDEO:.0f}s). "
+              "Cut a scene or shorten the narration in the script.")
 
     # one music bed per video, shared by both formats
     bed = out_root / "bed.wav"
