@@ -1,0 +1,273 @@
+{
+  "slug": "001-bird-banter-kingfishers",
+  "title": "Bird Banter #1: The Kingfisher Feud",
+  "seed": 7,
+  "thumbnail_scene": 18,
+  "burn_captions": true,
+  "voice": {
+    "voice": "en-GB-RyanNeural",
+    "rate": "-10%",
+    "pitch": "-8Hz"
+  },
+  "style": "Cinematic stylized animated-film look, richly detailed 3D render, dramatic rim lighting, shallow depth of field, expressive but realistic bird faces, warm sunrise colour grade, {frame}, no text, no watermark.",
+  "characters": {
+    "marco": "Marco: a large male common kingfisher with brilliant electric-blue back, orange chest, thick black beak, a slightly ruffled blue crest, proud puffed-out chest and fierce amber eyes.",
+    "nia": "Nia: a smaller female common kingfisher with brilliant turquoise back, orange chest, black beak with a hint of red at the base, sleek smooth head feathers and sharp determined dark eyes.",
+    "minnow": "A tiny silver minnow with big shiny eyes and a smug little smirk.",
+    "turtle": "A huge calm old river turtle with a mossy shell, half-closed sleepy eyes and a peaceful expression.",
+    "witness": "The Witness: a small plump green frog with heavy-lidded eyes and a permanently blank, unimpressed expression, sitting perfectly still on a lily pad."
+  },
+  "scenes": [
+    {
+      "narration": "Dawn. A quiet river. And one perfect branch... worth fighting for.",
+      "image_prompt": "Wide establishing shot of a misty river at sunrise, golden light through fog, a single mossy branch stretching over the calm water, empty and glowing, ripples on the surface.",
+      "motion": "zoom_in",
+      "sfx": "whoosh"
+    },
+    {
+      "narration": "Marco has ruled this branch for three years. Undefeated. Unbothered.",
+      "characters": [
+        "marco",
+        "witness"
+      ],
+      "image_prompt": "Marco lands on the branch from the left with wings flared wide, then stands proud with chest puffed out and chin raised, low-angle heroic shot, sunrise behind him. In the background, a small frog on a lily pad watches with a completely blank expression.",
+      "motion": "pan_right"
+    },
+    {
+      "narration": "Three thousand dives. Zero rivals.",
+      "characters": [
+        "marco"
+      ],
+      "image_prompt": "Marco in a perfect head-first dive just above the water, wings tucked, long golden rim light, concentric ripples below, heroic movie-poster composition, slow-motion droplets frozen around his beak.",
+      "motion": "pan_left",
+      "sfx": "whoosh"
+    },
+    {
+      "narration": "Then she arrived.",
+      "characters": [
+        "nia"
+      ],
+      "image_prompt": "Nia lands hard on the far end of the same branch with wings spread wide and feathers fluttering, mist swirling around her, dramatic backlight.",
+      "motion": "zoom_in",
+      "sfx": "hit"
+    },
+    {
+      "narration": "Nia. Quiet. Efficient. Once out-stared a heron. The heron left.",
+      "characters": [
+        "nia"
+      ],
+      "image_prompt": "Tight portrait of Nia perched upright, beak level, unblinking dark eyes locked on the camera, a blurred grey heron silhouette flying away in the misty background.",
+      "motion": "zoom_in"
+    },
+    {
+      "narration": "Neither blinked. Neither breathed. Neither had a plan.",
+      "characters": [
+        "marco",
+        "nia",
+        "witness"
+      ],
+      "image_prompt": "Extreme close-up of Marco on the left and Nia on the right, beaks almost touching, eyes locked in a fierce staredown, tense expressions, shallow focus on their eyes. In the background, a small frog on a lily pad watches with a completely blank expression.",
+      "motion": "zoom_in"
+    },
+    {
+      "narration": "Marco opened with intimidation. He puffed up to twice his size.",
+      "characters": [
+        "marco",
+        "nia"
+      ],
+      "image_prompt": "Marco on the left with every feather fluffed out, chest inflated to double size, wings half-spread, chin raised; Nia on the right perfectly still, one eye slightly narrowed, unimpressed.",
+      "motion": "zoom_out"
+    },
+    {
+      "narration": "Nia responded by sitting down. The most aggressive move in river history.",
+      "characters": [
+        "nia",
+        "marco",
+        "witness"
+      ],
+      "image_prompt": "Nia calmly settling down onto the branch, feet tucked, feathers smooth, a faint smug tilt to her head, staring straight at Marco, who stands stiffly puffed up behind her, thrown off. In the background, a small frog on a lily pad watches with a completely blank expression.",
+      "motion": "pan_right"
+    },
+    {
+      "narration": "And then... lunch.",
+      "characters": [
+        "minnow",
+        "witness"
+      ],
+      "image_prompt": "Below the branch, the river surface breaks as a tiny silver minnow pops up between the two birds, sparkling water droplets frozen in mid-air, the minnow looking innocent. In the background, a small frog on a lily pad watches with a completely blank expression.",
+      "motion": "zoom_out",
+      "sfx": "splash"
+    },
+    {
+      "narration": "Both heads snapped around. This was no longer about the branch.",
+      "characters": [
+        "marco",
+        "nia"
+      ],
+      "image_prompt": "Marco and Nia both snap their heads down toward the water at the exact same moment, eyes wide, beaks open, motion blur on their heads, dramatic tension.",
+      "motion": "pan_left",
+      "sfx": "whoosh"
+    },
+    {
+      "narration": "Marco struck first. A masterpiece of confidence... and terrible aim.",
+      "characters": [
+        "marco"
+      ],
+      "image_prompt": "Marco launches off the branch in a head-first dive, beak pointed down, wings tucked back, determined expression, water below, slow-motion feel with trailing spray.",
+      "motion": "zoom_in"
+    },
+    {
+      "narration": "Nia struck faster. She had been planning this since birth.",
+      "characters": [
+        "nia"
+      ],
+      "image_prompt": "Nia dives in a perfect arrow-straight line, wings swept back, beak like a spear, eyes locked on the target, tiny speed lines in the air and a thin trail of mist.",
+      "motion": "zoom_in",
+      "sfx": "whoosh"
+    },
+    {
+      "narration": "They met in the middle. Physics took notes.",
+      "characters": [
+        "marco",
+        "nia",
+        "minnow",
+        "witness"
+      ],
+      "image_prompt": "Marco and Nia collide head-on in mid-air just above the water in an explosion of blue and turquoise feathers, the tiny minnow squeezed safely in the gap between them, comic shock on both faces, frozen moment. In the background, a small frog on a lily pad watches with a completely blank expression.",
+      "motion": "zoom_in",
+      "sfx": "hit"
+    },
+    {
+      "narration": "The minnow escaped. Smirking. Legally, it was smirking.",
+      "characters": [
+        "minnow"
+      ],
+      "image_prompt": "Splash fountain behind, the smug silver minnow swimming away underwater toward the camera with a clear confident smirk, two blurry soaked birds flailing in the background.",
+      "motion": "pan_right",
+      "sfx": "splash"
+    },
+    {
+      "narration": "Soaked. Humiliated. And somehow still arguing.",
+      "characters": [
+        "marco",
+        "nia",
+        "witness"
+      ],
+      "image_prompt": "Marco and Nia sitting on a wet rock, completely soaked with drooping dripping feathers, Marco pointing a wing at Nia, Nia glaring back with her beak open mid-argument. In the background, a small frog on a lily pad watches with a completely blank expression.",
+      "motion": "zoom_out"
+    },
+    {
+      "narration": "Terms were agreed. Next fish wins the branch. Neither meant it.",
+      "characters": [
+        "marco",
+        "nia"
+      ],
+      "image_prompt": "Marco and Nia on the wet rock pressing wingtips together in a grudging handshake, both squinting suspiciously at each other, water dripping from their beaks, golden morning light.",
+      "motion": "zoom_in"
+    },
+    {
+      "narration": "But the minnow had brought friends. Seventeen. Zero fear.",
+      "characters": [
+        "minnow",
+        "witness"
+      ],
+      "image_prompt": "The river surface covered with seventeen tiny silver minnow heads poking up in rows, each with the same smug smirk, sunlight sparkling on the ripples, a wide symmetrical comic composition. In the background, a small frog on a lily pad watches with a completely blank expression.",
+      "motion": "zoom_out",
+      "sfx": "splash"
+    },
+    {
+      "narration": "Marco dove. Marco surfaced. With a boot.",
+      "characters": [
+        "marco"
+      ],
+      "image_prompt": "Marco rising out of the river in a burst of spray with an old muddy rubber boot clamped on his beak, wings spread, utterly serious expression, droplets frozen in slow motion.",
+      "motion": "zoom_in",
+      "sfx": "splash"
+    },
+    {
+      "narration": "Nia dove once. She surfaced with the biggest trout in a decade.",
+      "characters": [
+        "nia"
+      ],
+      "image_prompt": "Nia exploding out of the water holding an enormous silver trout in her beak, wings wide, spray fanning out around her in slow motion, sunrise rim light, triumphant heroic pose.",
+      "motion": "zoom_in",
+      "sfx": "splash"
+    },
+    {
+      "narration": "Marco watched. Something cracked. Possibly his pride.",
+      "characters": [
+        "marco",
+        "witness"
+      ],
+      "image_prompt": "Close-up of Marco on the rock, the muddy boot still hanging from his beak, eyes wide and glassy, crest drooping, a single water droplet running down his face, Nia and her trout blurred in the distance. In the background, a small frog on a lily pad watches with a completely blank expression.",
+      "motion": "zoom_in"
+    },
+    {
+      "narration": "They flew back. Nia with a trophy. Marco with a boot.",
+      "characters": [
+        "marco",
+        "nia"
+      ],
+      "image_prompt": "Nia and Marco flying side by side toward the branch across the glowing river, Nia carrying the big silver trout, Marco still carrying the muddy boot, determined faces, wide cinematic shot.",
+      "motion": "pan_left",
+      "sfx": "whoosh"
+    },
+    {
+      "narration": "But fate had one final move.",
+      "characters": [
+        "turtle"
+      ],
+      "image_prompt": "Dramatic reveal: a huge calm turtle is sitting on the middle of the branch, eyes closed, sunrise glowing around its shell, perfectly relaxed, the branch bending slightly under its weight.",
+      "motion": "zoom_in",
+      "sfx": "hit"
+    },
+    {
+      "narration": "A turtle. Calm. Unbothered. Wearing the other boot.",
+      "characters": [
+        "turtle",
+        "marco",
+        "nia"
+      ],
+      "image_prompt": "Over-the-shoulder shot from behind Marco and Nia, both hovering with stunned faces, looking at the sleeping turtle on their branch: the turtle has a matching muddy rubber boot on one back flipper, a perfect pair to the boot hanging from Marco, golden hour light.",
+      "motion": "zoom_out"
+    },
+    {
+      "narration": "Nobody asked how. Nia split the trout. Marco kept the boot. This is tidalfolio.",
+      "characters": [
+        "marco",
+        "nia",
+        "witness"
+      ],
+      "image_prompt": "Marco and Nia sitting side by side on a low rock sharing the silver trout, the muddy boot beside Marco, the turtle asleep on the distant branch at sunrise. In the foreground, the small frog on its lily pad stares straight into the camera with a calm, knowing expression, as if it knew all along.",
+      "motion": "zoom_in"
+    }
+  ],
+  "youtube": {
+    "title": "Two Kingfishers. One Branch. ZERO Dignity. (Bird Banter #1)",
+    "description": "Marco has ruled this branch for three years. Then Nia showed up. Then seventeen minnows. Then a boot. Then a turtle. Nobody has fully explained what happened.\n\nBird Banter is a tidalfolio series: funny animals, wild moments, endless smiles.\n\nSubscribe for more.",
+    "tags": [
+      "funny animals",
+      "bird comedy",
+      "kingfisher",
+      "animal comedy",
+      "tidalfolio",
+      "bird banter",
+      "wildlife humor"
+    ],
+    "pinned_comment": "Nobody asked how the turtle got the other boot. We are asking. Theories below."
+  },
+  "tiktok": {
+    "caption": "Three years undefeated. Then a boot. Then a turtle. Nobody asked how. #BirdBanter",
+    "hashtags": [
+      "#funnyanimals",
+      "#kingfisher",
+      "#birdsoftiktok",
+      "#animalcomedy",
+      "#tidalfolio"
+    ]
+  },
+  "aspects": [
+    "16:9",
+    "9:16"
+  ]
+}
