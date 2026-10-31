@@ -327,7 +327,19 @@ def make_bed(total, out, scenes=None, script=None):
     T = f"{total:.2f}"
     if loop is not None:
         base = out.with_suffix(".loop.wav")
-        run(["ffmpeg", "-y", "-stream_loop", "-1", "-i", loop, "-t", T, "-ar", "44100", "-ac", "2", base])
+        ld, xf = duration(loop), 3.0
+        if ld >= total or ld <= 2 * xf:
+            run(["ffmpeg", "-y", "-stream_loop", "-1", "-i", loop, "-t", T, "-ar", "44100", "-ac", "2", base])
+        else:   # a short ordinary track: repeat it with a 3 s crossfade so there is no click at the seam
+            n = int(-(-(total - xf) // (ld - xf)))
+            fc = "".join(f"[{i}]aresample=44100,aformat=channel_layouts=stereo[a{i}];" for i in range(n))
+            prev = "a0"
+            for i in range(1, n):
+                fc += f"[{prev}][a{i}]acrossfade=d={xf}:c1=tri:c2=tri[x{i}];"
+                prev = f"x{i}"
+            run(["ffmpeg", "-y", *sum((["-i", loop] for _ in range(n)), []), "-filter_complex",
+                 fc.rstrip(";"),
+                 "-map", f"[{prev}]", "-t", T, "-ar", "44100", "-ac", "2", base])
     else:              # synthesized fallback: drone + fifth + rumble, pulsing like a heartbeat
         base = out.with_suffix(".loop.wav")
         run(["ffmpeg", "-y",
@@ -350,6 +362,8 @@ def make_bed(total, out, scenes=None, script=None):
     labels, k = ["[loop]"], 2
     intro = find_audio(theme, "intro") if theme.exists() else None
     outro = find_audio(theme, "outro") if theme.exists() else None
+    if not intro:   # single-track mode: ease the music in instead of starting abruptly
+        parts[2] = "[l][e]amultiply,afade=t=in:d=2.5[loop]"
     if intro:       # the signature motif, full and clear, once at the start
         inputs += ["-i", intro]
         parts.append(f"[{k}]aresample=44100,aformat=channel_layouts=stereo,volume=0.9[in]")
