@@ -16,14 +16,15 @@ ROOT = Path(__file__).resolve().parent
 
 def access_token():
     r = requests.post("https://oauth2.googleapis.com/token", timeout=60, data={
-        "client_id": os.environ["YT_CLIENT_ID"],
-        "client_secret": os.environ["YT_CLIENT_SECRET"],
-        "refresh_token": os.environ["YT_REFRESH_TOKEN"],
+        "client_id": os.environ["YT_CLIENT_ID"].strip(),
+        "client_secret": os.environ["YT_CLIENT_SECRET"].strip(),
+        "refresh_token": os.environ["YT_REFRESH_TOKEN"].strip(),
         "grant_type": "refresh_token",
     })
     if not r.ok:
         sys.exit(f"Could not refresh the YouTube token ({r.status_code}): {r.text[:300]}\n"
-                 "If your OAuth app is still in 'Testing', refresh tokens expire after 7 days. See README.")
+                 "invalid_client = the client ID/secret do not match an existing OAuth client (re-copy both from Google Cloud > Credentials).\n"
+                 "invalid_grant = the refresh token is expired or was made with a different client (Testing apps expire after 7 days). See README.")
     return r.json()["access_token"]
 
 
