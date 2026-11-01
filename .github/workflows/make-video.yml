@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  issues: write      # lets the alert step open an issue when something fails
 
 # Only one run at a time, so two runs never race to push the queue.
 concurrency:
@@ -38,6 +39,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Write a new script if the queue is empty
+        id: script
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_TEXT_MODEL: ${{ vars.OPENAI_TEXT_MODEL }}
@@ -49,6 +51,7 @@ jobs:
           fi
 
       - name: Render video
+        id: render
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_TTS_MODEL: ${{ vars.OPENAI_TTS_MODEL }}
@@ -64,6 +67,7 @@ jobs:
           fi
 
       - name: Upload to YouTube
+        id: youtube
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -73,6 +77,7 @@ jobs:
         run: python upload_youtube.py
 
       - name: Post to TikTok via Buffer
+        id: tiktok
         # A failure here must not lose the video: the artifact step below still runs.
         continue-on-error: true
         env:
@@ -85,6 +90,7 @@ jobs:
         run: python post_tiktok.py
 
       - name: Save finished videos
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: tidalfolio-videos
@@ -113,3 +119,30 @@ jobs:
           done
           echo "Could not push after 5 attempts" >&2
           exit 1
+
+      - name: Alert me if anything failed
+        # Runs when any step failed, including TikTok (which is allowed to fail without stopping the run).
+        # GitHub emails you about every new issue, and the GitHub mobile app pushes it to your phone.
+        if: always() && (failure() || steps.tiktok.outcome == 'failure')
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          R_SCRIPT: ${{ steps.script.outcome }}
+          R_RENDER: ${{ steps.render.outcome }}
+          R_YOUTUBE: ${{ steps.youtube.outcome }}
+          R_TIKTOK: ${{ steps.tiktok.outcome }}
+        run: |
+          body="A tidalfolio run did not finish cleanly.
+
+          | Step | Result |
+          |---|---|
+          | Write script | $R_SCRIPT |
+          | Render video | $R_RENDER |
+          | Upload to YouTube | $R_YOUTUBE |
+          | Post to TikTok | $R_TIKTOK |
+
+          Run and logs: $RUN_URL
+          If the video was rendered, download it from the run's tidalfolio-videos artifact and post it by hand."
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "Tidalfolio run failed ($(date -u "+%Y-%m-%d %H:%M") UTC)" --body "$body"
