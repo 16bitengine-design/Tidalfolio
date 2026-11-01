@@ -44,3 +44,11 @@ Override any scene in its script entry:
 
 Use a generator whose terms allow commercial use on a monetized channel, keep a copy of those terms next to the
 files, and test-upload privately once to confirm no Content ID claim.
+
+## Two theme options
+
+- `theme/` : "Tidal Fable", piano motif in A minor (default).
+- `theme_pentatonic/` : same calm mood, but the motif is pentatonic (D E F# A B) on a guzheng-like string.
+
+Switch without moving files by setting the environment variable `MUSIC_THEME=theme_pentatonic` (in the GitHub
+workflow, under `env:`). Regenerate either with `python tools/make_theme.py --style ethereal|pentatonic`.

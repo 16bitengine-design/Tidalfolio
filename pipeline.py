@@ -318,7 +318,7 @@ def make_bed(total, out, scenes=None, script=None):
          assets/music/theme/outro.*  -> resolves at the very end
        The loop's loudness follows the emotion of each scene (see EMOTION_LEVELS). The narrator-driven
        ducking is applied afterwards in the final mix."""
-    theme = ROOT / "assets" / "music" / "theme"
+    theme = ROOT / "assets" / "music" / (os.environ.get("MUSIC_THEME") or "theme")
     loop = find_audio(theme, "loop") if theme.exists() else None
     if loop is None:   # old behaviour: any single track dropped into assets/music
         folder = ROOT / "assets" / "music"

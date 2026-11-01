@@ -68,6 +68,18 @@ def piano(freq, dur, vel=0.8, rng=None):
     return lp(x, 4200)
 
 
+def guzheng(freq, dur, vel=0.8, rng=None):
+    """Bright plucked zither: a sharper string than the piano, with the characteristic pitch lift
+    (the left hand presses the string just after the pluck, so the note starts a little flat)."""
+    x = pluck(freq, dur, vel, 1.0, rng)
+    tau = np.arange(len(x)) / SR
+    tau = tau - 0.03 * 0.08 * (1 - np.exp(-tau / 0.08))           # warped time: ~3% flat, rising in ~80 ms
+    x = np.interp(tau * SR, np.arange(len(x)), x)
+    t = np.arange(len(x)) / SR
+    x = x + 0.18 * vel * np.sin(2 * np.pi * freq * 2 * t) * np.exp(-t * 4)      # a touch of octave shimmer
+    return lp(x, 7500)
+
+
 def harp(freq, dur, vel=0.5, rng=None):
     return lp(pluck(freq, dur, vel, 0.8, rng), 7000)
 
@@ -139,6 +151,21 @@ MOTIF = [(0.0, "E5", 1.5), (1.5, "A5", 1.0), (2.5, "G5", 1.0), (3.5, "E5", 3.0)]
 ARP = [0, 1, 2, 1]        # chord-tone order for the harp arpeggio
 
 
+M_PENT_A = [(0.0, "D5", 1.0), (1.0, "F#5", 1.0), (2.0, "A5", 1.5), (3.5, "F#5", 0.5), (4.0, "E5", 1.5), (5.5, "D5", 2.5)]
+M_PENT_B = [(0.0, "B4", 1.0), (1.0, "D5", 1.0), (2.0, "F#5", 1.5), (3.5, "E5", 0.5), (4.0, "D5", 1.0), (5.0, "B4", 1.0), (6.0, "D5", 2.0)]
+
+STYLES = {
+    # the original: piano motif, A minor, resolves to A major
+    "ethereal": dict(prog=PROG, motifs=[MOTIF], arp=ARP, lead=None, out="theme",
+                     final=("A2", ["A3", "C#4", "E4"]), outro_swap=True),
+    # pentatonic (D E F# A B) motif on a guzheng-like string over open, modal chords
+    "pentatonic": dict(prog=[("D2", ["D3", "F#3", "A3", "D4"]), ("B1", ["B3", "D4", "F#4", "B4"]),
+                             ("A1", ["A3", "D4", "E4", "A4"]), ("E2", ["E3", "B3", "D4", "F#4"])],
+                       motifs=[M_PENT_A, M_PENT_B], arp=[0, 1, 3, 2], lead="guzheng", out="theme_pentatonic",
+                       final=("D2", ["D3", "A3", "D4", "F#4"]), outro_swap=False),
+}
+
+
 def place(track, sig, t):
     s = int(t * SR)
     if s < 0:
@@ -147,8 +174,10 @@ def place(track, sig, t):
     track[s:end] += sig[: end - s]
 
 
-def render(bars, kind="loop", seed=1):
+def render(bars, kind="loop", seed=1, style="ethereal"):
     """kind: 'loop' (main body), 'intro' (motif + swell) or 'outro' (motif resolving to A major)."""
+    S = STYLES[style]
+    lead = guzheng if S["lead"] == "guzheng" else piano
     rng = np.random.default_rng(seed)
     total = bars * BAR + 0.5
     n = int(SR * total)
@@ -156,9 +185,9 @@ def render(bars, kind="loop", seed=1):
 
     for b in range(bars):
         t0 = b * BAR
-        root, tones = PROG[b % 4]
+        root, tones = S["prog"][b % 4]
         if kind == "outro" and b == bars - 1:                # last bar: A major (C# instead of C)
-            root, tones = "A2", ["A3", "C#4", "E4"]
+            root, tones = S["final"]
         full = kind != "intro" or b >= bars - 1
         if kind == "loop" or kind == "outro":
             place(padt, pad([hz(m(x)) for x in tones] + [hz(m(tones[0]) + 12)], BAR + 1.2, 0.55, voice=(b // 2) % 2 == 1), t0)
@@ -166,7 +195,7 @@ def render(bars, kind="loop", seed=1):
         else:                                                # intro: pad swells under the motif
             place(padt, pad([hz(m(x)) for x in tones], BAR + 1.0, 0.45, voice=False), t0)
         if kind == "loop" or (kind == "outro" and b < bars - 1):
-            for i, step in enumerate(ARP * 2):               # eighth-note harp arpeggio
+            for i, step in enumerate(S["arp"] * 2):               # eighth-note harp arpeggio
                 note = hz(m(tones[step]) + 12)
                 place(harpt, harp(note, 2.6, 0.38 + 0.08 * (i % 2), rng), t0 + i * BEAT / 2 + rng.normal(0, 0.004))
 
@@ -174,11 +203,11 @@ def render(bars, kind="loop", seed=1):
     for p in phrases:
         if kind == "loop" and p % 4 == 2 and p % 8 == 2:
             continue                                         # let the tune breathe now and then
-        for beat, nm, ln in MOTIF:
+        for beat, nm, ln in S["motifs"][(p // 2) % len(S["motifs"])]:
             note = m(nm)
-            if kind == "outro" and nm == "G5":
+            if kind == "outro" and S["outro_swap"] and nm == "G5":
                 note = m("E5")                               # outro: settle on E5, the fifth of the final A chord
-            place(mel, piano(hz(note), ln * BEAT * 2.2, 0.85, rng), p * BAR + beat * BEAT + rng.normal(0, 0.006))
+            place(mel, lead(hz(note), ln * BEAT * 2.2, 0.85, rng), p * BAR + beat * BEAT + rng.normal(0, 0.006))
 
     mix = 1.0 * mel + 0.8 * harpt + 0.9 * padt + 0.7 * bass
     mix = reverb(mix, 4.5, 0.40, rng)
@@ -208,12 +237,15 @@ def save(path, stereo):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--style", choices=sorted(STYLES), default="ethereal",
+                    help="ethereal = piano / A minor (assets/music/theme); pentatonic = guzheng-style (assets/music/theme_pentatonic)")
     ap.add_argument("--loop-bars", type=int, default=32, help="bars in the main loop (32 bars = ~110 s)")
     a = ap.parse_args()
-    OUT.mkdir(parents=True, exist_ok=True)
+    out = OUT.parent / STYLES[a.style]["out"]
+    out.mkdir(parents=True, exist_ok=True)
     for name, bars in (("intro", 2), ("loop", a.loop_bars), ("outro", 2)):
-        audio = render(bars, name, a.seed)
-        save(OUT / f"{name}.wav", audio)
+        audio = render(bars, name, a.seed, a.style)
+        save(out / f"{name}.wav", audio)
         print(f"{name}.wav  {len(audio) / SR:.1f}s")
 
 
