@@ -171,10 +171,10 @@ M_FUSE_B = [(0.0, "E5", 1.0), (1.0, "G5", 1.0), (2.0, "A5", 1.5), (3.5, "G5", 0.
 
 STYLES = {
     # fusion: ethereal chords, choir pad, harp arpeggios + a pentatonic motif on guzheng-and-piano
-    "fusion": dict(prog=PROG, motifs=[M_FUSE_A, M_FUSE_B], arp=ARP, lead="fusion", out="theme_fusion",
+    "fusion": dict(prog=PROG, motifs=[M_FUSE_A, M_FUSE_B], arp=ARP, lead="fusion", out="theme",
                    final=("A2", ["A3", "C#4", "E4"]), outro_swap=False),
     # the original: piano motif, A minor, resolves to A major
-    "ethereal": dict(prog=PROG, motifs=[MOTIF], arp=ARP, lead=None, out="theme",
+    "ethereal": dict(prog=PROG, motifs=[MOTIF], arp=ARP, lead=None, out="theme_ethereal",
                      final=("A2", ["A3", "C#4", "E4"]), outro_swap=True),
     # pentatonic (D E F# A B) motif on a guzheng-like string over open, modal chords
     "pentatonic": dict(prog=[("D2", ["D3", "F#3", "A3", "D4"]), ("B1", ["B3", "D4", "F#4", "B4"]),
@@ -255,7 +255,7 @@ def save(path, stereo):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=1)
-    ap.add_argument("--style", choices=sorted(STYLES), default="ethereal",
+    ap.add_argument("--style", choices=sorted(STYLES), default="fusion",
                     help="ethereal = piano / A minor (theme); pentatonic = guzheng-style (theme_pentatonic); fusion = both (theme_fusion)")
     ap.add_argument("--loop-bars", type=int, default=32, help="bars in the main loop (32 bars = ~110 s)")
     a = ap.parse_args()
