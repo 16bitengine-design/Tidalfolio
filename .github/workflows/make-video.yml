@@ -14,6 +14,11 @@ on:
 permissions:
   contents: write
 
+# Only one run at a time, so two runs never race to push the queue.
+concurrency:
+  group: tidalfolio-push
+  cancel-in-progress: false
+
 jobs:
   make:
     runs-on: ubuntu-latest
@@ -97,4 +102,14 @@ jobs:
           git config user.name "tidalfolio-bot"
           git config user.email "actions@users.noreply.github.com"
           git add done.txt queue.txt scripts
-          git diff --cached --quiet || (git commit -m "Update queue and scripts" && git push)
+          git diff --cached --quiet && exit 0
+          git commit -m "Update queue and scripts"
+          # Remote may have moved while this run was rendering: rebase onto it, retry on a race.
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            echo "Push attempt $i failed, retrying..."
+            git rebase --abort 2>/dev/null || true
+            sleep $((i * 3))
+          done
+          echo "Could not push after 5 attempts" >&2
+          exit 1
