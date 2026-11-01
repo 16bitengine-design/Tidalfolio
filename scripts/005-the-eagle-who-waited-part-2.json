@@ -1,0 +1,261 @@
+{
+  "slug": "005-the-eagle-who-waited-part-2",
+  "title": "Bird Banter #2: The Eagle Who Waited (Part 2/2)",
+  "aspects": [
+    "16:9",
+    "9:16"
+  ],
+  "seed": 482913,
+  "thumbnail_scene": 2,
+  "story": {
+    "protagonist": "eagle",
+    "want": "to be fed for ever without ever having to hunt",
+    "risk": "the mother who feeds him",
+    "cause": "believed",
+    "lesson": "Those who carry us need carrying too, and the time to start is before they fall.",
+    "reversals": [
+      "The dry season makes every fish cost his mother more, and he complains.",
+      "His mother is caught in a net, and he asks about dinner.",
+      "She returns torn and empty-handed, and he sees what it cost her."
+    ],
+    "emotional_beat_scene": 1,
+    "open_thread": "Who brought the dozen fish?"
+  },
+  "shareable_scene": 1,
+  "burn_captions": true,
+  "voice": {
+    "openai_voice": "ballad",
+    "voice": "en-GB-RyanNeural",
+    "rate": "-4%",
+    "pitch": "-4Hz"
+  },
+  "music_prompt": "a slow, wry instrumental bed with a heavy, patient pulse that turns tender, no drums",
+  "style": "Hand-painted storybook illustration, rich watercolor and ink on textured paper, warm cinematic light, expressive animals with very human emotions, dry wit, sophisticated and a little melancholic rather than childish, the main subjects kept in the middle of the frame with room above them, {frame}, no text, no letters, no watermark.",
+  "style_mirror": "Flat clean 2D editorial illustration, expressive plain white round-headed stick figures with thin dark outlines, warm dusk light and soft shadows, simple detailed modern interiors, {frame}, no text, no watermark.",
+  "characters": {
+    "eagle": "Orin: a big golden-brown eagle with a pale crest, heavy-lidded sleepy eyes, a round plump chest and gleaming talons that have never touched anything",
+    "mother": "Sela: Orin's mother, a lean dark-brown eagle with sharp amber eyes, a scarred left wing and a permanently tired stare",
+    "brother": "Kest: Orin's younger brother, a small quick eagle with a white-tipped tail and an eager, hopeful face",
+    "squirrels": "Three small red squirrels called Pip, Nip and Tuck, bushy tails, round gossipy eyes, always chewing acorns, perched together on an oak branch",
+    "witness": "Witness: a small grey marmot sitting upright on a rock, perfectly still, with a blank, unmoved face",
+    "human": "Sam: a plain white round-headed stick figure in a grey hoodie and black trousers, thin dark outline, big worried eyes.",
+    "parent": "Sam's mother: a plain white round-headed stick figure in a green cardigan, thin dark outline, tired kind eyes, carrying heavy shopping bags."
+  },
+  "scenes": [
+    {
+      "narration": "Kest flew to free her. Even the squirrels followed. Orin stayed.",
+      "delivery": "sincere, quiet, no joke",
+      "pace": "slow",
+      "characters": [
+        "brother",
+        "squirrels",
+        "eagle"
+      ],
+      "image_prompt": "Dusk. Kest launches from the ledge into the dark orange sky with the three squirrels clinging to his back, tiny paws gripping his feathers, tails streaming. Behind them, Orin sits alone on the ledge in the middle of the frame, perfectly still, watching them go.",
+      "image_prompt_b": "The speck of Kest and the squirrels crosses the huge, darkening sky. Orin has not moved. One feather falls slowly past the camera.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "pause_after": 1.2,
+      "freeze": true,
+      "popups": [
+        {
+          "kind": "label",
+          "text": "Part 2",
+          "at": 0.8,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.26,
+          "hold": 1.6
+        }
+      ]
+    },
+    {
+      "narration": "People build nests too. Usually with a sofa.",
+      "delivery": "dry, amused",
+      "pace": "steady",
+      "characters": [
+        "human"
+      ],
+      "image_prompt": "Sam, a plain stick figure in a grey hoodie, sprawls on a living-room sofa surrounded by cushions, a laptop closed on his knees and a TV remote in hand, perfectly comfortable.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "look": "mirror",
+      "transition": "dissolve"
+    },
+    {
+      "narration": "Sam's mother carried his shopping upstairs every Sunday.",
+      "delivery": "dry, deadpan",
+      "pace": "brisk",
+      "characters": [
+        "human",
+        "parent"
+      ],
+      "image_prompt": "A narrow apartment stairwell: Sam's mother climbs the steps with a bag in each hand, shoulders bent, while Sam stands at the top landing on his phone, not looking up. The bags are stuffed with oranges, bread and tins.",
+      "image_prompt_b": "She reaches the landing and holds the bags out; Sam takes them without looking up from his phone.",
+      "focus": "center",
+      "motion": "pan_left",
+      "look": "mirror",
+      "popups": [
+        {
+          "kind": "label",
+          "at": 1.0,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.32,
+          "hold": 2.0,
+          "text": "Four flights up"
+        }
+      ]
+    },
+    {
+      "narration": "One Sunday, her back gave out.",
+      "delivery": "hushed, flat",
+      "pace": "slow",
+      "characters": [
+        "parent"
+      ],
+      "image_prompt": "Sam's mother sits down on a stair halfway up, one hand pressed to her lower back, a bag tipped on its side with oranges rolling down the steps below her, the stairwell lit by a single bare lightbulb.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "look": "mirror",
+      "popups": [
+        {
+          "kind": "sticker",
+          "at": 1.4,
+          "x": 0.5,
+          "y": 0.42,
+          "size": 0.14,
+          "prompt": "a single orange rolling"
+        }
+      ]
+    },
+    {
+      "narration": "Sam heard the oranges rolling. He stayed on the sofa.",
+      "delivery": "quiet, heavy",
+      "pace": "slow",
+      "characters": [
+        "human"
+      ],
+      "image_prompt": "Sam on the sofa, the TV glow on his face, remote in hand, head slightly turned toward the half-open apartment door and the faint sound beyond it. He does not get up.",
+      "image_prompt_b": "Sam's eyes slide to the door and back to the screen. An orange rolls in across the hallway floor and stops at his slipper.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "look": "mirror",
+      "pause_after": 0.8
+    },
+    {
+      "narration": "At dawn, Sela came back: feathers torn, claws empty.",
+      "delivery": "slow, hollow",
+      "pace": "slow",
+      "characters": [
+        "mother",
+        "eagle",
+        "witness"
+      ],
+      "image_prompt": "First light on the cliff ledge. Sela stands on it, wings trembling, torn net strands trailing from her wing and loose feathers missing, her talons open and empty. Orin sits in front of her, beak already open to complain, and then, in the middle of the frame, freezes. The marmot sits at the far end, still.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "transition": "dissolve",
+      "pause_before": 1.0,
+      "music": {
+        "silence_before": 1.0
+      }
+    },
+    {
+      "narration": "Orin stared at her wing. He should have been flying.",
+      "delivery": "sincere, hushed",
+      "pace": "slow",
+      "characters": [
+        "eagle",
+        "mother"
+      ],
+      "image_prompt": "Extreme close on Orin's face, one eye wide and wet, reflected in it the torn feathers of Sela's wing. Sela stands in soft focus, head bowed. Orin's own huge, unscarred, untouched talons rest on the stone in the foreground.",
+      "image_prompt_b": "Orin's beak trembles; his eyes drop to his own unmarked talons.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "pause_after": 1.0,
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.8,
+          "x": 0.66,
+          "y": 0.3,
+          "size": 0.22,
+          "text": "It should've been me.",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "Nine tries. One frog. All his dignity. Then, a fish.",
+      "delivery": "brisk, then quiet",
+      "pace": "brisk",
+      "characters": [
+        "eagle",
+        "witness"
+      ],
+      "image_prompt": "Orin in the dry riverbed in a mud-splattered mess, a small silver fish held in his talons and an utterly bewildered look on his face, nine deep muddy belly-flop marks around him and a single unimpressed frog sitting on a rock beside him. The marmot watches from the bank.",
+      "image_prompt_b": "Orin, dripping, holds the fish up toward the camera with his beak open in shock, as if he cannot believe it either; the frog slowly turns its head away.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact"
+    },
+    {
+      "narration": "A dozen fish already lay there. Nobody asked who brought them.",
+      "delivery": "calm, quiet",
+      "pace": "slow",
+      "characters": [
+        "eagle",
+        "mother",
+        "witness",
+        "squirrels"
+      ],
+      "image_prompt": "The ledge at dusk. Orin gently sets one small, slightly crooked fish beside Sela, who lies resting on the nest. Beside her already lie a dozen silver fish, neatly stacked. In the foreground the marmot sits upright, looking straight into the camera. Behind it, in the oak, the three squirrels sit in a row, also looking straight into the camera.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "pause_before": 1.2,
+      "pause_after": 1.6,
+      "freeze": true,
+      "music": {
+        "silence_before": 1.0
+      }
+    }
+  ],
+  "youtube": {
+    "title": "The Eagle Who Never Hunted, and the Mother Who Never Stopped (Part 2/2)",
+    "description": "Orin is a big, sleepy eagle who has eaten three hundred fish and caught none. His mother caught every one. Then the dry season comes, and a net hangs over the far river. A short, dry, quietly stinging fable about who carries whom. Subscribe for more tidalfolio stories. This is part 2 of 2: watch the earlier parts first.",
+    "tags": [
+      "eagle",
+      "squirrels",
+      "animal story",
+      "short story",
+      "fable",
+      "family",
+      "birds",
+      "storytelling",
+      "bird banter",
+      "tidalfolio"
+    ],
+    "pinned_comment": "Who in your life has been carrying a little more than their share? Be honest."
+  },
+  "tiktok": {
+    "caption": "Part 2/2: Three hundred fish. His mother caught every one. #eagle #storytime",
+    "hashtags": [
+      "#storytime",
+      "#eagle",
+      "#animalstory",
+      "#fable",
+      "#tidalfolio"
+    ]
+  },
+  "uncommon_word": {
+    "word": "indolent",
+    "meaning": "lazy",
+    "scene": 2
+  },
+  "series_part": {
+    "story": "Bird Banter #2: The Eagle Who Waited",
+    "part": 2,
+    "of": 2
+  }
+}

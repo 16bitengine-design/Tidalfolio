@@ -1,0 +1,317 @@
+{
+  "slug": "005-the-eagle-who-waited-part-1",
+  "title": "Bird Banter #2: The Eagle Who Waited (Part 1/2)",
+  "aspects": [
+    "16:9",
+    "9:16"
+  ],
+  "seed": 482913,
+  "thumbnail_scene": 3,
+  "story": {
+    "protagonist": "eagle",
+    "want": "to be fed for ever without ever having to hunt",
+    "risk": "the mother who feeds him",
+    "cause": "believed",
+    "lesson": "Those who carry us need carrying too, and the time to start is before they fall.",
+    "reversals": [
+      "The dry season makes every fish cost his mother more, and he complains.",
+      "His mother is caught in a net, and he asks about dinner.",
+      "She returns torn and empty-handed, and he sees what it cost her."
+    ],
+    "open_thread": "Who brought the dozen fish?"
+  },
+  "shareable_scene": 9,
+  "burn_captions": true,
+  "voice": {
+    "openai_voice": "ballad",
+    "voice": "en-GB-RyanNeural",
+    "rate": "-4%",
+    "pitch": "-4Hz"
+  },
+  "music_prompt": "a slow, wry instrumental bed with a heavy, patient pulse that turns tender, no drums",
+  "style": "Hand-painted storybook illustration, rich watercolor and ink on textured paper, warm cinematic light, expressive animals with very human emotions, dry wit, sophisticated and a little melancholic rather than childish, the main subjects kept in the middle of the frame with room above them, {frame}, no text, no letters, no watermark.",
+  "style_mirror": "Flat clean 2D editorial illustration, expressive plain white round-headed stick figures with thin dark outlines, warm dusk light and soft shadows, simple detailed modern interiors, {frame}, no text, no watermark.",
+  "characters": {
+    "eagle": "Orin: a big golden-brown eagle with a pale crest, heavy-lidded sleepy eyes, a round plump chest and gleaming talons that have never touched anything",
+    "mother": "Sela: Orin's mother, a lean dark-brown eagle with sharp amber eyes, a scarred left wing and a permanently tired stare",
+    "brother": "Kest: Orin's younger brother, a small quick eagle with a white-tipped tail and an eager, hopeful face",
+    "squirrels": "Three small red squirrels called Pip, Nip and Tuck, bushy tails, round gossipy eyes, always chewing acorns, perched together on an oak branch",
+    "witness": "Witness: a small grey marmot sitting upright on a rock, perfectly still, with a blank, unmoved face",
+    "human": "Sam: a plain white round-headed stick figure in a grey hoodie and black trousers, thin dark outline, big worried eyes.",
+    "parent": "Sam's mother: a plain white round-headed stick figure in a green cardigan, thin dark outline, tired kind eyes, carrying heavy shopping bags."
+  },
+  "scenes": [
+    {
+      "narration": "Orin the eagle ate three hundred fish. His mother caught each one.",
+      "delivery": "hushed, grave, building",
+      "pace": "measured",
+      "characters": [
+        "eagle",
+        "squirrels",
+        "witness"
+      ],
+      "image_prompt": "Orin sprawls on a high cliff ledge like a bloated emperor, eyes half-shut, belly round, a monstrous tower of clean fish skeletons stacked beside his nest as tall as he is. Below, in a great oak, three squirrels hold up tiny paws, tallying on their claws. The marmot sits on a rock behind, blank.",
+      "image_prompt_b": "The skeleton tower wobbles and a single bone slides off the top. Orin opens one lazy eye and lowers his chin, offended, while the three squirrels below gasp in unison.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "pause_before": 0.6,
+      "popups": [
+        {
+          "kind": "label",
+          "text": "Part 1",
+          "at": 0.8,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.26,
+          "hold": 1.6
+        },
+        {
+          "kind": "label",
+          "at": 1.0,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.34,
+          "hold": 2.2,
+          "text": "Fish caught by Orin: zero"
+        }
+      ]
+    },
+    {
+      "narration": "The squirrels called him indolent, and counted every fish.",
+      "delivery": "dry, amused",
+      "pace": "brisk",
+      "characters": [
+        "squirrels",
+        "eagle"
+      ],
+      "image_prompt": "Close on the three squirrels in the oak, mouths full of acorn, each holding up a different number of claws with deadly seriousness, heads swiveling to stare up at Orin on the cliff above. Orin, small and distant, is clearly aware of them and pretends not to be.",
+      "image_prompt_b": "All three squirrels burst into silent, shaking laughter at once, acorns tumbling from their cheeks, tails flicking, while one slaps the branch.",
+      "focus": "left",
+      "motion": "pan_right",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.2,
+          "x": 0.68,
+          "y": 0.3,
+          "size": 0.22,
+          "text": "Three hundred!",
+          "tail": "left"
+        },
+        {
+          "kind": "label",
+          "text": "Indolent: lazy",
+          "at": 1.97,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.3,
+          "hold": 2.2
+        }
+      ]
+    },
+    {
+      "narration": "Hunting, Orin explained, was for birds with nothing better to do.",
+      "delivery": "dry, grand, pompous",
+      "pace": "steady",
+      "characters": [
+        "eagle",
+        "squirrels"
+      ],
+      "image_prompt": "Orin, chin raised to the sky, wing pressed theatrically to his chest, delivers his verdict like a king addressing parliament. Far below, the squirrels roll helplessly on their branch, one hanging upside-down by his tail, doubled over.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.6,
+          "x": 0.66,
+          "y": 0.3,
+          "size": 0.22,
+          "text": "Nothing better?!",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "Sela caught the fish. Orin ate the fish. The squirrels booed.",
+      "delivery": "dry, flat",
+      "pace": "brisk",
+      "characters": [
+        "mother",
+        "eagle",
+        "squirrels"
+      ],
+      "image_prompt": "Sela lands on the ledge with a silver fish in her talons, wings still spread, breathing hard, and lays it before Orin, who is already leaning toward it with eyes shut. Below, the squirrels wave tiny arms in protest, one holding a rolled leaf like an official petition.",
+      "image_prompt_b": "Orin's beak is closing on the fish, eyes still shut and utterly content, while Sela steps back, wings drooping, with a flat stare. A squirrel throws his tail up in despair.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "popups": [
+        {
+          "kind": "sticker",
+          "at": 2.6,
+          "x": 0.55,
+          "y": 0.45,
+          "size": 0.16,
+          "prompt": "a tiny rolled leaf scroll tied with grass"
+        }
+      ]
+    },
+    {
+      "narration": "Then came the dry season. Fish ran short.",
+      "delivery": "hushed, ominous",
+      "pace": "slow",
+      "characters": [
+        "witness",
+        "eagle"
+      ],
+      "image_prompt": "The river valley below is cracked and shrunken, a thin brown trickle where a wide silver river used to run, white fish bones scattered on dry stones. Orin on the ledge looks politely curious about the mud. The marmot, in the foreground, watches without a flicker.",
+      "focus": "right",
+      "motion": "pan_left",
+      "pause_after": 0.6,
+      "popups": [
+        {
+          "kind": "label",
+          "at": 1.0,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.32,
+          "hold": 2.0,
+          "text": "The dry season"
+        }
+      ]
+    },
+    {
+      "narration": "Sela flew farther. Orin complained about waiting.",
+      "delivery": "dry, indignant",
+      "pace": "measured",
+      "characters": [
+        "mother",
+        "eagle"
+      ],
+      "image_prompt": "Foreground: Orin on the ledge with his wings folded and one talon tapping, glaring at an imaginary clock in the sky. Far behind him, a tiny Sela flies away over a pale, scorched wasteland, a long shadow stretching behind her.",
+      "image_prompt_b": "Sela is a speck on the empty horizon. Orin has turned his back to the sky with his beak lifted, pretending not to look.",
+      "focus": "center",
+      "motion": "pan_right",
+      "camera": "whoosh",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.8,
+          "x": 0.34,
+          "y": 0.3,
+          "size": 0.22,
+          "text": "Where's lunch?",
+          "tail": "right"
+        }
+      ]
+    },
+    {
+      "narration": "Beyond the river hung an old net. Sela never saw it.",
+      "delivery": "hushed, ominous",
+      "pace": "slow",
+      "characters": [
+        "mother",
+        "witness"
+      ],
+      "image_prompt": "Far beyond the dry river, an abandoned fishing net hangs between two dead trees in the dusk haze. Sela is tangled in it, wings pinned, beak open in exhaustion, but unhurt, and still gripping a small silver fish in her talons: she would not let go of it. The marmot watches from a distant rock.",
+      "image_prompt_b": "Sela strains against the strands, beak clenched around a loose knot, the fish still held tight in her talons, a single feather drifting down.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact",
+      "pause_after": 0.5
+    },
+    {
+      "narration": "Night fell. Orin called his mother terrible names.",
+      "delivery": "dry, indignant",
+      "pace": "steady",
+      "characters": [
+        "eagle",
+        "squirrels"
+      ],
+      "image_prompt": "Night on the ledge. Orin stomps in a small circle with his wings flung wide, beak open in a full-throated rant at the empty sky, feathers puffed. In the oak below, the three squirrels have stopped chewing, all staring up in appalled silence.",
+      "image_prompt_b": "One squirrel covers another's ears with his paws; the third has slid down behind the branch, eyes wide.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.4,
+          "x": 0.64,
+          "y": 0.3,
+          "size": 0.22,
+          "text": "Useless wings!",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "Kest came back shaking. Mother was stuck. Orin asked about dinner.",
+      "delivery": "grave, flat",
+      "pace": "slow",
+      "characters": [
+        "brother",
+        "eagle"
+      ],
+      "image_prompt": "Kest lands hard on the ledge, wings trembling, eyes huge and wet. Orin, seated with a napkin-like feather tucked under his chin, tilts his head and lifts a talon in a polite, expectant question. The fish tower stands behind him.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 2.0,
+          "x": 0.66,
+          "y": 0.3,
+          "size": 0.2,
+          "text": "And dinner?",
+          "tail": "left"
+        },
+        {
+          "kind": "label",
+          "text": "To be continued",
+          "at": 1.0,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.34,
+          "hold": 2.2
+        }
+      ]
+    }
+  ],
+  "youtube": {
+    "title": "The Eagle Who Never Hunted, and the Mother Who Never Stopped (Part 1/2)",
+    "description": "Orin is a big, sleepy eagle who has eaten three hundred fish and caught none. His mother caught every one. Then the dry season comes, and a net hangs over the far river. A short, dry, quietly stinging fable about who carries whom. Subscribe for more tidalfolio stories. Part 2 is next.",
+    "tags": [
+      "eagle",
+      "squirrels",
+      "animal story",
+      "short story",
+      "fable",
+      "family",
+      "birds",
+      "storytelling",
+      "bird banter",
+      "tidalfolio"
+    ],
+    "pinned_comment": "Who in your life has been carrying a little more than their share? Be honest."
+  },
+  "tiktok": {
+    "caption": "Part 1/2: Three hundred fish. His mother caught every one. #eagle #storytime",
+    "hashtags": [
+      "#storytime",
+      "#eagle",
+      "#animalstory",
+      "#fable",
+      "#tidalfolio"
+    ]
+  },
+  "uncommon_word": {
+    "word": "indolent",
+    "meaning": "lazy",
+    "scene": 2
+  },
+  "series_part": {
+    "story": "Bird Banter #2: The Eagle Who Waited",
+    "part": 1,
+    "of": 2
+  }
+}
