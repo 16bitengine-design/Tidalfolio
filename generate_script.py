@@ -240,7 +240,7 @@ def repair(d):
                                  "clear expressions: " + s["narration"].strip())
         m = str(s.get("motion", "")).strip().lower().replace(" ", "_").replace("-", "_")
         s["motion"] = m if m in MOTIONS else cycle[i % 4]
-        if isinstance(s.get("narration"), str):            # no sound effects or *stage directions* in her lines
+        if isinstance(s.get("narration"), str):            # no sound effects or *stage directions* in his lines
             s["narration"] = re.sub(r"\s*\*[^*]{1,40}\*\s*", " ", s["narration"]).strip()
         legacy = s.pop("sfx", None)                       # sound effects are gone: an old tag only becomes a camera hint
         cam = s.get("camera") or legacy

@@ -1,0 +1,427 @@
+{
+  "slug": "005-the-eagle-who-waited",
+  "title": "Bird Banter #2: The Eagle Who Waited",
+  "aspects": [
+    "16:9",
+    "9:16"
+  ],
+  "seed": 482913,
+  "thumbnail_scene": 5,
+  "story": {
+    "protagonist": "eagle",
+    "want": "to be fed for ever without ever having to hunt",
+    "risk": "the family who feeds him",
+    "cause": "believed",
+    "lesson": "Those who only ever take will one day find nobody left to give.",
+    "reversals": [
+      "The dry season makes every fish cost his mother more.",
+      "The family meets in secret without him.",
+      "The family leaves, and the fish stop coming."
+    ],
+    "emotional_beat_scene": 8,
+    "open_thread": "Who left the fish on the ledge?"
+  },
+  "shareable_scene": 16,
+  "burn_captions": true,
+  "voice": {
+    "openai_voice": "ballad",
+    "voice": "en-GB-RyanNeural",
+    "rate": "-4%",
+    "pitch": "-4Hz"
+  },
+  "music_prompt": "a slow, wry instrumental bed with a heavy, patient pulse that warms into tenderness, no drums",
+  "style": "Hand-painted storybook illustration, rich watercolor and ink on textured paper, warm cinematic light, expressive animals with very human emotions, dry wit, sophisticated and a little melancholic rather than childish, the main subjects kept in the middle of the frame with room above them, {frame}, no text, no letters, no watermark.",
+  "style_mirror": "Flat clean 2D editorial illustration, expressive plain white round-headed stick figures with thin dark outlines, warm dusk light and soft shadows, simple detailed modern interiors, {frame}, no text, no watermark.",
+  "characters": {
+    "eagle": "Orin: a big golden-brown eagle with a pale crest, heavy-lidded sleepy eyes, a round plump chest and gleaming talons that have never touched anything",
+    "mother": "Sela: Orin's mother, a lean dark-brown eagle with sharp amber eyes, a scarred left wing and a permanently tired stare",
+    "brother": "Kest: Orin's younger brother, a small quick eagle with a white-tipped tail and an eager, hopeful face",
+    "witness": "Witness: a small grey marmot sitting upright on a rock, perfectly still, with a blank, unmoved face",
+    "human": "Sam: a plain white round-headed stick figure in a grey hoodie and black trousers, thin dark outline, big worried eyes.",
+    "colleague": "Jo: a plain white round-headed stick figure in a navy sweater with a lanyard, thin dark outline, tired eyes."
+  },
+  "scenes": [
+    {
+      "narration": "Orin the eagle had never hunted. His family's patience was thinning.",
+      "delivery": "hushed, grave",
+      "pace": "measured",
+      "characters": [
+        "eagle",
+        "witness"
+      ],
+      "image_prompt": "Orin sprawls on a high cliff ledge like a king on a sofa, one eye half open, talons crossed, a perfect dent worn in his feather bed. Far below, a hard river valley at dawn. The marmot sits on a rock behind him, blank-faced. A pile of clean fish bones is stacked neatly beside the nest.",
+      "image_prompt_b": "Orin slowly turns his head toward the camera with one lazy eye, wing slightly raised as if waving off a question, while the marmot behind him does not move at all.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "pause_before": 0.6,
+      "popups": [
+        {
+          "kind": "label",
+          "at": 1.0,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.3,
+          "hold": 2.0,
+          "text": "Orin, never hunted"
+        }
+      ]
+    },
+    {
+      "narration": "Hunting, he believed, was for birds with nothing better to do.",
+      "delivery": "dry, deadpan",
+      "pace": "steady",
+      "characters": [
+        "eagle"
+      ],
+      "image_prompt": "Orin yawns hugely while gazing at a distant eagle diving for a fish, his chin resting on one wing, eyes mildly disgusted, as if watching someone rake leaves. His own talons are polished and spotless.",
+      "focus": "left",
+      "motion": "pan_right"
+    },
+    {
+      "narration": "Sela caught the fish. Orin ate the fish.",
+      "delivery": "dry, flat",
+      "pace": "brisk",
+      "characters": [
+        "mother",
+        "eagle",
+        "witness"
+      ],
+      "image_prompt": "Sela lands on the ledge with a silver fish in her talons, wings still spread, breathing hard, and lays it in front of Orin. Orin, without moving anything but his beak, is already leaning toward it with his eyes closed. The marmot watches from the rock.",
+      "image_prompt_b": "Orin's beak is now closing on the fish, eyes still shut and utterly content, while Sela steps back with her wings drooping and a flat, unimpressed stare.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.3,
+          "x": 0.34,
+          "y": 0.28,
+          "size": 0.2,
+          "text": "Mm. Breakfast.",
+          "tail": "right"
+        },
+        {
+          "kind": "sticker",
+          "at": 2.8,
+          "x": 0.55,
+          "y": 0.45,
+          "size": 0.16,
+          "prompt": "a single silver fish"
+        }
+      ]
+    },
+    {
+      "narration": "He called it family tradition. Nobody had voted.",
+      "delivery": "dry, deadpan",
+      "pace": "steady",
+      "characters": [
+        "eagle",
+        "mother",
+        "brother"
+      ],
+      "image_prompt": "A family portrait on the ledge: Orin plump in the middle, chest puffed with dignity, while Sela and Kest stand either side with tired, forced smiles, feathers ruffled and dark circles under their eyes.",
+      "focus": "center",
+      "motion": "zoom_out"
+    },
+    {
+      "narration": "Little Kest brought lunch. He was still learning to fly.",
+      "delivery": "dry, slightly pained",
+      "pace": "brisk",
+      "characters": [
+        "brother",
+        "eagle"
+      ],
+      "image_prompt": "Kest crash-lands onto the ledge in a spray of loose feathers, a large fish clutched in both talons, wings tangled, tail in the air. Orin, unmoved, lifts one eyebrow and extends a wing to accept the fish without getting up.",
+      "image_prompt_b": "Kest pulls himself upright, feathers sticking out in every direction, pushing the fish toward Orin with a proud, breathless grin. Orin is already chewing.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.6,
+          "x": 0.66,
+          "y": 0.3,
+          "size": 0.22,
+          "text": "Lunch, brother!",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "Now, the dry season came. Fish grew scarce.",
+      "delivery": "hushed, ominous",
+      "pace": "slow",
+      "characters": [
+        "witness",
+        "eagle"
+      ],
+      "image_prompt": "The river valley below is cracked and shrunken, with a thin brown trickle where a wide river was. Orin on the ledge looks politely curious about the mud. The marmot, in the foreground, watches the river without a flicker of expression.",
+      "focus": "right",
+      "motion": "pan_left",
+      "pause_after": 0.6,
+      "popups": [
+        {
+          "kind": "label",
+          "at": 1.0,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.32,
+          "hold": 2.0,
+          "text": "Dry season"
+        }
+      ]
+    },
+    {
+      "narration": "Sela flew farther each day. Her wing began to tremble.",
+      "delivery": "quiet, worried",
+      "pace": "measured",
+      "characters": [
+        "mother"
+      ],
+      "image_prompt": "Sela flies low and alone across a pale, scorched landscape, scarred wing beating hard, the far horizon empty. Her shadow is long behind her. A single feather drifts off her wing.",
+      "image_prompt_b": "Sela is closer to the camera now, beak open, eyes narrowed with effort, the scarred wing visibly shaking mid-beat.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "whoosh",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 2.0,
+          "x": 0.64,
+          "y": 0.3,
+          "size": 0.2,
+          "text": "Almost there...",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "She laid the fish before him and swayed. He didn't look up.",
+      "delivery": "sincere, soft, no joke",
+      "pace": "slow",
+      "characters": [
+        "mother",
+        "eagle"
+      ],
+      "image_prompt": "Sela, shaking and hollow-eyed, sets the fish in front of Orin and sways on her talons, one wing drooping to the ground. Orin, beak already open, is staring off to one side at nothing. A single feather falls between them.",
+      "image_prompt_b": "Sela's knees give a little as she steadies herself on the stone. Orin's beak closes on the fish while his eyes remain fixed on the horizon, never turning toward her.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "pause_after": 1.2,
+      "freeze": true
+    },
+    {
+      "narration": "That night, the family met without him.",
+      "delivery": "hushed, conspiratorial",
+      "pace": "slow",
+      "characters": [
+        "mother",
+        "brother",
+        "witness"
+      ],
+      "image_prompt": "By moonlight on a lower branch, Sela and Kest and a stern old eagle uncle sit close together, beaks nearly touching, a glow of moon behind them. In the foreground the marmot sits with its back to a rock, watching them. Far above, Orin's silhouette sleeps on the ledge.",
+      "focus": "left",
+      "motion": "zoom_in",
+      "pause_before": 0.9,
+      "popups": [
+        {
+          "kind": "sticker",
+          "at": 1.8,
+          "x": 0.5,
+          "y": 0.4,
+          "size": 0.16,
+          "prompt": "a tiny wooden gavel"
+        }
+      ]
+    },
+    {
+      "narration": "Orin heard it all. He decided they were tired.",
+      "delivery": "dry, serious",
+      "pace": "steady",
+      "characters": [
+        "eagle",
+        "witness"
+      ],
+      "image_prompt": "Orin's silhouette lies on the ledge with one eye wide open in the dark, ear toward the voices below, a self-satisfied little smile on his beak as if he has just solved something. The marmot sits very still nearby.",
+      "focus": "right",
+      "motion": "zoom_in"
+    },
+    {
+      "narration": "People build nests too. Usually with a sofa.",
+      "delivery": "dry, amused",
+      "pace": "steady",
+      "characters": [
+        "human"
+      ],
+      "image_prompt": "Sam, a plain stick figure in a grey hoodie, sprawls on a living-room sofa surrounded by cushions, a laptop closed on his knees and a TV remote in hand, perfectly comfortable.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "look": "mirror",
+      "transition": "dissolve"
+    },
+    {
+      "narration": "Sam never finished a report. Jo always did.",
+      "delivery": "dry, deadpan",
+      "pace": "brisk",
+      "characters": [
+        "human",
+        "colleague"
+      ],
+      "image_prompt": "In a dim open-plan office, Jo, a stick figure in a navy sweater, types furiously at a desk piled with two people's work, while Sam, behind her, leans back with his hands behind his head. A clock on the wall shows late evening.",
+      "image_prompt_b": "Jo's fingers blur over the keyboard, shoulders hunched, while Sam checks his phone and smiles.",
+      "focus": "center",
+      "motion": "pan_left",
+      "look": "mirror",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.6,
+          "x": 0.36,
+          "y": 0.28,
+          "size": 0.2,
+          "text": "Thanks, Jo!",
+          "tail": "right"
+        }
+      ]
+    },
+    {
+      "narration": "Jo stayed late. Sam called it teamwork.",
+      "delivery": "dry, warm",
+      "pace": "steady",
+      "characters": [
+        "colleague",
+        "human"
+      ],
+      "image_prompt": "A dark office, one desk lamp glowing over Jo, who rubs her eyes, an empty coffee cup at her elbow. Sam stands at her shoulder wearing his coat, giving a thumbs-up.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "look": "mirror",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.5,
+          "x": 0.66,
+          "y": 0.3,
+          "size": 0.2,
+          "text": "Teamwork!",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "Then Jo changed jobs. Monday's report stayed blank.",
+      "delivery": "hushed, flat",
+      "pace": "slow",
+      "characters": [
+        "human"
+      ],
+      "image_prompt": "Sam alone at the desk in a bright, empty office, staring at a completely white screen, his hands hovering above the keyboard. Jo's desk beside him is bare: only a small clean square on the wood where her mug used to sit.",
+      "image_prompt_b": "Sam leans toward the screen, one finger pressing a single key, the cursor blinking on blank white.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "look": "mirror",
+      "camera": "impact",
+      "pause_after": 0.8
+    },
+    {
+      "narration": "At dawn, the cliff was quiet. The family was gone.",
+      "delivery": "slow, hollow",
+      "pace": "slow",
+      "characters": [
+        "eagle",
+        "witness"
+      ],
+      "image_prompt": "The cliff ledge at first light, the nest dented and empty; no fish, no mother, no brother. Orin sits alone in the middle, mid-yawn, one wing stretched, as the realization has not yet reached his face. The marmot sits at the far end of the ledge, still.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "transition": "dissolve",
+      "pause_before": 1.0,
+      "music": {
+        "silence_before": 1.0
+      }
+    },
+    {
+      "narration": "He waited until noon. Then dusk. Then, out of habit, longer.",
+      "delivery": "dry, deadpan",
+      "pace": "measured",
+      "characters": [
+        "eagle"
+      ],
+      "image_prompt": "Orin sits on the ledge as the sun crosses the sky in three exposures of light: pale dawn, harsh noon, orange dusk, the same sullen face in each, eyes fixed on the sky for a fish that doesn't come. A single lonely feather lies by his foot.",
+      "image_prompt_b": "Orin's belly gives a small, sad rumble that shakes his feathers, his eyes still on the empty sky.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.9,
+          "x": 0.34,
+          "y": 0.3,
+          "size": 0.22,
+          "text": "Any minute now.",
+          "tail": "right"
+        }
+      ]
+    },
+    {
+      "narration": "At last he stood at the edge. Look at that sky.",
+      "delivery": "sincere, hushed",
+      "pace": "slow",
+      "characters": [
+        "eagle",
+        "witness"
+      ],
+      "image_prompt": "Orin at the cliff edge with wings half open, tiny at the foot of an enormous orange sky, talons gripping the stone, afraid. The marmot sits on the rock behind him, face blank.",
+      "image_prompt_b": "Orin's wings stretch a little wider, his head tilted down toward the endless drop, eyes huge.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "pause_after": 0.8
+    },
+    {
+      "narration": "A fish lay on the ledge behind him. Nobody asked who left it.",
+      "delivery": "calm, quiet",
+      "pace": "slow",
+      "characters": [
+        "witness",
+        "eagle"
+      ],
+      "image_prompt": "The ledge behind Orin, who is a small shape at the cliff edge in the background. In the foreground, the marmot sits upright beside a single silver fish, and it is looking straight into the camera. Nothing about its expression has changed.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "pause_before": 1.2,
+      "pause_after": 1.6,
+      "freeze": true,
+      "music": {
+        "silence_before": 1.0
+      }
+    }
+  ],
+  "youtube": {
+    "title": "The Eagle Who Never Hunted (and the Family That Finally Left)",
+    "description": "Orin is a big, sleepy eagle who has never hunted once, because someone always brings him a fish. Then the dry season comes, and the people who feed him run out of strength. A short, dry, quietly stinging fable about being carried. Subscribe for more tidalfolio stories.",
+    "tags": [
+      "eagle",
+      "animal story",
+      "short story",
+      "fable",
+      "funny animals",
+      "birds",
+      "storytelling",
+      "bird banter",
+      "tidalfolio",
+      "animal comedy"
+    ],
+    "pinned_comment": "Who in your life has been carrying a little more than their share? Be honest."
+  },
+  "tiktok": {
+    "caption": "The eagle who never hunted. His family carried him until they couldn't. #eagle #storytime",
+    "hashtags": [
+      "#storytime",
+      "#eagle",
+      "#animalstory",
+      "#fable",
+      "#tidalfolio"
+    ]
+  }
+}
