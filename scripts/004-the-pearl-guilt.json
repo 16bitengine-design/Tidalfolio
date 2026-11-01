@@ -1,0 +1,378 @@
+{
+  "slug": "004-the-pearl-guilt",
+  "title": "Underwater Laughs #1: The Pearl Guilt",
+  "aspects": [
+    "16:9",
+    "9:16"
+  ],
+  "seed": 805931,
+  "thumbnail_scene": 1,
+  "story": {
+    "protagonist": "fish",
+    "want": "to claim the grand pearl hidden in a cave",
+    "risk": "the respect of the ocean community if caught cheating",
+    "lesson": "Pride can lead to losing what you desire.",
+    "reversals": [
+      "The octopus finds a tattered map, faded with age.",
+      "The fish dupes the octopus into revealing his favorite hiding spot.",
+      "The pearl is whisked away by an unseen force."
+    ],
+    "emotional_beat_scene": 8,
+    "open_thread": "Who orchestrated the pearl's disappearance?"
+  },
+  "shareable_scene": 4,
+  "burn_captions": true,
+  "voice": {
+    "openai_voice": "sage",
+    "deepen": 0.94,
+    "voice": "en-GB-SoniaNeural",
+    "rate": "-12%",
+    "pitch": "-10Hz"
+  },
+  "music_prompt": "gentle, whimsical instrumental with a hint of mystery, flowing smoothly like ocean currents",
+  "style": "Hand-painted storybook illustration, rich watercolor and ink on textured paper, warm cinematic light, expressive animals with very human emotions, dry wit, sophisticated and a little melancholic rather than childish, the main subjects kept in the middle of the frame with room above them, {frame}, no text, no letters, no watermark.",
+  "style_mirror": "flat, clean 2D editorial illustration, expressive round-headed stick figures, warm light, {frame}, no text, no watermark",
+  "characters": {
+    "fish": "a small, flamboyant clownfish with bright orange and black stripes, expressing mischief",
+    "octopus": "a large, smooth octopus with mottled dark blue skin, showcasing curiosity and intelligence",
+    "crab": "a small, scrappy green crab with a chipped claw, displaying determination",
+    "witness": "a solemn sea turtle, observing quietly from a distance, with wise eyes",
+    "human": "Sam: a plain white round-headed stick figure in a grey hoodie and black trousers, thin dark outline, big worried eyes.",
+    "colleague": "Jo: a plain white round-headed stick figure in a navy sweater with a lanyard, thin dark outline, tired eyes.",
+    "boss": "The boss: a tall friendly stick figure with brown hair in a blue shirt, thin dark outline, warm smile."
+  },
+  "scenes": [
+    {
+      "narration": "A clownfish wanted the grand pearl from a cave guarded by a crab.",
+      "delivery": "dry, serious",
+      "characters": [
+        "fish"
+      ],
+      "image_prompt": "The clownfish, eyes wide, leans cautiously towards a dark cave entrance, as a tiny shrimp scuttles away, concerned.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact",
+      "image_prompt_b": "The clownfish, eyes even wider, peeks further into the cave as the tiny shrimp darts away, leaving a trail of bubbles behind."
+    },
+    {
+      "narration": "The crab was known for his fierce protection of treasures.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "crab"
+      ],
+      "image_prompt": "The crab stands at the cave's entrance, a bemused expression on his face, as a piece of seaweed flaps in the current.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "image_prompt_b": "The crab raises an eyebrow, now leaning slightly forward, as the piece of seaweed dances energetically in the swirling current."
+    },
+    {
+      "narration": "The octopus discovers a map hidden in a kelp bed.",
+      "delivery": "quietly amused",
+      "characters": [
+        "octopus",
+        "witness"
+      ],
+      "image_prompt": "The octopus, examining an ancient map with curiosity, as the witness, a sea turtle, pretends to read a book turned sideways.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "whoosh",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.2,
+          "x": 0.5,
+          "y": 0.4,
+          "size": 0.2,
+          "text": "What's THIS?",
+          "tail": "left"
+        }
+      ],
+      "image_prompt_b": "The octopus, now with a look of excitement, points at the map eagerly while the sea turtle flips the book around, pretending to find it interesting."
+    },
+    {
+      "narration": "The fish tricks the octopus to share the map.",
+      "delivery": "low, mocking",
+      "characters": [
+        "fish",
+        "octopus"
+      ],
+      "image_prompt": "The clownfish, pretending to be friendly, dangles a shiny shell in front of the octopus, while a tiny crab shakes his head in disapproval.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.6,
+          "x": 0.7,
+          "y": 0.3,
+          "size": 0.2,
+          "text": "Trust me!",
+          "tail": "left"
+        }
+      ],
+      "image_prompt_b": "The clownfish wiggles playfully with the shiny shell, while the tiny crab shakes his head more vigorously, clearly disapproving of the act."
+    },
+    {
+      "narration": "The crab, seeing the fish's deception, feels betrayed.",
+      "delivery": "hushed, serious",
+      "characters": [
+        "crab",
+        "witness"
+      ],
+      "image_prompt": "The crab narrows his eyes, clenching his chipped claw, while the sea turtle in the background nibbles on a piece of seaweed, uninterested.",
+      "focus": "left",
+      "motion": "pan_right",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.5,
+          "x": 0.6,
+          "y": 0.4,
+          "size": 0.2,
+          "text": "Betrayed much?",
+          "tail": "left"
+        },
+        {
+          "kind": "bubble",
+          "at": 2.5,
+          "x": 0.4,
+          "y": 0.3,
+          "size": 0.18,
+          "text": "Get a grip!",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "With the map, the fish races toward the cave.",
+      "delivery": "low, urgent",
+      "characters": [
+        "fish"
+      ],
+      "image_prompt": "The clownfish zooms through vibrant coral, flinging bubbles behind, nearly colliding with a starfish that looks shocked.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact",
+      "image_prompt_b": "The clownfish zips past the starfish, which now has a comically shocked expression, as a flurry of bubbles erupts behind him."
+    },
+    {
+      "narration": "Inside, the crab is ready, his claws at the ready.",
+      "delivery": "dry, deadpan",
+      "characters": [
+        "crab"
+      ],
+      "image_prompt": "The crab dramatically confronts the clownfish at the cave entrance, as a small fish swims by, seemingly unfazed.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.0,
+          "x": 0.7,
+          "y": 0.5,
+          "size": 0.2,
+          "text": "Showtime!",
+          "tail": "left"
+        },
+        {
+          "kind": "label",
+          "at": 2.5,
+          "x": 0.5,
+          "y": 0.15,
+          "size": 0.25,
+          "text": "Claws of Fury"
+        }
+      ]
+    },
+    {
+      "narration": "The octopus watches, torn between loyalty and friendship.",
+      "delivery": "sincere, softer",
+      "characters": [
+        "octopus",
+        "witness"
+      ],
+      "image_prompt": "The octopus observes sadly from the shadows, tentacles folded, while a flatfish beneath it puts on a show of camouflage.",
+      "focus": "center",
+      "motion": "zoom_out"
+    },
+    {
+      "narration": "Suddenly, a current whips through, snatching the pearl away.",
+      "delivery": "hushed, bemused",
+      "characters": [
+        "fish",
+        "crab"
+      ],
+      "image_prompt": "The fish and crab reach for the pearl, wide-eyed, but it swiftly spins away into the blue, as a jellyfish in the background looks startled.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "camera": "impact",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.2,
+          "x": 0.6,
+          "y": 0.4,
+          "size": 0.2,
+          "text": "NO!",
+          "tail": "left"
+        }
+      ],
+      "image_prompt_b": "The fish and crab gasp as the pearl spins away, their expressions shifting to surprise, while the jellyfish's tentacles quiver in shock."
+    },
+    {
+      "narration": "Humans live by this river too.",
+      "delivery": "hushed, ominous",
+      "characters": [
+        "human"
+      ],
+      "image_prompt": "A stick figure human at a cluttered desk stares at a perplexing treasure map, their brow furrowed in confusion.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "camera": "whoosh",
+      "look": "mirror",
+      "transition": "dissolve"
+    },
+    {
+      "narration": "A colleague warns them about a slippery deal.",
+      "delivery": "dry, serious",
+      "characters": [
+        "human",
+        "colleague"
+      ],
+      "image_prompt": "The stick-figure colleague leans closer, eyes narrowed, as the human seems entranced by the map, a paperclip dangling from the edge.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.5,
+          "x": 0.4,
+          "y": 0.35,
+          "size": 0.2,
+          "text": "Be careful!",
+          "tail": "left"
+        }
+      ],
+      "look": "mirror"
+    },
+    {
+      "narration": "The boss enters, eyes sharp, sensing trouble.",
+      "delivery": "hushed, watchful",
+      "characters": [
+        "human",
+        "boss"
+      ],
+      "image_prompt": "The boss stick figure stands tall, casting an enormous shadow over the desk, as the human nervously fiddles with a pencil.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "look": "mirror",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 1.2,
+          "x": 0.5,
+          "y": 0.4,
+          "size": 0.2,
+          "text": "Uh-oh!",
+          "tail": "left"
+        },
+        {
+          "kind": "bubble",
+          "at": 2.0,
+          "x": 0.3,
+          "y": 0.35,
+          "size": 0.18,
+          "text": "Pencil Fidgeting",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "Back in the cave, the crab and fish wonder what happened to the pearl.",
+      "delivery": "dry, deadpan",
+      "characters": [
+        "crab",
+        "fish",
+        "witness"
+      ],
+      "image_prompt": "The crab and clownfish gaze into the depths, puzzled looks across their faces, while the witness observes nearby, striking a pose.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "transition": "dissolve"
+    },
+    {
+      "narration": "A shadowy figure emerges from the depths, holding the pearl.",
+      "delivery": "calm, unsettling",
+      "characters": [
+        "fish",
+        "crab"
+      ],
+      "image_prompt": "A distant silhouette, glimmers of shimmering scales visible, rises ominously from the depths, proudly clutching the pearl.",
+      "focus": "center",
+      "motion": "pan_left",
+      "popups": [
+        {
+          "kind": "sticker",
+          "at": 1.8,
+          "x": 0.5,
+          "y": 0.3,
+          "size": 0.25,
+          "prompt": "Mysterious pearl holder"
+        },
+        {
+          "kind": "bubble",
+          "at": 3.0,
+          "x": 0.6,
+          "y": 0.5,
+          "size": 0.2,
+          "text": "What a catch!",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "Just a few bubbles drift towards the surface.",
+      "delivery": "low, pondering",
+      "characters": [
+        "witness"
+      ],
+      "image_prompt": "The serene sea turtle observes the rising bubbles, a knowing glint in its eyes, as a nearby rockfish peers curiously.",
+      "focus": "center",
+      "motion": "zoom_out"
+    },
+    {
+      "narration": "Nobody asked who it belonged to.",
+      "delivery": "calm, enigmatic",
+      "characters": [],
+      "image_prompt": "A dramatic frozen moment shows characters in mid-action; an ominous shadow looms nearby, questions suspended. ",
+      "focus": "center",
+      "motion": "pan_left"
+    }
+  ],
+  "youtube": {
+    "title": "Finding a Pearl: Underwater Capers Awaits",
+    "description": "Join a clownfish, an octopus, and a crab in an aquatic adventure for a prized pearl. But pride might cost them more than they bargained for. Subscribe for more underwater laughs!",
+    "tags": [
+      "underwater",
+      "fish",
+      "comedy",
+      "ocean",
+      "octopus",
+      "crab",
+      "cartoon",
+      "adventure"
+    ],
+    "pinned_comment": "If faced with the treasure dilemma, would you act differently? Think about it."
+  },
+  "tiktok": {
+    "caption": "A pearl of wisdom gets swept away. Pride does not always pay off. #funny #ocean #underwaterlife #clownfish #octopus",
+    "hashtags": [
+      "#oceanhumor",
+      "#comedy",
+      "#fishlife",
+      "#underwater",
+      "#pearls"
+    ]
+  }
+}
