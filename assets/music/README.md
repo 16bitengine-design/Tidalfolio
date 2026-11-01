@@ -1,5 +1,9 @@
 # tidalfolio signature theme
 
+The current theme is original: composed and synthesized by `tools/make_theme.py` (no samples, no third-party audio),
+so there is no license to track. Re-render with `python tools/make_theme.py` (`--seed N` for another take). Replace the
+three files with a Suno-made version later if you like; the pipeline just uses whatever is in `theme/`.
+
 Every video uses the SAME theme: the "Tidal Fable" theme. No other music, no sound effects.
 
 Put three files in `assets/music/theme/` (mp3, wav, m4a or ogg):
