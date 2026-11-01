@@ -58,6 +58,8 @@ CHANNEL RULES (all mandatory):
 - STORYTELLING ETIQUETTE (the voice must never run at one speed or one tone): vary the PACE across the story: slower for suspense, secrets and the emotional beat, brisker for action and escalation, a clipped rush for the chase. Vary sentence length: a long rolling sentence of build-up, then a short one that lands. Put the key word LAST in a sentence so it can be stressed. Use silence as a tool: a long pause before a twist or punchline, a held beat after a shocking line. Let the voice drop to a hush before a reveal and open up at the triumph. Use the rule of three, and let the third item break the pattern. Use at most one rhetorical question in the whole story and let it hang. Never explain a joke. The story stays brisk and action-oriented overall.
 - There is NO sound design: no sound effects exist. The only audio is his voice and a music bed. Never write sound effects, onomatopoeia or "*crash*" in the narration.
 - Total runtime must be between {MIN_RUNTIME:.0f} and {MAX_RUNTIME:.0f} seconds. Each scene lasts about 0.85 seconds plus its narration at {WORDS_PER_SEC} words per second, so write 16 to 20 scenes with 6 to 12 words of narration each (roughly 140 to 175 words in total). Aim for a finished video of about 75 to 85 seconds: never under 60, never over 90.
+- COMMON WORDS ONLY: write the narration in plain, commonly used English, the words an ordinary 12-year-old already knows. Short everyday words, short sentences. No literary, technical or rare words ("scarce", "netted", "talons", "delay" are too fancy: say "hard to find", "stuck", "claws", "waiting"). The ONLY exception is the one uncommon word below.
+- ONE UNCOMMON WORD PER STORY: choose exactly ONE real, useful English word that most viewers would not know (for example "indolent", "ephemeral", "audacious", "gregarious", "meticulous", "reluctant", "frugal"; never slang, never a place or character name, never a word already used on the channel). Use it exactly ONCE in the narration, in a place where the picture and the sentence make its meaning easy to guess (the narrator may even nod to it dryly, but never defines it in a teacherly way). Report it in "uncommon_word": {{"word": "...", "meaning": "1 to 3 plain words", "scene": 1-based}}. A small label card with the word and its meaning pops up when it is spoken; you do not need to write that pop-up.
 - STORY ENGINE (the most important rule; a funny video with no story gets watched once and forgotten):
   1. STAKES FIRST. Scene 1 narration (max 14 words) states a high-stakes premise a stranger understands instantly, e.g. "A kingfisher had three days to repay a debt to a crow." Never open with scenery, a greeting or the channel name.
   2. ONE PROTAGONIST who WANTS something badly, faces an obstacle, and has something to lose if they fail. Name them. The viewer must be able to say "I hope Marco..." about them.
@@ -99,6 +101,7 @@ Reply with ONE JSON object only, in exactly this shape:
   "music_prompt": "one sentence describing a wry, warm instrumental music bed that suits this story (no vocals, no drums)",
   "thumbnail_scene": 1-based number of the funniest, most striking frame (it is the thumbnail),
   "shareable_scene": 1-based,
+  "uncommon_word": {{"word": "indolent", "meaning": "lazy", "scene": 2}},
   "scenes": [{{"narration": "...", "delivery": "hushed, ominous", "pace": "slow", "pause_before": 1.2, "pause_after": 0.8, "characters": ["key"], "image_prompt": "...", "image_prompt_b": "optional next frame", "focus": "center", "motion": "zoom_in", "camera": "impact", "popups": [{{"kind": "bubble", "text": "MINE.", "at": 1.5, "x": 0.3, "y": 0.28, "size": 0.2, "tail": "left", "hold": 1.6}}, {{"kind": "sticker", "prompt": "a small hourglass", "at": 3.0, "x": 0.5, "y": 0.35, "size": 0.18}}]}}],
   "youtube": {{"title": "<=90 chars, curiosity-driven", "description": "2-4 sentences: the story teaser, then one sentence that hints at the lesson without spelling it out, then a subscribe line", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers apply the lesson to their own life (e.g. 'Would you have given it away? Be honest.')"}},
   "tiktok": {{"caption": "<=140 chars hook", "hashtags": ["5-6 hashtags starting with #"]}}
@@ -162,6 +165,19 @@ def existing():
             if t.startswith(s):
                 seen[s].add(base)
     return titles, {s: len(v) for s, v in seen.items()}
+
+
+def used_words():
+    """Uncommon words already used in earlier scripts, so each story teaches a different one."""
+    out = []
+    for f in sorted(SCRIPTS.glob("*.json")):
+        try:
+            w = json.loads(f.read_text()).get("uncommon_word", {}).get("word")
+        except (ValueError, AttributeError):
+            continue
+        if w:
+            out.append(str(w).strip().lower())
+    return out
 
 
 def next_number():
@@ -382,6 +398,22 @@ def validate(d, mirror=True):
             errs.append("story.lesson must be one plain sentence of 5 to 25 words: the human lesson the story teaches")
         elif re.search(r"\bthe moral\b|\blesson learned\b|\bremember,? kids\b", json.dumps(scenes).lower()):
             errs.append("the narration must not preach: remove phrases like 'the moral is' or 'lesson learned'; show the lesson through consequence")
+    uw = d.get("uncommon_word")
+    if not isinstance(uw, dict) or not str(uw.get("word", "")).strip() or not str(uw.get("meaning", "")).strip():
+        errs.append('add "uncommon_word": {"word": ..., "meaning": ..., "scene": n}: ONE uncommon English word used exactly once in the narration')
+    else:
+        w, mean = str(uw["word"]).strip().lower(), str(uw["meaning"]).strip()
+        pat = rf"\b{re.escape(w)}\b"
+        hits = [i for i, sc in enumerate(scenes) if re.search(pat, str(sc.get("narration", "")).lower())]
+        total_uses = len(re.findall(pat, " ".join(str(sc.get("narration", "")) for sc in scenes).lower()))
+        if len(hits) != 1 or total_uses != 1:
+            errs.append(f'the uncommon word "{w}" must appear exactly once in the narration')
+        elif w in used_words():
+            errs.append(f'the uncommon word "{w}" was already used on the channel: pick a different one')
+        elif len(mean.split()) > 3 or len(w) + len(mean) > 36:
+            errs.append("uncommon_word.meaning must be 1 to 3 plain words")
+        else:
+            uw["scene"] = hits[0] + 1
     if len(scenes[0].get("narration", "").split()) > 14:
         errs.append("scene 1 narration must be a stakes-first hook of at most 14 words")
     # pop-ups are never a reason to reject a story: ensure_popups() adds or trims them afterwards
@@ -436,6 +468,7 @@ Checklist:
 6. Protect the story engine: stakes in the first line, a protagonist who wants something, three escalating reversals, one sincere emotional beat with no joke, a haunting last line and an open thread. If any is weak, fix it first; story beats jokes.
 7. Protect the lesson (story.lesson): it must be shown through the protagonist's choice and its cost, never preached. If it is vague or preachy, make it concrete and quiet.
 8. Keep the MIRROR act (the human stick-figure vignette, scenes with look "mirror", style_mirror, dissolve transitions) intact and make sure it is a real miniature of the same lesson, not a recap.
+8. Keep the uncommon_word field and use that word exactly once in the narration; replace any other fancy word with a plain everyday one.
 8. Keep delivery, focus, camera, popups, music_prompt, image_prompt_b and the story/shareable_scene fields. The narrator is a dry, warm middle-aged male storyteller who tells the story from outside it (third person, never mentioning himself, never telling the listener what to do or think): sharpen his lines, vary sentence length, never turn him into a trailer voice, and write no sound effects. Keep pace, pause_before, pause_after, music and freeze fields, and vary pace across the story.
 Return ONLY the full improved JSON."""
 
@@ -455,6 +488,25 @@ def punch_up(data, mirror=True, extra=""):
         return data
     print("  punch-up pass applied")
     return better
+
+
+def add_word_label(data):
+    """Pop a small card with the uncommon word and its meaning in the scene where it is spoken."""
+    uw = data.get("uncommon_word")
+    if not isinstance(uw, dict):
+        return
+    try:
+        sc = data["scenes"][int(uw["scene"]) - 1]
+        text = f"{str(uw['word']).strip().capitalize()}: {str(uw['meaning']).strip()}"[:40]
+    except (KeyError, IndexError, TypeError, ValueError):
+        return
+    words = sc["narration"].lower().split()
+    idx = next((k for k, x in enumerate(words) if str(uw["word"]).strip().lower() in x), len(words) // 2)
+    narr = len(words) / WORDS_PER_SEC
+    at = round(min(max(0.3 + narr * idx / max(1, len(words)), 0.8), 0.3 + narr * 0.6, 9.0), 2)   # early enough to stay on screen before the scene ends
+    pops = [p for p in sc.get("popups", []) if p["kind"] != "label"][:2]
+    pops.append({"kind": "label", "text": text, "at": at, "x": 0.5, "y": 0.16, "size": 0.3, "hold": 2.2})
+    sc["popups"] = pops
 
 
 def ensure_next_frames(data, target=6):
@@ -635,7 +687,8 @@ def write_one(series=None, idea=None, part=None, plan=None, ep=None, prior_end="
             + ("" if part else (f"Episode idea to develop: {idea}\n" if idea else "Invent a fresh, specific premise.\n"))
             + ("" if part else previous_thread(series) + "\n")
             + ("" if part else ("Lessons already used on the channel (teach a different one):\n- " + "\n- ".join(used_lessons()) + "\n" if used_lessons() else ""))
-            + ("" if part else ("Do NOT reuse these existing episodes or their premises:\n- " + "\n- ".join(titles) if titles else "")) + performance_notes())
+            + ("" if part else ("Do NOT reuse these existing episodes or their premises:\n- " + "\n- ".join(titles) if titles else ""))
+            + (("\nUncommon words already used (choose a different one): " + ", ".join(used_words()) + "\n") if used_words() else "") + performance_notes())
     messages = [{"role": "system", "content": system_prompt()}, {"role": "user", "content": user}]
     data, errs = None, []
     for attempt in range(4):
@@ -664,6 +717,7 @@ def write_one(series=None, idea=None, part=None, plan=None, ep=None, prior_end="
     data = punch_up(data, final, part_extra(part) if part else "")
     ensure_next_frames(data)
     ensure_popups(data)
+    add_word_label(data)
     n = next_number()
     if part:
         k, total = part
@@ -679,6 +733,7 @@ def write_one(series=None, idea=None, part=None, plan=None, ep=None, prior_end="
         "seed": random.randint(1, 999999) if not part else int(plan.setdefault("seed", random.randint(1, 999999))),
         "thumbnail_scene": int(data["thumbnail_scene"]),
         "story": data.get("story"), "shareable_scene": int(data.get("shareable_scene", 1)),
+        "uncommon_word": data.get("uncommon_word"),
         "burn_captions": True,
         "voice": {"openai_voice": "ballad", "voice": "en-GB-RyanNeural", "rate": "-4%", "pitch": "-4Hz"},
         "music_prompt": str(data.get("music_prompt") or "").strip() or None,

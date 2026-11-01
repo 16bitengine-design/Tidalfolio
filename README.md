@@ -66,6 +66,7 @@ Script fields:
   - `pace`: `slow`, `measured`, `steady`, `brisk` or `rushed`; the storyteller changes speed from scene to scene (slow for suspense and the emotional beat, brisk for action).
   - `pause_before` / `pause_after`: seconds of silence before / after the line (0.1 to 2.5). Use a long `pause_before` ahead of a twist and a long `pause_after` to let a shocking or final line land.
   - `music`: `{"silence_before": 1.0}` cuts the music to nothing just before the line (it returns after about half a second); `{"emotion": "tender"}` or `{"level": 0.8}` set its level.
+  - (words) Narration uses plain, commonly used English. Each script has one `uncommon_word` (`{"word": "indolent", "meaning": "lazy", "scene": 2}`): a real but uncommon word, spoken once in that scene, with a small label card showing the word and its meaning. The script writer picks a new word for every story.
   - `freeze`: `true` holds the last shot of the scene perfectly still (vignette, slightly muted colour), for the reveal or the stare.
   - `image_prompt`: say exactly what each character is doing, beat by beat.
   - `image_prompt_b` (optional, `characters_b` if the cast differs): the same moment half a second later. The video cuts between the two images so the scene moves. Use it on action scenes.

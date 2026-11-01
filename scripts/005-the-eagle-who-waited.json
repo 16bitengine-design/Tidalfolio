@@ -69,7 +69,7 @@
       ]
     },
     {
-      "narration": "Down in the oak, three squirrels kept count.",
+      "narration": "The squirrels called him indolent, and counted every fish.",
       "delivery": "dry, amused",
       "pace": "brisk",
       "characters": [
@@ -89,6 +89,15 @@
           "size": 0.22,
           "text": "Three hundred!",
           "tail": "left"
+        },
+        {
+          "kind": "label",
+          "text": "Indolent: lazy",
+          "at": 1.97,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.3,
+          "hold": 2.2
         }
       ]
     },
@@ -116,7 +125,7 @@
       ]
     },
     {
-      "narration": "Sela caught the fish. Orin ate the fish. The squirrels objected.",
+      "narration": "Sela caught the fish. Orin ate the fish. The squirrels booed.",
       "delivery": "dry, flat",
       "pace": "brisk",
       "characters": [
@@ -140,7 +149,7 @@
       ]
     },
     {
-      "narration": "Then came the dry season. Fish grew scarce.",
+      "narration": "Then came the dry season. Fish ran short.",
       "delivery": "hushed, ominous",
       "pace": "slow",
       "characters": [
@@ -164,7 +173,7 @@
       ]
     },
     {
-      "narration": "Sela flew farther. Orin complained about the delay.",
+      "narration": "Sela flew farther. Orin complained about waiting.",
       "delivery": "dry, indignant",
       "pace": "measured",
       "characters": [
@@ -228,7 +237,7 @@
       ]
     },
     {
-      "narration": "Kest returned, shaking: Mother was netted. Orin asked about dinner.",
+      "narration": "Kest came back shaking. Mother was stuck. Orin asked about dinner.",
       "delivery": "grave, flat",
       "pace": "slow",
       "characters": [
@@ -251,7 +260,7 @@
       ]
     },
     {
-      "narration": "Kest flew to cut her free. Even the squirrels followed. Orin stayed.",
+      "narration": "Kest flew to free her. Even the squirrels followed. Orin stayed.",
       "delivery": "sincere, quiet, no joke",
       "pace": "slow",
       "characters": [
@@ -341,7 +350,7 @@
       "pause_after": 0.8
     },
     {
-      "narration": "At dawn, Sela returned: feathers torn, talons empty.",
+      "narration": "At dawn, Sela came back: feathers torn, claws empty.",
       "delivery": "slow, hollow",
       "pace": "slow",
       "characters": [
@@ -444,5 +453,10 @@
       "#fable",
       "#tidalfolio"
     ]
+  },
+  "uncommon_word": {
+    "word": "indolent",
+    "meaning": "lazy",
+    "scene": 2
   }
 }
