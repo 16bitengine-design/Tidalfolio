@@ -1,6 +1,6 @@
 # tidalfolio auto-video pipeline
 
-Turns a script file into a finished video: hand-painted storybook illustrations with pop-ups (speech bubbles, labels and painted props that bounce in), a deep older-woman narrator, several camera moves and cuts per scene, a music bed (music only, no sound effects), highlighted-word captions, a thumbnail and upload details. It makes a 16:9 version for YouTube and a 9:16 version for TikTok and Shorts. It runs free on GitHub Actions.
+Turns a script file into a finished video: hand-painted storybook illustrations with pop-ups (speech bubbles, labels and painted props that bounce in), a warm male storyteller narrator, several camera moves and cuts per scene, a music bed (music only, no sound effects), highlighted-word captions, a thumbnail and upload details. It makes a 16:9 version for YouTube and a 9:16 version for TikTok and Shorts. It runs free on GitHub Actions.
 
 ## One-time setup (about 10 minutes)
 
