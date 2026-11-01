@@ -28,6 +28,7 @@ LEAD = 0.30          # silence before narration starts in each scene (s)
 TAIL = 0.55          # silence after narration ends (s)
 MIN_SCENE = 3.0      # shortest allowed scene (s)
 MIN_VIDEO = 60.0     # channel rule: every video runs 60 to 90 seconds
+MIN_PART = 40.0      # exception: a part of a story that was split because it ran past 90 s may be 40 to 90 s
 MAX_VIDEO = 90.0
 ALLOW_LONG = False   # set by --allow-long
 WORKERS = max(1, min(4, os.cpu_count() or 2))
@@ -678,11 +679,12 @@ def render(script_path, dry):
         t += d
     total = t
     print(f"      total runtime: {total:.1f}s")
-    if total < MIN_VIDEO:
+    min_video = MIN_PART if script.get("series_part") else MIN_VIDEO
+    if total < min_video:
         # a little short: spread extra pause evenly (up to ~0.8s per scene) to reach the minimum
-        extra = (MIN_VIDEO + 1.0 - total) / len(scenes)
+        extra = (min_video + 1.0 - total) / len(scenes)
         if extra > 0.8:
-            sys.exit(f"Video would be {total:.1f}s but the minimum is {MIN_VIDEO:.0f}s. "
+            sys.exit(f"Video would be {total:.1f}s but the minimum is {min_video:.0f}s. "
                      "Add scenes or lengthen narration in the script.")
         t = 0.0
         for sc in scenes:
