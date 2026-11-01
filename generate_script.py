@@ -4,6 +4,7 @@
   python generate_script.py --ensure 1          # make sure at least 1 unrendered script is queued
   python generate_script.py --count 3           # write 3 new scripts now
   python generate_script.py --series "Funny Animals" --idea "a goat who refuses to leave a car roof"
+  python generate_script.py --parts 3 --idea "..."   # one story told as Part 1, Part 2, Part 3 (each 60-90 s)
 
 Needs OPENAI_API_KEY. Model: OPENAI_TEXT_MODEL (default gpt-4o-mini; set a stronger model for better stories).
 Every script is checked against the channel rules before it is saved; failures are retried with feedback.
@@ -139,18 +140,24 @@ def used_lessons():
     return [x for x in out if x]
 
 
+PART_SUFFIX = re.compile(r"\s*\(Part \d+/\d+\)\s*$")
+
+
 def existing():
-    titles, counts = [], {s: 0 for s in SERIES}
+    """Titles used so far and the number of distinct stories per series (all parts of one story count once)."""
+    titles, seen = [], {s: set() for s in SERIES}
     for f in sorted(SCRIPTS.glob("*.json")):
         try:
             t = json.loads(f.read_text()).get("title", "")
         except Exception:
             continue
-        titles.append(t)
+        base = PART_SUFFIX.sub("", t)
+        if base not in titles:
+            titles.append(base)
         for s in SERIES:
             if t.startswith(s):
-                counts[s] += 1
-    return titles, counts
+                seen[s].add(base)
+    return titles, {s: len(v) for s, v in seen.items()}
 
 
 def next_number():
@@ -315,7 +322,7 @@ def repair(d):
                 s["image_prompt"] = str(s["image_prompt"]).rstrip() + gag
 
 
-def validate(d):
+def validate(d, mirror=True):
     repair(d)
     errs = []
     chars, scenes = d.get("characters"), d.get("scenes")
@@ -325,10 +332,13 @@ def validate(d):
     if not isinstance(scenes, list) or not 14 <= len(scenes) <= 24 or not all(isinstance(s, dict) for s in scenes):
         n = len(scenes) if isinstance(scenes, list) else 0
         return errs + [f"your reply has {n} scenes in a top-level \"scenes\" array; it must have 14 to 24 (write exactly 18)"]
-    if not isinstance(d.get("style_mirror"), str) or len(d["style_mirror"].split()) < 8:
+    if mirror and (not isinstance(d.get("style_mirror"), str) or len(d["style_mirror"].split()) < 8):
         errs.append("style_mirror (the mirror act's art style) is required")
     mir = [i for i, s in enumerate(scenes) if s.get("look") == "mirror"]
-    if not 3 <= len(mir) <= 5 or mir != list(range(mir[0], mir[0] + len(mir))):
+    if not mirror:
+        if mir:
+            errs.append('this part must NOT contain the mirror act: remove "look": "mirror" from every scene')
+    elif not 3 <= len(mir) <= 5 or mir != list(range(mir[0], mir[0] + len(mir))):
         errs.append('the mirror act needs 3 to 5 consecutive scenes with "look": "mirror"')
     else:
         if mir[0] < len(scenes) * 0.4 or mir[-1] > len(scenes) - 4:
@@ -426,14 +436,14 @@ Checklist:
 Return ONLY the full improved JSON."""
 
 
-def punch_up(data):
+def punch_up(data, mirror=True, extra=""):
     if os.environ.get("PUNCH_UP", "1") == "0":
         return data
     raw = call_openai([{"role": "system", "content": system_prompt()},
-                       {"role": "user", "content": PUNCH_UP_PROMPT + "\n\n" + json.dumps(data, ensure_ascii=False)}])
+                       {"role": "user", "content": PUNCH_UP_PROMPT + ("\n\n" + extra if extra else "") + "\n\n" + json.dumps(data, ensure_ascii=False)}])
     try:
         better = json.loads(raw)
-        errs = validate(better)
+        errs = validate(better, mirror)
     except json.JSONDecodeError:
         errs = ["not valid JSON"]
     if errs:
@@ -522,30 +532,99 @@ def ensure_popups(data, target=8, min_bubbles=5):
     print(f"  pop-ups on {n} scenes")
 
 
-def write_one(series=None, idea=None):
+def plan_story(series, idea, n):
+    """One planning call for a multi-part story: title, lesson, locked cast, and what each part does."""
+    titles, _ = existing()
+    user = (f'Plan ONE story for the series "{series}" (theme: {SERIES[series]}) that will be told across exactly {n} separate videos '
+            f'("parts"), each 60 to 90 seconds (about 16 to 18 scenes). Reply with ONE JSON object: '
+            '{"title": "the story title, no part number", "lesson": "one plain sentence, the human lesson (5 to 25 words)", '
+            '"characters": {"key": "Name: locked visual description (species, colours, size, distinctive feature)"}, '
+            '"parts": [{"summary": "2 to 3 sentences: what happens in this part and what changes", '
+            '"ending": "how this part ends: a cliffhanger reversal for every part except the last; for the last part, the quiet impossible final image"}]}. '
+            f'Rules: exactly {n} parts; 2 to 4 animal characters plus a silent deadpan "witness" creature, and no humans (the human '
+            "mirror vignette is written in the final part); one protagonist who wants something badly; three escalating reversals spread "
+            "across the parts; the emotional beat sits in the middle of the story; the final part pays off the lesson through consequence, "
+            "never preached; every part must be worth watching on its own.\n"
+            + (f"Story idea to develop: {idea}\n" if idea else "Invent a fresh, specific premise.\n")
+            + ("Lessons already used on the channel (teach a different one):\n- " + "\n- ".join(used_lessons()) + "\n" if used_lessons() else "")
+            + ("Do NOT reuse these existing stories:\n- " + "\n- ".join(titles) if titles else ""))
+    for attempt in range(3):
+        raw = call_openai([{"role": "system", "content": "You plan multi-part animal-comedy stories for the deadpan channel tidalfolio. Reply with JSON only."},
+                           {"role": "user", "content": user}], 0.9 if attempt == 0 else 0.5)
+        try:
+            plan = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        ok = (isinstance(plan.get("title"), str) and isinstance(plan.get("characters"), dict) and "witness" in plan["characters"]
+              and 3 <= len(plan["characters"]) <= 6 and isinstance(plan.get("parts"), list) and len(plan["parts"]) == n
+              and all(isinstance(x, dict) and x.get("summary") and x.get("ending") for x in plan["parts"])
+              and 5 <= len(str(plan.get("lesson", "")).split()) <= 25)
+        if ok:
+            return plan
+        print("  story plan rejected: needs title, lesson, a cast with a witness, and exactly %d parts" % n)
+    sys.exit("Could not get a valid story plan after 3 attempts.")
+
+
+def part_brief(part, plan):
+    k, n = part
+    lines = [f'THIS EPISODE IS PART {k} OF {n} OF ONE STORY, "{plan["title"]}". The whole story is told across {n} separate videos, each '
+             "60 to 90 seconds. Every part must be a complete, satisfying watch on its own while moving the story forward.",
+             "Story plan for all parts:"]
+    for i, pt in enumerate(plan["parts"], 1):
+        lines.append(f"  Part {i}: {pt['summary']} (ends on: {pt['ending']})")
+    lines.append(f"Write ONLY part {k}. Use exactly these characters (same keys, same descriptions; you may add one-off extras): "
+                 + json.dumps(plan["characters"], ensure_ascii=False) + f'. story.lesson is the whole story\'s lesson: "{plan["lesson"]}".')
+    if k > 1:
+        lines.append("Scene 1 narration is a dry recap-plus-stakes line of at most 14 words that tells a new viewer what is at stake, then the story continues.")
+    if k == n:
+        lines.append("This is the FINAL part: pay off the whole story and land the lesson through consequence. Include the mirror act and the "
+                     "quietly impossible ending exactly as the standard rules say.")
+    else:
+        lines.append("This is NOT the final part. Rule 9 (the human mirror act) does NOT apply here: write no mirror scenes, give no scene "
+                     '"look" or "transition", and set style_mirror to the single sentence "not used in this part". Do not resolve the story. '
+                     "THE ENDING rule is replaced: end on a cliffhanger (a reversal that makes the viewer need the next part) with a short, calm last line.")
+    return "\n".join(lines)
+
+
+def part_extra(part):
+    k, n = part
+    if k == n:
+        return f"This is the final part ({k} of {n}) of a multi-part story: keep its recap line, its payoff and the mirror act."
+    return (f"This is part {k} of {n} of a multi-part story and NOT the final part: keep it WITHOUT any mirror act and WITHOUT "
+            "an explained ending. Its last scene must stay a cliffhanger (ignore items 4 and 8 of the checklist). Keep every character key.")
+
+
+def write_one(series=None, idea=None, part=None, plan=None, ep=None, prior_end=""):
     titles, counts = existing()
     if not series:
         series = min(SERIES, key=lambda s: (counts[s], list(SERIES).index(s)))
-    ep = counts[series] + 1
+    ep = ep or counts[series] + 1
+    final = part is None or part[0] == part[1]
+    if part and not final:
+        structure = ("REQUIRED STRUCTURE: write exactly 17 scenes, ALL of them animal scenes (no human mirror vignette in this part). "
+                     "The emotional beat, if this part has one, is around scene 9. ")
+    else:
+        structure = ("REQUIRED STRUCTURE: write exactly 18 scenes. Scenes 1-11 are the animal story (the emotional beat is around "
+                     "scene 8). Scenes 12, 13 and 14 are the human MIRROR vignette: only plain stick-figure humans "
+                     "(keys like \"human\", \"colleague\", \"boss\", defined in \"characters\"), no animals, each with \"look\": \"mirror\"; "
+                     "scene 12 and scene 15 also carry \"transition\": \"dissolve\". Scenes 15-18 return to the animals for the twist. ")
     user = (f"Write the next episode of the series \"{series}\" (episode #{ep}). "
-            f"Series theme: {SERIES[series]}.\n"
-            "REQUIRED STRUCTURE: write exactly 18 scenes. Scenes 1-11 are the animal story (the emotional beat is around "
-            "scene 8). Scenes 12, 13 and 14 are the human MIRROR vignette: only plain stick-figure humans "
-            "(keys like \"human\", \"colleague\", \"boss\", defined in \"characters\"), no animals, each with \"look\": \"mirror\"; "
-            "scene 12 and scene 15 also carry \"transition\": \"dissolve\". Scenes 15-18 return to the animals for the twist. "
+            f"Series theme: {SERIES[series]}.\n" + structure +
             "Keep the narration brisk: the whole video must run 60 to 90 seconds. "
             "The \"witness\" key must be listed in the \"characters\" array of at least 5 animal scenes.\n"
-            + (f"Episode idea to develop: {idea}\n" if idea else "Invent a fresh, specific premise.\n")
-            + previous_thread(series) + "\n"
-            + ("Lessons already used on the channel (teach a different one):\n- " + "\n- ".join(used_lessons()) + "\n" if used_lessons() else "")
-            + ("Do NOT reuse these existing episodes or their premises:\n- " + "\n- ".join(titles) if titles else ""))
+            + (part_brief(part, plan) + "\n" if part else "")
+            + (f"Part {part[0] - 1} ended with: \"{prior_end}\". Continue directly from there.\n" if part and prior_end else "")
+            + ("" if part else (f"Episode idea to develop: {idea}\n" if idea else "Invent a fresh, specific premise.\n"))
+            + ("" if part else previous_thread(series) + "\n")
+            + ("" if part else ("Lessons already used on the channel (teach a different one):\n- " + "\n- ".join(used_lessons()) + "\n" if used_lessons() else ""))
+            + ("" if part else ("Do NOT reuse these existing episodes or their premises:\n- " + "\n- ".join(titles) if titles else "")))
     messages = [{"role": "system", "content": system_prompt()}, {"role": "user", "content": user}]
     data, errs = None, []
     for attempt in range(4):
         raw = call_openai(messages, 1.0 if attempt == 0 else 0.5)   # calmer on retries: fix, don't reinvent
         try:
             data = json.loads(raw)
-            errs = validate(data)
+            errs = validate(data, final)
         except json.JSONDecodeError as e:
             data, errs = None, [f"reply was not valid JSON ({e})"]
         if not errs:
@@ -564,30 +643,81 @@ def write_one(series=None, idea=None):
         else:
             sys.exit("Could not get a valid script after 4 attempts. Last problems: " + "; ".join(errs))
 
-    data = punch_up(data)
+    data = punch_up(data, final, part_extra(part) if part else "")
     ensure_next_frames(data)
     ensure_popups(data)
     n = next_number()
-    title = data.get("title") or f"{series} #{ep}"
-    if not title.startswith(series):
-        title = f"{series} #{ep}: {title}"
-    slug = f"{n:03}-" + re.sub(r"[^a-z0-9]+", "-", title.rsplit(":", 1)[-1].lower()).strip("-")[:40]
+    if part:
+        k, total = part
+        title = f"{series} #{ep}: {plan['title']} (Part {k}/{total})"
+    else:
+        title = data.get("title") or f"{series} #{ep}"
+        if not title.startswith(series):
+            title = f"{series} #{ep}: {title}"
+    slug = f"{n:03}-" + re.sub(r"[^a-z0-9]+", "-", PART_SUFFIX.sub("", title).rsplit(":", 1)[-1].lower()).strip("-")[:40] \
+        + (f"-part-{part[0]}" if part else "")
     script = {
         "slug": slug, "title": title, "aspects": ["16:9", "9:16"],
-        "seed": random.randint(1, 999999), "thumbnail_scene": int(data["thumbnail_scene"]),
+        "seed": random.randint(1, 999999) if not part else int(plan.setdefault("seed", random.randint(1, 999999))),
+        "thumbnail_scene": int(data["thumbnail_scene"]),
         "story": data.get("story"), "shareable_scene": int(data.get("shareable_scene", 1)),
         "burn_captions": True,
         "voice": {"openai_voice": "sage", "deepen": 0.94, "voice": "en-GB-SoniaNeural", "rate": "-12%", "pitch": "-10Hz"},
         "music_prompt": str(data.get("music_prompt") or "").strip() or None,
-        "style": STYLE, "characters": data["characters"], "scenes": data["scenes"],
+        "style": STYLE, "style_mirror": data.get("style_mirror") if final else None,
+        "characters": data["characters"], "scenes": data["scenes"],
         "youtube": data["youtube"], "tiktok": data["tiktok"],
     }
+    if part:
+        script["series_part"] = {"story": plan["title"], "part": part[0], "of": part[1]}
+        label_parts(script)
     path = SCRIPTS / f"{slug}.json"
     path.write_text(json.dumps(script, indent=2, ensure_ascii=False))
     with open(ROOT / "queue.txt", "a") as f:
         f.write(path.name + "\n")
     print(f"Wrote {path.name} (~{estimate_runtime(script['scenes']):.0f}s) and queued it.")
     return path.name
+
+
+def label_parts(script):
+    """Mark a part in its titles and text, and on screen: 'Part k' card at the start, 'To be continued' at the end."""
+    sp = script["series_part"]
+    k, n = sp["part"], sp["of"]
+    suffix = f" (Part {k}/{n})"
+    yt, tt = script.setdefault("youtube", {}), script.setdefault("tiktok", {})
+    base = PART_SUFFIX.sub("", str(yt.get("title", script.get("title", ""))))
+    yt["title"] = base[: 90 - len(suffix)].rstrip() + suffix
+    extra = []
+    if k > 1:
+        extra.append(f"This is part {k} of {n}: watch the earlier parts first.")
+    if k < n:
+        extra.append(f"Part {k + 1} is next.")
+    desc = str(yt.get("description", "")).strip()
+    if extra and extra[0] not in desc:
+        yt["description"] = (desc + " " + " ".join(extra)).strip()
+    cap = str(tt.get("caption", "")).strip()
+    if not cap.startswith(f"Part {k}/{n}"):
+        tt["caption"] = f"Part {k}/{n}: " + cap
+    scenes = script["scenes"]
+    scenes[0].setdefault("popups", []).insert(0, {"kind": "label", "text": f"Part {k}", "at": 0.8, "x": 0.5, "y": 0.16, "size": 0.26, "hold": 1.6})
+    if k < n:
+        scenes[-1].setdefault("popups", []).append({"kind": "label", "text": "To be continued", "at": 1.0, "x": 0.5, "y": 0.16, "size": 0.34, "hold": 2.2})
+
+
+def write_story(series, idea, n):
+    """Write a story as n consecutive parts (each 60 to 90 s) and queue them in order."""
+    _, counts = existing()
+    if not series:
+        series = min(SERIES, key=lambda s: (counts[s], list(SERIES).index(s)))
+    plan = plan_story(series, idea, n)
+    print(f'Story "{plan["title"]}" in {n} parts, series {series}.')
+    ep, prior_end, names = counts[series] + 1, "", []
+    for k in range(1, n + 1):
+        print(f"--- part {k} of {n} ---")
+        name = write_one(series, idea, (k, n), plan, ep, prior_end)
+        names.append(name)
+        prior_end = json.loads((SCRIPTS / name).read_text())["scenes"][-1]["narration"]
+    print("Queued in order: " + ", ".join(names))
 
 
 def unrendered():
@@ -603,8 +733,13 @@ def main():
     ap.add_argument("--count", type=int, default=0, help="write this many new scripts")
     ap.add_argument("--series", choices=list(SERIES))
     ap.add_argument("--idea")
+    ap.add_argument("--parts", type=int, choices=range(2, 7), metavar="N",
+                    help="tell ONE story across N videos (Part 1, Part 2, ...), each 60 to 90 seconds, queued in order")
     a = ap.parse_args()
     SCRIPTS.mkdir(exist_ok=True)
+    if a.parts:
+        write_story(a.series, a.idea, a.parts)
+        return
     if a.ensure is not None:
         need = a.ensure - len(unrendered())
         if need <= 0:

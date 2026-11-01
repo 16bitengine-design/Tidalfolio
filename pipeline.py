@@ -29,6 +29,7 @@ TAIL = 0.55          # silence after narration ends (s)
 MIN_SCENE = 3.0      # shortest allowed scene (s)
 MIN_VIDEO = 60.0     # channel rule: every video runs 60 to 90 seconds
 MAX_VIDEO = 90.0
+ALLOW_LONG = False   # set by --allow-long
 WORKERS = max(1, min(4, os.cpu_count() or 2))
 
 SIZES = {"16:9": (1920, 1080, "landscape_16_9"), "9:16": (1080, 1920, "portrait_16_9")}
@@ -690,8 +691,10 @@ def render(script_path, dry):
             t += sc["_dur"]
         total = t
         print(f"      stretched pauses to reach {total:.1f}s")
-    if total > MAX_VIDEO:
-        print(f"      WARNING: {total:.1f}s is over the {MAX_VIDEO:.0f}s target. Trim the script if you want it shorter.")
+    if total > MAX_VIDEO + 0.5 and not ALLOW_LONG:
+        sys.exit(f"Video would be {total:.1f}s but the maximum is {MAX_VIDEO:.0f}s. Nothing was rendered and no images were paid for. "
+                 "Split the story into parts: python tools/split_script.py " + str(script_path) +
+                 "  (or shorten the script; --allow-long overrides this rule).")
 
     for aspect in aspects:
         render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry)
@@ -707,7 +710,9 @@ def render(script_path, dry):
 
 def write_metadata(script, path, total):
     yt, tt = script.get("youtube", {}), script.get("tiktok", {})
-    lines = [f"# {script.get('title', path.parent.name)}", f"Runtime: {total:.1f}s", "",
+    sp = script.get("series_part")
+    part_line = f"Part {sp['part']} of {sp['of']} of \"{sp['story']}\"" if sp else "Single video"
+    lines = [f"# {script.get('title', path.parent.name)}", f"Runtime: {total:.1f}s", part_line, "",
              "## YouTube (youtube/video.mp4)", f"**Title:** {yt.get('title', '')}", "",
              "**Description:**", yt.get("description", ""), "",
              f"**Tags:** {', '.join(yt.get('tags', []))}", "",
@@ -727,7 +732,10 @@ def main():
     ap.add_argument("script", nargs="?")
     ap.add_argument("--next", action="store_true", help="render next unfinished script from queue.txt")
     ap.add_argument("--dry-run", action="store_true", help="no API calls; placeholder media")
+    ap.add_argument("--allow-long", action="store_true", help="render even if the video is over 90 seconds")
     a = ap.parse_args()
+    global ALLOW_LONG
+    ALLOW_LONG = a.allow_long
 
     if a.next:
         queue, done = read_lines(ROOT / "queue.txt"), set(read_lines(ROOT / "done.txt"))

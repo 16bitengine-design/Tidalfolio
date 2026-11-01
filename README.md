@@ -63,7 +63,17 @@ Script fields:
 - `music_prompt` (optional): one sentence describing the music bed if it is generated.
 - `aspects`: `["16:9", "9:16"]` renders both formats (images are generated again for each, so image cost doubles). Use `["16:9"]` to render YouTube only.
 - `story` (including `lesson`), `shareable_scene`: notes used by the script writer; they do not change the video.
-- **Length: every video runs between 60 and 90 seconds** (aim for about 75 to 85). That is roughly 18 scenes with 6 to 12 words of narration each. The pipeline measures the real narration before paying for images: if a video is a little under 60 seconds it stretches the pauses, if it is far too short it stops, and if it runs over 90 seconds it prints a warning. The script writer checks the same window and writes 16 to 20 scenes, with the human mirror act cut down to 3 scenes.
+- **Length: every video runs between 60 and 90 seconds** (aim for about 75 to 85). That is roughly 18 scenes with 6 to 12 words of narration each. The pipeline measures the real narration before paying for images: if a video is a little under 60 seconds it stretches the pauses, if it is far too short it stops, and **if it runs over 90 seconds it stops too** (nothing is rendered or paid for) and tells you to split the story into parts.
+- **Long stories are told in parts** (see "Stories in parts" below). Optional script field `series_part`: `{"story": "title", "part": 2, "of": 3}`.
+
+## Stories in parts
+
+A story that cannot fit in 90 seconds is produced as Part 1, Part 2, Part 3 and so on, each its own 60 to 90 second video, until the whole story is told.
+
+- **Write a new story in parts:** `python generate_script.py --parts 3 --idea "..."` (2 to 6 parts; `--series` is optional). It first plans the whole story (title, lesson, locked cast, what each part does and how it ends), then writes each part in order and queues them in order. Parts before the last end on a cliffhanger, every part after the first opens with a short recap line, the human mirror act and the lesson's payoff come in the final part, and every part reuses the same characters and visual descriptions.
+- **Split a script that is too long:** `python tools/split_script.py scripts/NNN-name.json` (add `--plan` to only preview). It cuts between scenes (never inside the mirror act) into parts of about 70 to 85 seconds, writes `NNN-name-part-1.json` and so on, and replaces the long script in `queue.txt` with its parts, in order.
+- Every part gets a "Part k/n" title, YouTube title, TikTok caption and description note, a "Part k" card on screen at the start, and "To be continued" at the end of every part except the last. The same music theme is used on every part.
+- Post the parts in order, and consider putting them in one YouTube playlist.
 
 ## Pop-ups
 
@@ -86,7 +96,7 @@ Stills cannot truly animate, so each scene is cut into shots about every 2.5 sec
 - **Narrator voice:** `voice` block in the script (`openai_voice`, plus `voice`, `rate`, `pitch` for the free fallback voice). The free voice uses the unofficial `edge-tts` package, so if it ever breaks, swap `make_narration()` in `pipeline.py` for another TTS service.
 - **Look:** the `style` field of each script sets the illustration style for every image (new scripts get a hand-painted storybook watercolor-and-ink look; the mirror act keeps its flat stick-figure style). The same style is added to every prompt, which keeps scenes looking alike.
 - **Image model:** the default is `fal-ai/flux/schnell` (cheapest, fast). For better quality add a repository variable named `FAL_IMAGE_MODEL` set to `fal-ai/flux/dev`. Check fal.ai for current prices.
-- **Music (the only sound besides her voice):** the pipeline uses, in order, (1) a track from `assets/music/` (mp3, wav, m4a or ogg; with several tracks one is picked per video, and short tracks are looped with a crossfade), (2) a track generated once per video with fal.ai (`fal-ai/stable-audio`, needs `FAL_KEY`; set the repository variable `MUSIC_GENERATE` to `0` to turn this off), (3) a very quiet placeholder pad, so a video still renders. **For good music, add licensed or royalty-free tracks to `assets/music/`.** Only use audio you have the licence for, and check the licence terms of any generated music before monetizing. Gentle, dry, acoustic tracks suit the grandmother's voice best.
+- **Music (the only sound besides her voice):** one signature theme, used on every video: the "Tidal Fable" theme in `assets/music/theme/` (`intro`, `loop`, `outro`). Its level is never constant: it follows the emotion of each scene (from the `delivery` words, the story's emotional beat and the last scene) and ducks under the narrator. See `assets/music/README.md`; to change or regenerate the theme, run `python tools/make_theme.py`.
 - **Captions:** big highlighted-word captions are burned in (`"burn_captions": false` turns them off). `captions.srt` is always written, for YouTube's own caption track.
 
 ## Cost
