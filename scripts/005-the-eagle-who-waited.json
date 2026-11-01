@@ -10,18 +10,18 @@
   "story": {
     "protagonist": "eagle",
     "want": "to be fed for ever without ever having to hunt",
-    "risk": "the family who feeds him",
+    "risk": "the mother who feeds him",
     "cause": "believed",
-    "lesson": "Those who only ever take will one day find nobody left to give.",
+    "lesson": "Those who carry us need carrying too, and the time to start is before they fall.",
     "reversals": [
-      "The dry season makes every fish cost his mother more.",
-      "The family meets in secret and he blames the squirrels.",
-      "The family leaves, and even the squirrels stop laughing."
+      "The dry season makes every fish cost his mother more, and he complains.",
+      "His mother is caught in a net, and he asks about dinner.",
+      "She returns torn and empty-handed, and he sees what it cost her."
     ],
-    "emotional_beat_scene": 8,
-    "open_thread": "Who left the fish on the ledge?"
+    "emotional_beat_scene": 10,
+    "open_thread": "Who brought the dozen fish?"
   },
-  "shareable_scene": 17,
+  "shareable_scene": 9,
   "burn_captions": true,
   "voice": {
     "openai_voice": "ballad",
@@ -29,7 +29,7 @@
     "rate": "-4%",
     "pitch": "-4Hz"
   },
-  "music_prompt": "a slow, wry instrumental bed with a heavy, patient pulse that warms into tenderness, no drums",
+  "music_prompt": "a slow, wry instrumental bed with a heavy, patient pulse that turns tender, no drums",
   "style": "Hand-painted storybook illustration, rich watercolor and ink on textured paper, warm cinematic light, expressive animals with very human emotions, dry wit, sophisticated and a little melancholic rather than childish, the main subjects kept in the middle of the frame with room above them, {frame}, no text, no letters, no watermark.",
   "style_mirror": "Flat clean 2D editorial illustration, expressive plain white round-headed stick figures with thin dark outlines, warm dusk light and soft shadows, simple detailed modern interiors, {frame}, no text, no watermark.",
   "characters": {
@@ -39,11 +39,11 @@
     "squirrels": "Three small red squirrels called Pip, Nip and Tuck, bushy tails, round gossipy eyes, always chewing acorns, perched together on an oak branch",
     "witness": "Witness: a small grey marmot sitting upright on a rock, perfectly still, with a blank, unmoved face",
     "human": "Sam: a plain white round-headed stick figure in a grey hoodie and black trousers, thin dark outline, big worried eyes.",
-    "colleague": "Jo: a plain white round-headed stick figure in a navy sweater with a lanyard, thin dark outline, tired eyes."
+    "parent": "Sam's mother: a plain white round-headed stick figure in a green cardigan, thin dark outline, tired kind eyes, carrying heavy shopping bags."
   },
   "scenes": [
     {
-      "narration": "Orin the eagle ate three hundred and twelve fish. He had caught none.",
+      "narration": "Orin the eagle ate three hundred fish. His mother caught each one.",
       "delivery": "hushed, grave, building",
       "pace": "measured",
       "characters": [
@@ -51,7 +51,7 @@
         "squirrels",
         "witness"
       ],
-      "image_prompt": "Orin sprawls on a high cliff ledge like a bloated emperor, eyes half-shut, belly round, a monstrous tower of clean fish skeletons stacked beside his nest as tall as he is. Below, in a great oak, three squirrels cling to a branch with tiny paws held up, tallying on their claws. The marmot sits on a rock behind, blank.",
+      "image_prompt": "Orin sprawls on a high cliff ledge like a bloated emperor, eyes half-shut, belly round, a monstrous tower of clean fish skeletons stacked beside his nest as tall as he is. Below, in a great oak, three squirrels hold up tiny paws, tallying on their claws. The marmot sits on a rock behind, blank.",
       "image_prompt_b": "The skeleton tower wobbles and a single bone slides off the top. Orin opens one lazy eye and lowers his chin, offended, while the three squirrels below gasp in unison.",
       "focus": "center",
       "motion": "zoom_in",
@@ -62,9 +62,9 @@
           "at": 1.0,
           "x": 0.5,
           "y": 0.16,
-          "size": 0.32,
+          "size": 0.34,
           "hold": 2.2,
-          "text": "312 fish. Zero caught."
+          "text": "Fish caught by Orin: zero"
         }
       ]
     },
@@ -87,7 +87,7 @@
           "x": 0.68,
           "y": 0.3,
           "size": 0.22,
-          "text": "Three-twelve!",
+          "text": "Three hundred!",
           "tail": "left"
         }
       ]
@@ -125,7 +125,7 @@
         "squirrels"
       ],
       "image_prompt": "Sela lands on the ledge with a silver fish in her talons, wings still spread, breathing hard, and lays it before Orin, who is already leaning toward it with eyes shut. Below, the squirrels wave tiny arms in protest, one holding a rolled leaf like an official petition.",
-      "image_prompt_b": "Orin's beak is closing on the fish, eyes still shut and utterly content, while Sela steps back, wings drooping, with a flat stare. A squirrel throws his own tail up in despair.",
+      "image_prompt_b": "Orin's beak is closing on the fish, eyes still shut and utterly content, while Sela steps back, wings drooping, with a flat stare. A squirrel throws his tail up in despair.",
       "focus": "center",
       "motion": "zoom_in",
       "popups": [
@@ -140,33 +140,7 @@
       ]
     },
     {
-      "narration": "Little Kest brought lunch. He was still learning to fly.",
-      "delivery": "dry, slightly pained",
-      "pace": "brisk",
-      "characters": [
-        "brother",
-        "eagle",
-        "squirrels"
-      ],
-      "image_prompt": "Kest crash-lands onto the ledge in an explosion of loose feathers, a large fish clutched in both talons, wings tangled, tail in the air. Orin lifts one eyebrow and extends a wing to accept the fish without getting up. In the oak below, the squirrels grab each other, mouths wide in horror.",
-      "image_prompt_b": "Kest pulls himself upright, feathers sticking out everywhere, pushing the fish toward Orin with a proud, breathless grin. Orin is already chewing. One squirrel faints backward off the branch.",
-      "focus": "center",
-      "motion": "zoom_in",
-      "camera": "impact",
-      "popups": [
-        {
-          "kind": "bubble",
-          "at": 1.8,
-          "x": 0.66,
-          "y": 0.3,
-          "size": 0.22,
-          "text": "Lunch AGAIN?",
-          "tail": "left"
-        }
-      ]
-    },
-    {
-      "narration": "Then the dry season came. Now, the fish grew scarce.",
+      "narration": "Then came the dry season. Fish grew scarce.",
       "delivery": "hushed, ominous",
       "pace": "slow",
       "characters": [
@@ -190,92 +164,107 @@
       ]
     },
     {
-      "narration": "Sela flew farther each day. Her wing began to tremble.",
-      "delivery": "quiet, worried",
+      "narration": "Sela flew farther. Orin complained about the delay.",
+      "delivery": "dry, indignant",
       "pace": "measured",
       "characters": [
-        "mother"
+        "mother",
+        "eagle"
       ],
-      "image_prompt": "Sela flies low and alone across a pale scorched wasteland, scarred wing beating with effort, the horizon empty. Her shadow is long behind her. A single feather drifts off her wing into the heat haze.",
-      "image_prompt_b": "Sela is closer to the camera now, beak open, eyes narrowed in pain, the scarred wing visibly shaking mid-beat.",
+      "image_prompt": "Foreground: Orin on the ledge with his wings folded and one talon tapping, glaring at an imaginary clock in the sky. Far behind him, a tiny Sela flies away over a pale, scorched wasteland, a long shadow stretching behind her.",
+      "image_prompt_b": "Sela is a speck on the empty horizon. Orin has turned his back to the sky with his beak lifted, pretending not to look.",
       "focus": "center",
-      "motion": "zoom_in",
+      "motion": "pan_right",
       "camera": "whoosh",
       "popups": [
         {
           "kind": "bubble",
-          "at": 2.0,
-          "x": 0.64,
+          "at": 1.8,
+          "x": 0.34,
           "y": 0.3,
-          "size": 0.2,
-          "text": "Almost there...",
-          "tail": "left"
+          "size": 0.22,
+          "text": "Where's lunch?",
+          "tail": "right"
         }
       ]
     },
     {
-      "narration": "She laid the fish before him and swayed. He didn't look up.",
-      "delivery": "sincere, soft, no joke",
+      "narration": "Beyond the river hung an old net. Sela never saw it.",
+      "delivery": "hushed, ominous",
       "pace": "slow",
       "characters": [
         "mother",
-        "eagle",
-        "squirrels"
-      ],
-      "image_prompt": "Sela, hollow-eyed and shaking, sets a small fish in front of Orin and sways on her talons, one wing drooping to the ground. Orin, beak open, stares off to one side at nothing. Far below in the oak the three squirrels have gone completely still, one frozen with an acorn halfway to his mouth, staring up at her.",
-      "image_prompt_b": "Sela's knees give a little as she steadies herself on the stone. Orin's beak closes on the fish while his eyes stay on the horizon. The squirrel's acorn slips from his paws and falls without a sound.",
-      "focus": "center",
-      "motion": "zoom_in",
-      "pause_after": 1.2,
-      "freeze": true
-    },
-    {
-      "narration": "That night, the family met without him.",
-      "delivery": "hushed, conspiratorial",
-      "pace": "slow",
-      "characters": [
-        "mother",
-        "brother",
-        "squirrels",
         "witness"
       ],
-      "image_prompt": "By moonlight on a lower branch, Sela and Kest sit close with beaks nearly touching, a heavy moon behind them. The three squirrels have crept silent along the oak branch, trying to look asleep, ears twisted toward the meeting. In the foreground the marmot watches. High above, Orin's silhouette snores on the ledge.",
-      "focus": "left",
+      "image_prompt": "Far beyond the dry river, an abandoned fishing net hangs between two dead trees in the dusk haze. Sela is tangled in it, wings pinned, beak open in exhaustion, but unhurt, and still gripping a small silver fish in her talons: she would not let go of it. The marmot watches from a distant rock.",
+      "image_prompt_b": "Sela strains against the strands, beak clenched around a loose knot, the fish still held tight in her talons, a single feather drifting down.",
+      "focus": "center",
       "motion": "zoom_in",
-      "pause_before": 0.9,
-      "popups": [
-        {
-          "kind": "sticker",
-          "at": 1.8,
-          "x": 0.5,
-          "y": 0.4,
-          "size": 0.14,
-          "prompt": "a single acorn rolling away"
-        }
-      ]
+      "camera": "impact",
+      "pause_after": 0.5
     },
     {
-      "narration": "Orin heard it all. He blamed the squirrels.",
+      "narration": "Night fell. Orin called his mother terrible names.",
       "delivery": "dry, indignant",
       "pace": "steady",
       "characters": [
         "eagle",
         "squirrels"
       ],
-      "image_prompt": "Orin's silhouette is awake on the ledge, one eye wide in the dark and glaring down at the oak with absolute certainty, a self-satisfied narrow look on his beak. In the oak, the squirrels pretend to be asleep, all three with one eye cracked open.",
-      "focus": "right",
+      "image_prompt": "Night on the ledge. Orin stomps in a small circle with his wings flung wide, beak open in a full-throated rant at the empty sky, feathers puffed. In the oak below, the three squirrels have stopped chewing, all staring up in appalled silence.",
+      "image_prompt_b": "One squirrel covers another's ears with his paws; the third has slid down behind the branch, eyes wide.",
+      "focus": "center",
       "motion": "zoom_in",
       "popups": [
         {
           "kind": "bubble",
-          "at": 1.6,
-          "x": 0.34,
+          "at": 1.4,
+          "x": 0.64,
           "y": 0.3,
           "size": 0.22,
-          "text": "Jealous. All of them.",
-          "tail": "right"
+          "text": "Useless wings!",
+          "tail": "left"
         }
       ]
+    },
+    {
+      "narration": "Kest returned, shaking: Mother was netted. Orin asked about dinner.",
+      "delivery": "grave, flat",
+      "pace": "slow",
+      "characters": [
+        "brother",
+        "eagle"
+      ],
+      "image_prompt": "Kest lands hard on the ledge, wings trembling, eyes huge and wet. Orin, seated with a napkin-like feather tucked under his chin, tilts his head and lifts a talon in a polite, expectant question. The fish tower stands behind him.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "popups": [
+        {
+          "kind": "bubble",
+          "at": 2.0,
+          "x": 0.66,
+          "y": 0.3,
+          "size": 0.2,
+          "text": "And dinner?",
+          "tail": "left"
+        }
+      ]
+    },
+    {
+      "narration": "Kest flew to cut her free. Even the squirrels followed. Orin stayed.",
+      "delivery": "sincere, quiet, no joke",
+      "pace": "slow",
+      "characters": [
+        "brother",
+        "squirrels",
+        "eagle"
+      ],
+      "image_prompt": "Dusk. Kest launches from the ledge into the dark orange sky with the three squirrels clinging to his back, tiny paws gripping his feathers, tails streaming. Behind them, Orin sits alone on the ledge in the middle of the frame, perfectly still, watching them go.",
+      "image_prompt_b": "The speck of Kest and the squirrels crosses the huge, darkening sky. Orin has not moved. One feather falls slowly past the camera.",
+      "focus": "center",
+      "motion": "zoom_out",
+      "pause_after": 1.2,
+      "freeze": true
     },
     {
       "narration": "People build nests too. Usually with a sofa.",
@@ -291,78 +280,76 @@
       "transition": "dissolve"
     },
     {
-      "narration": "Sam never finished a report. Jo always did.",
+      "narration": "Sam's mother carried his shopping upstairs every Sunday.",
       "delivery": "dry, deadpan",
       "pace": "brisk",
       "characters": [
         "human",
-        "colleague"
+        "parent"
       ],
-      "image_prompt": "In a dim open-plan office, Jo, a stick figure in a navy sweater, types furiously at a desk piled with two people's work, while Sam, behind her, leans back with his hands behind his head. A clock on the wall shows late evening.",
-      "image_prompt_b": "Jo's fingers blur over the keyboard, shoulders hunched, while Sam checks his phone and smiles.",
+      "image_prompt": "A narrow apartment stairwell: Sam's mother climbs the steps with a bag in each hand, shoulders bent, while Sam stands at the top landing on his phone, not looking up. The bags are stuffed with oranges, bread and tins.",
+      "image_prompt_b": "She reaches the landing and holds the bags out; Sam takes them without looking up from his phone.",
       "focus": "center",
       "motion": "pan_left",
       "look": "mirror",
       "popups": [
         {
-          "kind": "bubble",
-          "at": 1.6,
-          "x": 0.36,
-          "y": 0.28,
-          "size": 0.2,
-          "text": "Thanks, Jo!",
-          "tail": "right"
+          "kind": "label",
+          "at": 1.0,
+          "x": 0.5,
+          "y": 0.16,
+          "size": 0.32,
+          "hold": 2.0,
+          "text": "Four flights up"
         }
       ]
     },
     {
-      "narration": "Jo stayed late. Sam called it teamwork.",
-      "delivery": "dry, warm",
-      "pace": "steady",
-      "characters": [
-        "colleague",
-        "human"
-      ],
-      "image_prompt": "A dark office, one desk lamp glowing over Jo, who rubs her eyes, an empty coffee cup at her elbow. Sam stands at her shoulder wearing his coat, giving a thumbs-up.",
-      "focus": "center",
-      "motion": "zoom_out",
-      "look": "mirror",
-      "popups": [
-        {
-          "kind": "bubble",
-          "at": 1.2,
-          "x": 0.66,
-          "y": 0.3,
-          "size": 0.2,
-          "text": "Teamwork!",
-          "tail": "left"
-        }
-      ]
-    },
-    {
-      "narration": "Then Jo changed jobs. Monday's report stayed blank.",
+      "narration": "One Sunday, her back gave out.",
       "delivery": "hushed, flat",
       "pace": "slow",
       "characters": [
-        "human"
+        "parent"
       ],
-      "image_prompt": "Sam alone at the desk in a bright, empty office, staring at a completely white screen, his hands hovering above the keyboard. Jo's desk beside him is bare: only a small clean square on the wood where her mug used to sit.",
-      "image_prompt_b": "Sam leans toward the screen, one finger pressing a single key, the cursor blinking on blank white.",
+      "image_prompt": "Sam's mother sits down on a stair halfway up, one hand pressed to her lower back, a bag tipped on its side with oranges rolling down the steps below her, the stairwell lit by a single bare lightbulb.",
       "focus": "center",
       "motion": "zoom_in",
       "look": "mirror",
-      "camera": "impact",
+      "popups": [
+        {
+          "kind": "sticker",
+          "at": 1.4,
+          "x": 0.5,
+          "y": 0.42,
+          "size": 0.14,
+          "prompt": "a single orange rolling"
+        }
+      ]
+    },
+    {
+      "narration": "Sam heard the oranges rolling. He stayed on the sofa.",
+      "delivery": "quiet, heavy",
+      "pace": "slow",
+      "characters": [
+        "human"
+      ],
+      "image_prompt": "Sam on the sofa, the TV glow on his face, remote in hand, head slightly turned toward the half-open apartment door and the faint sound beyond it. He does not get up.",
+      "image_prompt_b": "Sam's eyes slide to the door and back to the screen. An orange rolls in across the hallway floor and stops at his slipper.",
+      "focus": "center",
+      "motion": "zoom_in",
+      "look": "mirror",
       "pause_after": 0.8
     },
     {
-      "narration": "At dawn, the cliff was quiet. The family was gone.",
+      "narration": "At dawn, Sela returned: feathers torn, talons empty.",
       "delivery": "slow, hollow",
       "pace": "slow",
       "characters": [
+        "mother",
         "eagle",
         "witness"
       ],
-      "image_prompt": "The cliff ledge at first light: the nest dented and empty, no fish, no mother, no brother. Orin sits alone in the middle, mid-yawn, one wing stretched, the realization not yet reached his face. The marmot sits at the far end, still.",
+      "image_prompt": "First light on the cliff ledge. Sela stands on it, wings trembling, torn net strands trailing from her wing and loose feathers missing, her talons open and empty. Orin sits in front of her, beak already open to complain, and then, in the middle of the frame, freezes. The marmot sits at the far end, still.",
       "focus": "center",
       "motion": "zoom_out",
       "transition": "dissolve",
@@ -372,54 +359,55 @@
       }
     },
     {
-      "narration": "He finally dived. The river had been mud for weeks.",
-      "delivery": "tense, then dry as dust",
-      "pace": "rushed",
+      "narration": "Orin stared at her wing. He should have been flying.",
+      "delivery": "sincere, hushed",
+      "pace": "slow",
       "characters": [
         "eagle",
-        "squirrels"
+        "mother"
       ],
-      "image_prompt": "Orin plunges beak-first from the cliff toward the cracked brown riverbed, wings pinned back, eyes huge, with the oak and its three tiny squirrels streaking past on the side of the frame, their mouths already opening in anticipation.",
-      "image_prompt_b": "Orin lies face-down in dried mud, only his tail feathers sticking up, a single fish bone beside him, a small puff of dust still settling. The squirrels in the oak have both paws over their mouths.",
+      "image_prompt": "Extreme close on Orin's face, one eye wide and wet, reflected in it the torn feathers of Sela's wing. Sela stands in soft focus, head bowed. Orin's own huge, unscarred, untouched talons rest on the stone in the foreground.",
+      "image_prompt_b": "Orin's beak trembles; his eyes drop to his own unmarked talons.",
       "focus": "center",
       "motion": "zoom_in",
-      "camera": "impact",
+      "pause_after": 1.0,
       "popups": [
         {
           "kind": "bubble",
-          "at": 2.6,
+          "at": 1.8,
           "x": 0.66,
           "y": 0.3,
-          "size": 0.2,
-          "text": "...Ow.",
+          "size": 0.22,
+          "text": "It should've been me.",
           "tail": "left"
         }
       ]
     },
     {
-      "narration": "Nobody laughed. Not even the squirrels.",
-      "delivery": "quiet, heavy",
-      "pace": "slow",
+      "narration": "Nine tries. One frog. All his dignity. Then, a fish.",
+      "delivery": "brisk, then quiet",
+      "pace": "brisk",
       "characters": [
         "eagle",
-        "squirrels"
+        "witness"
       ],
-      "image_prompt": "Orin sits alone in the dry riverbed, mud on his face, his huge wings folded. High in the oak, the three squirrels sit side by side in total silence, no acorns, no tails flicking, one slowly lowering his paw from his mouth.",
+      "image_prompt": "Orin in the dry riverbed in a mud-splattered mess, a small silver fish held in his talons and an utterly bewildered look on his face, nine deep muddy belly-flop marks around him and a single unimpressed frog sitting on a rock beside him. The marmot watches from the bank.",
+      "image_prompt_b": "Orin, dripping, holds the fish up toward the camera with his beak open in shock, as if he cannot believe it either; the frog slowly turns its head away.",
       "focus": "center",
-      "motion": "zoom_out",
-      "pause_before": 0.8,
-      "pause_after": 1.0
+      "motion": "zoom_in",
+      "camera": "impact"
     },
     {
-      "narration": "A fish lay on the ledge. Nobody asked who left it.",
+      "narration": "A dozen fish already lay there. Nobody asked who brought them.",
       "delivery": "calm, quiet",
       "pace": "slow",
       "characters": [
+        "eagle",
+        "mother",
         "witness",
-        "squirrels",
-        "eagle"
+        "squirrels"
       ],
-      "image_prompt": "The empty ledge. In the foreground the marmot sits upright beside a single silver fish and is looking straight into the camera, expression unchanged. Behind it in the oak, the three squirrels sit in a row, also looking straight into the camera. Far below, a tiny Orin stands in the riverbed.",
+      "image_prompt": "The ledge at dusk. Orin gently sets one small, slightly crooked fish beside Sela, who lies resting on the nest. Beside her already lie a dozen silver fish, neatly stacked. In the foreground the marmot sits upright, looking straight into the camera. Behind it, in the oak, the three squirrels sit in a row, also looking straight into the camera.",
       "focus": "center",
       "motion": "zoom_in",
       "pause_before": 1.2,
@@ -431,15 +419,15 @@
     }
   ],
   "youtube": {
-    "title": "The Eagle Who Never Hunted, and the Squirrels Who Kept Count",
-    "description": "Orin is a big, sleepy eagle who has eaten 312 fish and caught none. Three squirrels keep count and mock him out loud, until the day the dry season comes and the laughing stops. A short, dry, quietly stinging fable. Subscribe for more tidalfolio stories.",
+    "title": "The Eagle Who Never Hunted, and the Mother Who Never Stopped",
+    "description": "Orin is a big, sleepy eagle who has eaten three hundred fish and caught none. His mother caught every one. Then the dry season comes, and a net hangs over the far river. A short, dry, quietly stinging fable about who carries whom. Subscribe for more tidalfolio stories.",
     "tags": [
       "eagle",
       "squirrels",
       "animal story",
       "short story",
       "fable",
-      "funny animals",
+      "family",
       "birds",
       "storytelling",
       "bird banter",
@@ -448,7 +436,7 @@
     "pinned_comment": "Who in your life has been carrying a little more than their share? Be honest."
   },
   "tiktok": {
-    "caption": "312 fish. Zero caught. The squirrels kept count. #eagle #storytime",
+    "caption": "Three hundred fish. His mother caught every one. #eagle #storytime",
     "hashtags": [
       "#storytime",
       "#eagle",
