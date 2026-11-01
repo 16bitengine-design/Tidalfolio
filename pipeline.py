@@ -85,7 +85,7 @@ async def _edge_tts(text, voice, rate, pitch, out):
 
 
 TTS_STYLE = ("A warm, middle-aged man of about forty-five with a rich, grounded baritone, telling a story to friends "
-             "he knows well: a gifted storyteller, not an announcer. Talk to the listener, never read at them. "
+             "he knows well: a gifted storyteller, not an announcer. Speak directly to the person watching, as if he were sitting across the table: personal, conversational, with the odd aside, never reading from a page. "
              "Vary the pace constantly: slow down and lower the voice for suspense, secrets and the emotional moment; "
              "quicken and brighten for action; let pauses do the work of the jokes. Vary pitch and volume: drop almost to a "
              "whisper before a reveal, rise on questions and surprise, land the last word of a punchline flat and dry. "
