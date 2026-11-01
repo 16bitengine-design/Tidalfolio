@@ -711,7 +711,10 @@ def render(script_path, dry):
     write_metadata(script, out_root / "metadata.md", total)
     (out_root / "metadata.json").write_text(json.dumps(
         {"title": script.get("title", slug), "youtube": script.get("youtube", {}),
-         "tiktok": script.get("tiktok", {})}, indent=2))
+         "tiktok": script.get("tiktok", {}),
+         "info": {"slug": slug, "series": script.get("title", "").split(" #")[0] if " #" in script.get("title", "") else "",
+                  "runtime": round(total, 1), "scene_count": len(scenes), "part": script.get("series_part"),
+                  "hook": (scenes[0].get("narration") or "")[:200]}}, indent=2))
     (ROOT / "output" / "LAST_SLUG").write_text(slug)
     print(f"Done: {out_root} ({total:.1f}s)")
     return slug

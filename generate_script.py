@@ -594,6 +594,20 @@ def part_extra(part):
             "an explained ending. Its last scene must stay a cliffhanger (ignore items 4 and 8 of the checklist). Keep every character key.")
 
 
+def performance_notes():
+    """What the channel's own viewers did with earlier videos (insights.md, written by tools/make_insights.py).
+    Empty until there is enough data, so early runs are unaffected."""
+    f = ROOT / "insights.md"
+    if not f.exists():
+        return ""
+    txt = f.read_text()
+    if "<!-- ready -->" not in txt:
+        return ""
+    body = txt.split("<!-- ready -->", 1)[1].strip()[:1800]
+    return ("\nREAL RESULTS FROM THIS CHANNEL'S EARLIER VIDEOS (small sample: use as a steer, never copy a plot, title or joke). "
+            "Do more of what holds viewers, less of what loses them. Make the first line a stronger hook than the average one below:\n" + body + "\n")
+
+
 def write_one(series=None, idea=None, part=None, plan=None, ep=None, prior_end=""):
     titles, counts = existing()
     if not series:
@@ -617,7 +631,7 @@ def write_one(series=None, idea=None, part=None, plan=None, ep=None, prior_end="
             + ("" if part else (f"Episode idea to develop: {idea}\n" if idea else "Invent a fresh, specific premise.\n"))
             + ("" if part else previous_thread(series) + "\n")
             + ("" if part else ("Lessons already used on the channel (teach a different one):\n- " + "\n- ".join(used_lessons()) + "\n" if used_lessons() else ""))
-            + ("" if part else ("Do NOT reuse these existing episodes or their premises:\n- " + "\n- ".join(titles) if titles else "")))
+            + ("" if part else ("Do NOT reuse these existing episodes or their premises:\n- " + "\n- ".join(titles) if titles else "")) + performance_notes())
     messages = [{"role": "system", "content": system_prompt()}, {"role": "user", "content": user}]
     data, errs = None, []
     for attempt in range(4):

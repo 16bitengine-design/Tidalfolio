@@ -38,6 +38,17 @@ jobs:
       - name: Install Python packages
         run: pip install -r requirements.txt
 
+      - name: Collect results of earlier videos and update insights
+        # Never blocks a video: if YouTube stats cannot be read this just prints why.
+        continue-on-error: true
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python tools/collect_metrics.py
+          python tools/make_insights.py
+
       - name: Write a new script if the queue is empty
         id: script
         env:
@@ -108,6 +119,7 @@ jobs:
           git config user.name "tidalfolio-bot"
           git config user.email "actions@users.noreply.github.com"
           git add done.txt queue.txt scripts
+          for f in metrics insights.md; do [ -e "$f" ] && git add "$f"; done
           git diff --cached --quiet && exit 0
           git commit -m "Update queue and scripts"
           # Remote may have moved while this run was rendering: rebase onto it, retry on a race.

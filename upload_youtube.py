@@ -89,6 +89,18 @@ def main():
 
     (base / "youtube_url.txt").write_text(f"https://youtu.be/{video_id}\n")
 
+    # remember this upload so later runs can look up how it performed (tools/collect_metrics.py)
+    try:
+        from datetime import datetime, timezone
+        log = ROOT / "metrics" / "videos.json"
+        log.parent.mkdir(exist_ok=True)
+        rows = json.loads(log.read_text()) if log.exists() else []
+        rows.append({**meta.get("info", {}), "title": meta.get("title", ""), "video_id": video_id, "privacy": privacy,
+                     "uploaded_at": datetime.now(timezone.utc).strftime("%Y-%m-%d")})
+        log.write_text(json.dumps(rows, indent=2, ensure_ascii=False))
+    except Exception as e:
+        print(f"Could not record the upload for the results tracker: {e}")
+
 
 if __name__ == "__main__":
     main()

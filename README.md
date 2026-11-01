@@ -30,6 +30,17 @@ Without this, finished videos are only in the downloadable artifact. To have eac
 3. **Credentials > Create credentials > OAuth client ID** (type: Web application). Add `https://developers.google.com/oauthplayground` as an authorized redirect URI. Copy the client ID and client secret.
 4. Open developers.google.com/oauthplayground. Click the gear icon, tick *Use your own OAuth credentials*, and paste your client ID and secret. In Step 1 enter the scope `https://www.googleapis.com/auth/youtube.upload`, authorize with the Google account that owns the tidalfolio channel, then in Step 2 click *Exchange authorization code for tokens* and copy the **refresh token**.
 5. Add three repository secrets: `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`.
+
+### Results tracking (lets each run learn from the last)
+
+Every upload is logged in `metrics/videos.json`. At the start of each run `tools/collect_metrics.py` fetches views, average
+percentage watched, likes, comments and subscribers gained for earlier videos, and `tools/make_insights.py` turns them into
+`insights.md`. Once 4 public videos at least 2 days old have results, the script writer reads that file and leans toward
+what held viewers. To let it read watch-time numbers, make a NEW refresh token (same steps as above) with all three scopes
+entered in Step 1, separated by a space, then replace the `YT_REFRESH_TOKEN` secret:
+`https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly`
+Also enable the **YouTube Analytics API** in Google Cloud (APIs & Services > Library). Private videos are ignored by the
+insights, so set the repo variable `UPLOAD_PRIVACY` to `public` or `unlisted` when you are ready.
 6. Videos upload as **private** by default so you can check them first. To publish automatically, add a repository *variable* (Settings > Secrets and variables > Actions > Variables) named `UPLOAD_PRIVACY` with the value `public` (or `unlisted`).
 
 Notes: YouTube's thumbnail upload needs a verified channel. The upload sets "not made for kids" (the channel targets all ages); change `made_for_kids` in the script's `youtube` block if that is wrong for a video. A failed YouTube upload does not lose the video: it is still saved in the downloadable artifact. Check YouTube's current rules on disclosing AI-generated content.
