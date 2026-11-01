@@ -262,7 +262,7 @@ EMOTION_LEVELS = [
     (("dry", "deadpan", "blunt", "neutral", "detached", "flat", "calm"), 0.28),
 ]
 DEFAULT_LEVEL = 0.5
-MUSIC_BASE = 0.8        # overall music gain at level 1.0, before the narration ducking
+MUSIC_BASE = 0.35       # overall music gain at level 1.0, before the narration ducking
 RAMP = 0.7              # seconds taken to glide from one scene's level to the next
 
 
@@ -374,14 +374,14 @@ def make_bed(total, out, scenes=None, script=None):
         parts[2] = "[l][e]amultiply,afade=t=in:d=2.5[loop]"
     if intro:       # the signature motif, full and clear, once at the start
         inputs += ["-i", intro]
-        parts.append(f"[{k}]aresample=44100,aformat=channel_layouts=stereo,volume=0.9[in]")
+        parts.append(f"[{k}]aresample=44100,aformat=channel_layouts=stereo,volume=0.5[in]")
         labels.append("[in]")
         k += 1
     if outro:       # the resolving chord, ending exactly with the video
         od = duration(outro)
         inputs += ["-i", outro]
         ms = int(max(0.0, total - od) * 1000)
-        parts.append(f"[{k}]aresample=44100,aformat=channel_layouts=stereo,volume=0.9,adelay={ms}|{ms}[ou]")
+        parts.append(f"[{k}]aresample=44100,aformat=channel_layouts=stereo,volume=0.5,adelay={ms}|{ms}[ou]")
         labels.append("[ou]")
         k += 1
     parts.append(f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0:duration=longest[bed]")
@@ -614,7 +614,7 @@ def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
           "acompressor=threshold=0.1:ratio=3:attack=5:release=90:makeup=3,"
           "aecho=0.8:0.55:55|120:0.22|0.1,alimiter=limit=0.95,asplit=2[nar][nsc]",
           "[1]volume=1.0[bedv]",
-          "[bedv][nsc]sidechaincompress=threshold=0.03:ratio=5:attack=20:release=500[bed]"]
+          "[bedv][nsc]sidechaincompress=threshold=0.015:ratio=12:attack=15:release=600:makeup=1[bed]"]
     labels, k = ["[nar]", "[bed]"], 2
     for name, t_s, vol in events:
         f = work / f"sfx_{name}.wav"
