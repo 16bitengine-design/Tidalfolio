@@ -28,9 +28,9 @@ def est(scene):
     return max(MIN_SCENE, LEAD + len(scene["narration"].split()) / WORDS_PER_SEC + TAIL)
 
 
-def split_points(scenes, n):
+def split_points(scenes, n, scale=1.0):
     """Indices where parts 2..n begin: closest to an even split, never inside a mirror run."""
-    times = [est(s) for s in scenes]
+    times = [est(s) * scale for s in scenes]
     total = sum(times)
     cum = [sum(times[:i]) for i in range(len(times) + 1)]
     mirror = [s.get("look") == "mirror" for s in scenes]
@@ -60,28 +60,29 @@ def remap(value, lo, hi, default=1):
     return v - lo if lo < v <= hi else default
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("script")
-    ap.add_argument("--plan", action="store_true", help="only show the split, write nothing")
-    a = ap.parse_args()
-    path = Path(a.script)
+def split_file(path, real_total=None, plan=False):
+    """Split one script into parts and fix queue.txt. real_total = measured runtime in seconds (from the narration
+    audio); when given, the estimate is scaled to it so the cuts match what will really be rendered.
+    Returns the list of part file names (empty if nothing was split)."""
+    path = Path(path)
     script = json.loads(path.read_text())
     scenes = script["scenes"]
-    total = sum(est(s) for s in scenes)
+    est_total = sum(est(s) for s in scenes)
+    scale = real_total / est_total if real_total else 1.0
+    total = est_total * scale
     n = max(1, math.ceil(total / MAX_EST))
     if n == 1:
-        print(f"{path.name}: about {total:.0f}s (estimated), it already fits in one video. Nothing to split.")
-        return
-    cuts, times = split_points(scenes, n)
+        print(f"{path.name}: about {total:.0f}s, it already fits in one video. Nothing to split.")
+        return []
+    cuts, times = split_points(scenes, n, scale)
     bounds = [0] + cuts + [len(scenes)]
     n = len(bounds) - 1
     print(f"{path.name}: about {total:.0f}s estimated -> {n} parts")
     for k in range(n):
         lo, hi = bounds[k], bounds[k + 1]
         print(f"  Part {k + 1}: scenes {lo + 1}-{hi} (~{sum(times[lo:hi]):.0f}s)  ends: \"{scenes[hi - 1]['narration'][:60]}\"")
-    if a.plan:
-        return
+    if plan:
+        return []
 
     from generate_script import label_parts   # shared with the script writer so both label parts the same way
     base_title = PART_SUFFIX.sub("", script.get("title", path.stem))
@@ -119,6 +120,16 @@ def main():
         lines += [x for x in names if x not in lines]
     q.write_text("\n".join(lines) + "\n")
     print("queue.txt now lists the parts in order. Check each part's opening and ending before posting.")
+    return names
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("script")
+    ap.add_argument("--plan", action="store_true", help="only show the split, write nothing")
+    ap.add_argument("--real-total", type=float, help="measured runtime in seconds (the pipeline passes this in)")
+    a = ap.parse_args()
+    split_file(a.script, a.real_total, a.plan)
 
 
 if __name__ == "__main__":

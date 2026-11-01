@@ -31,6 +31,12 @@ MIN_VIDEO = 60.0     # channel rule: every video runs 60 to 90 seconds
 MIN_PART = 40.0      # exception: a part of a story that was split because it ran past 90 s may be 40 to 90 s
 MAX_VIDEO = 90.0
 ALLOW_LONG = False   # set by --allow-long
+
+
+class TooLong(Exception):
+    """Narration runs past MAX_VIDEO. Raised before any image is paid for."""
+    def __init__(self, total):
+        self.total = total
 WORKERS = max(1, min(4, os.cpu_count() or 2))
 
 SIZES = {"16:9": (1920, 1080, "landscape_16_9"), "9:16": (1080, 1920, "portrait_16_9")}
@@ -694,9 +700,10 @@ def render(script_path, dry):
         total = t
         print(f"      stretched pauses to reach {total:.1f}s")
     if total > MAX_VIDEO + 0.5 and not ALLOW_LONG:
-        sys.exit(f"Video would be {total:.1f}s but the maximum is {MAX_VIDEO:.0f}s. Nothing was rendered and no images were paid for. "
-                 "Split the story into parts: python tools/split_script.py " + str(script_path) +
-                 "  (or shorten the script; --allow-long overrides this rule).")
+        if script.get("series_part"):     # a part must already fit; splitting it again would not help
+            sys.exit(f"Video would be {total:.1f}s but the maximum is {MAX_VIDEO:.0f}s. Nothing was rendered and no images were paid for. "
+                     "Shorten this part (or --allow-long overrides this rule).")
+        raise TooLong(total)
 
     for aspect in aspects:
         render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry)
@@ -729,6 +736,18 @@ def read_lines(p):
     return [l.strip() for l in p.read_text().splitlines() if l.strip() and not l.startswith("#")] if p.exists() else []
 
 
+def split_and_pick(script_path, total):
+    """The narration came out over 90 s: split the story into parts (cuts use the measured runtime), and return the
+    file name of Part 1 so the run carries on with it instead of failing. The other parts stay queued."""
+    print(f"      {total:.1f}s is over {MAX_VIDEO:.0f}s: splitting the story into parts and rendering Part 1")
+    sys.path.insert(0, str(ROOT / "tools"))
+    from split_script import split_file
+    names = split_file(script_path, real_total=total)
+    if not names:
+        sys.exit(f"Could not split {Path(script_path).name}; shorten it instead.")
+    return names[0]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("script", nargs="?")
@@ -753,12 +772,19 @@ def main():
         if not todo:
             sys.exit("No script file found for anything in queue.txt (see warnings above).")
         name = todo[0]
-        render(ROOT / "scripts" / name, a.dry_run)
+        try:
+            render(ROOT / "scripts" / name, a.dry_run)
+        except TooLong as e:
+            name = split_and_pick(ROOT / "scripts" / name, e.total)
+            render(ROOT / "scripts" / name, a.dry_run)
         if not a.dry_run:
             with open(ROOT / "done.txt", "a") as f:
                 f.write(name + "\n")
     elif a.script:
-        render(a.script, a.dry_run)
+        try:
+            render(a.script, a.dry_run)
+        except TooLong as e:
+            render(ROOT / "scripts" / split_and_pick(Path(a.script), e.total), a.dry_run)
     else:
         ap.error("give a script path or --next")
 
