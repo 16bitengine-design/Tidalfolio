@@ -52,3 +52,7 @@ files, and test-upload privately once to confirm no Content ID claim.
 
 Switch without moving files by setting the environment variable `MUSIC_THEME=theme_pentatonic` (in the GitHub
 workflow, under `env:`). Regenerate either with `python tools/make_theme.py --style ethereal|pentatonic`.
+
+- `theme_fusion/` : the ethereal chords, choir pad and harp arpeggios of the first theme, with the pentatonic
+  motif of the second played by a guzheng-style string doubled by soft piano (A minor pentatonic: A C D E G).
+  `MUSIC_THEME=theme_fusion` to use it; `python tools/make_theme.py --style fusion` to regenerate.

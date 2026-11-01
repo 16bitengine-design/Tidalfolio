@@ -80,6 +80,17 @@ def guzheng(freq, dur, vel=0.8, rng=None):
     return lp(x, 7500)
 
 
+def fusion_lead(freq, dur, vel=0.8, rng=None):
+    """Guzheng on top for the bright, plucked attack; soft piano underneath for warmth and sustain."""
+    g = guzheng(freq, dur, vel * 0.85, rng)
+    p = piano(freq, dur, vel * 0.55, rng)
+    n = max(len(g), len(p))
+    out = np.zeros(n)
+    out[: len(g)] += g
+    out[: len(p)] += p
+    return out
+
+
 def harp(freq, dur, vel=0.5, rng=None):
     return lp(pluck(freq, dur, vel, 0.8, rng), 7000)
 
@@ -154,7 +165,14 @@ ARP = [0, 1, 2, 1]        # chord-tone order for the harp arpeggio
 M_PENT_A = [(0.0, "D5", 1.0), (1.0, "F#5", 1.0), (2.0, "A5", 1.5), (3.5, "F#5", 0.5), (4.0, "E5", 1.5), (5.5, "D5", 2.5)]
 M_PENT_B = [(0.0, "B4", 1.0), (1.0, "D5", 1.0), (2.0, "F#5", 1.5), (3.5, "E5", 0.5), (4.0, "D5", 1.0), (5.0, "B4", 1.0), (6.0, "D5", 2.0)]
 
+# A minor pentatonic (A C D E G) fits the ethereal chords (Am F C G) exactly, so the two worlds can be joined
+M_FUSE_A = [(0.0, "A4", 1.0), (1.0, "C5", 1.0), (2.0, "E5", 1.5), (3.5, "D5", 0.5), (4.0, "C5", 1.5), (5.5, "A4", 2.5)]
+M_FUSE_B = [(0.0, "E5", 1.0), (1.0, "G5", 1.0), (2.0, "A5", 1.5), (3.5, "G5", 0.5), (4.0, "E5", 1.0), (5.0, "D5", 1.0), (6.0, "E5", 2.0)]
+
 STYLES = {
+    # fusion: ethereal chords, choir pad, harp arpeggios + a pentatonic motif on guzheng-and-piano
+    "fusion": dict(prog=PROG, motifs=[M_FUSE_A, M_FUSE_B], arp=ARP, lead="fusion", out="theme_fusion",
+                   final=("A2", ["A3", "C#4", "E4"]), outro_swap=False),
     # the original: piano motif, A minor, resolves to A major
     "ethereal": dict(prog=PROG, motifs=[MOTIF], arp=ARP, lead=None, out="theme",
                      final=("A2", ["A3", "C#4", "E4"]), outro_swap=True),
@@ -177,7 +195,7 @@ def place(track, sig, t):
 def render(bars, kind="loop", seed=1, style="ethereal"):
     """kind: 'loop' (main body), 'intro' (motif + swell) or 'outro' (motif resolving to A major)."""
     S = STYLES[style]
-    lead = guzheng if S["lead"] == "guzheng" else piano
+    lead = {"guzheng": guzheng, "fusion": fusion_lead}.get(S["lead"], piano)
     rng = np.random.default_rng(seed)
     total = bars * BAR + 0.5
     n = int(SR * total)
@@ -238,7 +256,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--style", choices=sorted(STYLES), default="ethereal",
-                    help="ethereal = piano / A minor (assets/music/theme); pentatonic = guzheng-style (assets/music/theme_pentatonic)")
+                    help="ethereal = piano / A minor (theme); pentatonic = guzheng-style (theme_pentatonic); fusion = both (theme_fusion)")
     ap.add_argument("--loop-bars", type=int, default=32, help="bars in the main loop (32 bars = ~110 s)")
     a = ap.parse_args()
     out = OUT.parent / STYLES[a.style]["out"]
