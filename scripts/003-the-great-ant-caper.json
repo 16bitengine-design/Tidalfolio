@@ -23,11 +23,10 @@
   "shareable_scene": 15,
   "burn_captions": true,
   "voice": {
-    "openai_voice": "sage",
-    "deepen": 0.94,
-    "voice": "en-GB-SoniaNeural",
-    "rate": "-12%",
-    "pitch": "-10Hz"
+    "openai_voice": "ballad",
+    "voice": "en-GB-RyanNeural",
+    "rate": "-4%",
+    "pitch": "-4Hz"
   },
   "music_prompt": "a wry, warm instrumental bed with a light, playful rhythm supporting the tale",
   "style": "Hand-painted storybook illustration, rich watercolor and ink on textured paper, warm cinematic light, expressive animals with very human emotions, dry wit, sophisticated and a little melancholic rather than childish, the main subjects kept in the middle of the frame with room above them, {frame}, no text, no letters, no watermark.",

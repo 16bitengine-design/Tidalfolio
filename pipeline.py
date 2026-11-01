@@ -27,6 +27,17 @@ FPS = 30
 LEAD = 0.30          # silence before narration starts in each scene (s)
 TAIL = 0.55          # silence after narration ends (s)
 MIN_SCENE = 3.0      # shortest allowed scene (s)
+
+
+def lead_of(sc):
+    """Silence before the narration of a scene. A script can set "pause_before" (seconds) to hold a breath."""
+    return max(0.1, min(2.5, float(sc.get("pause_before", LEAD))))
+
+
+def tail_of(sc):
+    """Silence after the narration of a scene. A script can set "pause_after" (seconds) to let a line land."""
+    return max(0.2, min(2.5, float(sc.get("pause_after", TAIL))))
+
 MIN_VIDEO = 60.0     # channel rule: every video runs 60 to 90 seconds
 MIN_PART = 40.0      # exception: a part of a story that was split because it ran past 90 s may be 40 to 90 s
 MAX_VIDEO = 90.0
@@ -73,22 +84,39 @@ async def _edge_tts(text, voice, rate, pitch, out):
     await edge_tts.Communicate(text, voice, rate=rate, pitch=pitch).save(str(out))
 
 
-TTS_STYLE = ("Deep, dramatic movie-trailer narrator. Intense and gravely serious, with perfect comic timing: "
-             "dry, never silly. Fast, punchy delivery with short dramatic pauses before punchlines.")
+TTS_STYLE = ("A warm, middle-aged man of about forty-five with a rich, grounded baritone, telling a story to friends "
+             "he knows well: a gifted storyteller, not an announcer. Talk to the listener, never read at them. "
+             "Vary the pace constantly: slow down and lower the voice for suspense, secrets and the emotional moment; "
+             "quicken and brighten for action; let pauses do the work of the jokes. Vary pitch and volume: drop almost to a "
+             "whisper before a reveal, rise on questions and surprise, land the last word of a punchline flat and dry. "
+             "Stress the one word that matters in each sentence. Breathe and pause at commas and full stops, and take a "
+             "longer beat before a twist. Comic gravity: treat tiny stakes with total seriousness and never wink. "
+             "Never monotone, never sing-song, never a movie-trailer voice, never shouting, no baby talk.")
+
+# per-scene pace (storytellers vary their speed): TTS instruction + free-voice rate change in percent
+PACE = {
+    "slow": ("Pace: slow and deliberate, savouring each word.", -14),
+    "measured": ("Pace: measured and unhurried.", -4),
+    "steady": ("Pace: natural conversational speed.", 0),
+    "brisk": ("Pace: brisk and eager, the story is moving.", 8),
+    "rushed": ("Pace: fast and breathless, tumbling over the words.", 16),
+}
 
 
-def _openai_tts(text, cfg, out_wav, delivery=None):
+def _openai_tts(text, cfg, out_wav, delivery=None, pace=None):
     import requests
     instructions = cfg.get("instructions", TTS_STYLE)
     if delivery:
         instructions += f" Delivery for this line: {delivery}."
+    if pace in PACE:
+        instructions += " " + PACE[pace][0]
     for attempt in range(3):
         try:
             r = requests.post(
                 "https://api.openai.com/v1/audio/speech", timeout=120,
                 headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"},
                 json={"model": os.environ.get("OPENAI_TTS_MODEL") or "gpt-4o-mini-tts",
-                      "voice": cfg.get("openai_voice", "onyx"), "input": text,
+                      "voice": cfg.get("openai_voice", "ballad"), "input": text,
                       "instructions": instructions, "response_format": "wav"})
             if r.ok and len(r.content) > 1000:
                 raw = out_wav.with_suffix(".raw.wav")
@@ -105,22 +133,24 @@ def _openai_tts(text, cfg, out_wav, delivery=None):
     return False
 
 
-def make_narration(text, cfg, out_wav, dry, delivery=None):
+def make_narration(text, cfg, out_wav, dry, delivery=None, pace=None):
     if dry:
         d = max(1.5, len(text.split()) / 2.6)
         run(["ffmpeg", "-y", "-f", "lavfi", "-i", f"sine=frequency=220:duration={d}",
              "-af", "volume=0.08", "-ar", "44100", "-ac", "2", out_wav])
         return
     if os.environ.get("OPENAI_API_KEY") and cfg.get("provider", "openai") == "openai":
-        if _openai_tts(text, cfg, out_wav, delivery):
+        if _openai_tts(text, cfg, out_wav, delivery, pace):
             return
         print("      OpenAI voice failed, falling back to the free voice.")
     mp3 = out_wav.with_suffix(".mp3")
     last = None
     for attempt in range(4):
         try:
+            base = int(str(cfg.get("rate", "-4%")).rstrip("%"))
+            delta = PACE.get(pace, ("", 0))[1]
             asyncio.run(_edge_tts(text, cfg.get("voice", "en-GB-RyanNeural"),
-                                  cfg.get("rate", "-8%"), cfg.get("pitch", "-6Hz"), mp3))
+                                  f"{base + delta:+d}%", cfg.get("pitch", "-4Hz"), mp3))
             break
         except Exception as e:  # network hiccup
             last = e
@@ -297,6 +327,14 @@ def write_envelope(scenes, script, total, path):
     import wave
     sr = 8000
     levels = [scene_level(sc, i, script) for i, sc in enumerate(scenes)]
+    dips = []        # (from, to): the music drops to nothing just before a key line, then returns
+    for sc in scenes:
+        m = sc.get("music")
+        if isinstance(m, dict) and m.get("silence_before"):
+            s_ = max(0.2, min(1.5, float(m["silence_before"])))
+            hold = max(0.0, min(1.5, float(m.get("silence_hold", 0.5))))
+            t1 = sc["_start"] + lead_of(sc)
+            dips.append((max(0.0, t1 - s_), t1 + hold))
     keys = [(0.0, levels[0])]
     for i in range(1, len(scenes)):
         b = scenes[i]["_start"]
@@ -310,6 +348,9 @@ def write_envelope(scenes, script, total, path):
             k += 1
         (t0, v0), (t1, v1) = keys[k], keys[k + 1]
         v = v1 if t1 <= t0 else v0 + (v1 - v0) * min(1.0, max(0.0, (t - t0) / (t1 - t0)))
+        for a, b in dips:
+            if a < t < b:
+                v *= 1.0 - min(1.0, min(t - a, b - t) / 0.25)      # 0.25 s fades in and out of the silence
         data.append(int(max(0.0, min(1.0, v)) * 32767))
     with wave.open(str(path), "wb") as w:
         w.setnchannels(1)
@@ -399,7 +440,8 @@ def sfx_list(sc):
 
 
 def n_shots(sc):
-    return max(1, int(round(sc["_dur"] / 2.5)))      # a new framing about every 2.5 seconds
+    n = max(1, int(round(sc["_dur"] / 2.5)))         # a new framing about every 2.5 seconds
+    return max(2, n) if sc.get("freeze") else n
 
 
 def plan_shots(sc, use_b):
@@ -441,6 +483,9 @@ def plan_shots(sc, use_b):
             a, b = (0.35, 0.65) if k % 2 else (0.65, 0.35)
             s.update(z0=1.3, z1=1.3, fx0=a, fx1=b)
         shots.append(s)
+    if sc.get("freeze") and len(shots) >= 2:             # hold the last shot still: the reveal, the stare
+        last = shots[-1]
+        last.update(z0=last["z1"], fx0=last["fx1"], fx1=last["fx1"], shake=0.0, flash=False, freeze=True)
     return shots
 
 
@@ -458,7 +503,8 @@ def render_shot(img, t0, t1, shot, aspect, out):
         flash = "fade=t=in:st=0:d=0.6:color=white,"
     vf = (f"scale={2 * w}:{2 * h}:force_original_aspect_ratio=increase,crop={2 * w}:{2 * h},"
           f"zoompan=z='{z}':x='{x}':y='{y}':d={n}:s={w}x{h}:fps={FPS},"
-          f"{flash}eq=contrast=1.1:saturation=1.12,format=yuv420p")
+          f"{flash}{'vignette=PI/5,' if shot.get('freeze') else ''}"
+          f"eq=contrast=1.1:saturation={0.9 if shot.get('freeze') else 1.12},format=yuv420p")
     run(["ffmpeg", "-y", "-i", img, "-vf", vf, "-frames:v", n, "-r", FPS,
          "-c:v", "libx264", "-preset", "veryfast", "-crf", "17", out])
 
@@ -499,7 +545,7 @@ def make_ass(scenes, aspect, path):
     for sc in scenes:
         chunks = caption_chunks(sc["narration"])
         weights = [sum(len(x) for x in c) + 2 * len(c) + (5 if c[-1][-1] in ".!?…" else 0) for c in chunks]
-        t = sc["_start"] + LEAD
+        t = sc["_start"] + lead_of(sc)
         for c, wt in zip(chunks, weights):
             d = sc["_narr"] * wt / sum(weights)
             words = [x.replace("{", "").replace("}", "").upper() for x in c]
@@ -591,7 +637,7 @@ def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
     nar_inputs, nar_filter = [], []
     for i, sc in enumerate(scenes):
         nar_inputs += ["-i", narr_dir / f"narr_{i:02}.wav"]
-        ms = int(LEAD * 1000)
+        ms = int(lead_of(sc) * 1000)
         nar_filter.append(f"[{i}]adelay={ms}|{ms},apad=whole_dur={sc['_dur']:.3f}[n{i}]")
     cat = "".join(f"[n{i}]" for i in range(len(scenes)))
     nar_filter.append(f"{cat}concat=n={len(scenes)}:v=0:a=1[nar]")
@@ -641,7 +687,7 @@ def render_aspect(script, scenes, aspect, out_root, narr_dir, total, dry):
         chunks = [words[j:j + size] for j in range(0, len(words), size)] or [[""]]
         per = sc["_narr"] / len(chunks)
         for c, chunk in enumerate(chunks):
-            s0 = sc["_start"] + LEAD + c * per
+            s0 = sc["_start"] + lead_of(sc) + c * per
             srt += [str(idx), f"{srt_time(s0)} --> {srt_time(s0 + per)}", " ".join(chunk), ""]
             idx += 1
     (out_dir / "captions.srt").write_text("\n".join(srt))
@@ -678,9 +724,9 @@ def render(script_path, dry):
     for i, sc in enumerate(scenes):
         wav = narr_dir / f"narr_{i:02}.wav"
         if not wav.exists():
-            make_narration(sc["narration"], voice_cfg, wav, dry, sc.get("delivery"))
+            make_narration(sc["narration"], voice_cfg, wav, dry, sc.get("delivery"), sc.get("pace"))
         nd = duration(wav)
-        d = max(MIN_SCENE, LEAD + nd + TAIL)
+        d = max(MIN_SCENE, lead_of(sc) + nd + tail_of(sc))
         sc["_narr"], sc["_start"], sc["_dur"] = nd, t, d
         t += d
     total = t

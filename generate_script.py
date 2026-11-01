@@ -49,12 +49,13 @@ MAX_RUNTIME = 90.0
 
 def system_prompt():
     return f"""You write scripts for "tidalfolio", a YouTube/TikTok comedy channel about animals, plants, insects, birds, fish and reptiles.
-Videos are illustrated storybook scenes with pop-ups, told by one narrator: a deep-voiced older woman in her sixties, a grandmother telling a story she has told many times and still finds funny. The only people allowed are the plain stick-figure everyman characters of the MIRROR act (rule 9).
+Videos are illustrated storybook scenes with pop-ups, told by one narrator: a middle-aged man in his forties with a warm baritone, a gifted storyteller telling a tale he knows by heart to friends, who still finds it funny and never shows it. The only people allowed are the plain stick-figure everyman characters of the MIRROR act (rule 9).
 
 CHANNEL RULES (all mandatory):
 - Audience is all ages INCLUDING adults. Humour must be witty and dry, never childish, never cartoonish or babyish. No baby talk, no puns on every line.
-- Narrator voice: the grandmother. Warm, unhurried and bone-dry, treating tiny animal conflicts with total seriousness, never winking. She may open with a short aside ("Now, listen.") and may use a small "mm." or a sigh, but never baby talk, never a trailer voice, never shouting. Write sentences she could say aloud with a pause before the punchline. The pace of the story stays brisk and action-oriented even though she is calm.
-- There is NO sound design: no sound effects exist. The only audio is her voice and a music bed. Never write sound effects, onomatopoeia or "*crash*" in the narration.
+- Narrator voice: a middle-aged male storyteller. Warm, grounded and bone-dry, treating tiny animal conflicts with total seriousness, never winking. He may open with a short aside ("Now, listen.") and may use a small "mm." or a sigh, but never baby talk, never a trailer voice, never shouting. Write sentences he could say aloud with a pause before the punchline.
+- STORYTELLING ETIQUETTE (the voice must never run at one speed or one tone): vary the PACE across the story: slower for suspense, secrets and the emotional beat, brisker for action and escalation, a clipped rush for the chase. Vary sentence length: a long rolling sentence of build-up, then a short one that lands. Put the key word LAST in a sentence so it can be stressed. Use silence as a tool: a long pause before a twist or punchline, a held beat after a shocking line. Let the voice drop to a hush before a reveal and open up at the triumph. Use the rule of three, and let the third item break the pattern. Use at most one rhetorical question in the whole story and let it hang. Never explain a joke. The story stays brisk and action-oriented overall.
+- There is NO sound design: no sound effects exist. The only audio is his voice and a music bed. Never write sound effects, onomatopoeia or "*crash*" in the narration.
 - Total runtime must be between {MIN_RUNTIME:.0f} and {MAX_RUNTIME:.0f} seconds. Each scene lasts about 0.85 seconds plus its narration at {WORDS_PER_SEC} words per second, so write 16 to 20 scenes with 6 to 12 words of narration each (roughly 140 to 175 words in total). Aim for a finished video of about 75 to 85 seconds: never under 60, never over 90.
 - STORY ENGINE (the most important rule; a funny video with no story gets watched once and forgotten):
   1. STAKES FIRST. Scene 1 narration (max 14 words) states a high-stakes premise a stranger understands instantly, e.g. "A kingfisher had three days to repay a debt to a crow." Never open with scenery, a greeting or the channel name.
@@ -70,7 +71,9 @@ CHANNEL RULES (all mandatory):
 - Characters: 2 to 4 recurring characters (plus the witness), each with a locked visual description (species, colours, size, distinctive feature, build). The "characters" list in a scene uses the keys from the characters object. Use the same key whenever that character appears.
 - Animals are never harmed: slapstick mishaps only. No real people, brands, logos or text in images.
 - Each scene picks a motion from: zoom_in, zoom_out, pan_left, pan_right. Optional "camera": "impact" (a hard silent camera slam with shake and a white flash on a collision or shock) or "whoosh" (the camera whips across for an entrance). Use impact in at most 5 scenes and whoosh in at most 3.
-- Each scene has a "delivery": a 3 to 8 word acting note for the grandmother (e.g. "dry, deadpan", "hushed, conspiratorial", "slow, amused", "quietly sincere, softer", "low, haunted whisper"). Vary it. The emotional beat uses sincere delivery.
+- Each scene has a "delivery": a 3 to 8 word acting note for the narrator (e.g. "dry, deadpan", "hushed, conspiratorial", "slow, amused", "quietly sincere, softer", "low, haunted whisper"). Vary it. The emotional beat uses sincere delivery.
+- Each scene also has a "pace": one of "slow", "measured", "steady", "brisk", "rushed". Never give more than three scenes in a row the same pace; use "slow" for the emotional beat and the final line, "brisk" or "rushed" for chases and escalation.
+- TIMING TOOLS (use sparingly, they are what make the story dramatic): "pause_before" (seconds of silence before the line, 0.1 to 2.5; use 0.9 to 1.6 right before a twist or punchline) and "pause_after" (seconds of silence after the line, 0.2 to 2.5; use 1.0 to 1.8 after the shocking line and after the last line). Use each in at most 5 scenes and keep total runtime inside the window. Optionally "music": {{"silence_before": 1.0}} on at most 2 scenes: the music cuts out just before that line and returns after it. Optionally "freeze": true on at most 2 scenes: the picture stops dead on the reveal.
 - POP-UPS bring each illustration to life: small things that bounce in over the picture on the beat of the joke. Aim to give 8 or more scenes a "popups" list (1 to 3 each). Kinds: "bubble" (a speech bubble with a short spoken line or reaction, max 4 words, e.g. "MINE.", "That was SPRING."; "tail" is "left" or "right"), "label" (a plain card for a time jump or a title, max 5 words, e.g. "Six hours later"), "sticker" (a small painted prop that pops in, with a "prompt" of max 12 words naming ONE object, e.g. "a single empty fishbone"). Use at most 8 stickers in the whole script and at least 5 bubbles in total. Each pop-up has "at" (seconds after the scene starts, between 0.8 and the scene's narration length), "x" and "y" (centre as fractions of the frame; y between 0.15 and 0.6 so it never covers the captions), "size" (width as a fraction of the frame, 0.16 to 0.3) and optional "hold" (seconds shown, 1.2 to 2.5). Pop-ups are the joke's punctuation: a bubble the witness never says, a label that undercuts the narrator. Never put text inside an image_prompt.
 - Each scene may have "focus": left, center or right: where the camera should aim in the image.
 - Make the images feel like ACTION: in at least 6 scenes also give "image_prompt_b" (and "characters_b" if the cast differs): the SAME moment a half second later (the next frame of the action, e.g. wings now fully open, splash now at its peak). The video cuts between the two images so the scene moves. Same location and characters, only the action advances.
@@ -95,7 +98,7 @@ Reply with ONE JSON object only, in exactly this shape:
   "music_prompt": "one sentence describing a wry, warm instrumental music bed that suits this story (no vocals, no drums)",
   "thumbnail_scene": 1-based number of the funniest, most striking frame (it is the thumbnail),
   "shareable_scene": 1-based,
-  "scenes": [{{"narration": "...", "delivery": "hushed, ominous", "characters": ["key"], "image_prompt": "...", "image_prompt_b": "optional next frame", "focus": "center", "motion": "zoom_in", "camera": "impact", "popups": [{{"kind": "bubble", "text": "MINE.", "at": 1.5, "x": 0.3, "y": 0.28, "size": 0.2, "tail": "left", "hold": 1.6}}, {{"kind": "sticker", "prompt": "a small hourglass", "at": 3.0, "x": 0.5, "y": 0.35, "size": 0.18}}]}}],
+  "scenes": [{{"narration": "...", "delivery": "hushed, ominous", "pace": "slow", "pause_before": 1.2, "pause_after": 0.8, "characters": ["key"], "image_prompt": "...", "image_prompt_b": "optional next frame", "focus": "center", "motion": "zoom_in", "camera": "impact", "popups": [{{"kind": "bubble", "text": "MINE.", "at": 1.5, "x": 0.3, "y": 0.28, "size": 0.2, "tail": "left", "hold": 1.6}}, {{"kind": "sticker", "prompt": "a small hourglass", "at": 3.0, "x": 0.5, "y": 0.35, "size": 0.18}}]}}],
   "youtube": {{"title": "<=90 chars, curiosity-driven", "description": "2-4 sentences: the story teaser, then one sentence that hints at the lesson without spelling it out, then a subscribe line", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers apply the lesson to their own life (e.g. 'Would you have given it away? Be honest.')"}},
   "tiktok": {{"caption": "<=140 chars hook", "hashtags": ["5-6 hashtags starting with #"]}}
 }}
@@ -432,7 +435,7 @@ Checklist:
 6. Protect the story engine: stakes in the first line, a protagonist who wants something, three escalating reversals, one sincere emotional beat with no joke, a haunting last line and an open thread. If any is weak, fix it first; story beats jokes.
 7. Protect the lesson (story.lesson): it must be shown through the protagonist's choice and its cost, never preached. If it is vague or preachy, make it concrete and quiet.
 8. Keep the MIRROR act (the human stick-figure vignette, scenes with look "mirror", style_mirror, dissolve transitions) intact and make sure it is a real miniature of the same lesson, not a recap.
-8. Keep delivery, focus, camera, popups, music_prompt, image_prompt_b and the story/shareable_scene fields. The narrator is a dry, deep-voiced grandmother: sharpen her lines, never turn her into a trailer voice, and write no sound effects.
+8. Keep delivery, focus, camera, popups, music_prompt, image_prompt_b and the story/shareable_scene fields. The narrator is a dry, warm middle-aged male storyteller: sharpen his lines, vary sentence length, never turn him into a trailer voice, and write no sound effects. Keep pace, pause_before, pause_after, music and freeze fields, and vary pace across the story.
 Return ONLY the full improved JSON."""
 
 
@@ -499,7 +502,7 @@ def ensure_popups(data, target=8, min_bubbles=5):
             f"{i + 1} (narration lasts about {len(scenes[i]['narration'].split()) / WORDS_PER_SEC:.1f}s): "
             f"{scenes[i]['narration']} | picture: {scenes[i]['image_prompt'][:160]}" for i in pick)
         raw = call_openai([
-            {"role": "system", "content": "You add pop-ups to the scenes of an illustrated animal comedy narrated by a dry grandmother. Reply with ONE JSON object only."},
+            {"role": "system", "content": "You add pop-ups to the scenes of an illustrated animal comedy narrated by a dry, warm male storyteller. Reply with ONE JSON object only."},
             {"role": "user", "content": (
                 "For each numbered scene below write 1 or 2 pop-ups that land the joke or the feeling. Kinds: "
                 '"bubble" (a short spoken reaction, max 4 words, e.g. "MINE." or "That was SPRING.", with "tail": "left" or "right"), '
@@ -676,7 +679,7 @@ def write_one(series=None, idea=None, part=None, plan=None, ep=None, prior_end="
         "thumbnail_scene": int(data["thumbnail_scene"]),
         "story": data.get("story"), "shareable_scene": int(data.get("shareable_scene", 1)),
         "burn_captions": True,
-        "voice": {"openai_voice": "sage", "deepen": 0.94, "voice": "en-GB-SoniaNeural", "rate": "-12%", "pitch": "-10Hz"},
+        "voice": {"openai_voice": "ballad", "voice": "en-GB-RyanNeural", "rate": "-4%", "pitch": "-4Hz"},
         "music_prompt": str(data.get("music_prompt") or "").strip() or None,
         "style": STYLE, "style_mirror": data.get("style_mirror") if final else None,
         "characters": data["characters"], "scenes": data["scenes"],
