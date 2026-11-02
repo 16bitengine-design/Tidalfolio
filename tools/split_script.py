@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Split a script that is too long for one video into Part 1, Part 2, ... (each 60 to 90 seconds).
+"""Split a script that is too long for one video into Part 1, Part 2, ... (each 40 to 50 seconds).
 
   python tools/split_script.py scripts/004-some-long-story.json            # write the parts, fix queue.txt
   python tools/split_script.py scripts/004-some-long-story.json --plan     # just show where it would split
@@ -20,7 +20,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 WORDS_PER_SEC, LEAD, TAIL, MIN_SCENE = 2.4, 0.30, 0.55, 3.0   # same estimate generate_script.py uses (it runs ~5 s high)
-MAX_EST = 88.0                                                # estimated seconds per part: lands at roughly 70-85 s real
+MAX_EST = 54.0                                                # estimated seconds per part: lands at roughly 44-50 s real
+MIN_REAL = 40.0                                               # no part may run under 40 s
 PART_SUFFIX = re.compile(r"\s*\(Part \d+/\d+\)\s*$")
 
 
@@ -71,6 +72,10 @@ def split_file(path, real_total=None, plan=False):
     scale = real_total / est_total if real_total else 1.0
     total = est_total * scale
     n = max(1, math.ceil(total / MAX_EST))
+    if n > 1 and (total - 5 * n) / n < MIN_REAL:
+        print(f"{path.name}: about {total:.0f}s is too long for one 40-50 s video but too short to make parts of at least {MIN_REAL:.0f} s. "
+              f"Cut it to about {MAX_EST:.0f}s (or lengthen it to at least {n * (MIN_REAL + 5):.0f}s) and run this again. Nothing was written.")
+        return []
     if n == 1:
         print(f"{path.name}: about {total:.0f}s, it already fits in one video. Nothing to split.")
         return []
