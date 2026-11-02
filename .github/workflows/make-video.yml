@@ -122,9 +122,32 @@ jobs:
           for f in metrics insights.md; do [ -e "$f" ] && git add "$f"; done
           git diff --cached --quiet && exit 0
           git commit -m "Update queue and scripts"
+
+          # Resolve a conflicted rebase. Retrying the same rebase can never fix a content conflict, so:
+          #  - metrics/videos.json is an append-only log: keep the rows from both sides (tools/merge_metrics.py)
+          #  - insights.md is generated from videos.json: take origin's copy, it is rebuilt right after
+          #  - anything else: stop and say so, rather than guess
+          resolve_rebase() {
+            for f in $(git diff --name-only --diff-filter=U); do
+              case "$f" in
+                metrics/videos.json) python tools/merge_metrics.py "$f" || return 1 ;;
+                insights.md) git checkout --ours -- "$f" ;;   # during a rebase, "ours" = origin/main
+                *) echo "Unresolvable conflict in $f" >&2; return 1 ;;
+              esac
+              git add "$f"
+            done
+            GIT_EDITOR=true git rebase --continue
+          }
+
           # Remote may have moved while this run was rendering: rebase onto it, retry on a race.
           for i in 1 2 3 4 5; do
-            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            if git pull --rebase origin main || { resolve_rebase; }; then
+              # insights.md is derived from videos.json: rebuild it so it matches the merged log
+              python tools/make_insights.py || true
+              git add insights.md 2>/dev/null || true
+              git diff --cached --quiet || git commit -m "Refresh insights"
+              git push origin HEAD:main && exit 0
+            fi
             echo "Push attempt $i failed, retrying..."
             git rebase --abort 2>/dev/null || true
             sleep $((i * 3))
