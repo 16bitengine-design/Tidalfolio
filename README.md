@@ -79,15 +79,15 @@ Script fields:
 - `music_prompt` (optional): one sentence describing the music bed if it is generated.
 - `aspects`: `["16:9", "9:16"]` renders both formats (images are generated again for each, so image cost doubles). Use `["16:9"]` to render YouTube only.
 - `story` (including `lesson`), `shareable_scene`: notes used by the script writer; they do not change the video.
-- **Length: every video runs between 60 and 90 seconds** (aim for about 75 to 85). That is roughly 18 scenes with 6 to 12 words of narration each. The pipeline measures the real narration before paying for images: if a video is a little under 60 seconds it stretches the pauses, if it is far too short it stops, and **if it runs over 90 seconds it stops too** (nothing is rendered or paid for) and tells you to split the story into parts.
+- **Length: every video runs between 40 and 50 seconds** (aim for about 44 to 48; short attention spans). That is roughly 12 scenes with 6 to 9 words of narration each, with a 2-scene human mirror act. The pipeline measures the real narration before paying for images: if a video is a little under 40 seconds it stretches the pauses, if it is far too short it stops, and **if it runs over 50 seconds it stops too** (nothing is rendered or paid for) and tells you to split the story into parts.
 - **Long stories are told in parts** (see "Stories in parts" below). Optional script field `series_part`: `{"story": "title", "part": 2, "of": 3}`.
 
 ## Stories in parts
 
-A story that cannot fit in 90 seconds is produced as Part 1, Part 2, Part 3 and so on, each its own 60 to 90 second video, until the whole story is told.
+A story that cannot fit in 50 seconds is produced as Part 1, Part 2, Part 3 and so on, each its own 40 to 50 second video, until the whole story is told.
 
 - **Write a new story in parts:** `python generate_script.py --parts 3 --idea "..."` (2 to 6 parts; `--series` is optional). It first plans the whole story (title, lesson, locked cast, what each part does and how it ends), then writes each part in order and queues them in order. Parts before the last end on a cliffhanger, every part after the first opens with a short recap line, the human mirror act and the lesson's payoff come in the final part, and every part reuses the same characters and visual descriptions.
-- **Split a script that is too long:** `python tools/split_script.py scripts/NNN-name.json` (add `--plan` to only preview). It cuts between scenes (never inside the mirror act) into parts of about 70 to 85 seconds, writes `NNN-name-part-1.json` and so on, and replaces the long script in `queue.txt` with its parts, in order.
+- **Split a script that is too long:** `python tools/split_script.py scripts/NNN-name.json` (add `--plan` to only preview). It cuts between scenes (never inside the mirror act) into parts of about 44 to 50 seconds (if the story is too long for one video but too short to make parts of at least 40 seconds, it writes nothing and tells you how much to cut), writes `NNN-name-part-1.json` and so on, and replaces the long script in `queue.txt` with its parts, in order.
 - Every part gets a "Part k/n" title, YouTube title, TikTok caption and description note, a "Part k" card on screen at the start, and "To be continued" at the end of every part except the last. The same music theme is used on every part.
 - Post the parts in order, and consider putting them in one YouTube playlist.
 
@@ -117,7 +117,7 @@ Stills cannot truly animate, so each scene is cut into shots about every 2.5 sec
 
 ## Cost
 
-Images are the biggest cost: about 18 scenes plus up to 8 second frames, in two formats, is roughly 50 images per video, plus up to 8 pop-up stickers (generated once per video and shared by both formats). Check fal.ai's current per-image price for the model you pick (`flux/schnell` is cheapest). To halve the image cost, set `"aspects": ["16:9"]`. OpenAI usage (script writing and narration) is typically a few cents per video, but check OpenAI's current pricing.
+Images are the biggest cost: about 12 scenes plus up to 4 or more second frames, in two formats, is roughly 50 images per video, plus up to 5 pop-up stickers (generated once per video and shared by both formats). Check fal.ai's current per-image price for the model you pick (`flux/schnell` is cheapest). To halve the image cost, set `"aspects": ["16:9"]`. OpenAI usage (script writing and narration) is typically a few cents per video, but check OpenAI's current pricing.
 
 ## Test without spending anything
 
@@ -135,3 +135,12 @@ Dry run uses placeholder images and tone "narration" to check timing and assembl
 - The story quality depends on the text model. The default is the cheapest; set `OPENAI_TEXT_MODEL` to a stronger one if episodes feel flat.
 - **TikTok is not automated.** TikTok's official posting API limits content from unaudited apps to private viewing, and public posting needs an app audit. Until you get that, upload `vertical/video.mp4` from your phone using the caption and hashtags in `metadata.md` (about a minute per video), or use a scheduling tool that already has TikTok access.
 - The YouTube upload code was written against Google's documented upload flow but could not be tested against a real account here. Run the first video as `private` and check it.
+
+## Picture consistency
+
+Every picture is built from the same locked parts so characters and places do not drift:
+
+- **Locked characters.** Each character has one description (species, exact colours, size, markings, eyes, one distinctive feature). The pipeline pastes it, word for word, into every image prompt that features the character.
+- **Locked setting.** The script's top-level `setting` (place, time of day, weather, light) is added to every animal-scene image prompt. Parts of one story share the same `setting` and the same cast.
+- **Continuity guard.** If a picture prompt names a character that is missing from the scene's `characters` list, the script writer adds it automatically so the locked description is used.
+- **Explicit prompts.** Image prompts state who is in the frame, where, what each body part is doing and which way they face; they never say "as before". The second frame of a scene (`image_prompt_b`) is the same moment half a second later with the same cast and positions.

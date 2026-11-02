@@ -38,9 +38,9 @@ def tail_of(sc):
     """Silence after the narration of a scene. A script can set "pause_after" (seconds) to let a line land."""
     return max(0.2, min(2.5, float(sc.get("pause_after", TAIL))))
 
-MIN_VIDEO = 60.0     # channel rule: every video runs 60 to 90 seconds
-MIN_PART = 40.0      # exception: a part of a story that was split because it ran past 90 s may be 40 to 90 s
-MAX_VIDEO = 90.0
+MIN_VIDEO = 40.0     # channel rule: every video (and every part of a story) runs 40 to 50 seconds
+MIN_PART = 40.0      # same floor for parts
+MAX_VIDEO = 50.0
 ALLOW_LONG = False   # set by --allow-long
 
 
@@ -165,6 +165,8 @@ def build_prompt(script, scene, aspect="16:9", variant="a"):
     frame = "tall vertical 9:16 frame" if aspect == "9:16" else "wide 16:9 frame"
     base = script.get("style_mirror") if scene.get("look") == "mirror" and script.get("style_mirror") else script.get("style", "")
     parts = [base.replace("{frame}", frame)]
+    if scene.get("look") != "mirror" and script.get("setting"):
+        parts.append("Setting (identical in every scene): " + str(script["setting"]).strip())   # locked place and light
     keys = scene.get("characters_b", scene.get("characters", [])) if variant == "b" else scene.get("characters", [])
     for key in keys:
         desc = script.get("characters", {}).get(key)
@@ -786,7 +788,7 @@ def read_lines(p):
 
 
 def split_and_pick(script_path, total):
-    """The narration came out over 90 s: split the story into parts (cuts use the measured runtime), and return the
+    """The narration came out over 50 s: split the story into parts (cuts use the measured runtime), and return the
     file name of Part 1 so the run carries on with it instead of failing. The other parts stay queued."""
     print(f"      {total:.1f}s is over {MAX_VIDEO:.0f}s: splitting the story into parts and rendering Part 1")
     sys.path.insert(0, str(ROOT / "tools"))
@@ -802,7 +804,7 @@ def main():
     ap.add_argument("script", nargs="?")
     ap.add_argument("--next", action="store_true", help="render next unfinished script from queue.txt")
     ap.add_argument("--dry-run", action="store_true", help="no API calls; placeholder media")
-    ap.add_argument("--allow-long", action="store_true", help="render even if the video is over 90 seconds")
+    ap.add_argument("--allow-long", action="store_true", help="render even if the video is over 50 seconds")
     a = ap.parse_args()
     global ALLOW_LONG
     ALLOW_LONG = a.allow_long
