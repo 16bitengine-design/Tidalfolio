@@ -3,3 +3,4 @@
 003-the-great-ant-caper.json
 004-the-pearl-guilt.json
 005-the-eagle-who-waited-part-1.json
+005-the-eagle-who-waited-part-2.json

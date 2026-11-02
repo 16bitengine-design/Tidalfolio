@@ -30,5 +30,21 @@
     "video_id": "YqeRqYV8kjo",
     "privacy": "private",
     "uploaded_at": "2026-11-02"
+  },
+  {
+    "slug": "005-the-eagle-who-waited-part-2",
+    "series": "Bird Banter",
+    "runtime": 63.9,
+    "scene_count": 9,
+    "part": {
+      "story": "Bird Banter #2: The Eagle Who Waited",
+      "part": 2,
+      "of": 2
+    },
+    "hook": "Kest flew to free her. Even the squirrels followed. Orin stayed.",
+    "title": "Bird Banter #2: The Eagle Who Waited (Part 2/2)",
+    "video_id": "A2bzpsUrwLg",
+    "privacy": "private",
+    "uploaded_at": "2026-11-02"
   }
 ]
