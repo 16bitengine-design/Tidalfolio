@@ -161,6 +161,24 @@ def write_metadata(script, out_root, total, slug, scenes):
                   "hook": scenes[0]["narration"][:200]}}, indent=2))
 
 
+# ------------------------------------------------------------------ preview stills
+def render_stills(script_path, times, outdir):
+    """Quick look: PNGs at the given seconds of each scene (no video, silent narration)."""
+    script = json.loads(Path(script_path).read_text())
+    scenes = script["scenes"]
+    outdir = Path(outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    make_narration(script, scenes, outdir / "narration", True)
+    plan_timing(scenes)
+    E.set_look(script.get("look", "ink"))
+    ctx = type("Ctx", (), {})()
+    ctx.worlds, ctx.nt, ctx.script = worlds.bake_for(script), narration_time(scenes), script
+    _JOB.update(scenes=scenes, ctx=ctx)
+    for i, sc in enumerate(scenes):
+        for t in times:
+            frame(sc["_start"] + min(t, sc["_D"] - 0.05)).save(outdir / f"s{i + 1:02}_{t:04.1f}.png")
+
+
 # ------------------------------------------------------------------ main entry
 def render_script(script_path, dry=False, workers=None):
     script = json.loads(Path(script_path).read_text())
@@ -182,6 +200,7 @@ def render_script(script_path, dry=False, workers=None):
 
     nt = narration_time(scenes)
     print("[2/5] painting the worlds", flush=True)
+    E.set_look(script.get("look", "ink"))
     ctx = type("Ctx", (), {})()
     ctx.worlds, ctx.nt, ctx.script = worlds.bake_for(script), nt, script
     _JOB.update(scenes=scenes, ctx=ctx)

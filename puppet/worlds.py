@@ -22,6 +22,32 @@ PRESETS = {
                    glow=(700, 1010), glow_col=(255, 190, 110), disc=((255, 216, 130), 125, False)),
 }
 
+def _toon(**k):
+    k.setdefault("toon", True)
+    return k
+
+
+PRESETS.update({
+    "toon_day": _toon(sky_top=(56, 150, 240), sky_bot=(176, 226, 252), far=(170, 120, 210), mid=(104, 196, 98), tree=(158, 66, 190),
+                      sea=(36, 160, 235), rock=(222, 126, 176), grass=(130, 206, 60), cloud=(255, 255, 255), mist=(210, 236, 252),
+                      glow=(820, 300), glow_col=(255, 244, 170), disc=((255, 214, 58), 105, False), disc_style="rays", castle=(1040, 1000)),
+    "toon_dawn": _toon(sky_top=(250, 120, 150), sky_bot=(255, 214, 120), far=(190, 110, 200), mid=(120, 190, 110), tree=(170, 70, 170),
+                       sea=(60, 150, 220), rock=(236, 130, 150), grass=(150, 205, 70), cloud=(255, 236, 226), mist=(255, 210, 170),
+                       glow=(760, 900), glow_col=(255, 214, 120), disc=((255, 220, 70), 105, False), disc_style="rays", castle=(1040, 1000)),
+    "toon_dusk": _toon(sky_top=(96, 90, 210), sky_bot=(255, 170, 150), far=(150, 100, 200), mid=(90, 170, 120), tree=(130, 60, 170),
+                       sea=(70, 120, 220), rock=(210, 110, 160), grass=(120, 190, 80), cloud=(255, 200, 200), mist=(255, 190, 190),
+                       glow=(820, 1040), glow_col=(255, 180, 130), disc=((255, 200, 90), 95, False), disc_style="rays", castle=(1040, 1000)),
+    "toon_storm": _toon(sky_top=(70, 70, 140), sky_bot=(170, 160, 210), far=(100, 90, 160), mid=(70, 140, 110), tree=(100, 50, 140),
+                        sea=(50, 100, 170), rock=(170, 100, 150), grass=(90, 160, 80), cloud=(190, 190, 225), mist=(170, 170, 210), clouds=11,
+                        glow=(800, 600), glow_col=(190, 190, 230), castle=(1040, 1000)),
+    "toon_night": _toon(sky_top=(24, 20, 100), sky_bot=(100, 90, 190), far=(70, 60, 150), mid=(40, 100, 120), tree=(90, 40, 140),
+                        sea=(40, 80, 170), rock=(150, 90, 160), grass=(70, 150, 100), cloud=(150, 140, 220), mist=(120, 120, 210), stars=True,
+                        glow=(820, 480), glow_col=(170, 180, 255), disc=((255, 226, 90), 95, False), disc_style="craters", castle=(1040, 1000)),
+    "toon_sunset": _toon(sky_top=(140, 60, 190), sky_bot=(255, 150, 70), far=(190, 90, 170), mid=(110, 160, 100), tree=(150, 50, 150),
+                         sea=(220, 100, 130), rock=(220, 110, 140), grass=(160, 190, 70), cloud=(255, 180, 160), mist=(255, 170, 120),
+                         glow=(700, 1010), glow_col=(255, 190, 90), disc=((255, 210, 70), 125, False), disc_style="rays", castle=(1040, 1000)),
+})
+
 _COLOR_KEYS = ("sky_top", "sky_bot", "far", "mid", "tree", "sea", "rock", "grass", "cloud", "mist", "glow_col")
 
 
@@ -31,6 +57,8 @@ def _norm(pal):
     for k in _COLOR_KEYS:
         if k in out:
             out[k] = tuple(out[k])
+    if out.get("castle"):
+        out["castle"] = tuple(out["castle"])
     if "glow" in out:
         out["glow"] = tuple(out["glow"])
     if out.get("disc"):
