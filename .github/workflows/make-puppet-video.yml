@@ -1,7 +1,8 @@
 name: Make puppet video (code-drawn, free)
 
 # Renders a storybook ink-and-paper animation with a free offline narrator. No fal.ai or OpenAI cost.
-# Runs by itself every day (renders the next script in queue-puppet.txt and uploads it), or by hand:
+# Runs by itself every day: writes a new story if the queue is empty (needs the OPENAI_API_KEY secret), renders the
+# next script in queue-puppet.txt and uploads it. Or by hand:
 # Actions tab > "Make puppet video (code-drawn, free)" > Run workflow.
 on:
   schedule:
@@ -50,6 +51,18 @@ jobs:
           path: ~/.cache/tidalfolio/kokoro
           key: kokoro-v1.0-model-files
 
+      - name: Write a new story if the queue is empty (AI writes it, code checks it)
+        if: ${{ inputs.script == '' }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_TEXT_MODEL: ${{ vars.OPENAI_TEXT_MODEL }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY is not set: no new story will be written (the queue is used as it is)."
+          else
+            python puppet_story.py --ensure 1
+          fi
+
       - name: Render video
         id: render
         env:
@@ -90,7 +103,7 @@ jobs:
         run: |
           git config user.name "tidalfolio-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add done-puppet.txt
+          git add done-puppet.txt queue-puppet.txt scripts
           for f in metrics; do [ -e "$f" ] && git add "$f"; done
           git diff --cached --quiet && exit 0
           git commit -m "Update puppet queue"
