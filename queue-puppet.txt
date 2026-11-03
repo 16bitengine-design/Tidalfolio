@@ -1,0 +1,3 @@
+# One puppet script file name per line, rendered top to bottom by `python puppet_render.py --next`.
+005-the-eagle-who-waited-ink-part-1.json
+005-the-eagle-who-waited-ink-part-2.json

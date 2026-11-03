@@ -2,6 +2,8 @@
 
 Turns a script file into a finished video: hand-painted storybook illustrations with pop-ups (speech bubbles, labels and painted props that bounce in), a warm male storyteller narrator, several camera moves and cuts per scene, a music bed (music only, no sound effects), highlighted-word captions, a thumbnail and upload details. It makes a 16:9 version for YouTube and a 9:16 version for TikTok and Shorts. It runs free on GitHub Actions.
 
+> **New: a free, code-drawn engine.** `puppet/` draws storybook ink-and-paper videos entirely in code with a free offline narrator: no image or voice cost. Run it from Actions > *Make puppet video (code-drawn, free)*. See `puppet/README.md`. Everything below is the image pipeline.
+
 ## One-time setup (about 10 minutes)
 
 1. Create a free GitHub account and a **new private repository** (for example `tidalfolio-auto`).
