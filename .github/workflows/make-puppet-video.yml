@@ -1,8 +1,11 @@
 name: Make puppet video (code-drawn, free)
 
 # Renders a storybook ink-and-paper animation with a free offline narrator. No fal.ai or OpenAI cost.
-# Manual only: Actions tab > "Make puppet video (code-drawn, free)" > Run workflow.
+# Runs by itself every day (renders the next script in queue-puppet.txt and uploads it), or by hand:
+# Actions tab > "Make puppet video (code-drawn, free)" > Run workflow.
 on:
+  schedule:
+    - cron: "0 15 * * *"      # daily, 15:00 UTC (18:00 Kampala)
   workflow_dispatch:
     inputs:
       script:
@@ -60,7 +63,7 @@ jobs:
 
       - name: Upload to YouTube
         id: youtube
-        if: ${{ inputs.upload }}
+        if: ${{ github.event_name == 'schedule' || inputs.upload }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
