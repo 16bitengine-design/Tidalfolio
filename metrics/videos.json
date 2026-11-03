@@ -46,5 +46,18 @@
     "video_id": "A2bzpsUrwLg",
     "privacy": "private",
     "uploaded_at": "2026-11-02"
+  },
+  {
+    "slug": "005-the-eagle-who-waited-toon",
+    "series": "Bird Banter",
+    "runtime": 83.6,
+    "scene_count": 7,
+    "part": null,
+    "engine": "puppet",
+    "hook": "High on a cliff lived an eagle named Orrin. Indolent, they called him. That is a fancy word for lazy.",
+    "title": "Bird Banter #2: The Eagle Who Waited",
+    "video_id": "2n9eMGPI53E",
+    "privacy": "private",
+    "uploaded_at": "2026-11-03"
   }
 ]
