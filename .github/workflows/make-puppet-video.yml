@@ -1,0 +1,112 @@
+name: Make puppet video (code-drawn, free)
+
+# Renders a storybook ink-and-paper animation with a free offline narrator. No fal.ai or OpenAI cost.
+# Manual only: Actions tab > "Make puppet video (code-drawn, free)" > Run workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Puppet script file name inside scripts/ (leave blank to render the next one in queue-puppet.txt)"
+        required: false
+        default: ""
+      upload:
+        description: "Upload to YouTube after rendering (needs the YT_* secrets; privacy comes from the UPLOAD_PRIVACY variable)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: tidalfolio-push
+  cancel-in-progress: false
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: puppet/requirements.txt
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install Python packages
+        run: pip install -r puppet/requirements.txt -r requirements.txt
+
+      - name: Cache the narrator voice model (about 350 MB, downloaded once)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/tidalfolio/kokoro
+          key: kokoro-v1.0-model-files
+
+      - name: Render video
+        id: render
+        env:
+          SCRIPT_INPUT: ${{ inputs.script }}
+        run: |
+          if [ -n "$SCRIPT_INPUT" ]; then
+            python puppet_render.py "scripts/$SCRIPT_INPUT"
+          else
+            python puppet_render.py --next
+          fi
+
+      - name: Upload to YouTube
+        id: youtube
+        if: ${{ inputs.upload }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          UPLOAD_PRIVACY: ${{ vars.UPLOAD_PRIVACY || 'private' }}
+        run: python upload_youtube.py
+
+      - name: Save finished videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tidalfolio-puppet-videos
+          path: |
+            output/**/video.mp4
+            output/**/thumbnail.png
+            output/**/captions.srt
+            output/**/metadata.md
+            output/**/youtube_url.txt
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Mark queue item as done
+        if: ${{ inputs.script == '' }}
+        run: |
+          git config user.name "tidalfolio-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add done-puppet.txt
+          for f in metrics; do [ -e "$f" ] && git add "$f"; done
+          git diff --cached --quiet && exit 0
+          git commit -m "Update puppet queue"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            echo "Push attempt $i failed, retrying..."
+            git rebase --abort 2>/dev/null || true
+            sleep $((i * 3))
+          done
+          echo "Could not push after 5 attempts" >&2
+          exit 1
+
+      - name: Alert me if anything failed
+        if: failure()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "Puppet video run failed ($(date -u "+%Y-%m-%d %H:%M") UTC)" \
+            --body "A puppet video run did not finish. Logs: $RUN_URL"
