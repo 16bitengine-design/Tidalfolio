@@ -221,6 +221,12 @@ def _thing(d, th, u, clk, pos):
         E.fish(d, x, y, s, face, g("ang", 0.0))
     elif typ == "rabbit":
         E.rabbit(d, x, y, s)
+    elif typ == "puff":
+        E.puff(d, x, y, s, t, rgb(th.get("color"), (255, 226, 240)), th.get("seed", 1))
+    elif typ == "sparkle":
+        E.sparkle(d, x, y, s, t, rgb(th.get("color"), (255, 240, 120)))
+    elif typ == "speed":
+        E.speed(d, x, y, th.get("dx", 1), th.get("n", 6), s, t)
     else:
         raise ValueError(f"unknown thing type {typ!r}")
 
@@ -243,7 +249,7 @@ def _popup(img, p, u, clk):
         kw["bg"] = rgb(p["bg"])
     if p.get("fg"):
         kw["fg"] = rgb(p["fg"])
-    E.popup(img, p["text"], x, y, u, at, p.get("dur", 2.0), size=p.get("size", 52), tail=p.get("tail", 0), shake=p.get("shake", 0.0), **kw)
+    E.popup(img, p["text"], x, y, u, at, p.get("dur", 2.0), size=p.get("size", 52), tail=p.get("tail", 0), shake=p.get("shake", 0.0), shape=p.get("shape"), **kw)
 
 
 def _end_card(img, u, D, script):

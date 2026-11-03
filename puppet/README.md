@@ -64,3 +64,6 @@ Look at `scripts/005-the-eagle-who-waited-ink-part-1.json` and `-part-2.json` fo
 - The voice is clear and warm but not a paid voice. Change `voice.kokoro` to compare. Kokoro is Apache-2.0; check its current licence before relying on it commercially.
 - Only the fusion-style music theme exists here so far (no nursery theme).
 - Linux or macOS with ffmpeg (the frame workers use `fork`).
+
+## Looks
+Set `"look": "toon"` in a script for the bold comic-cartoon style (thick outlines, saturated colours, big eyes, castle/sun-ray/moon-crater worlds `toon_day|dawn|dusk|storm|night|sunset`, outlined dust puffs `puff`, `sparkle`, `speed` things, popup `shape`: `bubble|burst|card`). Default is `"ink"` (storybook). Quick preview without rendering video: `python puppet_render.py <script> --stills /tmp/preview`.

@@ -24,8 +24,14 @@ def main():
     ap.add_argument("--next", action="store_true", help="render the next unfinished script from queue-puppet.txt")
     ap.add_argument("--dry-run", action="store_true", help="placeholder (silent) narration, nothing downloaded")
     ap.add_argument("--workers", type=int, default=None, help="parallel frame workers (default: all CPUs)")
+    ap.add_argument("--stills", metavar="DIR", help="only write preview PNGs (3 per scene) into DIR")
     a = ap.parse_args()
-    from puppet.render import render_script
+    from puppet.render import render_script, render_stills
+
+    if a.stills and a.script:
+        p = Path(a.script)
+        render_stills(p if p.exists() else ROOT / "scripts" / a.script, [1.5, 3.5, 5.5], a.stills)
+        return
 
     if a.next:
         todo = [q for q in read_lines(ROOT / "queue-puppet.txt") if q not in set(read_lines(ROOT / "done-puppet.txt"))]
