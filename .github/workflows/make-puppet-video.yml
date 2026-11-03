@@ -84,6 +84,20 @@ jobs:
           UPLOAD_PRIVACY: ${{ vars.UPLOAD_PRIVACY || 'private' }}
         run: python upload_youtube.py
 
+      - name: Post to TikTok via Buffer
+        id: tiktok
+        if: ${{ github.event_name == 'schedule' || inputs.upload }}
+        # A failure here must not lose the video: the artifact step below still runs.
+        continue-on-error: true
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          CLOUDINARY_UPLOAD_PRESET: ${{ vars.CLOUDINARY_UPLOAD_PRESET }}
+        run: python post_tiktok.py
+
       - name: Save finished videos
         if: always()
         uses: actions/upload-artifact@v4
@@ -117,7 +131,7 @@ jobs:
           exit 1
 
       - name: Alert me if anything failed
-        if: failure()
+        if: always() && (failure() || steps.tiktok.outcome == 'failure')
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
