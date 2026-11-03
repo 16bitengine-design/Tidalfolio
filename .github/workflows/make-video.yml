@@ -7,9 +7,8 @@ on:
         description: "Script file name inside scripts/ (leave blank to render the next one in queue.txt)"
         required: false
         default: ""
-  schedule:
-    # Mon / Wed / Fri at 05:00 UTC (08:00 in Uganda). Edit or delete to change the rhythm.
-    - cron: "0 5 * * 1,3,5"
+  # Scheduled runs are OFF: the puppet workflow (make-puppet-video.yml) runs daily instead.
+  # To turn this one back on, add:  schedule: [{cron: "0 5 * * 1,3,5"}]   (Mon/Wed/Fri 05:00 UTC)
 
 permissions:
   contents: write
