@@ -12,7 +12,7 @@ optionally with an offset: "@He flew+1.5" or "@Mom, Dad-0.3". "@end" is the end 
 import math
 import re
 
-from PIL import ImageDraw
+from PIL import Image, ImageDraw
 
 from . import engine as E
 from .engine import C, W, H, ease, inked, stroke, blob, lit, shade, INK, rot, font
@@ -252,33 +252,54 @@ def _popup(img, p, u, clk):
     E.popup(img, p["text"], x, y, u, at, p.get("dur", 2.0), size=p.get("size", 52), tail=p.get("tail", 0), shake=p.get("shake", 0.0), shape=p.get("shape"), **kw)
 
 
-END_SEC = 3.0      # how long the closing card stays up
+END_SEC = 4.5      # how long the closing card stays up (voice sign-off, then a soft fade to black)
 
 
 def _end_card(img, u, D, script):
-    if u <= D - END_SEC:
+    t0 = D - END_SEC
+    if u <= t0:
         return
-    k = ease((u - (D - END_SEC)) / 0.5)
+    k_bg = ease((u - t0) / 0.9)
     ov = ImageDraw.Draw(img, "RGBA")
-    ov.rectangle([0, 0, W, H], fill=(24, 16, 30, int(210 * k)))
+    ov.rectangle([0, 0, W, H], fill=(24, 16, 30, int(215 * k_bg)))
     fx = E.tfont if E.LOOK.get("toon") else font
     f1, f2, f3, f4 = fx(112), fx(38), fx(66), fx(44)
 
-    def centre(text, y, f, col, a=255):
-        ov.text(((W - ov.textlength(text, font=f)) / 2, y), text, font=f, fill=col + (int(a * k),))
+    def alpha(delay):
+        return ease(max(0.0, min(1.0, (u - t0 - delay) / 0.6)))
 
-    centre("tidalfolio", 640, f1, (250, 240, 220))
-    centre(script.get("tagline", "Funny animals. Wild moments. Endless smiles."), 790, f2, (255, 214, 120))
+    def layer(k, draw_fn):
+        """draw on a transparent layer, fade the whole layer by k, paste it (text alpha is not honoured when drawing straight on RGB)"""
+        if k <= 0.003:
+            return
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        draw_fn(ImageDraw.Draw(lay))
+        al = lay.getchannel("A").point(lambda v, k=k: int(v * k))
+        lay.putalpha(al)
+        img.paste(lay, (0, 0), lay)
+
+    def centre(text, y, f, col, delay, a=255):
+        k = alpha(delay)
+        rise = (1 - k) * 18                      # each line settles upward as it fades in
+        layer(k * a / 255, lambda d: d.text(((W - d.textlength(text, font=f)) / 2, y + rise), text, font=f, fill=col + (255,)))
+
+    centre("tidalfolio", 640, f1, (250, 240, 220), 0.4)
+    centre(script.get("tagline", "Funny animals. Wild moments. Endless smiles."), 790, f2, (255, 214, 120), 0.8)
     sp = script.get("series_part")
     if sp:
         short = script.get("short_title") or sp["story"].split(": ")[-1]
-        centre(f"Part {sp['part']} of {sp['of']}  ·  {short}", 880, f2, (250, 240, 220), 230)
+        centre(f"Part {sp['part']} of {sp['of']}  ·  {short}", 880, f2, (250, 240, 220), 1.1, 230)
         if sp["part"] < sp["of"]:
             pulse = 0.8 + 0.2 * math.sin(u * 6)
-            centre(f"Continue to Part {sp['part'] + 1}", 1010, f3, (255, int(150 + 60 * pulse), 90))
+            centre(f"Continue to Part {sp['part'] + 1}", 1010, f3, (255, int(150 + 60 * pulse), 90), 1.4)
         else:
-            centre("The end", 1010, f3, (255, 214, 120))
+            centre("The end", 1010, f3, (255, 214, 120), 1.4)
     cta = "Follow  ·  Like  ·  Subscribe  ·  Share"
     tw = ov.textlength(cta, font=f4)
-    ov.rounded_rectangle([(W - tw) / 2 - 40, 1150, (W + tw) / 2 + 40, 1240], radius=45, fill=(255, 214, 120, int(235 * k)))
-    ov.text(((W - tw) / 2, 1168), cta, font=f4, fill=(40, 26, 36, int(255 * k)))
+    k = alpha(1.9)
+    rise = (1 - k) * 18
+
+    def pill(d):
+        d.rounded_rectangle([(W - tw) / 2 - 40, 1150 + rise, (W + tw) / 2 + 40, 1240 + rise], radius=45, fill=(255, 214, 120, 235))
+        d.text(((W - tw) / 2, 1168 + rise), cta, font=f4, fill=(40, 26, 36, 255))
+    layer(k, pill)

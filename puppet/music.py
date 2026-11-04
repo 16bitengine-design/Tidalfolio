@@ -24,7 +24,7 @@ def _ease(x):
     return x * x * (3 - 2 * x)
 
 
-def synth(scenes, starts, durs, total, nt, out_wav, seed=7):
+def synth(scenes, starts, durs, total, nt, out_wav, seed=7, outro=4.5):
     """scenes: list of scene dicts (with "_i"); starts/durs: seconds; nt(i, phrase) -> scene-relative time."""
     rng = np.random.default_rng(seed)
     N = int(total * SR)
@@ -70,8 +70,9 @@ def synth(scenes, starts, durs, total, nt, out_wav, seed=7):
         lv = m.get("pad", 0.5)
         pl = m.get("pluck")
         a1 = a0 + D
-        pts_pad += [(a0 + 1.0, lv), (a1 - 0.6, lv)]
-        pts_pl += [(a0 + 0.8, 1.0 if pl else 0.0), (a1 - 0.6, 1.0 if pl else 0.0)]
+        last = a1 >= total - 0.01           # the closing scene keeps its level until the outro takes over
+        pts_pad += [(a0 + 1.0, lv)] + ([] if last else [(a1 - 0.6, lv)])
+        pts_pl += [(a0 + 0.8, 1.0 if pl else 0.0)] + ([] if last else [(a1 - 0.6, 1.0 if pl else 0.0)])
         if pl:
             k, tm = 0, a0 + 0.3
             while tm < a1 - 0.5:
@@ -89,8 +90,13 @@ def synth(scenes, starts, durs, total, nt, out_wav, seed=7):
             tk = a0 + clk.t("@" + m["silence_before"])
             silence = (tk - 0.9, tk + 1.3)
             add(pl_mix, pluck(hz(57), 3.0, 0.7), silence[1])
-    pts_pad += [(total - 0.3, 0.6), (total, 0.0)]
-    pts_pl.append((total, 0.3))
+    # outro: the story's music settles onto a held home chord, a soft rising figure, then a long fade to nothing
+    c0 = total - outro
+    pts_pad += [(c0, 0.5), (c0 + 1.2, 0.62), (total - 1.4, 0.4), (total, 0.0)]
+    pts_pl += [(c0 - 0.4, 1.0), (c0 + 0.6, 0.0), (c0 + 0.7, 1.0), (total - 1.6, 0.5), (total, 0.0)]
+    add(pad_mix, pad([hz(m) for m in PROG[0]], outro + 0.4), c0)
+    for j, m in enumerate((69, 72, 76, 81)):
+        add(pl_mix, pluck(hz(m), 3.2, 0.55), c0 + 0.7 + 0.28 * j)
 
     xs = t[::200]
 

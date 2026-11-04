@@ -24,6 +24,7 @@ OUT_W, OUT_H = 720, 1280
 MIN_LEN, MAX_LEN = 45.0, 90.0        # the channel rule: every video (every part) runs 45 to 90 seconds
 LEAD, TAIL, END_CARD = 0.5, 1.0, dsl.END_SEC  # silence before the line, after it, and the closing title card
 
+FADE_OUT = 0.7  # seconds of fade to black at the very end
 _JOB = {}      # shared with the worker processes (they are forked after this is filled in)
 
 
@@ -54,6 +55,28 @@ def make_narration(script, scenes, narr_dir, dry):
         m = json.loads(meta.read_text())
         sc["_marks"], sc["_au"], sc["_wav"] = m["marks"], m["dur"], wav
         sc["_i"] = i
+
+
+NUM = {2: "two", 3: "three", 4: "four"}
+
+
+def closing_line(script):
+    """The narrator's quiet sign-off over the closing card (a statement, never an instruction)."""
+    sp = script.get("series_part")
+    if sp and sp["part"] < sp["of"]:
+        return f"The story continues in part {NUM.get(sp['part'] + 1, sp['part'] + 1)}."
+    return "That was a tidalfolio story."
+
+
+def make_closing(script, narr_dir, dry):
+    import soundfile as sf
+    narr_dir.mkdir(parents=True, exist_ok=True)
+    voice = (script.get("voice") or {}).get("kokoro", "bm_george")
+    text = closing_line(script)
+    audio, _ = tts.speak(text, voice, dry)
+    wav = narr_dir / "closing.wav"
+    sf.write(str(wav), audio, tts.SR)
+    return {"wav": wav, "dur": len(audio) / tts.SR}
 
 
 def plan_timing(scenes):
@@ -96,7 +119,11 @@ def frame(gt, with_text=True):
     img = E.finish(img)                            # paper grain + vignette
     if with_text and u < LEAD + sc["_au"] + 0.3:
         E.captions(img, sc["narration"], u, LEAD + sc["_au"], lead=LEAD, tail=0.0)
-    return img.resize((OUT_W, OUT_H), Image.LANCZOS)
+    img = img.resize((OUT_W, OUT_H), Image.LANCZOS)
+    tail = _JOB.get("total", 1e9) - gt
+    if tail < FADE_OUT:                             # soft fade to black on the very last moments
+        img = Image.eval(img, lambda v, k=max(0.0, tail / FADE_OUT): int(v * k))
+    return img
 
 
 def _frame_bytes(i):
@@ -118,18 +145,19 @@ def render_silent(total, out, workers):
         sys.exit("ffmpeg failed while encoding the frames")
 
 
-def mux(silent, music_wav, scenes, out):
+def mux(silent, music_wav, scenes, out, total, closing):
     inputs, filt, labels = ["-i", str(silent), "-i", str(music_wav)], [], []
-    for n, sc in enumerate(scenes):
-        inputs += ["-i", str(sc["_wav"])]
-        ms = int((sc["_start"] + LEAD) * 1000)
+    tracks = [(sc["_wav"], sc["_start"] + LEAD) for sc in scenes] + [(closing["wav"], total - END_CARD + 1.1)]
+    for n, (wav, at) in enumerate(tracks):
+        inputs += ["-i", str(wav)]
+        ms = int(at * 1000)
         filt.append(f"[{n + 2}:a]aresample=44100,adelay={ms}|{ms},volume=1.6[v{n}]")
         labels.append(f"[v{n}]")
     filt += ["".join(labels) + f"amix=inputs={len(labels)}:normalize=0:duration=longest[voice]",
              "[voice]apad=pad_dur=120,asplit=2[vk][vm]",
              "[1:a]aresample=44100[mus]",
              "[mus][vk]sidechaincompress=threshold=0.03:ratio=6:attack=40:release=500[duck]",     # music ducks under the narrator
-             "[duck][vm]amix=inputs=2:normalize=0:duration=longest,alimiter=limit=0.95[a]"]
+             f"[duck][vm]amix=inputs=2:normalize=0:duration=longest,alimiter=limit=0.95,afade=t=out:st={total - 1.2:.2f}:d=1.2[a]"]
     _run(["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex", ";".join(filt), "-map", "0:v", "-map", "[a]",
           "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", str(out)])
 
@@ -193,6 +221,7 @@ def render_script(script_path, dry=False, workers=None):
     print(f"[1/5] narration ({len(scenes)} scenes, voice {(script.get('voice') or {}).get('kokoro', 'bm_george')})", flush=True)
     make_narration(script, scenes, out_root / "narration", dry)
     total = plan_timing(scenes)
+    closing = make_closing(script, out_root / "narration", dry)
     print(f"      total runtime: {total:.1f}s", flush=True)
     if not dry and not (MIN_LEN <= total <= MAX_LEN):
         sys.exit(f"Video would be {total:.1f}s but every video must run {MIN_LEN:.0f} to {MAX_LEN:.0f} s. "
@@ -203,10 +232,10 @@ def render_script(script_path, dry=False, workers=None):
     E.set_look(script.get("look", "ink"))
     ctx = type("Ctx", (), {})()
     ctx.worlds, ctx.nt, ctx.script = worlds.bake_for(script), nt, script
-    _JOB.update(scenes=scenes, ctx=ctx)
+    _JOB.update(scenes=scenes, ctx=ctx, total=total)
 
     print("[3/5] music", flush=True)
-    music.synth(scenes, [s["_start"] for s in scenes], [s["_D"] for s in scenes], total, nt, work / "music.wav")
+    music.synth(scenes, [s["_start"] for s in scenes], [s["_D"] for s in scenes], total, nt, work / "music.wav", outro=END_CARD)
 
     print("[4/5] drawing frames", flush=True)
     workers = workers or max(1, os.cpu_count() or 2)
@@ -217,7 +246,7 @@ def render_script(script_path, dry=False, workers=None):
     for sub in ("vertical", "youtube"):
         (out_root / sub).mkdir(exist_ok=True)
     final = out_root / "vertical" / "video.mp4"
-    mux(silent, work / "music.wav", scenes, final)
+    mux(silent, work / "music.wav", scenes, final, total, closing)
     shutil.copy(final, out_root / "youtube" / "video.mp4")
 
     thumb_i = int(script.get("thumbnail_scene", 1)) - 1

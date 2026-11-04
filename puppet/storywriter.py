@@ -23,7 +23,7 @@ QUEUE = ROOT / "queue-puppet.txt"
 DONE = ROOT / "done-puppet.txt"
 MIN_LEN, MAX_LEN = 45.0, 90.0
 AIM = "about 60 to 75 seconds"
-SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.57, 1.5, 3.0     # measured on the real narrator; used only when the voice model is absent
+SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.57, 1.5, 4.5     # measured on the real narrator; used only when the voice model is absent
 
 SERIES = {"Bird Banter": "eagles and squirrels: pride, hunger, rivalry, bad decisions on a cliff",
           "Funny Animals": "a rabbit, squirrels and eagles in absurd high-stakes situations"}
