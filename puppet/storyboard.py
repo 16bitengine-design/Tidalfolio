@@ -145,7 +145,7 @@ def _check_scenes(scenes, cast, pre=""):
 
 # ------------------------------------------------------------------------------------- checks
 def check_storyboard(sb):
-    """Return a list of plain-language problems (empty = fine). A story is 2 to 4 PARTS, each a 50-90 s video."""
+    """Return a list of plain-language problems (empty = fine). A story is 2 to 4 PARTS, each a 45-90 s video."""
     bad = []
     if not isinstance(sb, dict):
         return ["The storyboard is not a JSON object."]

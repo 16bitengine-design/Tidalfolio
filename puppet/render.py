@@ -21,7 +21,7 @@ from . import dsl, engine as E, music, tts, worlds
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT_W, OUT_H = 720, 1280
-MIN_LEN, MAX_LEN = 50.0, 90.0        # the channel rule: every video runs 50 to 90 seconds
+MIN_LEN, MAX_LEN = 45.0, 90.0        # the channel rule: every video (every part) runs 45 to 90 seconds
 LEAD, TAIL, END_CARD = 0.5, 1.0, dsl.END_SEC  # silence before the line, after it, and the closing title card
 
 _JOB = {}      # shared with the worker processes (they are forked after this is filled in)
@@ -194,7 +194,7 @@ def render_script(script_path, dry=False, workers=None):
     make_narration(script, scenes, out_root / "narration", dry)
     total = plan_timing(scenes)
     print(f"      total runtime: {total:.1f}s", flush=True)
-    if not dry and not (MIN_LEN - 0.5 <= total <= MAX_LEN + 0.5):
+    if not dry and not (MIN_LEN <= total <= MAX_LEN):
         sys.exit(f"Video would be {total:.1f}s but every video must run {MIN_LEN:.0f} to {MAX_LEN:.0f} s. "
                  "Nothing was rendered. Shorten or lengthen the narration (or split a very long story into parts).")
 
