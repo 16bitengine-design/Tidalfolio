@@ -23,7 +23,7 @@
  "thumbnail_scene": 2,
  "scenes": [
   {
-   "narration": "High on a cliff lived an eagle named Orrin. Indolent, they called him. That is a fancy word for lazy.",
+   "narration": "High on a cliff lived an eagle named Orrin. Indolent, they called him. He had never once caught his own breakfast.",
    "world": "toon_dawn",
    "camera": {
     "x": {
@@ -153,16 +153,6 @@
      "x": 360,
      "y": 560,
      "size": 60,
-     "shape": "bubble"
-    },
-    {
-     "text": "indolent",
-     "at": "@Indolent",
-     "dur": 2.2,
-     "x": 360,
-     "y": 470,
-     "size": 46,
-     "fg": "#822828",
      "shape": "bubble"
     }
    ],
