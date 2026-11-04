@@ -22,7 +22,7 @@ from . import dsl, engine as E, music, tts, worlds
 ROOT = Path(__file__).resolve().parent.parent
 OUT_W, OUT_H = 720, 1280
 MIN_LEN, MAX_LEN = 50.0, 90.0        # the channel rule: every video runs 50 to 90 seconds
-LEAD, TAIL, END_CARD = 0.5, 1.0, 1.3  # silence before the line, after it, and the closing title card
+LEAD, TAIL, END_CARD = 0.5, 1.0, dsl.END_SEC  # silence before the line, after it, and the closing title card
 
 _JOB = {}      # shared with the worker processes (they are forked after this is filled in)
 

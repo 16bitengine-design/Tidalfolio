@@ -68,27 +68,12 @@ def phrase_ok(narration, phrase):
     return isinstance(phrase, str) and phrase.strip() != "" and phrase in narration
 
 
-# ------------------------------------------------------------------------------------- checks
-def check_storyboard(sb):
-    """Return a list of plain-language problems (empty = fine)."""
+def _check_scenes(scenes, cast, pre=""):
     bad = []
-    if not isinstance(sb, dict):
-        return ["The storyboard is not a JSON object."]
-    cast = sb.get("cast")
-    if not isinstance(cast, dict) or not 1 <= len(cast) <= 4:
-        bad.append("'cast' must be an object with 1 to 4 characters.")
-        cast = {}
-    for k, c in cast.items():
-        if not isinstance(c, dict) or c.get("species") not in SPECIES:
-            bad.append(f"cast '{k}': species must be one of {SPECIES}.")
-        elif c["species"] == "eagle" and c.get("look", "orrin") not in LOOKS:
-            bad.append(f"cast '{k}': an eagle's look must be one of {LOOKS}.")
-    scenes = sb.get("scenes")
-    if not isinstance(scenes, list) or not 5 <= len(scenes) <= 12:
-        bad.append("'scenes' must be a list of 5 to 12 scenes.")
-        return bad
+    if not isinstance(scenes, list) or not 4 <= len(scenes) <= 10:
+        return [f"{pre}'scenes' must be a list of 4 to 10 scenes."]
     for n, sc in enumerate(scenes, 1):
-        where = f"scene {n}"
+        where = f"{pre}scene {n}"
         nar = sc.get("narration", "")
         if not isinstance(nar, str) or _w(nar) < 8:
             bad.append(f"{where}: narration is missing or too short.")
@@ -147,6 +132,33 @@ def check_storyboard(sb):
         for fx in sc.get("fx") or []:
             if fx.get("kind") not in ("puff", "sparkle", "speed") or not phrase_ok(nar, fx.get("at")):
                 bad.append(f"{where}: fx needs kind puff|sparkle|speed and 'at' words copied from the narration.")
+    return bad
+
+
+# ------------------------------------------------------------------------------------- checks
+def check_storyboard(sb):
+    """Return a list of plain-language problems (empty = fine). A story is 2 to 4 PARTS, each a 50-90 s video."""
+    bad = []
+    if not isinstance(sb, dict):
+        return ["The storyboard is not a JSON object."]
+    cast = sb.get("cast")
+    if not isinstance(cast, dict) or not 1 <= len(cast) <= 4:
+        bad.append("'cast' must be an object with 1 to 4 characters.")
+        cast = {}
+    for k, c in cast.items():
+        if not isinstance(c, dict) or c.get("species") not in SPECIES:
+            bad.append(f"cast '{k}': species must be one of {SPECIES}.")
+        elif c["species"] == "eagle" and c.get("look", "orrin") not in LOOKS:
+            bad.append(f"cast '{k}': an eagle's look must be one of {LOOKS}.")
+    parts = sb.get("parts")
+    if not isinstance(parts, list) or not 2 <= len(parts) <= 4:
+        bad.append("'parts' must be a list of 2 to 4 parts (one story told as Part 1, Part 2 ...), each with its own 'scenes'.")
+        return bad
+    scenes = []
+    for pi, part in enumerate(parts, 1):
+        ps = part.get("scenes") if isinstance(part, dict) else None
+        bad += _check_scenes(ps, cast, f"part {pi}, ")
+        scenes += ps if isinstance(ps, list) else []
     uw = (sb.get("uncommon_word") or {}).get("word", "")
     alltext = " ".join(s.get("narration", "") for s in scenes)
     if not uw:
@@ -157,8 +169,8 @@ def check_storyboard(sb):
         bad.append("'lesson' (one plain sentence) is missing.")
     if sb.get("cause") not in ("forgot", "believed", "no_options"):
         bad.append("'cause' must be forgot, believed or no_options.")
-    if not isinstance(sb.get("youtube"), dict) or not sb["youtube"].get("title"):
-        bad.append("'youtube' needs title, description, tags and pinned_comment.")
+    if not isinstance(sb.get("youtube"), dict) or not sb["youtube"].get("description"):
+        bad.append("'youtube' needs description, tags and pinned_comment.")
     if not isinstance(sb.get("tiktok"), dict) or not sb["tiktok"].get("caption"):
         bad.append("'tiktok' needs caption and hashtags.")
     return bad
@@ -308,12 +320,10 @@ def _stage_things(stage):
     return out
 
 
-def compile_storyboard(sb, number=None):
-    """Return the puppet script (dict). Call check_storyboard() first."""
-    cast = sb["cast"]
+def _compile_scenes(scene_list, cast):
     scenes = []
-    n_scenes = len(sb["scenes"])
-    for si, sc in enumerate(sb["scenes"]):
+    n_scenes = len(scene_list)
+    for si, sc in enumerate(scene_list):
         stage = sc.get("stage", "cliff")
         cam_base = CAM_BASE[stage]
         actors = sc.get("actors") or []
@@ -360,17 +370,30 @@ def compile_storyboard(sb, number=None):
             scene["end_card"] = True
         scenes.append(scene)
 
+    return scenes
+
+
+def compile_storyboard(sb, number=None):
+    """Return a LIST of puppet scripts, one per part (Part 1 .. Part n). Call check_storyboard() first."""
+    cast = sb["cast"]
     title = sb.get("title", "Untitled").strip()
     word = sb.get("uncommon_word") or {}
-    yt = dict(sb.get("youtube") or {})
-    yt.setdefault("title", title)
-    script = {
-        "engine": "puppet", "look": "toon",
-        "slug": f"{number:03d}-{_slug(title)}" if number else _slug(title),
-        "title": title, "short_title": title, "thumbnail_scene": max(1, min(n_scenes, int(sb.get("thumbnail_scene", 2)))),
-        "voice": {"kokoro": "bm_george"},
-        "story": {"lesson": sb["lesson"].strip(), "cause": sb["cause"]},
-        "uncommon_word": {"word": word.get("word", ""), "meaning": word.get("meaning", "")},
-        "scenes": scenes, "youtube": yt, "tiktok": sb.get("tiktok", {}),
-    }
-    return script
+    n = len(sb["parts"])
+    out = []
+    for pi, part in enumerate(sb["parts"], 1):
+        scenes = _compile_scenes(part["scenes"], cast)
+        yt = dict(sb.get("youtube") or {})
+        yt["title"] = f"{title} (Part {pi}/{n})"
+        yt["description"] = (yt.get("description", "") + f"\n\nPart {pi} of {n}." + (f" Part {pi + 1} is next." if pi < n else " The end.")).strip()
+        tt = dict(sb.get("tiktok") or {})
+        tt["caption"] = f"Part {pi}/{n}: " + tt.get("caption", "")
+        slug = f"{number:03d}-{_slug(title)}-part-{pi}" if number else f"{_slug(title)}-part-{pi}"
+        out.append({
+            "engine": "puppet", "look": "toon", "slug": slug, "title": f"{title} (Part {pi}/{n})", "short_title": title,
+            "series_part": {"story": title, "part": pi, "of": n},
+            "thumbnail_scene": max(1, min(len(scenes), int(part.get("thumbnail_scene", 2)))),
+            "voice": {"kokoro": "bm_george"},
+            "story": {"lesson": sb["lesson"].strip(), "cause": sb["cause"]},
+            "uncommon_word": {"word": word.get("word", ""), "meaning": word.get("meaning", "")} if pi == 1 else {},
+            "scenes": scenes, "youtube": yt, "tiktok": tt})
+    return out

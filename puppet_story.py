@@ -20,6 +20,7 @@ def main():
     ap.add_argument("--ensure", type=int, help="write stories until this many unrendered ones are queued")
     ap.add_argument("--count", type=int, default=0, help="write this many new stories")
     ap.add_argument("--idea")
+    ap.add_argument("--parts", type=int, choices=[2, 3, 4], help="how many parts (default: random 2 to 4)")
     ap.add_argument("--series", choices=["Bird Banter", "Funny Animals"])
     ap.add_argument("--storyboard", help="skip the AI: validate this storyboard JSON file and queue it")
     a = ap.parse_args()
@@ -29,24 +30,26 @@ def main():
         import generate_script as G
         sb = json.loads(Path(a.storyboard).read_text())
         n = G.next_number()
-        bad, script = W.problems(sb, n)
+        bad, scripts = W.problems(sb, n)
         if bad:
             sys.exit("Storyboard rejected:\n- " + "\n- ".join(bad))
-        script["title"] = f"{a.series or 'Bird Banter'} #{n}: {sb['title'].strip()}"
-        path = W.SCRIPTS / f"{script['slug']}.json"
-        path.write_text(json.dumps(script, indent=1))
+        names = []
+        for sc in scripts:
+            path = W.SCRIPTS / f"{sc['slug']}.json"
+            path.write_text(json.dumps(sc, indent=1))
+            names.append(path.name)
         with open(W.QUEUE, "a") as f:
-            f.write(path.name + "\n")
-        print(f"Wrote and queued {path.name}")
+            f.write("\n".join(names) + "\n")
+        print("Wrote and queued: " + ", ".join(names))
         return
     count = a.count
     if a.ensure is not None:
-        count = a.ensure - len(W.unrendered())
+        count = 1 if len(W.unrendered()) < a.ensure else 0     # one story = 2 to 4 queued videos
         if count <= 0:
             print(f"Queue already has {len(W.unrendered())} unrendered story(ies): nothing to write.")
             return
     for _ in range(max(1, count)):
-        W.write_story(a.idea, a.series)
+        W.write_story(a.idea, a.series, a.parts)
 
 
 if __name__ == "__main__":

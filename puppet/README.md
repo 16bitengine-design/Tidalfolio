@@ -18,7 +18,7 @@ It lives next to the image pipeline and does not touch it. The image pipeline (`
 
 Output matches the image pipeline, so `upload_youtube.py` and `post_tiktok.py` work unchanged:
 `output/<slug>/vertical/video.mp4` (9:16, also copied to `youtube/video.mp4`, which YouTube treats as a Short), `thumbnail.png`,
-`captions.srt`, `metadata.md`. Every video must run **50 to 90 seconds** or nothing is rendered (a very long story can be split into parts).
+`captions.srt`, `metadata.md`. Every video must run **50 to 90 seconds** or nothing is rendered. Every story is told in **2 to 4 parts**; each part ends with a closing card ("Continue to Part N" except on the last part, then "The end") and the line **Follow · Like · Subscribe · Share**.
 
 ## Script format
 
@@ -69,9 +69,9 @@ Look at `scripts/005-the-eagle-who-waited-ink-part-1.json` and `-part-2.json` fo
 Set `"look": "toon"` in a script for the bold comic-cartoon style (thick outlines, saturated colours, big eyes, castle/sun-ray/moon-crater worlds `toon_day|dawn|dusk|storm|night|sunset`, outlined dust puffs `puff`, `sparkle`, `speed` things, popup `shape`: `bubble|burst|card`). Default is `"ink"` (storybook). Quick preview without rendering video: `python puppet_render.py <script> --stills /tmp/preview`.
 
 ## Automatic stories
-`python puppet_story.py --ensure 1` asks an AI model (OpenAI, `OPENAI_API_KEY`; text only, a few cents a story; set the repository
+`python puppet_story.py --ensure 1` (add `--parts 3` to choose) asks an AI model (OpenAI, `OPENAI_API_KEY`; text only, a few cents a story; set the repository
 variable `OPENAI_TEXT_MODEL` to a stronger model for better stories) for a *storyboard*: narration plus who stands where, their mood, what they do and
 when (tied to words in the narration). `puppet/storyboard.py` checks it against the channel rules (narrator never says "I", exactly one uncommon word,
 valid cast and cues, popups of 4 words or fewer), compiles it to a script, draws a test frame of every scene and measures the narration with the real voice
-(50 to 90 s). Any problem goes back to the model (up to 4 tries). Good stories are saved to `scripts/` and added to `queue-puppet.txt`.
-The daily workflow runs this step when the queue is empty, so no one has to write anything. `python puppet_story.py --storyboard file.json` checks and queues a storyboard you wrote yourself (no AI, no key).
+(50 to 90 s for every part). Any problem goes back to the model (up to 4 tries). A story is 2 to 4 parts (the writer picks); all parts are saved to `scripts/` and queued in order, so Part 2 follows Part 1 on the next daily run. Every part but the last ends on a cliffhanger.
+The daily workflow runs this step when the queue is empty (one story = 2 to 4 days of videos), so no one has to write anything. `python puppet_story.py --storyboard file.json` checks and queues a storyboard you wrote yourself (no AI, no key).

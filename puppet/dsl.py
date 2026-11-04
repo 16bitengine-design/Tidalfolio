@@ -252,19 +252,33 @@ def _popup(img, p, u, clk):
     E.popup(img, p["text"], x, y, u, at, p.get("dur", 2.0), size=p.get("size", 52), tail=p.get("tail", 0), shake=p.get("shake", 0.0), shape=p.get("shape"), **kw)
 
 
+END_SEC = 3.0      # how long the closing card stays up
+
+
 def _end_card(img, u, D, script):
-    if u <= D - 1.3:
+    if u <= D - END_SEC:
         return
-    k = ease((u - (D - 1.3)) / 0.5)
+    k = ease((u - (D - END_SEC)) / 0.5)
     ov = ImageDraw.Draw(img, "RGBA")
-    ov.rectangle([0, 0, W, H], fill=(24, 16, 30, int(200 * k)))
-    f1, f2 = font(112), font(38)
-    t1 = "tidalfolio"
-    ov.text(((W - ov.textlength(t1, font=f1)) / 2, 780), t1, font=f1, fill=(250, 240, 220, int(255 * k)))
-    t2 = script.get("tagline", "Funny animals. Wild moments. Endless smiles.")
-    ov.text(((W - ov.textlength(t2, font=f2)) / 2, 930), t2, font=f2, fill=(255, 214, 120, int(255 * k)))
+    ov.rectangle([0, 0, W, H], fill=(24, 16, 30, int(210 * k)))
+    fx = E.tfont if E.LOOK.get("toon") else font
+    f1, f2, f3, f4 = fx(112), fx(38), fx(66), fx(44)
+
+    def centre(text, y, f, col, a=255):
+        ov.text(((W - ov.textlength(text, font=f)) / 2, y), text, font=f, fill=col + (int(a * k),))
+
+    centre("tidalfolio", 640, f1, (250, 240, 220))
+    centre(script.get("tagline", "Funny animals. Wild moments. Endless smiles."), 790, f2, (255, 214, 120))
     sp = script.get("series_part")
     if sp:
         short = script.get("short_title") or sp["story"].split(": ")[-1]
-        tl = f"Part {sp['part']}  ·  {short}"
-        ov.text(((W - ov.textlength(tl, font=f2)) / 2, 1010), tl, font=f2, fill=(250, 240, 220, int(230 * k)))
+        centre(f"Part {sp['part']} of {sp['of']}  ·  {short}", 880, f2, (250, 240, 220), 230)
+        if sp["part"] < sp["of"]:
+            pulse = 0.8 + 0.2 * math.sin(u * 6)
+            centre(f"Continue to Part {sp['part'] + 1}", 1010, f3, (255, int(150 + 60 * pulse), 90))
+        else:
+            centre("The end", 1010, f3, (255, 214, 120))
+    cta = "Follow  ·  Like  ·  Subscribe  ·  Share"
+    tw = ov.textlength(cta, font=f4)
+    ov.rounded_rectangle([(W - tw) / 2 - 40, 1150, (W + tw) / 2 + 40, 1240], radius=45, fill=(255, 214, 120, int(235 * k)))
+    ov.text(((W - tw) / 2, 1168), cta, font=f4, fill=(40, 26, 36, int(255 * k)))
