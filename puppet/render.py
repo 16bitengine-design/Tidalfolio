@@ -194,7 +194,7 @@ def render_script(script_path, dry=False, workers=None):
     make_narration(script, scenes, out_root / "narration", dry)
     total = plan_timing(scenes)
     print(f"      total runtime: {total:.1f}s", flush=True)
-    if not dry and not (MIN_LEN - 0.5 <= total <= MAX_LEN + 0.5):
+    if not dry and not (MIN_LEN <= total <= MAX_LEN):
         sys.exit(f"Video would be {total:.1f}s but every video must run {MIN_LEN:.0f} to {MAX_LEN:.0f} s. "
                  "Nothing was rendered. Shorten or lengthen the narration (or split a very long story into parts).")
 
