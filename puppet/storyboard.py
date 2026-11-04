@@ -72,8 +72,16 @@ def _check_scenes(scenes, cast, pre=""):
     bad = []
     if not isinstance(scenes, list) or not 4 <= len(scenes) <= 10:
         return [f"{pre}'scenes' must be a list of 4 to 10 scenes."]
+    prev_sig = None
     for n, sc in enumerate(scenes, 1):
         where = f"{pre}scene {n}"
+        sig = (sc.get("world"), sc.get("stage"), sc.get("camera"),
+               tuple((a.get("who"), a.get("at"), a.get("mood"), a.get("action")) for a in sc.get("actors") or []))
+        if sig == prev_sig:
+            bad.append(f"{where}: repeats the previous scene's staging. Every scene must change something the viewer can see: positions, mood, action, camera or place.")
+        prev_sig = sig
+        if n == 1 and pre.startswith("part 1") and not (sc.get("popups") or any(a.get("mood", "neutral") != "neutral" for a in sc.get("actors") or [])):
+            bad.append(f"{where}: the opening needs a visual hook: give an actor a strong mood (not neutral) or add a popup.")
         nar = sc.get("narration", "")
         if not isinstance(nar, str) or _w(nar) < 8:
             bad.append(f"{where}: narration is missing or too short.")

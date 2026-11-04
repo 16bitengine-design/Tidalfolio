@@ -9,6 +9,7 @@ This module then
 Needs OPENAI_API_KEY (text only: a few cents per story). Model: OPENAI_TEXT_MODEL (default gpt-4o-mini; a stronger one writes better stories).
 """
 import json
+import os
 import random
 import re
 import shutil
@@ -54,6 +55,15 @@ CHANNEL RULES (all mandatory)
 - A LESSON FOR HUMANS, but NEVER stated or hinted at in the video: the story shows through what the animals do and what it costs them. Write the lesson as ONE plain sentence in "lesson" (max 25 words) for the record only. People rarely go wrong because they are fools: set "cause" to why the protagonist makes the key choice: "forgot" (knew the value, lost it under pressure), "believed" (sincerely thought it was right), or "no_options" (every path cost something). Show that cause in their own reasoning so viewers understand the choice from the inside. Never say the cause aloud.
 - HUMOUR: deadpan gravity about trivial stakes; specific absurd numbers and rules; understatement after big action; one planted odd detail that returns later raising a question.
 
+CREATIVE DIRECTION (the Tidal Folio master brief; follow it, within the channel rules above and the stage limits below)
+- Substance beyond funny animals: the animals live out recognizable human situations: jealousy, betrayal, greed, envy, deception; love, friendship, loyalty, trust, forgiveness; competition, pride, ambition, revenge; injustice, selfishness, manipulation; kindness, sacrifice, unexpected generosity; misunderstandings, secrets, embarrassment, shocking revelations. NEVER explain the underlying message or spell out the comparison; the audience works it out.
+- Dramatic shape, in this order: an IMMEDIATE HOOK (the first seconds show something intriguing: a shocking discovery, a suspicious encounter, a betrayal, a confrontation about to erupt, an embarrassing situation; no introductions, no scenery); the CONFLICT made clear at once (who wants what, what stands in the way, why it matters); rising ANTICIPATION (suspicious glances, deliberate pauses, a character noticing what they should not, near discoveries, interrupted confrontations, hidden motives, small details that matter later); ESCALATION (each development more complicated, more embarrassing, more emotional, funnier or more dangerous; reversals, misunderstandings, failed plans, interruptions; never predictable or repetitive; every scene adds new information, raises the stakes or changes what the viewer understands); a PAYOFF that rewards the anticipation and feels earned (a betrayal, a clever reversal, a public embarrassment, a secret exposed, an unexpected kindness, a character caught in their own scheme, an ironic consequence, a surprising reconciliation); a lasting final image or line, with a small unanswered question.
+- Comedy comes from character and situation, not random jokes: perfectly timed reactions, awkward silence, exaggerated faces, unexpected confidence, misunderstandings, clever deception, irony, role reversals, physical comedy, contrasting personalities. Balance it with real emotion: a story can be hilarious and still carry betrayal, disappointment, compassion or justice. No childish humour, no meaningless chaos, no predictable jokes.
+- Characters: each has a distinct personality, a clear motivation and a particular way of reacting to conflict, shown through mood and action. Keep them consistent and appealing.
+- Staging (the storyboard must leave nothing to interpretation): decide for every scene who stands where ("at"), which way they face ("face"), who is looking at whom (two characters in a confrontation face each other), their mood and their movement. Avoid long static scenes: change the camera or the action every scene.
+- Silence before revelations and punchlines (use "silence_before").
+- Before you answer, silently check: does the opening create curiosity? is the conflict easy to understand? does every scene give a reason to keep watching? does tension rise rather than stay flat? is there at least one unexpected development? is the comedy situation-driven? are the characters believable? is the climax satisfying and memorable? does the story keep its deeper meaning without explaining it? If any answer is no, rewrite that part first. Story quality beats spectacle, comedy beats noise, essence beats a shocking twist.
+
 STORY IN PARTS: every story is told as {parts_text} consecutive videos (Part 1, Part 2 ...), published one after another. Write ALL parts now, in "parts": [{{"scenes": [...]}}, ...].
 - Every part is a complete, satisfying watch on its own AND moves the story forward: its own hook, its own mini-reversal.
 - Every part EXCEPT the last ends on a cliffhanger line (a reveal, a worse problem, a question) that makes the viewer need the next part. The cliffhanger is part of the story, never "to be continued" and never an instruction. The system adds the "Continue to Part N" card and the "Follow, Like, Subscribe, Share" card itself, so never write either in the narration.
@@ -79,6 +89,30 @@ Reply with ONE JSON object, exactly this shape:
    "popups": [{{"text": "MINE.", "kind": "burst", "at": "words", "near": "key"}}], "fx": []}}]}}],
  "youtube": {{"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"}},
  "tiktok": {{"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}}}"""
+
+
+CRITIC_PROMPT = """You are a ruthless story editor for Tidal Folio, a deadpan animal-fable channel. You get a story told in parts (the narration of every scene).
+Score it 1 to 5 on each question, being honest (a 3 is acceptable, 1 or 2 means it must be rewritten):
+q1 Does the opening immediately create curiosity? q2 Is the central conflict easy to understand? q3 Does every scene give a reason to keep watching?
+q4 Does tension rise rather than stay flat? q5 Are there unexpected developments? q6 Is the comedy genuinely funny and situation-driven (not random or childish)?
+q7 Are the characters emotionally believable? q8 Is the climax satisfying and earned? q9 Does it keep a deeper meaning WITHOUT explaining it (no moral, no advice)?
+q10 Is every part a satisfying watch that ends (except the last) on a cliffhanger that makes the viewer need the next part?
+Reply with ONE JSON object: {"scores": {"q1": 4, ...}, "problems": ["specific, actionable fixes naming the part and scene, only for scores of 1 or 2, max 5"]}"""
+
+
+def critique(G, sb):
+    """Second AI pass: an editor scores the story. Returns a list of problems (empty = approved)."""
+    text = "\n".join(f"PART {pi}:\n" + "\n".join(f"  {n}. {sc['narration']}" for n, sc in enumerate(part["scenes"], 1))
+                     for pi, part in enumerate(sb["parts"], 1))
+    try:
+        r = json.loads(G.call_openai([{"role": "system", "content": CRITIC_PROMPT}, {"role": "user", "content": f"Title: {sb.get('title')}\n{text}"}], 0.3))
+    except (ValueError, SystemExit):
+        return []                               # the editor is a bonus: never block a story because it failed to answer
+    scores = r.get("scores") or {}
+    low = [k for k, v in scores.items() if isinstance(v, (int, float)) and v <= 2]
+    if not low:
+        return []
+    return [f"an editor rejected the story (weak: {', '.join(sorted(low))}): " + "; ".join(r.get("problems") or ["make it more surprising, more tense and funnier"])]
 
 
 def _measure(script):
@@ -167,6 +201,8 @@ def write_story(idea=None, series=None, parts=None, log=print):
                 last_bad.append("that uncommon word was used in an earlier story; pick a different one.")
             if len(sb.get("parts") or []) != n_parts and not last_bad:
                 last_bad.append(f"write exactly {n_parts} parts.")
+            if not last_bad and attempt < 4 and os.environ.get("STORY_CRITIC", "1") != "0":
+                last_bad = critique(G, sb)
             if not last_bad:
                 t = re.sub(rf"^{re.escape(series)}\s*(#\d+)?\s*[:\-]\s*", "", sb["title"].strip(), flags=re.I) or sb["title"].strip()
                 names = []
