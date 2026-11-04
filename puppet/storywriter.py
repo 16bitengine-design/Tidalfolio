@@ -33,6 +33,25 @@ def _lines(p):
     return [l.strip() for l in p.read_text().splitlines() if l.strip() and not l.startswith("#")] if p.exists() else []
 
 
+IDEAS = ROOT / "ideas.txt"
+
+
+def take_idea():
+    """First idea in ideas.txt (one per line, # = comment). It is removed from the file when taken."""
+    if not IDEAS.exists():
+        return None
+    lines = IDEAS.read_text().splitlines()
+    for i, l in enumerate(lines):
+        if l.strip() and not l.startswith("#"):
+            IDEAS.write_text("\n".join(lines[:i] + lines[i + 1:]) + "\n")
+            return l.strip()
+    return None
+
+
+def give_back_idea(idea):
+    IDEAS.write_text(IDEAS.read_text().rstrip("\n") + "\n" + idea + "\n")
+
+
 def unrendered():
     done = set(_lines(DONE))
     return [q for q in _lines(QUEUE) if q not in done and (SCRIPTS / q).exists()]
@@ -50,7 +69,7 @@ CHANNEL RULES (all mandatory)
 - STORYTELLING ETIQUETTE: vary pace. Slower for suspense and the emotional beat, brisker for action. A long rolling sentence of build-up, then a short one that lands. Put the key word LAST in a sentence. Use silence before a twist. Rule of three where the third breaks the pattern. At most one rhetorical question. Never explain a joke. Short sentences are spoken slowly and dramatically, so use them for the punchlines.
 - COMMON WORDS ONLY: plain everyday English an ordinary 12-year-old knows. EXCEPT exactly ONE uncommon word per story (a real useful word most viewers don't know, e.g. "indolent", "audacious", "meticulous", "reluctant", "frugal"). Use it exactly once, inside a normal sentence, and then simply carry on with the story. NEVER define it, translate it, repeat it, follow it with a synonym, point at it ("a fancy word for", "which means", "that is another word for") or hint that it is special: the viewer will look it up in their own time. The story's events may show what it means, but the narrator never does. Nothing about it is shown on screen. Put it in "uncommon_word": {{"word", "meaning"}} (the meaning is for our records only). Never a name or slang.
 - No sound effects exist: never write onomatopoeia like "crash!" in the narration (a visual pop-up word like CRASH is fine). Audio is voice plus music only.
-- Animals are never harmed: slapstick only.
+- EVERY AGE: the channel is for everyone from young children to grandparents. No profanity or rude words (a bubble of symbols like #@%! is fine), no gore, no weapons, no real violence or death on screen or in the narration, no sexual or romantic content beyond a friendly hug, nothing frightening beyond mild, brief peril, no cruelty or bullying played as a joke, no drugs or alcohol, no politics or religion. Real feelings are welcome (loss, jealousy, regret, forgiveness) as long as they are told gently. Animals are never harmed: slapstick only.
 - STORY ENGINE (a funny video with no story is forgotten): (1) STAKES FIRST: scene 1 states a premise a stranger understands instantly, never scenery or a greeting. (2) ONE named PROTAGONIST who wants something badly and has something to lose. (3) THREE ESCALATING REVERSALS, each flipping what the viewer hopes for. (4) ONE REAL EMOTIONAL BEAT in the middle (loyalty, shame, fear, tenderness) played straight with no joke. (5) A calm, short, haunting LAST LINE that leaves the viewer pondering what it was really about. (6) One SHAREABLE moment so absurd or striking a viewer would show a friend.
 - A LESSON FOR HUMANS, but NEVER stated or hinted at in the video: the story shows through what the animals do and what it costs them. Write the lesson as ONE plain sentence in "lesson" (max 25 words) for the record only. People rarely go wrong because they are fools: set "cause" to why the protagonist makes the key choice: "forgot" (knew the value, lost it under pressure), "believed" (sincerely thought it was right), or "no_options" (every path cost something). Show that cause in their own reasoning so viewers understand the choice from the inside. Never say the cause aloud.
 - HUMOUR: deadpan gravity about trivial stakes; specific absurd numbers and rules; understatement after big action; one planted odd detail that returns later raising a question.
@@ -79,6 +98,7 @@ THE STAGE (this is all that can be drawn, so write for it)
 - "popups": comic speech bubbles ("kind": "bubble", a short spoken line or reaction) and impact words ("kind": "burst", e.g. CRASH, MINE, WHAT). "text" 1 to 4 words, "at": words in the narration when it pops, "near": which actor it belongs to. Use them in at least half the scenes: they are the punctuation of the jokes.
 - "fx": [{{"kind": "puff"|"sparkle"|"speed", "at": words, "near": actor}}]: a dust cloud for landings and crashes, a sparkle for magic or a lucky moment, speed streaks for a dash.
 - EVERY phrase you give ("from", "to", "enter", "exit", "at", "silence_before") must be copied EXACTLY (same capitals, same punctuation) from THAT scene's narration, a span of 2 to 5 words. Characters can only exist on screen if listed in "actors" of that scene. Keep a character in the same spot while nothing moves them; change spots only when the narration says so.
+- VARIETY (the channel must never feel like one template repeated): each story needs its own premise and plot shape (a heist, a rivalry, a rescue, a rumour, a bet, a misunderstanding, a rivalry between friends, a trade that goes wrong ...), its own lead character, its own time of day and weather, and its own opening line. Do not start two stories the same way. Titles and the first sentence of the YouTube description should say plainly what the story is about, with the hook in the first 5 words.
 - Ending: every part's last scene is followed by the tidalfolio closing card, so do not write a sign-off.
 
 Reply with ONE JSON object, exactly this shape:
@@ -186,6 +206,7 @@ def write_story(idea=None, series=None, parts=None, log=print):
              + (f"Do NOT reuse these lessons: {'; '.join(lessons[-12:])}. " if lessons else "")
              + (f"Do NOT reuse these uncommon words: {', '.join(words)}. " if words else "")
              + (f"Titles already used (be different): {'; '.join(titles[-15:])}. " if titles else "")
+             + G.performance_notes()
              + "Reply with the JSON object only.")
     msgs = [{"role": "system", "content": system_prompt(6, 9, n_parts)}, {"role": "user", "content": brief}]
     last_bad = []
