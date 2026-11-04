@@ -76,5 +76,22 @@
     "video_id": "BMl9QT25m2Y",
     "privacy": "public",
     "uploaded_at": "2026-11-04"
+  },
+  {
+    "slug": "005-the-eagle-who-waited-toon-part-2",
+    "series": "Bird Banter",
+    "runtime": 58.4,
+    "scene_count": 4,
+    "part": {
+      "story": "Bird Banter #2: The Eagle Who Waited",
+      "part": 2,
+      "of": 2
+    },
+    "engine": "puppet",
+    "hook": "His mother still sneaked back with dinner. Then a fisherman's net caught her. And Orrin, hungry, shouted words no son should ever shout.",
+    "title": "Bird Banter #2: The Eagle Who Waited (Part 2/2)",
+    "video_id": "S27zZaU8s_k",
+    "privacy": "public",
+    "uploaded_at": "2026-11-04"
   }
 ]
