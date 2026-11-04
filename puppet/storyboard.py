@@ -41,6 +41,9 @@ BRANCH = ("branch_a", "branch_b")
 CAM_BASE = {"cliff": (470, 1000), "nest": (470, 1000), "tree": (400, 960)}
 FIRST_PERSON = re.compile(r"(?<![\w'])(I|I'm|I'd|I'll|I've|me|my|mine|we|we're|our|us)(?![\w'])")
 MAX_WORDS_BUBBLE = 4
+# words that do not belong on an all-ages channel (checked in narration and pop-ups)
+UNSAFE = re.compile(r"\b(fuck\w*|shit\w*|damn\w*|hell|bastard|bitch\w*|crap|ass|asshole|piss\w*|dick|sex\w*|naked|drunk|beer|wine|vodka|whisky|"
+                    r"kill\w*|murder\w*|dead|die[sd]?|dying|blood\w*|gun\w*|shoot\w*|shot|knife|stab\w*|suicide|corpse|slaughter\w*)\b", re.I)
 DEFINING = re.compile(r"fancy word|which means|that means|\bmeaning\b|in other words|another word for|a word for|the word\b|is a word", re.I)
 
 # eagle face per mood: eye, brow, tear
@@ -93,6 +96,10 @@ def _check_scenes(scenes, cast, pre=""):
         m = FIRST_PERSON.search(unquoted)
         if m:
             bad.append(f"{where}: the narrator must never mention himself ('{m.group(0)}'). Tell it in the third person; only quoted speech may use I/me/we.")
+        popup_text = " ".join(p.get("text", "") for p in sc.get("popups") or [])
+        mu = UNSAFE.search(nar + " " + popup_text)
+        if mu:
+            bad.append(f"{where}: '{mu.group(0)}' is not all-ages. This channel is for everyone from young children to grandparents: rephrase gently (no profanity, death, weapons, blood, drink or romance).")
         m2 = DEFINING.search(unquoted)
         if m2:
             bad.append(f"{where}: the narrator must never explain or define a word ('{m2.group(0)}'). Remove it and carry on with the story.")
