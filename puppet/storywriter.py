@@ -52,6 +52,28 @@ def give_back_idea(idea):
     IDEAS.write_text(IDEAS.read_text().rstrip("\n") + "\n" + idea + "\n")
 
 
+def choose_parts(log=print):
+    """How many parts the next story gets (2 to 4). With real results it learns from viewer drop-off between parts:
+    if Part 2 keeps fewer than ~45% of Part 1's views, stories get shorter; if it keeps over 80%, they may run longer."""
+    default = random.choice([2, 3, 3, 4])
+    try:
+        rows = json.loads((ROOT / "metrics" / "videos.json").read_text())
+    except Exception:
+        return default
+    stories = {}
+    for r in rows:
+        sp, st = r.get("part"), r.get("stats") or {}
+        if sp and st.get("views") is not None and r.get("privacy") == "public":
+            stories.setdefault(sp["story"], {})[sp["part"]] = st["views"]
+    ratios = [v[k + 1] / max(1, v[k]) for v in stories.values() for k in v if k + 1 in v and v[k] >= 20]
+    if len(ratios) < 3:
+        return default
+    r = sum(ratios) / len(ratios)
+    n = 2 if r < 0.45 else (random.choice([3, 4]) if r > 0.8 else default)
+    log(f"Part drop-off: each part keeps {r:.0%} of the previous part's views, so this story gets {n} parts.")
+    return n
+
+
 def unrendered():
     done = set(_lines(DONE))
     return [q for q in _lines(QUEUE) if q not in done and (SCRIPTS / q).exists()]
@@ -197,7 +219,7 @@ def write_story(idea=None, series=None, parts=None, log=print):
     number = G.next_number()
     titles, counts = G.existing()
     series = series or min(SERIES, key=lambda s: counts.get(s, 0))
-    n_parts = parts or random.choice([2, 3, 3, 4])
+    n_parts = parts or choose_parts(log)
     cause = random.choice(["forgot", "believed", "no_options"])
     lessons, words = G.used_lessons(), G.used_words()
     brief = (f"Write the next story for the series \"{series}\" ({SERIES[series]}), told in exactly {n_parts} parts. "
