@@ -1,0 +1,1107 @@
+{
+ "engine": "puppet",
+ "short_title": "The Eagle Who Waited",
+ "voice": {
+  "kokoro": "bm_george"
+ },
+ "look": "toon",
+ "story": {
+  "lesson": "Taking what others give you for granted costs you the day you need to give back.",
+  "cause": "believed"
+ },
+ "uncommon_word": {},
+ "slug": "005-the-eagle-who-waited-toon-part-2",
+ "title": "Bird Banter #2: The Eagle Who Waited (Part 2/2)",
+ "series_part": {
+  "story": "Bird Banter #2: The Eagle Who Waited",
+  "part": 2,
+  "of": 2
+ },
+ "thumbnail_scene": 2,
+ "scenes": [
+  {
+   "narration": "His mother still sneaked back with dinner. Then a fisherman's net caught her. And Orrin, hungry, shouted words no son should ever shout.",
+   "world": "toon_storm",
+   "camera": {
+    "x": 600,
+    "y": 1000,
+    "z": 0.86
+   },
+   "things": [
+    {
+     "type": "pole",
+     "x": 860,
+     "top": 880
+    },
+    {
+     "type": "pole",
+     "x": 1330,
+     "top": 880
+    },
+    {
+     "type": "net",
+     "x0": 860,
+     "y0": 900,
+     "x1": 1330,
+     "y1": 1240,
+     "sag": {
+      "base": 55,
+      "sin": {
+       "amp": 14,
+       "rate": 20,
+       "from": "@Then a fisherman's net"
+      }
+     }
+    },
+    {
+     "type": "eagle",
+     "id": "mom",
+     "who": "mom",
+     "scale": 0.6,
+     "face": -1,
+     "legs": false,
+     "show": [
+      "@His mother-0.3",
+      null
+     ],
+     "x": {
+      "kf": [
+       [
+        "@His mother-0.3",
+        1620
+       ],
+       [
+        "@Then a fisherman's net",
+        1090
+       ]
+      ],
+      "sin": {
+       "amp": 12,
+       "rate": 23,
+       "from": "@Then a fisherman's net"
+      }
+     },
+     "y": {
+      "kf": [
+       [
+        "@His mother-0.3",
+        640
+       ],
+       [
+        "@Then a fisherman's net",
+        1010
+       ]
+      ],
+      "sin": {
+       "amp": 9,
+       "rate": 19,
+       "fn": "cos",
+       "from": "@Then a fisherman's net"
+      }
+     },
+     "flap": {
+      "step": [
+       [
+        0,
+        {
+         "rate": 15,
+         "amp": 0.7,
+         "rest": 0.2
+        }
+       ],
+       [
+        "@Then a fisherman's net",
+        {
+         "rate": 28,
+         "amp": 0.9,
+         "rest": 0.2
+        }
+       ]
+      ]
+     },
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@Then a fisherman's net",
+        "wide"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         0,
+         0
+        ]
+       ],
+       [
+        "@Then a fisherman's net",
+        [
+         -8,
+         10
+        ]
+       ]
+      ]
+     },
+     "beak": {
+      "step": [
+       [
+        0,
+        0
+       ],
+       [
+        "@Then a fisherman's net",
+        0.7
+       ]
+      ]
+     },
+     "droop": {
+      "step": [
+       [
+        0,
+        0
+       ],
+       [
+        "@Then a fisherman's net",
+        0.4
+       ]
+      ]
+     }
+    },
+    {
+     "type": "fish",
+     "attach": {
+      "to": "mom",
+      "dx": -112,
+      "dy": -70
+     },
+     "scale": 0.7,
+     "face": -1,
+     "ang": 0.4,
+     "show": [
+      "@His mother-0.3",
+      "@Then a fisherman's net"
+     ]
+    },
+    {
+     "type": "eagle",
+     "who": "orrin",
+     "x": 300,
+     "scale": 0.85,
+     "face": 1,
+     "flap": {
+      "rate": 0,
+      "amp": 0,
+      "rest": -0.3
+     },
+     "look": [
+      0.9,
+      0
+     ],
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@And Orrin, hungry",
+        "half"
+       ]
+      ]
+     },
+     "beak": {
+      "sin": {
+       "base": 0.6,
+       "amp": 0.4,
+       "rate": 14,
+       "from": "@shouted words",
+       "to": "@shouted words+2.4"
+      }
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         0,
+         0
+        ]
+       ],
+       [
+        "@shouted words-0.4",
+        [
+         -12,
+         14
+        ]
+       ]
+      ]
+     }
+    }
+   ],
+   "popups": [
+    {
+     "text": "!",
+     "at": "@Then a fisherman's net+0.1",
+     "dur": 1.6,
+     "x": 1090,
+     "y": 820,
+     "size": 76,
+     "bg": [
+      230,
+      120,
+      100
+     ],
+     "fg": [
+      255,
+      250,
+      240
+     ],
+     "shake": 4,
+     "shape": "bubble"
+    },
+    {
+     "text": "Where's my dinner?!",
+     "at": "@And Orrin, hungry+0.3",
+     "dur": 2.3,
+     "x": 330,
+     "y": 790,
+     "size": 40,
+     "tail": -14,
+     "shake": 1,
+     "shape": "bubble"
+    },
+    {
+     "text": "#@%&!!",
+     "at": "@shouted words+0.2",
+     "dur": 2.2,
+     "x": 330,
+     "y": 790,
+     "size": 58,
+     "bg": [
+      210,
+      90,
+      70
+     ],
+     "fg": [
+      255,
+      250,
+      240
+     ],
+     "tail": -14,
+     "shake": 6,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.7,
+    "pluck": {
+     "step": 0.9,
+     "notes": [
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.6
+    },
+    "swell": [
+     5,
+     9,
+     1.25
+    ],
+    "drone": {
+     "from": 0.5,
+     "to": 11,
+     "peak": 0.3
+    }
+   }
+  },
+  {
+   "narration": "Then everything went silent. No breakfast. No mother. Only the echo of what he had said.",
+   "world": "toon_night",
+   "camera": {
+    "x": 420,
+    "y": 830,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.0
+      ],
+      [
+       "@end",
+       1.5
+      ]
+     ]
+    }
+   },
+   "freeze": "@No mother-0.5",
+   "things": [
+    {
+     "type": "nest",
+     "dim": 0.6
+    },
+    {
+     "type": "eagle",
+     "who": "orrin",
+     "x": 330,
+     "scale": 1.0,
+     "face": 1,
+     "flap": {
+      "rate": 0,
+      "amp": 0,
+      "rest": -0.2
+     },
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "look": [
+      0.8,
+      0.5
+     ],
+     "bob": {
+      "sin": {
+       "amp": 2,
+       "rate": 1.5
+      }
+     },
+     "head": [
+      4,
+      10
+     ],
+     "tear": {
+      "kf": [
+       [
+        "@No breakfast",
+        0
+       ],
+       [
+        "@No mother-0.6",
+        1
+       ]
+      ]
+     }
+    }
+   ],
+   "popups": [
+    {
+     "text": "Where's my dinner?!",
+     "at": 0.4,
+     "dur": 1.5,
+     "x": 470,
+     "y": 640,
+     "size": 38,
+     "bg": [
+      230,
+      215,
+      190
+     ],
+     "fg": [
+      60,
+      50,
+      60
+     ],
+     "drift": [
+      0,
+      -20
+     ],
+     "until": "@No mother-0.5",
+     "shape": "bubble"
+    },
+    {
+     "text": "Where's my dinner?!",
+     "at": 1.2,
+     "dur": 1.5,
+     "x": 490,
+     "y": 570,
+     "size": 34,
+     "bg": [
+      158,
+      147,
+      130
+     ],
+     "fg": [
+      60,
+      50,
+      60
+     ],
+     "drift": [
+      0,
+      -20
+     ],
+     "until": "@No mother-0.5",
+     "shape": "bubble"
+    },
+    {
+     "text": "Where's my dinner?!",
+     "at": 2.0,
+     "dur": 1.5,
+     "x": 510,
+     "y": 500,
+     "size": 30,
+     "bg": [
+      113,
+      104,
+      92
+     ],
+     "fg": [
+      60,
+      50,
+      60
+     ],
+     "drift": [
+      0,
+      -20
+     ],
+     "until": "@No mother-0.5",
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.5,
+    "silence_before": "No mother"
+   }
+  },
+  {
+   "narration": "So Orrin did what he never had. He flew. Badly. But he arrived. By evening, his first fish was for her.",
+   "world": "toon_sunset",
+   "camera": {
+    "x": {
+     "kf": [
+      [
+       "@He flew-1.0",
+       440
+      ],
+      [
+       "@He flew+2.0",
+       480
+      ],
+      [
+       "@He flew+3.4",
+       760
+      ],
+      [
+       "@He flew+5.4",
+       620
+      ],
+      [
+       "@He flew+6.6",
+       460
+      ]
+     ]
+    },
+    "y": {
+     "kf": [
+      [
+       "@He flew-1.0",
+       1000
+      ],
+      [
+       "@He flew+2.0",
+       1000
+      ],
+      [
+       "@He flew+3.4",
+       1020
+      ],
+      [
+       "@He flew+6.6",
+       1060
+      ]
+     ]
+    },
+    "z": {
+     "kf": [
+      [
+       "@He flew-1.0",
+       1.0
+      ],
+      [
+       "@He flew+3.4",
+       0.88
+      ],
+      [
+       "@He flew+6.6",
+       1.15
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "nest"
+    },
+    {
+     "type": "pole",
+     "x": 900,
+     "top": 880
+    },
+    {
+     "type": "pole",
+     "x": 1350,
+     "top": 880
+    },
+    {
+     "type": "net",
+     "x0": 900,
+     "y0": 900,
+     "x1": 1350,
+     "y1": 1240,
+     "sag": {
+      "kf": [
+       [
+        "@He flew+3.8",
+        63
+       ],
+       [
+        "@He flew+4.3",
+        8
+       ]
+      ]
+     },
+     "show": [
+      0,
+      "@He flew+4.3"
+     ]
+    },
+    {
+     "type": "eagle",
+     "who": "mom",
+     "scale": 0.6,
+     "face": -1,
+     "legs": false,
+     "eye": "open",
+     "tear": 0.4,
+     "brow": [
+      -6,
+      10
+     ],
+     "show": [
+      0,
+      "@He flew+3.8"
+     ],
+     "x": {
+      "base": 1130,
+      "sin": {
+       "amp": 6,
+       "rate": 20,
+       "to": "@He flew+2.8"
+      }
+     },
+     "y": 1020,
+     "flap": {
+      "rate": 18,
+      "amp": 0.4,
+      "rest": 0.2
+     }
+    },
+    {
+     "type": "eagle",
+     "who": "mom",
+     "face": -1,
+     "eye": "open",
+     "show": [
+      "@He flew+3.8",
+      null
+     ],
+     "scale": {
+      "kf": [
+       [
+        "@He flew+3.8",
+        0.6
+       ],
+       [
+        "@He flew+5.6",
+        0.85
+       ]
+      ]
+     },
+     "x": {
+      "kf": [
+       [
+        "@He flew+3.8",
+        1130
+       ],
+       [
+        "@He flew+5.6",
+        560
+       ]
+      ]
+     },
+     "y": {
+      "kf": [
+       [
+        "@He flew+3.8",
+        1020
+       ],
+       [
+        "@He flew+4.8",
+        1020
+       ],
+       [
+        "@He flew+5.8",
+        1036
+       ]
+      ],
+      "sin": {
+       "amp": 10,
+       "rate": 9,
+       "to": "@He flew+5.6"
+      }
+     },
+     "flap": {
+      "step": [
+       [
+        0,
+        {
+         "rate": 13,
+         "amp": 0.7,
+         "rest": 0.25
+        }
+       ],
+       [
+        "@He flew+5.8",
+        {
+         "rate": 0,
+         "amp": 0,
+         "rest": -0.3
+        }
+       ]
+      ]
+     },
+     "legs": {
+      "step": [
+       [
+        0,
+        false
+       ],
+       [
+        "@He flew+5.8",
+        true
+       ]
+      ]
+     }
+    },
+    {
+     "type": "eagle",
+     "id": "orrin",
+     "who": "orrin",
+     "scale": 0.85,
+     "face": 1,
+     "x": {
+      "kf": [
+       [
+        "@He flew-1.0",
+        330
+       ],
+       [
+        "@He flew+0.0",
+        330
+       ],
+       [
+        "@He flew+0.8",
+        440
+       ],
+       [
+        "@He flew+1.6",
+        330
+       ],
+       [
+        "@He flew+3.0",
+        850
+       ],
+       [
+        "@He flew+3.8",
+        880
+       ],
+       [
+        "@He flew+5.2",
+        560
+       ],
+       [
+        "@He flew+5.9",
+        250
+       ]
+      ]
+     },
+     "y": {
+      "kf": [
+       [
+        "@He flew-1.0",
+        1036
+       ],
+       [
+        "@He flew+0.0",
+        1036
+       ],
+       [
+        "@He flew+0.6",
+        900
+       ],
+       [
+        "@He flew+1.2",
+        1100
+       ],
+       [
+        "@He flew+1.6",
+        1036
+       ],
+       [
+        "@He flew+2.2",
+        820
+       ],
+       [
+        "@He flew+2.6",
+        900
+       ],
+       [
+        "@He flew+3.0",
+        760
+       ],
+       [
+        "@He flew+3.8",
+        880
+       ],
+       [
+        "@He flew+5.2",
+        960
+       ],
+       [
+        "@He flew+5.9",
+        1036
+       ]
+      ]
+     },
+     "flap": {
+      "step": [
+       [
+        0,
+        {
+         "rate": 0,
+         "amp": 0,
+         "rest": -0.3
+        }
+       ],
+       [
+        "@He flew+0.0",
+        {
+         "rate": 22,
+         "amp": 0.9,
+         "rest": 0.3
+        }
+       ],
+       [
+        "@He flew+1.6",
+        {
+         "rate": 15,
+         "amp": 0.8,
+         "rest": 0.3
+        }
+       ],
+       [
+        "@He flew+5.2",
+        {
+         "rate": 13,
+         "amp": 0.7,
+         "rest": 0.3
+        }
+       ],
+       [
+        "@He flew+5.9",
+        {
+         "rate": 0,
+         "amp": 0,
+         "rest": -0.3
+        }
+       ]
+      ]
+     },
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@He flew+0.0",
+        "wide"
+       ],
+       [
+        "@He flew+4.6",
+        "open"
+       ]
+      ]
+     },
+     "beak": {
+      "step": [
+       [
+        0,
+        0
+       ],
+       [
+        "@He flew+3.6",
+        0.5
+       ],
+       [
+        "@He flew+4.4",
+        0
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         -8,
+         4
+        ]
+       ],
+       [
+        "@He flew+5.0",
+        [
+         4,
+         2
+        ]
+       ]
+      ]
+     },
+     "legs": {
+      "step": [
+       [
+        0,
+        true
+       ],
+       [
+        "@He flew+0.0",
+        false
+       ],
+       [
+        "@He flew+5.9",
+        true
+       ]
+      ]
+     },
+     "head_dy": {
+      "sin": {
+       "amp": 5,
+       "rate": 15,
+       "from": "@He flew+0.0",
+       "to": "@He flew+5.9"
+      }
+     }
+    },
+    {
+     "type": "fish",
+     "attach": {
+      "to": "orrin",
+      "dx": 150,
+      "dy": -105
+     },
+     "scale": 0.8,
+     "face": 1,
+     "ang": 0.2,
+     "show": [
+      "@He flew+4.6",
+      "@He flew+5.9"
+     ]
+    },
+    {
+     "type": "fish",
+     "x": 395,
+     "y": 935,
+     "scale": 0.8,
+     "face": 1,
+     "ang": 0.2,
+     "show": [
+      "@He flew+5.9",
+      null
+     ]
+    }
+   ],
+   "popups": [
+    {
+     "text": "CRASH",
+     "at": "@He flew+1.0",
+     "dur": 1.3,
+     "x": 360,
+     "y": 1010,
+     "size": 56,
+     "shake": 5,
+     "shape": "burst"
+    },
+    {
+     "text": "snip",
+     "at": "@He flew+3.8",
+     "dur": 1.0,
+     "x": 1130,
+     "y": 800,
+     "size": 48,
+     "shake": 3,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.8,
+    "pluck": {
+     "step": 0.8,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 0.9
+    }
+   }
+  },
+  {
+   "narration": "These days Orrin still sleeps late. But every morning there is a fish on his mother's side of the nest. Nobody tells him to. Nobody has to.",
+   "world": "toon_dawn",
+   "camera": {
+    "x": 470,
+    "y": 1000,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.2
+      ],
+      [
+       "@end",
+       0.98
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "nest"
+    },
+    {
+     "type": "eagle",
+     "id": "orrin",
+     "scale": 0.72,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "who": "orrin",
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "bob": {
+      "sin": {
+       "amp": 2,
+       "rate": 1.8
+      }
+     },
+     "x": 110.0,
+     "y": 1067.2,
+     "flap": {
+      "rate": 0,
+      "amp": 0,
+      "rest": -0.3
+     },
+     "legs": true
+    },
+    {
+     "type": "eagle",
+     "id": "mom",
+     "scale": 0.72,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "who": "mom",
+     "eye": "open",
+     "brow": [
+      -6,
+      -4
+     ],
+     "bob": {
+      "sin": {
+       "amp": 2,
+       "rate": 1.8
+      }
+     },
+     "x": 500.0,
+     "y": 1067.2,
+     "flap": {
+      "rate": 0,
+      "amp": 0,
+      "rest": -0.3
+     },
+     "legs": true
+    }
+   ],
+   "popups": [
+    {
+     "text": "Breakfast.",
+     "at": "@a fish",
+     "dur": 2.2,
+     "x": 570,
+     "y": 811,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.45,
+    "pluck": {
+     "step": 1.6,
+     "notes": [
+      0,
+      3,
+      2,
+      4
+     ],
+     "vol": 0.5
+    }
+   },
+   "end_card": true
+  }
+ ],
+ "youtube": {
+  "title": "The Eagle Who Waited (Part 2/2)",
+  "description": "Orrin never hunted. His family brought breakfast every day, until they stopped coming. A short fable drawn entirely in code. Subscribe for more tidalfolio stories.\n\nPart 2 of 2. The end.",
+  "tags": [
+   "eagle",
+   "animal story",
+   "fable",
+   "storytelling",
+   "family",
+   "bird banter",
+   "tidalfolio",
+   "short story"
+  ],
+  "pinned_comment": "What is the thing you wish you could take back, and have you tried making up for it?"
+ },
+ "tiktok": {
+  "caption": "Part 2/2: He never hunted. Then they stopped coming. #eagle #storytime",
+  "hashtags": [
+   "#storytime",
+   "#eagle",
+   "#animalstory",
+   "#fable",
+   "#tidalfolio"
+  ]
+ }
+}

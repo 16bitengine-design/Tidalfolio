@@ -22,7 +22,7 @@ QUEUE = ROOT / "queue-puppet.txt"
 DONE = ROOT / "done-puppet.txt"
 MIN_LEN, MAX_LEN = 50.0, 90.0
 AIM = "about 60 to 75 seconds"
-SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.57, 1.5, 1.3     # measured on the real narrator; used only when the voice model is absent
+SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.57, 1.5, 3.0     # measured on the real narrator; used only when the voice model is absent
 
 SERIES = {"Bird Banter": "eagles and squirrels: pride, hunger, rivalry, bad decisions on a cliff",
           "Funny Animals": "a rabbit, squirrels and eagles in absurd high-stakes situations"}
@@ -37,7 +37,8 @@ def unrendered():
     return [q for q in _lines(QUEUE) if q not in done and (SCRIPTS / q).exists()]
 
 
-def system_prompt(n_lo, n_hi):
+def system_prompt(n_lo, n_hi, n_parts=3):
+    parts_text = f"{n_parts}"
     return f"""You write short animated fable videos for "tidalfolio", a comedy channel about animals. A video is a handful of scenes drawn by code
 (bold cartoon style) and told by ONE narrator: a middle-aged man with a warm baritone, a gifted storyteller telling a tale he knows by heart.
 You do not write drawing code. You write a STORYBOARD (JSON) and the system draws it.
@@ -53,7 +54,12 @@ CHANNEL RULES (all mandatory)
 - A LESSON FOR HUMANS, but NEVER stated or hinted at in the video: the story shows through what the animals do and what it costs them. Write the lesson as ONE plain sentence in "lesson" (max 25 words) for the record only. People rarely go wrong because they are fools: set "cause" to why the protagonist makes the key choice: "forgot" (knew the value, lost it under pressure), "believed" (sincerely thought it was right), or "no_options" (every path cost something). Show that cause in their own reasoning so viewers understand the choice from the inside. Never say the cause aloud.
 - HUMOUR: deadpan gravity about trivial stakes; specific absurd numbers and rules; understatement after big action; one planted odd detail that returns later raising a question.
 
-LENGTH: the finished video must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly (about 0.57 s per word) and each scene adds about 1.5 s of pauses, so write {n_lo} to {n_hi} scenes of 12 to 24 words each (roughly 110 to 160 words in total). Open on the hook at once. No filler scene.
+STORY IN PARTS: every story is told as {parts_text} consecutive videos (Part 1, Part 2 ...), published one after another. Write ALL parts now, in "parts": [{{"scenes": [...]}}, ...].
+- Every part is a complete, satisfying watch on its own AND moves the story forward: its own hook, its own mini-reversal.
+- Every part EXCEPT the last ends on a cliffhanger line (a reveal, a worse problem, a question) that makes the viewer need the next part. The cliffhanger is part of the story, never "to be continued" and never an instruction. The system adds the "Continue to Part N" card and the "Follow, Like, Subscribe, Share" card itself, so never write either in the narration.
+- Part 1 opens with the stakes; the last part holds the emotional resolution and the haunting last line. The one uncommon word appears exactly once in the WHOLE story. Characters, setting and objects stay consistent across parts.
+
+LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly (about 0.57 s per word) and each scene adds about 1.5 s of pauses, so write {n_lo} to {n_hi} scenes of 12 to 24 words each per part (roughly 110 to 160 words per part). Open on the hook at once. No filler scene.
 
 THE STAGE (this is all that can be drawn, so write for it)
 - Cast: 1 to 4 characters. species "eagle" (cast "look": "orrin" = plain brown, "dad" = dark brown, "mom" = lighter brown with a pink scarf; give every eagle in the story a different look), "squirrel" (optional "hat": "bowler", optional "item": "popcorn"), "rabbit". Give each a short first name in "name". No other animals exist.
@@ -63,16 +69,15 @@ THE STAGE (this is all that can be drawn, so write for it)
 - "popups": comic speech bubbles ("kind": "bubble", a short spoken line or reaction) and impact words ("kind": "burst", e.g. CRASH, MINE, WHAT). "text" 1 to 4 words, "at": words in the narration when it pops, "near": which actor it belongs to. Use them in at least half the scenes: they are the punctuation of the jokes.
 - "fx": [{{"kind": "puff"|"sparkle"|"speed", "at": words, "near": actor}}]: a dust cloud for landings and crashes, a sparkle for magic or a lucky moment, speed streaks for a dash.
 - EVERY phrase you give ("from", "to", "enter", "exit", "at", "silence_before") must be copied EXACTLY (same capitals, same punctuation) from THAT scene's narration, a span of 2 to 5 words. Characters can only exist on screen if listed in "actors" of that scene. Keep a character in the same spot while nothing moves them; change spots only when the narration says so.
-- Ending: the last scene shows the tidalfolio title card after it, so do not write a sign-off.
+- Ending: every part's last scene is followed by the tidalfolio closing card, so do not write a sign-off.
 
 Reply with ONE JSON object, exactly this shape:
 {{"title": "Episode title (no series prefix)", "lesson": "...", "cause": "forgot|believed|no_options",
- "uncommon_word": {{"word": "...", "meaning": "..."}}, "thumbnail_scene": 1-based number of the most striking scene,
- "cast": {{"key": {{"species": "eagle", "look": "orrin", "name": "Orrin"}}, "key2": {{"species": "squirrel", "hat": "bowler"}}}},
- "scenes": [{{"narration": "...", "world": "dawn", "stage": "cliff", "camera": "push_in", "music": "calm",
+ "uncommon_word": {{"word": "...", "meaning": "..."}},  "cast": {{"key": {{"species": "eagle", "look": "orrin", "name": "Orrin"}}, "key2": {{"species": "squirrel", "hat": "bowler"}}}},
+ "parts": [{{"thumbnail_scene": 2, "scenes": [{{"narration": "...", "world": "dawn", "stage": "cliff", "camera": "push_in", "music": "calm",
    "actors": [{{"who": "key", "at": "ground_mid", "mood": "smug", "action": "talk", "from": "words", "to": "words"}}],
-   "popups": [{{"text": "MINE.", "kind": "burst", "at": "words", "near": "key"}}], "fx": []}}],
- "youtube": {{"title": "<=90 chars, curiosity-driven", "description": "2-4 sentences: a teaser, then a subscribe line (no moral)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"}},
+   "popups": [{{"text": "MINE.", "kind": "burst", "at": "words", "near": "key"}}], "fx": []}}]}}],
+ "youtube": {{"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"}},
  "tiktok": {{"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}}}"""
 
 
@@ -110,69 +115,73 @@ def _smoke(script):
 
 
 def problems(sb, number):
-    """All problems with a storyboard, in plain words, plus the compiled script when it is usable."""
+    """All problems with a storyboard, in plain words, plus the compiled part scripts when it is usable."""
     from . import storyboard as SB
     bad = SB.check_storyboard(sb)
     if bad:
         return bad, None
-    script = SB.compile_storyboard(sb, number)
-    err = _smoke(script)
-    if err:
-        return [f"drawing the storyboard failed: {err[:300]}"], None
-    total, how = _measure(script)
-    if not MIN_LEN <= total <= MAX_LEN:
-        words = sum(len(re.findall(r"[A-Za-z0-9']+", s["narration"])) for s in script["scenes"])
-        want = 68.0
-        delta = int((want - total) / (SEC_PER_WORD + 0.05))
-        verb = "Add" if delta > 0 else "Cut"
-        bad.append(f"the video would run {total:.0f} s ({how}); it must run {MIN_LEN:.0f} to {MAX_LEN:.0f} s ({AIM}). "
-                   f"It has {words} narration words in {len(script['scenes'])} scenes. {verb} about {abs(delta)} words (or scenes).")
-        return bad, None
-    return [], script
+    scripts = SB.compile_storyboard(sb, number)
+    for sc in scripts:
+        pi = sc["series_part"]["part"]
+        err = _smoke(sc)
+        if err:
+            bad.append(f"part {pi}: drawing the storyboard failed: {err[:300]}")
+            continue
+        total, how = _measure(sc)
+        if not MIN_LEN <= total <= MAX_LEN:
+            words = sum(len(re.findall(r"[A-Za-z0-9']+", x["narration"])) for x in sc["scenes"])
+            delta = int((68.0 - total) / (SEC_PER_WORD + 0.05))
+            bad.append(f"part {pi} would run {total:.0f} s ({how}); every part must run {MIN_LEN:.0f} to {MAX_LEN:.0f} s ({AIM}). "
+                       f"It has {words} narration words in {len(sc['scenes'])} scenes. {'Add' if delta > 0 else 'Cut'} about {abs(delta)} words (or scenes) in part {pi}.")
+    return bad, (None if bad else scripts)
 
 
-def write_story(idea=None, series=None, log=print):
+def write_story(idea=None, series=None, parts=None, log=print):
     sys.path.insert(0, str(ROOT))
     import generate_script as G
     SCRIPTS.mkdir(exist_ok=True)
     number = G.next_number()
     titles, counts = G.existing()
     series = series or min(SERIES, key=lambda s: counts.get(s, 0))
+    n_parts = parts or random.choice([2, 3, 3, 4])
     cause = random.choice(["forgot", "believed", "no_options"])
     lessons, words = G.used_lessons(), G.used_words()
-    n_lo, n_hi = 6, 9
-    brief = (f"Write the next story for the series \"{series}\" ({SERIES[series]}). "
+    brief = (f"Write the next story for the series \"{series}\" ({SERIES[series]}), told in exactly {n_parts} parts. "
              + (f"Story idea to use: {idea}. " if idea else "Invent a fresh, specific premise. ")
              + f"Use cause \"{cause}\" for the protagonist's key choice. "
              + (f"Do NOT reuse these lessons: {'; '.join(lessons[-12:])}. " if lessons else "")
              + (f"Do NOT reuse these uncommon words: {', '.join(words)}. " if words else "")
              + (f"Titles already used (be different): {'; '.join(titles[-15:])}. " if titles else "")
              + "Reply with the JSON object only.")
-    msgs = [{"role": "system", "content": system_prompt(n_lo, n_hi)}, {"role": "user", "content": brief}]
+    msgs = [{"role": "system", "content": system_prompt(6, 9, n_parts)}, {"role": "user", "content": brief}]
     last_bad = []
     for attempt in range(1, 5):
         raw = G.call_openai(msgs, temperature=1.0 if attempt == 1 else 0.7)
         try:
             sb = json.loads(raw)
         except ValueError:
-            last_bad = ["the reply was not valid JSON"]
+            last_bad, scripts = ["the reply was not valid JSON"], None
         else:
-            last_bad, script = problems(sb, number)
-            if sb.get("uncommon_word", {}).get("word", "").lower() in words:
+            last_bad, scripts = problems(sb, number)
+            if (sb.get("uncommon_word") or {}).get("word", "").lower() in words:
                 last_bad.append("that uncommon word was used in an earlier story; pick a different one.")
+            if len(sb.get("parts") or []) != n_parts and not last_bad:
+                last_bad.append(f"write exactly {n_parts} parts.")
             if not last_bad:
                 t = re.sub(rf"^{re.escape(series)}\s*(#\d+)?\s*[:\-]\s*", "", sb["title"].strip(), flags=re.I) or sb["title"].strip()
-                sb["title"] = t
-                script["title"] = f"{series} #{number}: {t}"
-                script["short_title"] = t
-                script["youtube"].setdefault("title", script["title"])
-                script["slug"] = f"{number:03d}-{re.sub(r'[^a-z0-9]+', '-', sb['title'].lower()).strip('-')[:48]}"
-                path = SCRIPTS / f"{script['slug']}.json"
-                path.write_text(json.dumps(script, indent=1))
+                names = []
+                for sc in scripts:
+                    sc["short_title"] = t
+                    sc["series_part"]["story"] = f"{series} #{number}: {t}"
+                    sc["title"] = f"{series} #{number}: {t} (Part {sc['series_part']['part']}/{n_parts})"
+                    sc["youtube"]["title"] = sc["title"][:100]
+                    path = SCRIPTS / f"{sc['slug']}.json"
+                    path.write_text(json.dumps(sc, indent=1))
+                    names.append(path.name)
                 with open(QUEUE, "a") as f:
-                    f.write(path.name + "\n")
-                log(f"Wrote {path.name} (attempt {attempt}) and queued it.")
-                return path
+                    f.write("\n".join(names) + "\n")
+                log(f"Wrote {n_parts} parts (attempt {attempt}): {', '.join(names)}, queued in order.")
+                return names
         log(f"Attempt {attempt} rejected: " + " | ".join(last_bad)[:600])
         msgs += [{"role": "assistant", "content": raw},
                  {"role": "user", "content": "Fix these problems and return the full corrected JSON only:\n- " + "\n- ".join(last_bad)}]
