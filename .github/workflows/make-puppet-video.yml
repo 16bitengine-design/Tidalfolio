@@ -51,6 +51,18 @@ jobs:
           path: ~/.cache/tidalfolio/kokoro
           key: kokoro-v1.0-model-files
 
+      - name: Learn from how earlier videos performed (the channel improves itself)
+        # Reads views and watch-time of past uploads and writes insights.md, which the story writer reads.
+        # Never blocks a video: without the read permissions on the YouTube token it just prints why.
+        continue-on-error: true
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python tools/collect_metrics.py
+          python tools/make_insights.py
+
       - name: Write a new story if the queue is empty (AI writes it, code checks it)
         if: ${{ inputs.script == '' }}
         env:
@@ -118,7 +130,7 @@ jobs:
           git config user.name "tidalfolio-bot"
           git config user.email "actions@users.noreply.github.com"
           git add done-puppet.txt queue-puppet.txt scripts ideas.txt
-          for f in metrics; do [ -e "$f" ] && git add "$f"; done
+          for f in metrics insights.md; do [ -e "$f" ] && git add "$f"; done
           git diff --cached --quiet && exit 0
           git commit -m "Update puppet queue"
           for i in 1 2 3 4 5; do

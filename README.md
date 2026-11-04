@@ -157,3 +157,10 @@ Written from YouTube's published rules as of November 2026; policies change, so 
 - **Playlists and captions (optional):** the upload adds an English caption track and one playlist per story if your refresh token has the broader scope `https://www.googleapis.com/auth/youtube.force-ssl`. Make a new refresh token with `youtube.upload youtube.force-ssl` (add `youtube.readonly yt-analytics.readonly` for the results tracker) as in the steps above. With an upload-only token these two steps are skipped, nothing breaks.
 - **Pinned comment:** the API cannot pin a comment. Post the question from `metadata.md` yourself in the first hour.
 - **TikTok:** realistic AI content must be labelled in TikTok; these cartoons are not realistic. Buffer cannot set that label anyway.
+
+## Self-improving channel (no one has to touch it)
+Every daily run (1) reads how the earlier videos performed (`tools/collect_metrics.py`, then `tools/make_insights.py` writes `insights.md`), (2) the story writer reads that
+and aims its hooks, pacing and themes at what held viewers, and (3) picks the number of parts for the next story from the real drop-off between parts (stories get shorter if
+people do not come back for Part 2). It needs ONE YouTube refresh token authorised for all four permissions:
+`https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly`
+(steps 1 to 5 above, but paste all four scopes in the OAuth Playground; replace the `YT_REFRESH_TOKEN` secret with the new token). Learning starts once 4 public videos are at least 2 days old.
