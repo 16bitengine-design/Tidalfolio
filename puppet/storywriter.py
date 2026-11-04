@@ -4,7 +4,7 @@ The model only writes a *storyboard* (see storyboard.py): narration plus who is 
 This module then
   1. checks it against the channel rules (words, narrator rules, one uncommon word, cast, timing phrases ...),
   2. compiles it to a puppet script and draws one test frame per scene so a broken script never reaches the render,
-  3. measures the real narration length (50 to 90 s), and sends any problem back to the model to fix (up to 4 tries),
+  3. measures the real narration length (45 to 90 s), and sends any problem back to the model to fix (up to 4 tries),
   4. saves scripts/NNN-title.json and adds it to queue-puppet.txt.
 Needs OPENAI_API_KEY (text only: a few cents per story). Model: OPENAI_TEXT_MODEL (default gpt-4o-mini; a stronger one writes better stories).
 """
@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
 QUEUE = ROOT / "queue-puppet.txt"
 DONE = ROOT / "done-puppet.txt"
-MIN_LEN, MAX_LEN = 50.0, 90.0
+MIN_LEN, MAX_LEN = 45.0, 90.0
 AIM = "about 60 to 75 seconds"
 SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.57, 1.5, 3.0     # measured on the real narrator; used only when the voice model is absent
 
