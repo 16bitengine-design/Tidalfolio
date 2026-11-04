@@ -33,6 +33,25 @@ def _lines(p):
     return [l.strip() for l in p.read_text().splitlines() if l.strip() and not l.startswith("#")] if p.exists() else []
 
 
+IDEAS = ROOT / "ideas.txt"
+
+
+def take_idea():
+    """First idea in ideas.txt (one per line, # = comment). It is removed from the file when taken."""
+    if not IDEAS.exists():
+        return None
+    lines = IDEAS.read_text().splitlines()
+    for i, l in enumerate(lines):
+        if l.strip() and not l.startswith("#"):
+            IDEAS.write_text("\n".join(lines[:i] + lines[i + 1:]) + "\n")
+            return l.strip()
+    return None
+
+
+def give_back_idea(idea):
+    IDEAS.write_text(IDEAS.read_text().rstrip("\n") + "\n" + idea + "\n")
+
+
 def unrendered():
     done = set(_lines(DONE))
     return [q for q in _lines(QUEUE) if q not in done and (SCRIPTS / q).exists()]
@@ -79,6 +98,7 @@ THE STAGE (this is all that can be drawn, so write for it)
 - "popups": comic speech bubbles ("kind": "bubble", a short spoken line or reaction) and impact words ("kind": "burst", e.g. CRASH, MINE, WHAT). "text" 1 to 4 words, "at": words in the narration when it pops, "near": which actor it belongs to. Use them in at least half the scenes: they are the punctuation of the jokes.
 - "fx": [{{"kind": "puff"|"sparkle"|"speed", "at": words, "near": actor}}]: a dust cloud for landings and crashes, a sparkle for magic or a lucky moment, speed streaks for a dash.
 - EVERY phrase you give ("from", "to", "enter", "exit", "at", "silence_before") must be copied EXACTLY (same capitals, same punctuation) from THAT scene's narration, a span of 2 to 5 words. Characters can only exist on screen if listed in "actors" of that scene. Keep a character in the same spot while nothing moves them; change spots only when the narration says so.
+- VARIETY (the channel must never feel like one template repeated): each story needs its own premise and plot shape (a heist, a rivalry, a rescue, a rumour, a bet, a misunderstanding, a rivalry between friends, a trade that goes wrong ...), its own lead character, its own time of day and weather, and its own opening line. Do not start two stories the same way. Titles and the first sentence of the YouTube description should say plainly what the story is about, with the hook in the first 5 words.
 - Ending: every part's last scene is followed by the tidalfolio closing card, so do not write a sign-off.
 
 Reply with ONE JSON object, exactly this shape:

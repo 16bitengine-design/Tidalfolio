@@ -146,3 +146,13 @@ Every picture is built from the same locked parts so characters and places do no
 - **Locked setting.** The script's top-level `setting` (place, time of day, weather, light) is added to every animal-scene image prompt. Parts of one story share the same `setting` and the same cast.
 - **Continuity guard.** If a picture prompt names a character that is missing from the scene's `characters` list, the script writer adds it automatically so the locked description is used.
 - **Explicit prompts.** Image prompts state who is in the frame, where, what each body part is doing and which way they face; they never say "as before". The second frame of a scene (`image_prompt_b`) is the same moment half a second later with the same cast and positions.
+
+
+## Channel health checklist (YouTube)
+Written from YouTube's published rules as of November 2026; policies change, so check YouTube's own pages before relying on this.
+- **Be original, not a template.** YouTube treats mass-produced or repetitive content as "inauthentic" and can demonetise a whole channel for it. Ways to stay safe: put your own ideas in `ideas.txt` (the writer uses them first), vary stories, characters and settings, and read a few uploads before making them public.
+- **Review first.** Uploads stay `private` until you set the repository variable `UPLOAD_PRIVACY` to `public`. Keep it private for the first one or two weeks and watch what is posted.
+- **Studio settings to check once:** Audience = not made for kids (the upload sets this); Monetization > accept the Shorts and Watch Page modules; AI disclosure toggle only matters for realistic-looking altered or synthetic content (these cartoons are clearly unreal, so it is normally off; check YouTube's current wording).
+- **Playlists and captions (optional):** the upload adds an English caption track and one playlist per story if your refresh token has the broader scope `https://www.googleapis.com/auth/youtube.force-ssl`. Make a new refresh token with `youtube.upload youtube.force-ssl` (add `youtube.readonly yt-analytics.readonly` for the results tracker) as in the steps above. With an upload-only token these two steps are skipped, nothing breaks.
+- **Pinned comment:** the API cannot pin a comment. Post the question from `metadata.md` yourself in the first hour.
+- **TikTok:** realistic AI content must be labelled in TikTok; these cartoons are not realistic. Buffer cannot set that label anyway.

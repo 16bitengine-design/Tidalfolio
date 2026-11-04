@@ -49,7 +49,13 @@ def main():
             print(f"Queue already has {len(W.unrendered())} unrendered story(ies): nothing to write.")
             return
     for _ in range(max(1, count)):
-        W.write_story(a.idea, a.series, a.parts)
+        idea = a.idea or W.take_idea()          # a human idea from ideas.txt always beats the model's own
+        try:
+            W.write_story(idea, a.series, a.parts)
+        except BaseException:
+            if idea and not a.idea:
+                W.give_back_idea(idea)
+            raise
 
 
 if __name__ == "__main__":

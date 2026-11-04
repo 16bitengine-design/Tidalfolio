@@ -1,0 +1,3 @@
+# Your story ideas, one per line. The writer uses the first one when it needs a new story, then removes it.
+# A human idea makes every story more original. Example:
+# A squirrel sells tickets to the eagle's nap and the eagle finds out
