@@ -93,5 +93,22 @@
     "video_id": "S27zZaU8s_k",
     "privacy": "public",
     "uploaded_at": "2026-11-04"
+  },
+  {
+    "slug": "005-the-eagle-who-waited-toon-part-1",
+    "series": "Bird Banter",
+    "runtime": 61.9,
+    "scene_count": 5,
+    "part": {
+      "story": "Bird Banter #2: The Eagle Who Waited",
+      "part": 1,
+      "of": 2
+    },
+    "engine": "puppet",
+    "hook": "High on a cliff lived an eagle named Orrin. Indolent, they called him. He had never once caught his own breakfast.",
+    "title": "Bird Banter #2: The Eagle Who Waited (Part 1/2)",
+    "video_id": "E0ZNdSTos_Q",
+    "privacy": "public",
+    "uploaded_at": "2026-11-04"
   }
 ]
