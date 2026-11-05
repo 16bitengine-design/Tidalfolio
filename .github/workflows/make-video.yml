@@ -78,6 +78,7 @@ jobs:
 
       - name: Upload to YouTube
         id: youtube
+        if: ${{ vars.YOUTUBE_VIA_BUFFER != '1' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -98,6 +99,22 @@ jobs:
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
           CLOUDINARY_UPLOAD_PRESET: ${{ vars.CLOUDINARY_UPLOAD_PRESET }}
         run: python post_tiktok.py
+
+      - name: Post to YouTube via Buffer
+        id: ytbuffer
+        if: ${{ vars.YOUTUBE_VIA_BUFFER == '1' }}
+        # Replaces the direct YouTube upload when the repo variable YOUTUBE_VIA_BUFFER is 1 (no Google token needed).
+        continue-on-error: true
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_YOUTUBE_CHANNEL_ID: ${{ vars.BUFFER_YOUTUBE_CHANNEL_ID }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          CLOUDINARY_UPLOAD_PRESET: ${{ vars.CLOUDINARY_UPLOAD_PRESET }}
+          UPLOAD_PRIVACY: ${{ vars.UPLOAD_PRIVACY || 'private' }}
+          YT_AI_DISCLOSURE: ${{ vars.YT_AI_DISCLOSURE }}
+        run: python post_youtube_buffer.py
 
       - name: Save finished videos
         if: always()
@@ -157,7 +174,7 @@ jobs:
       - name: Alert me if anything failed
         # Runs when any step failed, including TikTok (which is allowed to fail without stopping the run).
         # GitHub emails you about every new issue, and the GitHub mobile app pushes it to your phone.
-        if: always() && (failure() || steps.tiktok.outcome == 'failure')
+        if: always() && (failure() || steps.tiktok.outcome == 'failure' || steps.ytbuffer.outcome == 'failure')
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -166,6 +183,7 @@ jobs:
           R_RENDER: ${{ steps.render.outcome }}
           R_YOUTUBE: ${{ steps.youtube.outcome }}
           R_TIKTOK: ${{ steps.tiktok.outcome }}
+          R_YTBUFFER: ${{ steps.ytbuffer.outcome }}
         run: |
           body="A tidalfolio run did not finish cleanly.
 
@@ -175,6 +193,7 @@ jobs:
           | Render video | $R_RENDER |
           | Upload to YouTube | $R_YOUTUBE |
           | Post to TikTok | $R_TIKTOK |
+          | Post to YouTube via Buffer | $R_YTBUFFER |
 
           Run and logs: $RUN_URL
           If the video was rendered, download it from the run's tidalfolio-videos artifact and post it by hand."

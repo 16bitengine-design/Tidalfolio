@@ -36,8 +36,8 @@ def gql(key, query):
     return j["data"]
 
 
-def find_tiktok_channel(key):
-    forced = os.environ.get("BUFFER_CHANNEL_ID", "").strip()
+def find_channel(key, service, forced=""):
+    """Return the id of the first Buffer channel whose service matches (e.g. "tiktok", "youtube")."""
     if forced:
         return forced
     orgs = gql(key, "query { account { organizations { id name } } }")["account"]["organizations"]
@@ -47,11 +47,15 @@ def find_tiktok_channel(key):
                     % json.dumps(o["id"]))["channels"]
         for c in chans:
             seen.append(f"{c.get('service')}:{c.get('name')}")
-            if "tiktok" in str(c.get("service", "")).lower():
+            if service in str(c.get("service", "")).lower():
                 print(f"Using Buffer channel {c['name']} ({c['id']})")
                 return c["id"]
-    sys.exit("No TikTok channel found in your Buffer account. Connect TikTok in Buffer first. "
+    sys.exit(f"No {service} channel found in your Buffer account. Connect it in Buffer first. "
              f"Channels seen: {', '.join(seen) or 'none'}")
+
+
+def find_tiktok_channel(key):
+    return find_channel(key, "tiktok", os.environ.get("BUFFER_CHANNEL_ID", "").strip())
 
 
 def host_video(path, public_id):
@@ -117,6 +121,7 @@ def main():
     channel = find_tiktok_channel(key)
     url = host_video(video, f"tidalfolio/{slug}")
     print(f"Hosted at {url}")
+    (base / "hosted_url.txt").write_text(url + "\n")   # reused by post_youtube_buffer.py so the video is uploaded once
     q = ('mutation { createPost(input: { text: %s, channelId: %s, schedulingType: automatic, mode: addToQueue, '
          'assets: [{ video: { url: %s } }] }) { ... on PostActionSuccess { post { id } } '
          '... on MutationError { message } } }') % (json.dumps(text), json.dumps(channel), json.dumps(url))
