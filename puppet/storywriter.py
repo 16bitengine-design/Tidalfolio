@@ -190,6 +190,22 @@ def _smoke(script):
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def normalize(sb):
+    """Models sometimes wrap the storyboard in one outer key, give 'parts' as an object keyed Part 1, Part 2 ..., or give
+    each part as a bare list of scenes. Fix those shapes so a good story is not thrown away over formatting."""
+    if isinstance(sb, dict) and "parts" not in sb and len(sb) == 1:
+        inner = next(iter(sb.values()))
+        if isinstance(inner, dict):
+            sb = inner
+    if isinstance(sb, dict):
+        parts = sb.get("parts")
+        if isinstance(parts, dict):
+            parts = [v for _, v in sorted(parts.items())]
+        if isinstance(parts, list):
+            sb["parts"] = [{"scenes": p} if isinstance(p, list) else p for p in parts]
+    return sb
+
+
 def problems(sb, number):
     """All problems with a storyboard, in plain words, plus the compiled part scripts when it is usable."""
     from . import storyboard as SB
@@ -235,7 +251,7 @@ def write_story(idea=None, series=None, parts=None, log=print):
     for attempt in range(1, 5):
         raw = G.call_openai(msgs, temperature=1.0 if attempt == 1 else 0.7)
         try:
-            sb = json.loads(raw)
+            sb = normalize(json.loads(raw))
         except ValueError:
             last_bad, scripts = ["the reply was not valid JSON"], None
         else:

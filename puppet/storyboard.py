@@ -171,7 +171,9 @@ def check_storyboard(sb):
             bad.append(f"cast '{k}': an eagle's look must be one of {LOOKS}.")
     parts = sb.get("parts")
     if not isinstance(parts, list) or not 2 <= len(parts) <= 4:
-        bad.append("'parts' must be a list of 2 to 4 parts (one story told as Part 1, Part 2 ...), each with its own 'scenes'.")
+        found = ("missing" if parts is None else f"a list of {len(parts)}" if isinstance(parts, list) else type(parts).__name__)
+        bad.append("'parts' must be a list of 2 to 4 parts (one story told as Part 1, Part 2 ...), each with its own 'scenes'. "
+                   f"In your reply 'parts' was {found}; your top-level keys were: {', '.join(list(sb)[:10])}.")
         return bad
     scenes = []
     for pi, part in enumerate(parts, 1):
