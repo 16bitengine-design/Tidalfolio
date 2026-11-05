@@ -57,28 +57,6 @@ def make_narration(script, scenes, narr_dir, dry):
         sc["_i"] = i
 
 
-NUM = {2: "two", 3: "three", 4: "four"}
-
-
-def closing_line(script):
-    """The narrator's quiet sign-off over the closing card (a statement, never an instruction)."""
-    sp = script.get("series_part")
-    if sp and sp["part"] < sp["of"]:
-        return f"The story continues in part {NUM.get(sp['part'] + 1, sp['part'] + 1)}."
-    return "That was a tidalfolio story."
-
-
-def make_closing(script, narr_dir, dry):
-    import soundfile as sf
-    narr_dir.mkdir(parents=True, exist_ok=True)
-    voice = (script.get("voice") or {}).get("kokoro", "bm_george")
-    text = closing_line(script)
-    audio, _ = tts.speak(text, voice, dry)
-    wav = narr_dir / "closing.wav"
-    sf.write(str(wav), audio, tts.SR)
-    return {"wav": wav, "dur": len(audio) / tts.SR}
-
-
 def plan_timing(scenes):
     t = 0.0
     for sc in scenes:
@@ -145,9 +123,9 @@ def render_silent(total, out, workers):
         sys.exit("ffmpeg failed while encoding the frames")
 
 
-def mux(silent, music_wav, scenes, out, total, closing):
+def mux(silent, music_wav, scenes, out, total):
     inputs, filt, labels = ["-i", str(silent), "-i", str(music_wav)], [], []
-    tracks = [(sc["_wav"], sc["_start"] + LEAD) for sc in scenes] + [(closing["wav"], total - END_CARD + 1.1)]
+    tracks = [(sc["_wav"], sc["_start"] + LEAD) for sc in scenes]
     for n, (wav, at) in enumerate(tracks):
         inputs += ["-i", str(wav)]
         ms = int(at * 1000)
@@ -217,11 +195,14 @@ def render_script(script_path, dry=False, workers=None):
     work = out_root / "work"
     work.mkdir(parents=True, exist_ok=True)
     scenes = script["scenes"]
+    sp = script.get("series_part")
+    if sp and sp["part"] < sp["of"]:          # a part that is followed by another one ends plainly: no end screen, no sign-off
+        for sc in scenes:
+            sc.pop("end_card", None)
 
     print(f"[1/5] narration ({len(scenes)} scenes, voice {(script.get('voice') or {}).get('kokoro', 'bm_george')})", flush=True)
     make_narration(script, scenes, out_root / "narration", dry)
     total = plan_timing(scenes)
-    closing = make_closing(script, out_root / "narration", dry)
     print(f"      total runtime: {total:.1f}s", flush=True)
     if not dry and not (MIN_LEN <= total <= MAX_LEN):
         sys.exit(f"Video would be {total:.1f}s but every video must run {MIN_LEN:.0f} to {MAX_LEN:.0f} s. "
@@ -235,7 +216,8 @@ def render_script(script_path, dry=False, workers=None):
     _JOB.update(scenes=scenes, ctx=ctx, total=total)
 
     print("[3/5] music", flush=True)
-    music.synth(scenes, [s["_start"] for s in scenes], [s["_D"] for s in scenes], total, nt, work / "music.wav", outro=END_CARD)
+    music.synth(scenes, [s["_start"] for s in scenes], [s["_D"] for s in scenes], total, nt, work / "music.wav",
+                outro=END_CARD if any(sc.get("end_card") for sc in scenes) else 2.0)
 
     print("[4/5] drawing frames", flush=True)
     workers = workers or max(1, os.cpu_count() or 2)
@@ -246,7 +228,7 @@ def render_script(script_path, dry=False, workers=None):
     for sub in ("vertical", "youtube"):
         (out_root / sub).mkdir(exist_ok=True)
     final = out_root / "vertical" / "video.mp4"
-    mux(silent, work / "music.wav", scenes, final, total, closing)
+    mux(silent, work / "music.wav", scenes, final, total)
     shutil.copy(final, out_root / "youtube" / "video.mp4")
 
     thumb_i = int(script.get("thumbnail_scene", 1)) - 1
