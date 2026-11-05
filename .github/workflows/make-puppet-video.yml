@@ -88,7 +88,7 @@ jobs:
 
       - name: Upload to YouTube
         id: youtube
-        if: ${{ github.event_name == 'schedule' || inputs.upload }}
+        if: ${{ (github.event_name == 'schedule' || inputs.upload) && vars.YOUTUBE_VIA_BUFFER != '1' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -109,6 +109,22 @@ jobs:
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
           CLOUDINARY_UPLOAD_PRESET: ${{ vars.CLOUDINARY_UPLOAD_PRESET }}
         run: python post_tiktok.py
+
+      - name: Post to YouTube via Buffer
+        id: ytbuffer
+        if: ${{ (github.event_name == 'schedule' || inputs.upload) && vars.YOUTUBE_VIA_BUFFER == '1' }}
+        # Replaces the direct YouTube upload when the repo variable YOUTUBE_VIA_BUFFER is 1 (no Google token needed).
+        continue-on-error: true
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_YOUTUBE_CHANNEL_ID: ${{ vars.BUFFER_YOUTUBE_CHANNEL_ID }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          CLOUDINARY_UPLOAD_PRESET: ${{ vars.CLOUDINARY_UPLOAD_PRESET }}
+          UPLOAD_PRIVACY: ${{ vars.UPLOAD_PRIVACY || 'private' }}
+          YT_AI_DISCLOSURE: ${{ vars.YT_AI_DISCLOSURE }}
+        run: python post_youtube_buffer.py
 
       - name: Save finished videos
         if: always()
@@ -143,7 +159,7 @@ jobs:
           exit 1
 
       - name: Alert me if anything failed
-        if: always() && (failure() || steps.tiktok.outcome == 'failure')
+        if: always() && (failure() || steps.tiktok.outcome == 'failure' || steps.ytbuffer.outcome == 'failure')
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
