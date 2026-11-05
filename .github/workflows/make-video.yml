@@ -76,17 +76,6 @@ jobs:
             python pipeline.py --next
           fi
 
-      - name: Upload to YouTube
-        id: youtube
-        if: ${{ vars.YOUTUBE_VIA_BUFFER != '1' }}
-        env:
-          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
-          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
-          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
-          # private (review first), unlisted, or public. Set repo variable UPLOAD_PRIVACY to change.
-          UPLOAD_PRIVACY: ${{ vars.UPLOAD_PRIVACY || 'private' }}
-        run: python upload_youtube.py
-
       - name: Post to TikTok via Buffer
         id: tiktok
         # A failure here must not lose the video: the artifact step below still runs.
@@ -102,8 +91,7 @@ jobs:
 
       - name: Post to YouTube via Buffer
         id: ytbuffer
-        if: ${{ vars.YOUTUBE_VIA_BUFFER == '1' }}
-        # Replaces the direct YouTube upload when the repo variable YOUTUBE_VIA_BUFFER is 1 (no Google token needed).
+        # YouTube is posted only through Buffer (no Google token needed).
         continue-on-error: true
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
@@ -181,7 +169,6 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           R_SCRIPT: ${{ steps.script.outcome }}
           R_RENDER: ${{ steps.render.outcome }}
-          R_YOUTUBE: ${{ steps.youtube.outcome }}
           R_TIKTOK: ${{ steps.tiktok.outcome }}
           R_YTBUFFER: ${{ steps.ytbuffer.outcome }}
         run: |
@@ -191,7 +178,6 @@ jobs:
           |---|---|
           | Write script | $R_SCRIPT |
           | Render video | $R_RENDER |
-          | Upload to YouTube | $R_YOUTUBE |
           | Post to TikTok | $R_TIKTOK |
           | Post to YouTube via Buffer | $R_YTBUFFER |
 

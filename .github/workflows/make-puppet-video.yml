@@ -86,16 +86,6 @@ jobs:
             python puppet_render.py --next
           fi
 
-      - name: Upload to YouTube
-        id: youtube
-        if: ${{ (github.event_name == 'schedule' || inputs.upload) && vars.YOUTUBE_VIA_BUFFER != '1' }}
-        env:
-          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
-          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
-          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
-          UPLOAD_PRIVACY: ${{ vars.UPLOAD_PRIVACY || 'private' }}
-        run: python upload_youtube.py
-
       - name: Post to TikTok via Buffer
         id: tiktok
         if: ${{ github.event_name == 'schedule' || inputs.upload }}
@@ -112,8 +102,8 @@ jobs:
 
       - name: Post to YouTube via Buffer
         id: ytbuffer
-        if: ${{ (github.event_name == 'schedule' || inputs.upload) && vars.YOUTUBE_VIA_BUFFER == '1' }}
-        # Replaces the direct YouTube upload when the repo variable YOUTUBE_VIA_BUFFER is 1 (no Google token needed).
+        if: ${{ github.event_name == 'schedule' || inputs.upload }}
+        # YouTube is posted only through Buffer (no Google token needed).
         continue-on-error: true
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
