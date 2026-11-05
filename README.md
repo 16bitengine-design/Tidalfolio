@@ -90,7 +90,7 @@ A story that cannot fit in 50 seconds is produced as Part 1, Part 2, Part 3 and 
 
 - **Write a new story in parts:** `python generate_script.py --parts 3 --idea "..."` (2 to 6 parts; `--series` is optional). It first plans the whole story (title, lesson, locked cast, what each part does and how it ends), then writes each part in order and queues them in order. Parts before the last end on a cliffhanger, every part after the first opens with a short recap line, the human mirror act and the lesson's payoff come in the final part, and every part reuses the same characters and visual descriptions.
 - **Split a script that is too long:** `python tools/split_script.py scripts/NNN-name.json` (add `--plan` to only preview). It cuts between scenes (never inside the mirror act) into parts of about 44 to 50 seconds (if the story is too long for one video but too short to make parts of at least 40 seconds, it writes nothing and tells you how much to cut), writes `NNN-name-part-1.json` and so on, and replaces the long script in `queue.txt` with its parts, in order.
-- Every part gets a "Part k/n" title, YouTube title, TikTok caption and description note, a "Part k" card on screen at the start, and "To be continued" at the end of every part except the last. The same music theme is used on every part.
+- Every part gets a "Part k/n" title, YouTube title, TikTok caption and description note, but nothing about parts is shown or said inside the video: a part that is followed by another simply ends, and the next part carries straight on. Only the last part gets a plain end screen (name and tagline). The same music theme is used on every part.
 - Post the parts in order, and consider putting them in one YouTube playlist.
 
 ## Pop-ups

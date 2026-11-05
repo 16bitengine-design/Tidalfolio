@@ -23,7 +23,7 @@ QUEUE = ROOT / "queue-puppet.txt"
 DONE = ROOT / "done-puppet.txt"
 MIN_LEN, MAX_LEN = 45.0, 90.0
 AIM = "about 60 to 75 seconds"
-SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.57, 1.5, 4.5     # measured on the real narrator; used only when the voice model is absent
+SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.57, 1.5, 3.5     # measured on the real narrator; used only when the voice model is absent
 
 SERIES = {"Bird Banter": "eagles and squirrels: pride, hunger, rivalry, bad decisions on a cliff",
           "Funny Animals": "a rabbit, squirrels and eagles in absurd high-stakes situations"}
@@ -106,8 +106,8 @@ CREATIVE DIRECTION (the Tidal Folio master brief; follow it, within the channel 
 - Before you answer, silently check: does the opening create curiosity? is the conflict easy to understand? does every scene give a reason to keep watching? does tension rise rather than stay flat? is there at least one unexpected development? is the comedy situation-driven? are the characters believable? is the climax satisfying and memorable? does the story keep its deeper meaning without explaining it? If any answer is no, rewrite that part first. Story quality beats spectacle, comedy beats noise, essence beats a shocking twist.
 
 STORY IN PARTS: every story is told as {parts_text} consecutive videos (Part 1, Part 2 ...), published one after another. Write ALL parts now, in "parts": [{{"scenes": [...]}}, ...].
-- Every part is a complete, satisfying watch on its own AND moves the story forward: its own hook, its own mini-reversal.
-- Every part EXCEPT the last ends on a cliffhanger line (a reveal, a worse problem, a question) that makes the viewer need the next part. The cliffhanger is part of the story, never "to be continued" and never an instruction. The system adds the "Continue to Part N" card and the "Follow, Like, Subscribe, Share" card itself, so never write either in the narration.
+- The parts play one right after another, so the viewer should barely notice where one ends and the next begins. Part 1 opens with the hook. Every later part carries on from the exact moment the previous part stopped: NO recap, NO re-introduction of the characters or setting, NO "previously" and NO announcement that a new part has started. Each part still has its own small reversal so it never drags.
+- Every part EXCEPT the last ends mid-story on a line that pulls straight into the next scene (a reveal, a worse problem, a question), told like any other line of the story: never "to be continued", never "in the next part", never an instruction.
 - Part 1 opens with the stakes; the last part holds the emotional resolution and the haunting last line. The one uncommon word appears exactly once in the WHOLE story. Characters, setting and objects stay consistent across parts.
 
 LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly (about 0.57 s per word) and each scene adds about 1.5 s of pauses, so write {n_lo} to {n_hi} scenes of 12 to 24 words each per part (roughly 110 to 160 words per part). Open on the hook at once. No filler scene.
@@ -121,7 +121,7 @@ THE STAGE (this is all that can be drawn, so write for it)
 - "fx": [{{"kind": "puff"|"sparkle"|"speed", "at": words, "near": actor}}]: a dust cloud for landings and crashes, a sparkle for magic or a lucky moment, speed streaks for a dash.
 - EVERY phrase you give ("from", "to", "enter", "exit", "at", "silence_before") must be copied EXACTLY (same capitals, same punctuation) from THAT scene's narration, a span of 2 to 5 words. Characters can only exist on screen if listed in "actors" of that scene. Keep a character in the same spot while nothing moves them; change spots only when the narration says so.
 - VARIETY (the channel must never feel like one template repeated): each story needs its own premise and plot shape (a heist, a rivalry, a rescue, a rumour, a bet, a misunderstanding, a rivalry between friends, a trade that goes wrong ...), its own lead character, its own time of day and weather, and its own opening line. Do not start two stories the same way. Titles and the first sentence of the YouTube description should say plainly what the story is about, with the hook in the first 5 words.
-- Ending: every part's last scene is followed by the tidalfolio closing card, so do not write a sign-off.
+- Ending: the last part ends on its haunting last line. The system adds a plain end screen after the final part only, so never write a sign-off, a part announcement or a call to follow or subscribe in any narration.
 
 Reply with ONE JSON object, exactly this shape:
 {{"title": "Episode title (no series prefix)", "lesson": "...", "cause": "forgot|believed|no_options",
@@ -170,7 +170,7 @@ def _measure(script):
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
     words = sum(len(re.findall(r"[A-Za-z0-9']+", s["narration"])) for s in script["scenes"])
-    return words * SEC_PER_WORD + SCENE_OVERHEAD * len(script["scenes"]) + END_CARD, "estimate"
+    return words * SEC_PER_WORD + SCENE_OVERHEAD * len(script["scenes"]) + (END_CARD if any(x.get("end_card") for x in script["scenes"]) else 0.0), "estimate"
 
 
 def _smoke(script):

@@ -252,7 +252,7 @@ def _popup(img, p, u, clk):
     E.popup(img, p["text"], x, y, u, at, p.get("dur", 2.0), size=p.get("size", 52), tail=p.get("tail", 0), shake=p.get("shake", 0.0), shape=p.get("shape"), **kw)
 
 
-END_SEC = 4.5      # how long the closing card stays up (voice sign-off, then a soft fade to black)
+END_SEC = 3.5      # how long the simple end screen (name + tagline) stays up, then a soft fade to black
 
 
 def _end_card(img, u, D, script):
@@ -285,21 +285,4 @@ def _end_card(img, u, D, script):
 
     centre("tidalfolio", 640, f1, (250, 240, 220), 0.4)
     centre(script.get("tagline", "Funny animals. Wild moments. Endless smiles."), 790, f2, (255, 214, 120), 0.8)
-    sp = script.get("series_part")
-    if sp:
-        short = script.get("short_title") or sp["story"].split(": ")[-1]
-        centre(f"Part {sp['part']} of {sp['of']}  ·  {short}", 880, f2, (250, 240, 220), 1.1, 230)
-        if sp["part"] < sp["of"]:
-            pulse = 0.8 + 0.2 * math.sin(u * 6)
-            centre(f"Continue to Part {sp['part'] + 1}", 1010, f3, (255, int(150 + 60 * pulse), 90), 1.4)
-        else:
-            centre("The end", 1010, f3, (255, 214, 120), 1.4)
-    cta = "Follow  ·  Like  ·  Subscribe  ·  Share"
-    tw = ov.textlength(cta, font=f4)
-    k = alpha(1.9)
-    rise = (1 - k) * 18
 
-    def pill(d):
-        d.rounded_rectangle([(W - tw) / 2 - 40, 1150 + rise, (W + tw) / 2 + 40, 1240 + rise], radius=45, fill=(255, 214, 120, 235))
-        d.text(((W - tw) / 2, 1168 + rise), cta, font=f4, fill=(40, 26, 36, 255))
-    layer(k, pill)

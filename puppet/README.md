@@ -18,7 +18,7 @@ It lives next to the image pipeline and does not touch it. The image pipeline (`
 
 Output matches the image pipeline, so `upload_youtube.py` and `post_tiktok.py` work unchanged:
 `output/<slug>/vertical/video.mp4` (9:16, also copied to `youtube/video.mp4`, which YouTube treats as a Short), `thumbnail.png`,
-`captions.srt`, `metadata.md`. Every video must run **45 to 90 seconds** or nothing is rendered. Every story is told in **2 to 4 parts**; each part ends with a closing card ("Continue to Part N" except on the last part, then "The end") and the line **Follow · Like · Subscribe · Share**. The ending is gentle: the card fades in line by line, the narrator speaks a short sign-off ("The story continues in part two." / "That was a tidalfolio story."), the music settles onto a held chord and fades out, and the picture fades to black.
+`captions.srt`, `metadata.md`. Every video must run **45 to 90 seconds** or nothing is rendered. Every story is told in **2 to 4 parts**; nothing about parts is shown or spoken inside a video. A part followed by another part simply ends (the music fades) and the next part picks up where it stopped; only the last part gets a plain end screen (name and tagline) that fades to black. There is no spoken sign-off.
 
 ## Script format
 

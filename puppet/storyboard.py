@@ -403,6 +403,8 @@ def compile_storyboard(sb, number=None):
     out = []
     for pi, part in enumerate(sb["parts"], 1):
         scenes = _compile_scenes(part["scenes"], cast)
+        if pi < n:     # a part followed by another one ends plainly; only the last part gets the simple end screen
+            scenes[-1].pop("end_card", None)
         yt = dict(sb.get("youtube") or {})
         yt["title"] = f"{title} (Part {pi}/{n})"
         yt["description"] = (yt.get("description", "") + f"\n\nPart {pi} of {n}." + (f" Part {pi + 1} is next." if pi < n else " The end.")).strip()
