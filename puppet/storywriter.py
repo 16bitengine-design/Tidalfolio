@@ -138,7 +138,7 @@ Score it 1 to 5 on each question, being honest (a 3 is acceptable, 1 or 2 means 
 q1 Does the opening immediately create curiosity? q2 Is the central conflict easy to understand? q3 Does every scene give a reason to keep watching?
 q4 Does tension rise rather than stay flat? q5 Are there unexpected developments? q6 Is the comedy genuinely funny and situation-driven (not random or childish)?
 q7 Are the characters emotionally believable? q8 Is the climax satisfying and earned? q9 Does it keep a deeper meaning WITHOUT explaining it (no moral, no advice)?
-q10 Is every part a satisfying watch that ends (except the last) on a cliffhanger that makes the viewer need the next part?
+q10 Does every part hold attention and end (except the last) on a line that pulls straight into the next part?
 Reply with ONE JSON object: {"scores": {"q1": 4, ...}, "problems": ["specific, actionable fixes naming the part and scene, only for scores of 1 or 2, max 5"]}"""
 
 
@@ -228,7 +228,110 @@ def problems(sb, number):
     return bad, (None if bad else scripts)
 
 
+BIBLE_STEP = """STEP 1: plan the story. Do NOT write scenes yet, and ignore any instruction above to write every part at once: the parts are written one at a time in the next messages.
+Reply with ONE JSON object with exactly these keys:
+{"title": "Episode title (no series prefix)", "lesson": "...", "cause": "forgot|believed|no_options", "uncommon_word": {"word": "...", "meaning": "..."},
+ "cast": {"key": {"species": "eagle", "look": "orrin", "name": "Orrin"}, "key2": {"species": "squirrel", "hat": "bowler"}},
+ "outline": [EXACTLY %d strings, one per part: what happens in that part and the line it stops on],
+ "youtube": {"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"},
+ "tiktok": {"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}"""
+
+PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "scenes": [ 6 to 9 scenes, each in exactly the scene format given in the instructions ]}. '
+              'Use the cast keys exactly as planned.')
+
+
+def _part_rules(k, n, word, uw_part):
+    role = ("It opens on the hook at once." if k == 1 else
+            f"It carries on from the exact moment part {k - 1} stopped: no recap, no re-introduction of the characters or the setting, no announcement that a new part has started. "
+            f"A viewer must not be able to tell where part {k - 1} ended.")
+    role += (f" It ends mid-story on a line that pulls straight into part {k + 1} (never 'to be continued')." if k < n else
+             " It holds the emotional resolution and the haunting last line.")
+    w = (f'Use the uncommon word "{word}" exactly once in this part.' if k == uw_part else f'Do not use the uncommon word "{word}" in this part.')
+    return f"{role} {w}"
+
+
+def _bible_problems(b, n, used_words):
+    from . import storyboard as SB
+    if not isinstance(b, dict):
+        return ["the reply must be one JSON object."]
+    bad = []
+    cast = b.get("cast")
+    if not isinstance(cast, dict) or not 1 <= len(cast) <= 4:
+        bad.append("'cast' must be an object with 1 to 4 characters.")
+    else:
+        for key, c in cast.items():
+            if not isinstance(c, dict) or c.get("species") not in SB.SPECIES:
+                bad.append(f"cast '{key}': species must be one of {SB.SPECIES}.")
+            elif c["species"] == "eagle" and c.get("look", "orrin") not in SB.LOOKS:
+                bad.append(f"cast '{key}': an eagle's look must be one of {SB.LOOKS}.")
+    outline = b.get("outline")
+    if not (isinstance(outline, list) and len(outline) == n and all(isinstance(x, str) and x.strip() for x in outline)):
+        bad.append(f"'outline' must be a list of exactly {n} non-empty strings, one per part.")
+    uw = b.get("uncommon_word")
+    word = uw.get("word", "").strip() if isinstance(uw, dict) and isinstance(uw.get("word"), str) else ""
+    if not word:
+        bad.append("'uncommon_word' must be {word, meaning}.")
+    elif word.lower() in used_words:
+        bad.append("that uncommon word was used in an earlier story; pick a different one.")
+    if not isinstance(b.get("title"), str) or not b["title"].strip():
+        bad.append("'title' is missing.")
+    if not isinstance(b.get("lesson"), str) or not b["lesson"].strip():
+        bad.append("'lesson' (one plain sentence) is missing.")
+    if b.get("cause") not in ("forgot", "believed", "no_options"):
+        bad.append("'cause' must be forgot, believed or no_options.")
+    if not isinstance(b.get("youtube"), dict) or not b["youtube"].get("description"):
+        bad.append("'youtube' needs description, tags and pinned_comment.")
+    if not isinstance(b.get("tiktok"), dict) or not b["tiktok"].get("caption"):
+        bad.append("'tiktok' needs caption and hashtags.")
+    return bad
+
+
+def _part_problems(part, cast, k, word, uw_part):
+    from . import storyboard as SB
+    if not isinstance(part, dict):
+        return [f"part {k}: the reply must be one JSON object with 'scenes'."]
+    scenes = part.get("scenes")
+    if isinstance(scenes, list) and not all(isinstance(x, dict) for x in scenes):
+        return [f"part {k}, every scene must be a JSON object."]
+    bad = SB._check_scenes(scenes, cast, f"part {k}, ")
+    text = " ".join(str(x.get("narration", "")) for x in (scenes if isinstance(scenes, list) else []))
+    want, got = (1 if k == uw_part else 0), len(re.findall(rf"\b{re.escape(word)}\b", text, re.I))
+    if got != want:
+        bad.append(f"part {k}: the uncommon word {word!r} must appear exactly {want} time(s) in this part's narration (it appears {got}).")
+    return bad
+
+
+def _story_so_far(bible, parts):
+    lines = [f"Title: {bible['title']}", "Cast: " + json.dumps(bible["cast"]), "Plan:"]
+    lines += [f"  Part {i}: {o}" for i, o in enumerate(bible["outline"], 1)]
+    for i, pt in enumerate(parts, 1):
+        if pt:
+            lines.append(f"PART {i} AS WRITTEN:")
+            lines += [f"  {n}. {sc['narration']}" for n, sc in enumerate(pt["scenes"], 1)]
+    return "\n".join(lines)
+
+
+def _rewrite_part(G, system, bible, parts, k, bad, word, uw_part):
+    """Ask for part k again with the problems listed; returns the new part, or None if it still fails."""
+    n = len(parts)
+    for _ in range(2):
+        user = (_story_so_far(bible, parts) + f"\n\nRewrite ONLY part {k} of {n}. Fix these problems, keep it continuous with the part before and the part after it, and keep what already works:\n- "
+                + "\n- ".join(bad) + "\n\n" + _part_rules(k, n, word, uw_part) + "\n" + PART_SHAPE
+                + f"\nThe current JSON of part {k} was:\n" + json.dumps(parts[k - 1], ensure_ascii=False))
+        try:
+            part = json.loads(G.call_openai([{"role": "system", "content": system}, {"role": "user", "content": user}], 0.7))
+        except ValueError:
+            continue
+        bad = _part_problems(part, bible["cast"], k, word, uw_part)
+        if not bad:
+            return part
+    return None
+
+
 def write_story(idea=None, series=None, parts=None, log=print):
+    """Write a story in stages (a small model cannot reliably write a whole multi-part storyboard in one reply):
+    1. plan it (title, cast, lesson, uncommon word, one-line outline per part), 2. write each part on its own, carrying on from the previous one,
+    3. check the whole story and rewrite only the parts that fail, 4. save and queue it."""
     sys.path.insert(0, str(ROOT))
     import generate_script as G
     SCRIPTS.mkdir(exist_ok=True)
@@ -238,46 +341,92 @@ def write_story(idea=None, series=None, parts=None, log=print):
     n_parts = parts or choose_parts(log)
     cause = random.choice(["forgot", "believed", "no_options"])
     lessons, words = G.used_lessons(), G.used_words()
+    system = system_prompt(6, 9, n_parts)
     brief = (f"Write the next story for the series \"{series}\" ({SERIES[series]}), told in exactly {n_parts} parts. "
              + (f"Story idea to use: {idea}. " if idea else "Invent a fresh, specific premise. ")
              + f"Use cause \"{cause}\" for the protagonist's key choice. "
              + (f"Do NOT reuse these lessons: {'; '.join(lessons[-12:])}. " if lessons else "")
              + (f"Do NOT reuse these uncommon words: {', '.join(words)}. " if words else "")
              + (f"Titles already used (be different): {'; '.join(titles[-15:])}. " if titles else "")
-             + G.performance_notes()
-             + "Reply with the JSON object only.")
-    msgs = [{"role": "system", "content": system_prompt(6, 9, n_parts)}, {"role": "user", "content": brief}]
-    last_bad = []
-    for attempt in range(1, 5):
+             + G.performance_notes() + "\n\n" + BIBLE_STEP % n_parts)
+    msgs = [{"role": "system", "content": system}, {"role": "user", "content": brief}]
+
+    bible, last_bad = None, []
+    for attempt in range(1, 5):                                                   # ---- 1. the plan
         raw = G.call_openai(msgs, temperature=1.0 if attempt == 1 else 0.7)
         try:
-            sb = normalize(json.loads(raw))
+            cand = json.loads(raw)
         except ValueError:
-            last_bad, scripts = ["the reply was not valid JSON"], None
+            last_bad = ["the reply was not valid JSON"]
         else:
-            last_bad, scripts = problems(sb, number)
-            if (sb.get("uncommon_word") or {}).get("word", "").lower() in words:
-                last_bad.append("that uncommon word was used in an earlier story; pick a different one.")
-            if len(sb.get("parts") or []) != n_parts and not last_bad:
-                last_bad.append(f"write exactly {n_parts} parts.")
-            if not last_bad and attempt < 4 and os.environ.get("STORY_CRITIC", "1") != "0":
-                last_bad = critique(G, sb)
+            last_bad = _bible_problems(cand, n_parts, words)
             if not last_bad:
-                t = re.sub(rf"^{re.escape(series)}\s*(#\d+)?\s*[:\-]\s*", "", sb["title"].strip(), flags=re.I) or sb["title"].strip()
-                names = []
-                for sc in scripts:
-                    sc["short_title"] = t
-                    sc["series_part"]["story"] = f"{series} #{number}: {t}"
-                    sc["title"] = f"{series} #{number}: {t} (Part {sc['series_part']['part']}/{n_parts})"
-                    sc["youtube"]["title"] = sc["title"][:100]
-                    path = SCRIPTS / f"{sc['slug']}.json"
-                    path.write_text(json.dumps(sc, indent=1))
-                    names.append(path.name)
-                with open(QUEUE, "a") as f:
-                    f.write("\n".join(names) + "\n")
-                log(f"Wrote {n_parts} parts (attempt {attempt}): {', '.join(names)}, queued in order.")
-                return names
-        log(f"Attempt {attempt} rejected: " + " | ".join(last_bad)[:600])
+                bible = cand
+                break
+        log(f"Plan attempt {attempt} rejected: " + " | ".join(last_bad)[:600])
         msgs += [{"role": "assistant", "content": raw},
                  {"role": "user", "content": "Fix these problems and return the full corrected JSON only:\n- " + "\n- ".join(last_bad)}]
-    raise SystemExit("Could not get a valid story after 4 tries. Last problems: " + "; ".join(last_bad))
+    if bible is None:
+        raise SystemExit("Could not get a valid story plan after 4 tries. Last problems: " + "; ".join(last_bad))
+    msgs.append({"role": "assistant", "content": raw})
+    word = bible["uncommon_word"]["word"].strip()
+    uw_part = random.randint(1, n_parts)
+    log(f"Plan: \"{bible['title']}\" in {n_parts} parts; the uncommon word goes in part {uw_part}.")
+
+    done = []
+    for k in range(1, n_parts + 1):                                               # ---- 2. the parts, one at a time
+        req = {"role": "user", "content": f"STEP {k + 1}: write ONLY part {k} of {n_parts} now. {_part_rules(k, n_parts, word, uw_part)}\n{PART_SHAPE}"}
+        tmsgs, part, last_bad = msgs + [req], None, []
+        for attempt in range(1, 5):
+            raw = G.call_openai(tmsgs, temperature=0.9 if attempt == 1 else 0.7)
+            try:
+                cand = json.loads(raw)
+            except ValueError:
+                last_bad = [f"part {k}: the reply was not valid JSON"]
+            else:
+                last_bad = _part_problems(cand, bible["cast"], k, word, uw_part)
+                if not last_bad:
+                    part = cand
+                    break
+            log(f"Part {k} attempt {attempt} rejected: " + " | ".join(last_bad)[:600])
+            tmsgs += [{"role": "assistant", "content": raw},
+                      {"role": "user", "content": f"Fix these problems and return the full corrected JSON for part {k} only:\n- " + "\n- ".join(last_bad)}]
+        if part is None:
+            raise SystemExit(f"Could not get a valid part {k} after 4 tries. Last problems: " + "; ".join(last_bad))
+        msgs += [req, {"role": "assistant", "content": raw}]
+        done.append(part)
+
+    sb = {key: v for key, v in bible.items() if key != "outline"}
+    sb["parts"] = done
+    for rnd in range(1, 4):                                                       # ---- 3. check everything, rewrite only the weak parts
+        bad, scripts = problems(sb, number)
+        if not bad and rnd == 1 and os.environ.get("STORY_CRITIC", "1") != "0":
+            bad = critique(G, sb)
+        if not bad:
+            t = re.sub(rf"^{re.escape(series)}\s*(#\d+)?\s*[:\-]\s*", "", sb["title"].strip(), flags=re.I) or sb["title"].strip()
+            names = []
+            for sc in scripts:                                                    # ---- 4. save and queue
+                sc["short_title"] = t
+                sc["series_part"]["story"] = f"{series} #{number}: {t}"
+                sc["title"] = f"{series} #{number}: {t} (Part {sc['series_part']['part']}/{n_parts})"
+                sc["youtube"]["title"] = sc["title"][:100]
+                path = SCRIPTS / f"{sc['slug']}.json"
+                path.write_text(json.dumps(sc, indent=1))
+                names.append(path.name)
+            with open(QUEUE, "a") as f:
+                f.write("\n".join(names) + "\n")
+            log(f"Wrote {n_parts} parts (check round {rnd}): {', '.join(names)}, queued in order.")
+            return names
+        by_part = {}
+        for m in bad:
+            ks = {int(x) for x in re.findall(r"[Pp]art (\d)", m)} & set(range(1, n_parts + 1)) or {n_parts}
+            for k in ks:
+                by_part.setdefault(k, []).append(m)
+        log(f"Check round {rnd} found problems in part(s) {sorted(by_part)}: " + " | ".join(bad)[:600])
+        if rnd == 3:
+            break
+        for k, msgs_k in sorted(by_part.items()):
+            new = _rewrite_part(G, system, bible, sb["parts"], k, msgs_k, word, uw_part)
+            if new:
+                sb["parts"][k - 1] = new
+    raise SystemExit("Could not get a story that passes every check after 3 rounds. Last problems: " + "; ".join(bad))
