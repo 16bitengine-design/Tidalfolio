@@ -139,9 +139,9 @@
     "privacy": "public",
     "uploaded_at": "2026-11-04",
     "stats": {
-      "views": 0,
-      "averageViewPercentage": 0,
-      "averageViewDuration": 0,
+      "views": 66,
+      "averageViewPercentage": 51.94,
+      "averageViewDuration": 30,
       "likes": 0,
       "comments": 0,
       "subscribersGained": 0,
@@ -165,12 +165,12 @@
     "privacy": "public",
     "uploaded_at": "2026-11-04",
     "stats": {
-      "views": 0,
-      "averageViewPercentage": 0,
-      "averageViewDuration": 0,
-      "likes": 0,
+      "views": 67,
+      "averageViewPercentage": 53.02,
+      "averageViewDuration": 32,
+      "likes": 3,
       "comments": 0,
-      "subscribersGained": 0,
+      "subscribersGained": 1,
       "as_of": "2026-11-06"
     }
   }

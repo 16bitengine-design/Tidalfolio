@@ -1,0 +1,1181 @@
+{
+ "engine": "puppet",
+ "look": "toon",
+ "cast_species": [
+  "human"
+ ],
+ "cast_roles": [
+  "doctor",
+  "baker",
+  "boss",
+  "mechanic"
+ ],
+ "cast_lead": {
+  "role": "doctor",
+  "gender": "male"
+ },
+ "slug": "007-itchy-evidence-part-1",
+ "title": "Funny People #7: Itchy Evidence (Part 1/3)",
+ "short_title": "Itchy Evidence",
+ "series_part": {
+  "story": "Funny People #7: Itchy Evidence",
+  "part": 1,
+  "of": 3
+ },
+ "thumbnail_scene": 2,
+ "voice": {
+  "kokoro": "bm_george"
+ },
+ "story": {
+  "lesson": "Obsession with perfection can lead to oversight of simple solutions.",
+  "cause": "believed"
+ },
+ "uncommon_word": {
+  "word": "perplexed",
+  "meaning": "completely baffled or puzzled"
+ },
+ "scenes": [
+  {
+   "narration": "The doctor was in a meeting with the boss when his ankle started to itch.",
+   "world": "toon_day_office",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 22,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "boss",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boss",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "grey",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 6,
+     "carry": "clipboard",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "It itches!",
+     "at": "@started to itch",
+     "dur": 2.2,
+     "x": 130,
+     "y": 760,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "He interrupted, scratching furiously. \"It's unbearable!\" he exclaimed.",
+   "world": "toon_storm_office",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      -8,
+      10
+     ],
+     "mood": "angry",
+     "action": "talk",
+     "seed": 22,
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@He interrupted",
+       "to": "@he exclaimed"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 2.5,
+       "rate": 22,
+       "phase": 1.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "boss",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boss",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "grey",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "stand",
+     "seed": 6,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "UNBEARABLE!",
+     "at": "@It's unbearable",
+     "dur": 2.2,
+     "x": 170,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "The boss frowned, \"Not again with your socks,\" he mumbled.",
+   "world": "toon_day_office",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       350
+      ],
+      [
+       "@end",
+       250
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      -8,
+      10
+     ],
+     "mood": "angry",
+     "action": "stand",
+     "seed": 22,
+     "bounce": {
+      "sin": {
+       "amp": 2.5,
+       "rate": 22,
+       "phase": 1.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "boss",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boss",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "grey",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "talk",
+     "seed": 6,
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@The boss frowned",
+       "to": "@he mumbled"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "Your socks?",
+     "at": "@your socks",
+     "dur": 2.2,
+     "x": 480,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "The doctor wore mismatched socks every day, yet never noticed.",
+   "world": "toon_day_office",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 22,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "boss",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boss",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "grey",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 6,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "In the hallway, the mechanic overheard the commotion and grinned.",
+   "world": "toon_day_office",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "mechanic",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mechanic",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 41,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "Hehe.",
+     "at": "@the mechanic overheard",
+     "dur": 2.2,
+     "x": 300,
+     "y": 760,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "The mechanic, carrying a wrench, chuckled, \"This is curious.\"",
+   "world": "toon_night_office",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "mechanic",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mechanic",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "talk",
+     "seed": 41,
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@The mechanic,",
+       "to": "@is curious"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "HMM...",
+     "at": "@This is curious",
+     "dur": 2.2,
+     "x": 300,
+     "y": 760,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      41,
+      47,
+      53,
+      59
+     ],
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      39,
+      46,
+      51,
+      58
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.3
+    },
+    "pluck": {
+     "step": 2.0,
+     "notes": [
+      0,
+      5,
+      2,
+      6,
+      1
+     ],
+     "vol": 0.55,
+     "scale": [
+      76,
+      77,
+      82,
+      83,
+      88,
+      89,
+      94
+     ],
+     "len": 2.6
+    }
+   },
+   "tone": "eerie"
+  },
+  {
+   "narration": "Everyone was perplexed by the sudden itchiness, except the doctor.",
+   "world": "toon_night_office",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 22,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "mechanic",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mechanic",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "stand",
+     "seed": 41,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "boss",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boss",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "grey",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 6,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      41,
+      47,
+      53,
+      59
+     ],
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      39,
+      46,
+      51,
+      58
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.3
+    },
+    "pluck": {
+     "step": 2.0,
+     "notes": [
+      0,
+      5,
+      2,
+      6,
+      1
+     ],
+     "vol": 0.55,
+     "scale": [
+      76,
+      77,
+      82,
+      83,
+      88,
+      89,
+      94
+     ],
+     "len": 2.6
+    }
+   },
+   "tone": "eerie"
+  }
+ ],
+ "youtube": {
+  "description": "A meticulous doctor is baffled by an itchy annoyance that disrupts his day. As he seeks answers, surprising clues from everyday items lead to a solution.\n\nPart 1 of 3. Part 2 is next.",
+  "tags": [
+   "comedy",
+   "mystery",
+   "doctor",
+   "itch",
+   "day",
+   "mismatch",
+   "quirk",
+   "revelation",
+   "everyday",
+   "socks"
+  ],
+  "pinned_comment": "Have you ever overlooked a simple solution while aiming for perfection?",
+  "title": "Funny People #7: Itchy Evidence (Part 1/3)"
+ },
+ "tiktok": {
+  "caption": "Part 1/3: A perfectionist doctor is driven to distraction by a baffling itch.",
+  "hashtags": [
+   "#comedy",
+   "#mystery",
+   "#doctor",
+   "#itch",
+   "#quirky"
+  ]
+ }
+}
