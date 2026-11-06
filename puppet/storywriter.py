@@ -152,10 +152,12 @@ STORY IN PARTS: every story is told as {parts_text} consecutive videos (Part 1, 
 LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly and steadily (about 0.55 s per word, never rushed) and each scene adds about 1.5 s of pauses, so write {n_lo} to {n_hi} scenes of 9 to 14 words each per part (roughly 68 to 82 words per part). Open on the hook at once. No filler scene. Spend the few words on specific, surprising details and on what the characters say, never on scenery.
 - NARRATION MUST BE EASY TO SPEAK: a voice reads it aloud. Use only ordinary words that are easy to pronounce (the one uncommon word aside), simple names (one or two syllables: Pip, Orrin, Mabel, Biscuit), numbers written as words ("forty-two"), no digits, no abbreviations, no symbols, no all-capital words in the narration, no invented words or unusual spellings. Keep sentences short to medium (at most about 16 words); put a comma at each natural pause.
 
+TONE (the viewer must FEEL the tone of every scene within one second, with the sound on or off): give EVERY scene a "tone". playful = jokes, mischief, scheming (bouncy music, bright colours). joyful = triumph, celebration, a win (golden light, rising music, the narrator lifts). tense = danger, a plan going wrong, an argument, a chase (dark cold colours, low ticking music, a shaky camera). sad = loss, shame, being left out, a broken promise (grey-blue colours, slow falling notes, the narrator softer and lower). eerie = mystery, dread, something not right (green-teal mist, a low hum, sparse notes). tender = love, forgiveness, loyalty, a kind surprise (warm glow, soft music). calm = rest, quiet, scene-setting (use for at most two scenes in a part). The system turns the tone into colour, light, music, camera and the narrator's voice, so the tone must match the narration words and the faces: tense = scared, angry or shocked actors; sad = sad actors; playful and joyful = happy or smug actors. Change the tone at least twice in every part, as the story turns, and make the tone obvious in the words themselves (short, clipped sentences for tense; long, slow ones for sad; bouncy, surprising ones for playful). Dark tones (tense, sad, eerie) belong to world storm, night or dusk; joyful belongs to day, dawn or sunset. The FIRST scene of the story must already show a clear tone, never calm.
+
 THE STAGE (this is all that can be drawn, so write for it)
 - Cast: 1 to 4 characters, the PROTAGONIST FIRST. species "eagle" (cast "look": "orrin" = plain brown, "dad" = dark brown, "mom" = lighter brown with a pink scarf; give every eagle in the story a different look), "cat" (optional "coat": ginger|grey|black|white, optional "hat": "bowler"), "fox" (optional "hat": "bowler"), "rabbit" (optional "coat": grey|white|brown), "squirrel" (optional "hat": "bowler", optional "item": "popcorn"). Give each a short first name in "name". No other animals exist. Give every character a clear personality that drives the plot (typical: eagle = proud and dramatic, cat = aloof and vain but secretly soft-hearted, fox = cunning and charming, rabbit = anxious but braver than they think, squirrel = a hoarder and a gossip), and let the story break or test that personality.
 - Each scene: "world" (dawn|day|dusk|storm|night|sunset), "stage": "cliff" (a clifftop above a valley and sea, mountains and a distant castle), "nest" (the same with a big nest), or "tree" (a lone tree whose branch reaches toward the cliff).
-- "camera": hold|push_in|pull_back|pan_right|pan_left. "music": calm|tense|sad|joyful (the music follows the emotion of the scene). Optional "silence_before": a few words of the narration; the music cuts out and the picture freezes just before them (use on at most 2 scenes, for the biggest reveal).
+- "camera": hold|push_in|pull_back|pan_right|pan_left (optional: the system leans in on tense scenes and drifts away on sad ones). "tone": playful|joyful|tense|sad|eerie|tender|calm (see TONE). Optional "silence_before": a few words of the narration; the music cuts out and the picture freezes just before them (use on at most 2 scenes, for the biggest reveal).
 - "actors": who is on screen. "at": ground_left|ground_mid|ground_right (on the cliff; any species), branch_a|branch_b (squirrels only, needs stage "tree"), air_left|air_mid|air_right (eagles only, flying). "face": left|right (optional). "mood": neutral|sleepy|happy|angry|scared|sad|shocked|smug|dizzy. "action": stand|talk|hop|flap. "talk" moves the beak/mouth: give "from" and "to" (words in the narration) for when he speaks or give nothing for most of the scene. "enter": words in the narration at which this character flies or hops in from off-screen; "exit": words at which he leaves. Eagles may "carry": "fish".
 - "popups": comic speech bubbles ("kind": "bubble", a short spoken line or reaction) and impact words ("kind": "burst", e.g. CRASH, MINE, WHAT). "text" 1 to 4 words, "at": words in the narration when it pops, "near": which actor it belongs to. Use them in at least half the scenes: they are the punctuation of the jokes.
 - "fx": [{{"kind": "puff"|"sparkle"|"speed", "at": words, "near": actor}}]: a dust cloud for landings and crashes, a sparkle for magic or a lucky moment, speed streaks for a dash.
@@ -166,7 +168,7 @@ THE STAGE (this is all that can be drawn, so write for it)
 Reply with ONE JSON object, exactly this shape:
 {{"title": "Episode title (no series prefix)", "lesson": "...", "cause": "forgot|believed|no_options",
  "uncommon_word": {{"word": "...", "meaning": "..."}},  "cast": {{"key": {{"species": "eagle", "look": "orrin", "name": "Orrin"}}, "key2": {{"species": "squirrel", "hat": "bowler"}}}},
- "parts": [{{"thumbnail_scene": 2, "scenes": [{{"narration": "...", "world": "dawn", "stage": "cliff", "camera": "push_in", "music": "calm",
+ "parts": [{{"thumbnail_scene": 2, "scenes": [{{"narration": "...", "world": "dawn", "stage": "cliff", "camera": "push_in", "tone": "playful",
    "actors": [{{"who": "key", "at": "ground_mid", "mood": "smug", "action": "talk", "from": "words", "to": "words"}}],
    "popups": [{{"text": "MINE.", "kind": "burst", "at": "words", "near": "key"}}], "fx": []}}]}}],
  "youtube": {{"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"}},
@@ -276,6 +278,8 @@ BIBLE_STEP = """STEP 1: plan the story. Do NOT write scenes yet, and ignore any 
 Reply with ONE JSON object with exactly these keys:
 {"title": "Episode title (no series prefix)", "lesson": "...", "cause": "forgot|believed|no_options", "uncommon_word": {"word": "...", "meaning": "..."},
  "cast": {"key": {"species": "eagle", "look": "orrin", "name": "Orrin"}, "key2": {"species": "squirrel", "hat": "bowler"}},
+ "tone": "the story's overall tone in 3 to 8 words, e.g. 'mischievous comedy that turns tender at the end'",
+ "tone_arc": [EXACTLY %d strings, one per part: the tones of that part in order, from playful|joyful|tense|sad|eerie|tender|calm, e.g. "playful, tense, sad"],
  "planted_detail": "one odd, specific detail shown early (an object, a rule, a habit) that pays off in the last part",
  "twist": "the final reversal that changes how the viewer understands the first scene",
  "outline": [EXACTLY %d strings, one per part: what happens in that part (with who SAYS what, one quotable line each) and the line it stops on],
@@ -301,6 +305,10 @@ def _part_rules(k, n, word, uw_part, bible=None):
             extra = f" Plant this detail casually, as if it were nothing: {bible['planted_detail']}"
         if k == n:
             extra += f" Pay off the planted detail ({bible['planted_detail']}) and land the twist: {bible['twist']}"
+    if bible and bible.get("tone"):
+        arc = bible.get("tone_arc") or []
+        extra += (f" The story's tone: {bible['tone']}." + (f" This part's planned tones, in order: {arc[k - 1]}." if len(arc) >= k else "")
+                  + " Make each scene's tone unmistakable in its words, faces, world and \"tone\" field.")
     return f"{role} {w}{extra} Make it vivid: a specific surprising detail in every scene, and a short quoted line of speech in at least half of them."
 
 
@@ -325,6 +333,11 @@ def _bible_problems(b, n, used_words, lead=None):
     for k_ in ("planted_detail", "twist"):
         if not isinstance(b.get(k_), str) or len(b[k_].split()) < 4:
             bad.append(f"'{k_}' must be a specific sentence.")
+    if not isinstance(b.get("tone"), str) or len(b["tone"].split()) < 2:
+        bad.append("'tone' must say the story's overall tone in 3 to 8 words.")
+    arc = b.get("tone_arc")
+    if not (isinstance(arc, list) and len(arc) == n and all(isinstance(x, str) and x.strip() for x in arc)):
+        bad.append(f"'tone_arc' must be a list of exactly {n} strings, one per part (the tones of that part in order, e.g. \"playful, tense, sad\").")
     outline = b.get("outline")
     if not (isinstance(outline, list) and len(outline) == n and all(isinstance(x, str) and x.strip() for x in outline)):
         bad.append(f"'outline' must be a list of exactly {n} non-empty strings, one per part.")
@@ -375,6 +388,12 @@ def _sanitize(part, cast=None):
         for key, allowed, fix, default in (("world", SB.WORLDS, {}, "day"), ("stage", SB.STAGES, {}, "cliff"), ("camera", SB.CAMERAS, {}, "hold"), ("music", SB.MUSICS, {}, "calm")):
             if key in sc and sc[key] not in allowed:
                 sc[key] = default
+        sc["tone"] = SB.tone_of(sc)                   # synonyms ("funny", "scary") are mapped; an old "music" key still works
+        sc.pop("music", None)
+        if sc["tone"] in ("tense", "sad", "eerie") and sc.get("world") in ("day", "dawn", "sunset"):
+            sc["world"] = {"tense": "storm", "sad": "dusk", "eerie": "night"}[sc["tone"]]      # dark tones get a dark sky
+        elif sc["tone"] == "joyful" and sc.get("world") in ("storm", "night"):
+            sc["world"] = "day"
         if sc.get("silence_before") and not SB.phrase_ok(nar, sc["silence_before"]):
             sc.pop("silence_before")
         for a in sc.get("actors") or []:
@@ -416,6 +435,12 @@ def _part_problems(part, cast, k, word, uw_part):
     if isinstance(scenes, list) and not all(isinstance(x, dict) for x in scenes):
         return [f"part {k}, every scene must be a JSON object."]
     bad = SB._check_scenes(scenes, cast, f"part {k}, ")
+    if isinstance(scenes, list) and scenes and all(isinstance(x, dict) for x in scenes):
+        tones = [SB.tone_of(x) for x in scenes]
+        if len(set(tones)) < 2 or sum(t != "calm" for t in tones) < 3:
+            bad.append(f"part {k}: the tone must be clear and must change as the story turns: use at least two different tones, and at most two calm scenes (tones now: {', '.join(tones)}).")
+        if k == 1 and tones[0] == "calm":
+            bad.append("part 1, scene 1: the opening scene must show a clear tone (playful, tense, eerie ...), never calm.")
     text = " ".join(str(x.get("narration", "")) for x in (scenes if isinstance(scenes, list) else []))
     want, got = (1 if k == uw_part else 0), len(re.findall(rf"\b{re.escape(word)}\b", text, re.I))
     if got != want:
@@ -498,7 +523,7 @@ def _write_story(G, idea, series, parts, log):
              + (f"Do NOT reuse these lessons: {'; '.join(lessons[-12:])}. " if lessons else "")
              + (f"Do NOT reuse these uncommon words: {', '.join(words)}. " if words else "")
              + (f"Titles already used (be different): {'; '.join(titles[-15:])}. " if titles else "")
-             + G.performance_notes() + "\n\n" + BIBLE_STEP % n_parts)
+             + G.performance_notes() + "\n\n" + BIBLE_STEP % (n_parts, n_parts))
     msgs = [{"role": "system", "content": system}, {"role": "user", "content": brief}]
 
     bible, last_bad = None, []

@@ -59,8 +59,12 @@ def synth(scenes, starts, durs, total, nt, out_wav, seed=7, outro=4.5):
             mix[i:j] += sig[: j - i]
 
     pad_mix, pl_mix = np.zeros(N), np.zeros(N)
-    for ci, s0 in enumerate(np.arange(0, total, 3.6)):
-        add(pad_mix, pad([hz(m) for m in PROG[ci % 4]], 5.2), s0)
+    chord_i = 0
+    for sc, a0, D in zip(scenes, starts, durs):      # each scene's pad plays that scene's own chords (its tone)
+        prog = sc.get("music", {}).get("prog") or PROG
+        for s0 in np.arange(a0, a0 + D, 3.6):
+            add(pad_mix, pad([hz(m) for m in prog[chord_i % len(prog)]], 5.2), s0)
+            chord_i += 1
 
     pts_pad, pts_pl = [(0.0, 0.0)], [(0.0, 0.6)]
     silence, drone_pts = None, []
@@ -76,7 +80,8 @@ def synth(scenes, starts, durs, total, nt, out_wav, seed=7, outro=4.5):
         if pl:
             k, tm = 0, a0 + 0.3
             while tm < a1 - 0.5:
-                add(pl_mix, pluck(hz(PENT[pl["notes"][k % len(pl["notes"])]]), 2.0, pl.get("vol", 0.5)), tm)
+                sc_notes = pl.get("scale") or PENT
+                add(pl_mix, pluck(hz(sc_notes[pl["notes"][k % len(pl["notes"])] % len(sc_notes)]), pl.get("len", 2.0), pl.get("vol", 0.5)), tm)
                 tm += pl["step"]
                 k += 1
         if m.get("swell"):
