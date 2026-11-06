@@ -4,7 +4,7 @@ The model only writes a *storyboard* (see storyboard.py): narration plus who is 
 This module then
   1. checks it against the channel rules (words, narrator rules, one uncommon word, cast, timing phrases ...),
   2. compiles it to a puppet script and draws one test frame per scene so a broken script never reaches the render,
-  3. measures the real narration length (45 to 90 s), and sends any problem back to the model to fix (up to 4 tries),
+  3. measures the real narration length (45 to 60 s), and sends any problem back to the model to fix (up to 4 tries),
   4. saves scripts/NNN-title.json and adds it to queue-puppet.txt.
 Needs OPENAI_API_KEY (text only: a few cents per story). Model: OPENAI_TEXT_MODEL (default gpt-4o-mini; a stronger one writes better stories).
 """
@@ -21,9 +21,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
 QUEUE = ROOT / "queue-puppet.txt"
 DONE = ROOT / "done-puppet.txt"
-MIN_LEN, MAX_LEN = 45.0, 90.0
-AIM = "about 60 to 75 seconds"
-SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.57, 1.5, 3.5     # measured on the real narrator; used only when the voice model is absent
+MIN_LEN, MAX_LEN = 45.0, 60.0
+AIM = "aim for 50 to 57 seconds"
+SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.55, 1.5, 3.5     # measured on the real narrator; used only when the voice model is absent
 
 SERIES = {"Bird Banter": "eagles and squirrels: pride, hunger, rivalry, bad decisions on a cliff",
           "Funny Animals": "a rabbit, squirrels and eagles in absurd high-stakes situations"}
@@ -110,7 +110,8 @@ STORY IN PARTS: every story is told as {parts_text} consecutive videos (Part 1, 
 - Every part EXCEPT the last ends mid-story on a line that pulls straight into the next scene (a reveal, a worse problem, a question), told like any other line of the story: never "to be continued", never "in the next part", never an instruction.
 - Part 1 opens with the stakes; the last part holds the emotional resolution and the haunting last line. The one uncommon word appears exactly once in the WHOLE story. Characters, setting and objects stay consistent across parts.
 
-LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly (about 0.57 s per word) and each scene adds about 1.5 s of pauses, so write {n_lo} to {n_hi} scenes of 12 to 24 words each per part (roughly 110 to 160 words per part). Open on the hook at once. No filler scene.
+LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly and steadily (about 0.55 s per word, never rushed) and each scene adds about 1.5 s of pauses, so write {n_lo} to {n_hi} scenes of 9 to 14 words each per part (roughly 70 to 85 words per part). Open on the hook at once. No filler scene. Spend the few words on specific, surprising details and on what the characters say, never on scenery.
+- NARRATION MUST BE EASY TO SPEAK: a voice reads it aloud. Use only ordinary words that are easy to pronounce (the one uncommon word aside), simple names (one or two syllables: Pip, Orrin, Mabel, Biscuit), numbers written as words ("forty-two"), no digits, no abbreviations, no symbols, no all-capital words in the narration, no invented words or unusual spellings. Keep sentences short to medium (at most about 16 words); put a comma at each natural pause.
 
 THE STAGE (this is all that can be drawn, so write for it)
 - Cast: 1 to 4 characters. species "eagle" (cast "look": "orrin" = plain brown, "dad" = dark brown, "mom" = lighter brown with a pink scarf; give every eagle in the story a different look), "squirrel" (optional "hat": "bowler", optional "item": "popcorn"), "rabbit". Give each a short first name in "name". No other animals exist.
@@ -160,7 +161,11 @@ def critique(G, sb):
 def _measure(script):
     """Narration + pauses length in seconds. Real voice when the model is cached, otherwise a calibrated estimate."""
     from . import render, tts
-    ok_model = all((tts.CACHE / f).exists() for f in tts.FILES)
+    try:
+        tts.ensure_models()                     # always measure with the real voice (downloads the model once if it is not cached)
+        ok_model = True
+    except Exception:
+        ok_model = False
     if ok_model:
         scenes = json.loads(json.dumps(script["scenes"]))
         tmp = Path(tempfile.mkdtemp())
@@ -222,7 +227,7 @@ def problems(sb, number):
         total, how = _measure(sc)
         if not MIN_LEN <= total <= MAX_LEN:
             words = sum(len(re.findall(r"[A-Za-z0-9']+", x["narration"])) for x in sc["scenes"])
-            delta = int((68.0 - total) / (SEC_PER_WORD + 0.05))
+            delta = int((54.0 - total) / SEC_PER_WORD)
             bad.append(f"part {pi} would run {total:.0f} s ({how}); every part must run {MIN_LEN:.0f} to {MAX_LEN:.0f} s ({AIM}). "
                        f"It has {words} narration words in {len(sc['scenes'])} scenes. {'Add' if delta > 0 else 'Cut'} about {abs(delta)} words (or scenes) in part {pi}.")
     return bad, (None if bad else scripts)
@@ -236,7 +241,7 @@ Reply with ONE JSON object with exactly these keys:
  "youtube": {"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"},
  "tiktok": {"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}"""
 
-PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "scenes": [ 6 to 9 scenes, each in exactly the scene format given in the instructions ]}. '
+PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "scenes": [ 6 to 8 scenes, each in exactly the scene format given in the instructions ]}. '
               "Use the cast keys exactly as planned. The timing phrases ('from', 'to', 'enter', 'exit', 'at', 'silence_before') must be copied EXACTLY from the NARRATOR's words in that same scene, "
               "never from what a character says in a speech bubble; if you are not sure, leave them out. 'mood' must be one of neutral, sleepy, happy, angry, scared, sad, shocked, smug, dizzy; "
               "'action' one of stand, talk, hop, flap.")
@@ -404,7 +409,7 @@ def write_story(idea=None, series=None, parts=None, log=print):
     n_parts = parts or choose_parts(log)
     cause = random.choice(["forgot", "believed", "no_options"])
     lessons, words = G.used_lessons(), G.used_words()
-    system = system_prompt(6, 9, n_parts)
+    system = system_prompt(6, 8, n_parts)
     brief = (f"Write the next story for the series \"{series}\" ({SERIES[series]}), told in exactly {n_parts} parts. "
              + (f"Story idea to use: {idea}. " if idea else "Invent a fresh, specific premise. ")
              + f"Use cause \"{cause}\" for the protagonist's key choice. "
