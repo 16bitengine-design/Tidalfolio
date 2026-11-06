@@ -31,6 +31,7 @@ A puppet script is JSON with `"engine": "puppet"`, plus the usual `slug`, `title
   "camera": {"x": 470, "y": 1010, "z": {"kf": [[0, 1.0], [7, 1.1]]}},
   "things": [ ...drawn in order... ],
   "popups": [ {"text": "Z", "at": 0.6, "x": 470, "y": 700, "dur": 2.0, "size": 58} ],
+  "tone":   "playful|joyful|tense|sad|eerie|tender|calm",
   "music":  {"pad": 0.5, "pluck": {"step": 1.6, "notes": [0,3,2,4], "vol": 0.5}, "silence_before": "No mother"},
   "freeze": "@No mother-0.5",             optional: everything stops here (the camera keeps moving)
   "end_card": true }                     last scene of the video: the tidalfolio title card
@@ -63,6 +64,7 @@ Look at `scripts/005-the-eagle-who-waited-ink-part-1.json` and `-part-2.json` fo
 - Stories are limited to what the engine can draw: eagles, squirrels and a rabbit on a clifftop/tree stage (see `puppet/storyboard.py`). `generate_script.py` still writes scripts for the image pipeline only.
 - The voice is clear and warm but not a paid voice. Change `voice.kokoro` to compare. Kokoro is Apache-2.0; check its current licence before relying on it commercially.
 - Only the fusion-style music theme exists here so far (no nursery theme).
+- **Tone.** Every scene has a `tone` (playful, joyful, tense, sad, eerie, tender, calm). It sets, together: the colour grade (`engine.TONE_GRADE`: saturation, light, tint, vignette, mist, glow, blended over 0.8 s from the previous scene), a hand-held tremble (tense, eerie), the default camera (tense pushes in, sad pulls back), the music (own chords, note scale and pattern per tone in `storyboard.MUSIC`) and a small pitch and volume cue on the narrator at constant pace (`render.VOICE_TONE`). Dark tones are forced onto a dark sky, joyful onto a bright one. The writer plans a story tone and a tone arc per part, and each part must change tone at least twice. Old scripts without `tone` render as calm (unchanged).
 - Linux or macOS with ffmpeg (the frame workers use `fork`).
 
 ## Looks

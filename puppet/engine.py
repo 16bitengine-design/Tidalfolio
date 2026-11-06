@@ -675,6 +675,63 @@ def finish(img):
     return im
 
 
+# ---------- tone grading: colour, light and mist follow the scene's tone ----------
+TONE_GRADE = {   # sat, bright, contrast, tint (r, g, b), vignette, mist, glow
+    "calm":    dict(sat=1.00, bright=1.00, contrast=1.00, tint=(1.00, 1.00, 1.00), vig=0.10, mist=0.0, glow=0.0),
+    "playful": dict(sat=1.12, bright=1.04, contrast=1.05, tint=(1.03, 1.00, 0.96), vig=0.06, mist=0.0, glow=0.06),
+    "joyful":  dict(sat=1.22, bright=1.09, contrast=1.06, tint=(1.07, 1.02, 0.88), vig=0.08, mist=0.0, glow=0.16),
+    "tense":   dict(sat=0.72, bright=0.84, contrast=1.24, tint=(0.90, 0.94, 1.06), vig=0.62, mist=0.0, glow=0.0),
+    "sad":     dict(sat=0.46, bright=0.90, contrast=0.94, tint=(0.86, 0.95, 1.12), vig=0.40, mist=0.06, glow=0.0),
+    "eerie":   dict(sat=0.62, bright=0.80, contrast=1.12, tint=(0.78, 1.05, 1.04), vig=0.52, mist=0.26, glow=0.0),
+    "tender":  dict(sat=0.96, bright=1.07, contrast=0.92, tint=(1.09, 1.00, 0.90), vig=0.26, mist=0.0, glow=0.30),
+}
+TONE_SHAKE = {"tense": 4.0, "eerie": 2.0}      # px of hand-held tremble on the 1080-wide frame
+_VIG = {}
+
+
+def _vignette(w, h, k):
+    key = (w, h, round(k, 2))
+    if key not in _VIG:
+        yy, xx = np.mgrid[0:h, 0:w].astype("float32")
+        r = np.sqrt(((xx - w / 2) / (w / 2)) ** 2 + ((yy - h / 2) / (h / 2)) ** 2) / 1.414
+        _VIG[key] = (1 - k * np.clip((r - 0.30) / 0.70, 0, 1) ** 1.6)[:, :, None].astype("float32")
+    return _VIG[key]
+
+
+def grade_params(prev, tone, k):
+    """blend from the previous scene's grade to this scene's over the first moments (k from 0 to 1)"""
+    a, b = TONE_GRADE.get(prev, TONE_GRADE["calm"]), TONE_GRADE.get(tone, TONE_GRADE["calm"])
+    k = ease(max(0.0, min(1.0, k)))
+    out = {n: a[n] + (b[n] - a[n]) * k for n in a if n != "tint"}
+    out["tint"] = tuple(a["tint"][i] + (b["tint"][i] - a["tint"][i]) * k for i in range(3))
+    return out
+
+
+def tone_grade(img, p, t=0.0, shake=0.0):
+    """img: PIL RGB. Colour, light, mist and a hand-held tremble that make the scene's tone readable at a glance."""
+    if shake:
+        from PIL import ImageChops
+        img = ImageChops.offset(img, int(shake * math.sin(t * 19.0) + shake * 0.6 * math.sin(t * 7.3 + 1)), int(shake * math.sin(t * 15.0 + 2)))
+    if (abs(p["sat"] - 1) < 0.01 and abs(p["bright"] - 1) < 0.01 and abs(p["contrast"] - 1) < 0.01 and p["vig"] < 0.11
+            and p["mist"] < 0.01 and p["glow"] < 0.01 and all(abs(c - 1) < 0.01 for c in p["tint"])):
+        return img
+    arr = np.asarray(img, dtype="float32") / 255.0
+    h, w = arr.shape[:2]
+    gray = (arr * np.array([0.30, 0.59, 0.11], dtype="float32")).sum(2, keepdims=True)
+    arr = gray + (arr - gray) * p["sat"]
+    arr = (arr - 0.5) * p["contrast"] + 0.5
+    arr = arr * p["bright"] * np.array(p["tint"], dtype="float32")
+    if p["mist"] > 0.005:
+        ramp = np.clip((np.arange(h, dtype="float32") / h - 0.40) / 0.60, 0, 1)[:, None, None]
+        arr = arr * (1 - p["mist"] * ramp) + np.array([0.80, 0.90, 0.92], dtype="float32") * p["mist"] * ramp
+    if p["glow"] > 0.005:
+        from PIL import ImageFilter
+        blur = np.asarray(img.filter(ImageFilter.GaussianBlur(max(6, w // 60))), dtype="float32") / 255.0
+        arr = 1 - (1 - arr) * (1 - blur * p["glow"])
+    arr = arr * _vignette(w, h, p["vig"])
+    return Image.fromarray((np.clip(arr, 0, 1) * 255).astype("uint8"))
+
+
 # ---------- painted parallax world ----------
 BX0, BY0, BS = -500, -300, 0.8   # baked world rect origin and scale
 BW, BH = int(2200 * BS), int(2600 * BS)

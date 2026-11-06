@@ -16,7 +16,7 @@ Storyboard JSON:
            "moss":  {"species": "rabbit", "coat": "grey|white|brown"}},
   "scenes": [ {
      "narration": "...", "world": "dawn|day|dusk|storm|night|sunset", "stage": "cliff|nest|tree",
-     "camera": "hold|push_in|pull_back|pan_right|pan_left", "music": "calm|tense|sad|joyful", "silence_before": "words",
+     "camera": "hold|push_in|pull_back|pan_right|pan_left", "tone": "playful|tense|sad|joyful|eerie|tender|calm", "silence_before": "words",
      "actors": [ {"who": "orrin", "at": "ground_mid", "face": "left|right", "mood": "...", "action": "stand|talk|hop|flap",
                   "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish"} ],
      "popups": [ {"text": "CRASH", "kind": "burst|bubble", "at": "words", "near": "orrin"} ],
@@ -30,7 +30,25 @@ LOOKS = ("orrin", "dad", "mom")
 WORLDS = ("dawn", "day", "dusk", "storm", "night", "sunset")
 STAGES = ("cliff", "nest", "tree")
 CAMERAS = ("hold", "push_in", "pull_back", "pan_right", "pan_left")
-MUSICS = ("calm", "tense", "sad", "joyful")
+MUSICS = ("calm", "tense", "sad", "joyful")          # old key, still accepted
+TONES = ("playful", "tense", "sad", "joyful", "eerie", "tender", "calm")
+TONE_ALIAS = {"funny": "playful", "silly": "playful", "comic": "playful", "comedic": "playful", "mischievous": "playful", "cheeky": "playful",
+              "scary": "eerie", "creepy": "eerie", "spooky": "eerie", "mysterious": "eerie", "suspenseful": "eerie", "ominous": "eerie",
+              "angry": "tense", "heated": "tense", "urgent": "tense", "dramatic": "tense", "anxious": "tense", "nervous": "tense", "panic": "tense",
+              "bittersweet": "sad", "gloomy": "sad", "melancholy": "sad", "sorrowful": "sad", "lonely": "sad", "wistful": "sad",
+              "warm": "tender", "loving": "tender", "gentle": "tender", "heartwarming": "tender", "sweet": "tender", "hopeful": "tender",
+              "happy": "joyful", "triumphant": "joyful", "cheerful": "joyful", "celebratory": "joyful", "excited": "joyful",
+              "neutral": "calm", "peaceful": "calm", "quiet": "calm", "relaxed": "calm"}
+
+
+def norm_tone(v):
+    v = str(v or "").strip().lower()
+    return v if v in TONES else TONE_ALIAS.get(v, "")
+
+
+def tone_of(sc):
+    """a scene's tone: its own "tone", else derived from the old "music" key"""
+    return norm_tone(sc.get("tone")) or {"calm": "calm", "tense": "tense", "sad": "sad", "joyful": "joyful"}.get(sc.get("music", "calm"), "calm")
 MOODS = ("neutral", "sleepy", "happy", "angry", "scared", "sad", "shocked", "smug", "dizzy")
 ACTIONS = ("stand", "talk", "hop", "flap")
 SLOTS = {   # name: (world x, world y or None = standing on the cliff)
@@ -55,12 +73,23 @@ EAGLE_MOOD = {
     "angry": ("open", [-8, 10], 0.0), "scared": ("wide", [-4, -4], 0.0), "sad": ("open", [10, -6], 0.55),
     "shocked": ("wide", [-8, -8], 0.0), "smug": ("half", [4, 6], 0.0), "dizzy": ("spiral", [0, 0], 0.0),
 }
-MUSIC = {
+MUSIC = {   # per tone: chords (midi), pluck scale + pattern, pad level; each tone sounds different at a glance
     "calm": {"pad": 0.45, "pluck": {"step": 1.6, "notes": [0, 3, 2, 4], "vol": 0.5}},
-    "tense": {"pad": 0.7, "pluck": {"step": 0.9, "notes": [0, 1, 0, 2], "vol": 0.6}},
-    "sad": {"pad": 0.5},
-    "joyful": {"pad": 0.8, "pluck": {"step": 0.8, "notes": [0, 2, 3, 4, 5, 6, 5, 4], "vol": 0.9}},
+    "playful": {"pad": 0.55, "prog": [[48, 55, 60, 64], [53, 57, 60, 65], [55, 59, 62, 67], [48, 55, 60, 64]],
+                "pluck": {"step": 0.45, "notes": [0, 2, 1, 3, 2, 4, 3, 1], "vol": 0.85, "scale": [72, 74, 76, 79, 81, 84, 86], "len": 0.9}},
+    "joyful": {"pad": 0.85, "prog": [[48, 55, 60, 64], [45, 52, 57, 60], [53, 57, 60, 65], [55, 59, 62, 67]],
+               "pluck": {"step": 0.5, "notes": [0, 2, 3, 4, 5, 6, 5, 4], "vol": 1.0, "scale": [72, 74, 76, 79, 81, 84, 88], "len": 1.2}},
+    "tense": {"pad": 0.75, "prog": [[38, 45, 50, 53], [38, 45, 50, 52], [37, 44, 49, 52], [38, 45, 50, 53]], "drone": {"peak": 0.34},
+              "pluck": {"step": 0.42, "notes": [0, 0, 1, 0, 0, 1, 0, 2], "vol": 0.8, "scale": [45, 46, 48, 51, 52], "len": 0.7}},
+    "sad": {"pad": 0.6, "prog": [[45, 52, 57, 60], [41, 48, 53, 57], [43, 50, 55, 58], [45, 52, 57, 60]],
+            "pluck": {"step": 2.3, "notes": [4, 3, 2, 1, 0, 0], "vol": 0.55, "scale": [57, 60, 62, 64, 67, 69], "len": 3.0}},
+    "eerie": {"pad": 0.6, "prog": [[40, 46, 52, 58], [41, 47, 53, 59], [40, 46, 52, 58], [39, 46, 51, 58]], "drone": {"peak": 0.3},
+              "pluck": {"step": 2.0, "notes": [0, 5, 2, 6, 1], "vol": 0.55, "scale": [76, 77, 82, 83, 88, 89, 94], "len": 2.6}},
+    "tender": {"pad": 0.55, "prog": [[48, 55, 60, 64], [45, 52, 57, 64], [53, 57, 60, 65], [48, 55, 60, 67]],
+               "pluck": {"step": 1.9, "notes": [0, 2, 4, 3, 1, 2], "vol": 0.6, "scale": [67, 69, 72, 74, 76, 79, 81], "len": 3.0}},
 }
+# the camera when the writer gives none: tension leans in, sadness drifts away
+TONE_CAMERA = {"tense": "push_in", "sad": "pull_back", "eerie": "push_in", "joyful": "pan_right"}
 
 
 def _w(text):
@@ -112,6 +141,8 @@ def _check_scenes(scenes, cast, pre=""):
             bad.append(f"{where}: stage must be one of {STAGES}.")
         if sc.get("camera", "hold") not in CAMERAS:
             bad.append(f"{where}: camera must be one of {CAMERAS}.")
+        if sc.get("tone") and not norm_tone(sc["tone"]):
+            bad.append(f"{where}: tone must be one of {TONES}.")
         if sc.get("music", "calm") not in MUSICS:
             bad.append(f"{where}: music must be one of {MUSICS}.")
         if sc.get("silence_before") and not phrase_ok(nar, sc["silence_before"]):
@@ -397,11 +428,14 @@ def _compile_scenes(scene_list, cast):
             t = f"@{fx['at']}"
             things.append({"type": fx["kind"], "x": wx - (60 if fx["kind"] == "puff" else 0), "y": wy + (40 if fx["kind"] == "puff" else -120),
                            "scale": 1.1, "show": [t, f"@{fx['at']}+1.3"], "dx": -1, "n": 6})
-        music = dict(MUSIC[sc.get("music", "calm")])
+        tone = tone_of(sc)
+        music = dict(MUSIC[tone])
+        if music.get("drone"):
+            music["drone"] = {"from": 0.5, **music["drone"]}
         if sc.get("silence_before"):
             music["silence_before"] = sc["silence_before"]
-        scene = {"narration": sc["narration"].strip(), "world": "toon_" + sc["world"], "camera": _camera(sc.get("camera", "hold"), stage),
-                 "things": things, "popups": pops, "music": music}
+        scene = {"narration": sc["narration"].strip(), "world": "toon_" + sc["world"], "camera": _camera(sc.get("camera") if sc.get("camera") not in (None, "hold") else TONE_CAMERA.get(tone, "hold"), stage),
+                 "things": things, "popups": pops, "music": music, "tone": tone}
         if sc.get("silence_before"):
             scene["freeze"] = f"@{sc['silence_before']}-0.3"
         if si == n_scenes - 1:

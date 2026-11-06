@@ -95,6 +95,10 @@ def frame(gt, with_text=True):
     img = Image.new("RGB", (E.W, E.H), (0, 0, 0))
     dsl.draw_scene(img, sc, u, D, ctx)
     img = E.finish(img)                            # paper grain + vignette
+    tone = sc.get("tone", "calm")                  # colour, light, mist and tremble that carry the scene's tone (captions stay clean)
+    i = scenes.index(sc)
+    prev = scenes[i - 1].get("tone", "calm") if i else tone
+    img = E.tone_grade(img, E.grade_params(prev, tone, u / 0.8), gt, E.TONE_SHAKE.get(tone, 0.0))
     if with_text and u < LEAD + sc["_au"] + 0.3:
         E.captions(img, sc["narration"], u, LEAD + sc["_au"], lead=LEAD, tail=0.0)
     img = img.resize((OUT_W, OUT_H), Image.LANCZOS)
@@ -123,13 +127,25 @@ def render_silent(total, out, workers):
         sys.exit("ffmpeg failed while encoding the frames")
 
 
+# the narrator's colour per tone: (semitones, volume). Pitch moves with the tempo held constant, so the pace never changes.
+VOICE_TONE = {"sad": (-0.7, 0.88), "tense": (-0.4, 1.0), "eerie": (-0.8, 0.9), "joyful": (0.5, 1.08), "playful": (0.3, 1.04), "tender": (-0.2, 0.92)}
+
+
+def _voice_filter(tone):
+    st, vol = VOICE_TONE.get(tone, (0.0, 1.0))
+    if not st:
+        return f"volume={1.6 * vol:.2f}"
+    r = 2 ** (st / 12)
+    return f"asetrate={44100 * r:.1f},aresample=44100,atempo={1 / r:.5f},volume={1.6 * vol:.2f}"
+
+
 def mux(silent, music_wav, scenes, out, total):
     inputs, filt, labels = ["-i", str(silent), "-i", str(music_wav)], [], []
-    tracks = [(sc["_wav"], sc["_start"] + LEAD) for sc in scenes]
-    for n, (wav, at) in enumerate(tracks):
+    tracks = [(sc["_wav"], sc["_start"] + LEAD, sc.get("tone", "calm")) for sc in scenes]
+    for n, (wav, at, tone) in enumerate(tracks):
         inputs += ["-i", str(wav)]
         ms = int(at * 1000)
-        filt.append(f"[{n + 2}:a]aresample=44100,adelay={ms}|{ms},volume=1.6[v{n}]")
+        filt.append(f"[{n + 2}:a]aresample=44100,{_voice_filter(tone)},adelay={ms}|{ms}[v{n}]")
         labels.append(f"[v{n}]")
     filt += ["".join(labels) + f"amix=inputs={len(labels)}:normalize=0:duration=longest[voice]",
              "[voice]apad=pad_dur=120,asplit=2[vk][vm]",
