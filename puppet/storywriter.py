@@ -237,7 +237,9 @@ Reply with ONE JSON object with exactly these keys:
  "tiktok": {"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}"""
 
 PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "scenes": [ 6 to 9 scenes, each in exactly the scene format given in the instructions ]}. '
-              'Use the cast keys exactly as planned.')
+              "Use the cast keys exactly as planned. The timing phrases ('from', 'to', 'enter', 'exit', 'at', 'silence_before') must be copied EXACTLY from the NARRATOR's words in that same scene, "
+              "never from what a character says in a speech bubble; if you are not sure, leave them out. 'mood' must be one of neutral, sleepy, happy, angry, scared, sad, shocked, smug, dizzy; "
+              "'action' one of stand, talk, hop, flap.")
 
 
 def _part_rules(k, n, word, uw_part):
@@ -286,11 +288,65 @@ def _bible_problems(b, n, used_words):
     return bad
 
 
+MOOD_FIX = {"excited": "happy", "joyful": "happy", "cheerful": "happy", "proud": "smug", "sly": "smug", "sneaky": "smug", "cunning": "smug",
+            "greedy": "smug", "confident": "smug", "mad": "angry", "furious": "angry", "determined": "angry", "annoyed": "angry", "jealous": "angry",
+            "worried": "scared", "afraid": "scared", "nervous": "scared", "anxious": "scared", "surprised": "shocked", "amazed": "shocked",
+            "confused": "dizzy", "tired": "sleepy", "bored": "sleepy", "worried_sad": "sad", "disappointed": "sad", "curious": "neutral"}
+ACTION_FIX = {"fly": "flap", "flying": "flap", "speak": "talk", "speaking": "talk", "shout": "talk", "jump": "hop", "run": "hop", "walk": "hop", "sit": "stand"}
+
+
+def _sanitize(part):
+    """Repair small slips in a part instead of throwing the whole part away: timing phrases that are not words of the narration
+    (the model often puts a character's speech there), moods and actions outside the list, over-long or misplaced pop-ups."""
+    from . import storyboard as SB
+    scenes = part.get("scenes") if isinstance(part, dict) else None
+    if not isinstance(scenes, list):
+        return part
+    for sc in scenes:
+        if not isinstance(sc, dict):
+            continue
+        nar = sc.get("narration") if isinstance(sc.get("narration"), str) else ""
+        for key, allowed, fix, default in (("world", SB.WORLDS, {}, "day"), ("stage", SB.STAGES, {}, "cliff"), ("camera", SB.CAMERAS, {}, "hold"), ("music", SB.MUSICS, {}, "calm")):
+            if key in sc and sc[key] not in allowed:
+                sc[key] = default
+        if sc.get("silence_before") and not SB.phrase_ok(nar, sc["silence_before"]):
+            sc.pop("silence_before")
+        for a in sc.get("actors") or []:
+            if not isinstance(a, dict):
+                continue
+            if a.get("mood", "neutral") not in SB.MOODS:
+                a["mood"] = MOOD_FIX.get(str(a.get("mood")).lower(), "neutral")
+            if a.get("action", "stand") not in SB.ACTIONS:
+                a["action"] = ACTION_FIX.get(str(a.get("action")).lower(), "stand")
+            if any(a.get(k) and not SB.phrase_ok(nar, a[k]) for k in ("from", "to")):
+                a.pop("from", None)
+                a.pop("to", None)
+            for k in ("enter", "exit"):
+                if a.get(k) and not SB.phrase_ok(nar, a[k]):
+                    a.pop(k)
+        words = nar.split()
+        for pu in sc.get("popups") or []:
+            if not isinstance(pu, dict):
+                continue
+            if pu.get("kind", "bubble") not in ("bubble", "burst"):
+                pu["kind"] = "bubble"
+            if isinstance(pu.get("text"), str) and SB._w(pu["text"]) > SB.MAX_WORDS_BUBBLE:
+                pu["text"] = " ".join(pu["text"].split()[:SB.MAX_WORDS_BUBBLE])
+            if not SB.phrase_ok(nar, pu.get("at")) and len(words) >= 2:
+                pu["at"] = " ".join(words[:2])
+            if pu.get("near") and pu["near"] not in [a.get("who") for a in sc.get("actors") or [] if isinstance(a, dict)]:
+                pu.pop("near")
+        sc["fx"] = [f for f in (sc.get("fx") or []) if isinstance(f, dict) and f.get("kind") in ("puff", "sparkle", "speed") and SB.phrase_ok(nar, f.get("at"))]
+    return part
+
+
 def _part_problems(part, cast, k, word, uw_part):
     from . import storyboard as SB
     if not isinstance(part, dict):
         return [f"part {k}: the reply must be one JSON object with 'scenes'."]
     scenes = part.get("scenes")
+    if isinstance(scenes, list) and all(isinstance(x, dict) for x in scenes):
+        _sanitize(part)
     if isinstance(scenes, list) and not all(isinstance(x, dict) for x in scenes):
         return [f"part {k}, every scene must be a JSON object."]
     bad = SB._check_scenes(scenes, cast, f"part {k}, ")
