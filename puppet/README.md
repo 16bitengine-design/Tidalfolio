@@ -77,3 +77,13 @@ when (tied to words in the narration). `puppet/storyboard.py` checks it against 
 valid cast and cues, popups of 4 words or fewer), compiles it to a script, draws a test frame of every scene and measures the narration with the real voice
 (45 to 60 s for every part, measured with the real voice). Any problem goes back to the model (up to 4 tries). A story is 2 to 4 parts (the writer picks); all parts are saved to `scripts/` and queued in order, so Part 2 follows Part 1 on the next daily run. Every part but the last ends on a line that pulls into the next part. Each story gets a different lead animal from the story before (eagle, squirrel, cat, fox or rabbit; the cat, fox and rabbit are drawn in `engine.critter`).
 An editor pass (a second AI call scoring the story on the master-brief questions; set `STORY_CRITIC=0` to skip it) can send a weak story back for a rewrite. The daily workflow runs this step when the queue is empty (one story = 2 to 4 days of videos), so no one has to write anything. `python puppet_story.py --storyboard file.json` checks and queues a storyboard you wrote yourself (no AI, no key).
+
+
+## People instead of animals
+
+New stories are about people, identified only by **role, gender and age, never by name** (`puppet/people.py`). A cast entry is
+`{"role": "baker", "gender": "female", "age": "adult", "skin": "tan", "hair": "black", "extras": ["glasses"]}`; roles come with their own outfit,
+hat and tool (baker, chef, doctor, teacher, mechanic, farmer, police officer, judge, boss, grandmother, boy ... see `people.ROLES`).
+The writer refuses names in the narration (`storyboard.personal_names`) and picks a lead role and gender that differ from the last two stories.
+Settings (`puppet/towns.py`): street, park, kitchen, shop, office, classroom, home, each in every time of day. People stand in `ground_left|mid|right`
+(max 3 per scene) and the camera starts zoomed in (`ZOOM_H`). Older animal scripts still render.

@@ -17,6 +17,9 @@ import sys
 import tempfile
 from pathlib import Path
 
+from . import people as PE
+from .storyboard import ITEMS as SB_ITEMS
+
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
 QUEUE = ROOT / "queue-puppet.txt"
@@ -25,46 +28,54 @@ MIN_LEN, MAX_LEN = 45.0, 60.0
 AIM = "aim for 50 to 57 seconds"
 SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.55, 1.5, 3.5     # measured on the real narrator; used only when the voice model is absent
 
-SERIES = {"Bird Banter": "eagles (with squirrels, cats, foxes or rabbits around them): pride, hunger, rivalry, bad decisions on a cliff",
-          "Funny Animals": "cats, foxes, rabbits and squirrels in absurd high-stakes situations"}
-PERSONA = {"eagle": "proud, dramatic, easily offended", "squirrel": "a hoarder and a gossip, always scheming", "cat": "aloof, vain, secretly soft-hearted",
-           "fox": "cunning, charming, never quite trusted", "rabbit": "anxious, earnest, braver than they think"}
+SERIES = {"Funny People": "ordinary people in extraordinary little crises: a baker, a boss, a mechanic, a grandmother, a teacher ... pride, rivalry, secrets, misunderstandings"}
+LOCKED_GENDER = {"mother": "female", "girl": "female", "grandmother": "female", "father": "male", "boy": "male", "grandfather": "male"}
+PERSONA = {"baker": "proud and territorial", "chef": "dramatic and easily offended", "waiter": "polite on top, boiling underneath", "doctor": "calm to the point of being unsettling",
+           "nurse": "kind but nobody's fool", "teacher": "patient until she is not", "student": "anxious and over-eager", "mechanic": "gruff but soft-hearted",
+           "farmer": "stubborn and dry", "police officer": "by the book and secretly a romantic", "firefighter": "heroic and a little vain", "judge": "solemn and petty",
+           "mail carrier": "a born gossip", "taxi driver": "a philosopher with opinions", "shopkeeper": "suspicious of everyone", "barber": "talks too much, knows everything",
+           "painter": "dreamy and dramatic", "scientist": "brilliant and absent-minded", "librarian": "quiet and fierce", "gardener": "gentle, with a grudge",
+           "builder": "confident and wrong", "fisherman": "a teller of tall tales", "tourist": "lost and loudly cheerful", "boss": "pompous and secretly insecure",
+           "office worker": "tired and cunning", "cashier": "has seen everything", "grandmother": "sweet and ruthless", "grandfather": "slow, wise and sly",
+           "mother": "calm in public, scheming in private", "father": "proud of his terrible jokes", "boy": "curious and trouble-prone", "girl": "bossy and brilliant",
+           "neighbour": "nosy and generous", "stranger": "mysterious and polite"}
 
 
-def _species_of(path):
+def _lead_of(path):
     try:
         d = json.loads(path.read_text())
     except ValueError:
-        return None, set()
+        return None, None
     sp = d.get("series_part")
-    if not sp:
-        return None, set()
-    if d.get("cast_species"):
-        return sp["story"], set(d["cast_species"])
-    return sp["story"], {t.get("type") for sc in d.get("scenes", []) for t in sc.get("things", []) if isinstance(t, dict)} & {"eagle", "squirrel", "rabbit", "cat", "fox"}
+    lead = d.get("cast_lead") or {}
+    if not sp or not lead.get("role"):
+        return None, None            # older animal stories have no human lead
+    return sp["story"], (lead["role"], lead.get("gender"))
 
 
-def recent_story_species(k=2):
-    """The set of species used by each of the last k stories, newest first (older scripts are read from their drawn things)."""
+def recent_leads(k=2):
+    """The (role, gender) of the lead of each of the last k stories, newest first."""
     seen, out = [], []
     for p in sorted(SCRIPTS.glob("*.json"), reverse=True):
-        story, sps = _species_of(p)
+        story, lead = _lead_of(p)
         if story and story not in seen:
             seen.append(story)
-            out.append(sps)
+            out.append(lead)
             if len(out) == k:
                 break
     return out
 
 
 def choose_lead():
-    """Every story gets a different lead animal from the story before it (and, when possible, from the one before that)."""
-    from . import storyboard as SB
-    recent = recent_story_species(2)
-    last = recent[0] if recent else set()
-    pool = [x for x in SB.SPECIES if x not in last] or list(SB.SPECIES)
-    fresh = [x for x in pool if not (len(recent) > 1 and x in recent[1])] or pool
-    return random.choice(fresh), sorted(last)
+    """Every story gets a different lead role from the story before it (and, when possible, from the one before that), and the gender alternates."""
+    recent = recent_leads(2)
+    last_roles = [r[0] for r in recent]
+    gender = random.choice(["male", "female"])
+    if recent and recent[0][1] in ("male", "female"):
+        gender = "female" if recent[0][1] == "male" else "male"
+    pool = [r for r in PE.ROLES_LIST if r != "stranger" and LOCKED_GENDER.get(r, gender) == gender]
+    fresh = [r for r in pool if r not in last_roles] or pool
+    return random.choice(fresh), gender, last_roles
 
 
 def _lines(p):
@@ -119,24 +130,25 @@ def unrendered():
 
 def system_prompt(n_lo, n_hi, n_parts=3):
     parts_text = f"{n_parts}"
-    return f"""You write short animated fable videos for "tidalfolio", a comedy channel about animals. A video is a handful of scenes drawn by code
+    return f"""You write short animated fable videos for "tidalfolio", a comedy channel about everyday people. A video is a handful of scenes drawn by code
 (bold cartoon style) and told by ONE narrator: a middle-aged man with a warm baritone, a gifted storyteller telling a tale he knows by heart.
 You do not write drawing code. You write a STORYBOARD (JSON) and the system draws it.
 
 CHANNEL RULES (all mandatory)
+- NOBODY HAS A NAME. People are never given personal names (no Pip, no Mabel, no Tom, no Dr. Smith): the narrator and the characters refer to them only by ROLE, GENDER or PROFESSION ("the baker", "the old woman", "her boss", "the boy", "the tall mechanic", "the one with the umbrella"). In speech a person is addressed as "you", "madam", "boss", "officer", "doctor" or "sir". The only capital letters inside a sentence are "I" and the first word of quoted speech. If two people share a role, tell them apart by what they wear, hold or do.
 - Audience: all ages INCLUDING adults. Wit is dry and deadpan, never babyish or cartoonish. No baby talk, no puns on every line.
 - THE NARRATOR TELLS THE STORY FROM OUTSIDE IT. He never mentions himself: no "I", "me", "my", "we", "our" in his own words (characters may say them inside quotation marks). Third person, mostly past tense. He never tells the listener what to do or think, gives no advice, no moral, no "remember that". Like a grandfather retelling Tom and Jerry to his grandson, or a teacher telling a war story to a class: vivid, specific, dramatic, never boring.
 - STORYTELLING ETIQUETTE: vary pace. Slower for suspense and the emotional beat, brisker for action. A long rolling sentence of build-up, then a short one that lands. Put the key word LAST in a sentence. Use silence before a twist. Rule of three where the third breaks the pattern. At most one rhetorical question. Never explain a joke. Short sentences are spoken slowly and dramatically, so use them for the punchlines.
 - COMMON WORDS ONLY: plain everyday English an ordinary 12-year-old knows. EXCEPT exactly ONE uncommon word per story (a real useful word most viewers don't know, e.g. "indolent", "audacious", "meticulous", "reluctant", "frugal"). Use it exactly once, inside a normal sentence, and then simply carry on with the story. NEVER define it, translate it, repeat it, follow it with a synonym, point at it ("a fancy word for", "which means", "that is another word for") or hint that it is special: the viewer will look it up in their own time. The story's events may show what it means, but the narrator never does. Nothing about it is shown on screen. Put it in "uncommon_word": {{"word", "meaning"}} (the meaning is for our records only). Never a name or slang.
 - No sound effects exist: never write onomatopoeia like "crash!" in the narration (a visual pop-up word like CRASH is fine). Audio is voice plus music only.
-- EVERY AGE: the channel is for everyone from young children to grandparents. No profanity or rude words (a bubble of symbols like #@%! is fine), no gore, no weapons, no real violence or death on screen or in the narration, no sexual or romantic content beyond a friendly hug, nothing frightening beyond mild, brief peril, no cruelty or bullying played as a joke, no drugs or alcohol, no politics or religion. Real feelings are welcome (loss, jealousy, regret, forgiveness) as long as they are told gently. Animals are never harmed: slapstick only.
-- STORY ENGINE (a funny video with no story is forgotten): (1) STAKES FIRST: scene 1 states a premise a stranger understands instantly, never scenery or a greeting. (2) ONE named PROTAGONIST who wants something badly and has something to lose. (3) THREE ESCALATING REVERSALS, each flipping what the viewer hopes for. (4) ONE REAL EMOTIONAL BEAT in the middle (loyalty, shame, fear, tenderness) played straight with no joke. (5) A calm, short, haunting LAST LINE that leaves the viewer pondering what it was really about. (6) One SHAREABLE moment so absurd or striking a viewer would show a friend.
-- A LESSON FOR HUMANS, but NEVER stated or hinted at in the video: the story shows through what the animals do and what it costs them. Write the lesson as ONE plain sentence in "lesson" (max 25 words) for the record only. People rarely go wrong because they are fools: set "cause" to why the protagonist makes the key choice: "forgot" (knew the value, lost it under pressure), "believed" (sincerely thought it was right), or "no_options" (every path cost something). Show that cause in their own reasoning so viewers understand the choice from the inside. Never say the cause aloud.
-- NOT PLAIN: a plain story is a summary. Every scene must contain something SPECIFIC and SURPRISING that could only happen in this story (an odd rule, an exact absurd number, a strange object, a character's petty obsession), never generic lines like 'they were happy' or 'it was a beautiful day'. In at least half the scenes a character SPEAKS: quote one short, characterful line in the narration (\"You call that a plan?\" hissed Mabel.) so the cast has voices and the narrator is not just describing. Give the protagonist one memorable quirk, plant one odd detail early that pays off late, and make the final reversal change how the viewer understands the first scene.
+- EVERY AGE: the channel is for everyone from young children to grandparents. No profanity or rude words (a bubble of symbols like #@%! is fine), no gore, no weapons, no real violence or death on screen or in the narration, no sexual or romantic content beyond a friendly hug, nothing frightening beyond mild, brief peril, no cruelty or bullying played as a joke, no drugs or alcohol, no politics or religion. Real feelings are welcome (loss, jealousy, regret, forgiveness) as long as they are told gently. Nobody is ever really hurt: slapstick only.
+- STORY ENGINE (a funny video with no story is forgotten): (1) STAKES FIRST: scene 1 states a premise a stranger understands instantly, never scenery or a greeting. (2) ONE PROTAGONIST (known only by role, never by name) who wants something badly and has something to lose. (3) THREE ESCALATING REVERSALS, each flipping what the viewer hopes for. (4) ONE REAL EMOTIONAL BEAT in the middle (loyalty, shame, fear, tenderness) played straight with no joke. (5) A calm, short, haunting LAST LINE that leaves the viewer pondering what it was really about. (6) One SHAREABLE moment so absurd or striking a viewer would show a friend.
+- A LESSON FOR HUMANS, but NEVER stated or hinted at in the video: the story shows through what the people do and what it costs them. Write the lesson as ONE plain sentence in "lesson" (max 25 words) for the record only. People rarely go wrong because they are fools: set "cause" to why the protagonist makes the key choice: "forgot" (knew the value, lost it under pressure), "believed" (sincerely thought it was right), or "no_options" (every path cost something). Show that cause in their own reasoning so viewers understand the choice from the inside. Never say the cause aloud.
+- NOT PLAIN: a plain story is a summary. Every scene must contain something SPECIFIC and SURPRISING that could only happen in this story (an odd rule, an exact absurd number, a strange object, a character's petty obsession), never generic lines like 'they were happy' or 'it was a beautiful day'. In at least half the scenes a character SPEAKS: quote one short, characterful line in the narration (\"You call that a plan?\" hissed the baker.) so the cast has voices and the narrator is not just describing. Give the protagonist one memorable quirk, plant one odd detail early that pays off late, and make the final reversal change how the viewer understands the first scene.
 - HUMOUR: deadpan gravity about trivial stakes; specific absurd numbers and rules; understatement after big action; one planted odd detail that returns later raising a question.
 
 CREATIVE DIRECTION (the Tidal Folio master brief; follow it, within the channel rules above and the stage limits below)
-- Substance beyond funny animals: the animals live out recognizable human situations: jealousy, betrayal, greed, envy, deception; love, friendship, loyalty, trust, forgiveness; competition, pride, ambition, revenge; injustice, selfishness, manipulation; kindness, sacrifice, unexpected generosity; misunderstandings, secrets, embarrassment, shocking revelations. NEVER explain the underlying message or spell out the comparison; the audience works it out.
+- Substance beyond funny moments: the people live out recognizable human situations: jealousy, betrayal, greed, envy, deception; love, friendship, loyalty, trust, forgiveness; competition, pride, ambition, revenge; injustice, selfishness, manipulation; kindness, sacrifice, unexpected generosity; misunderstandings, secrets, embarrassment, shocking revelations. NEVER explain the underlying message or spell out the comparison; the audience works it out.
 - Dramatic shape, in this order: an IMMEDIATE HOOK (the first seconds show something intriguing: a shocking discovery, a suspicious encounter, a betrayal, a confrontation about to erupt, an embarrassing situation; no introductions, no scenery); the CONFLICT made clear at once (who wants what, what stands in the way, why it matters); rising ANTICIPATION (suspicious glances, deliberate pauses, a character noticing what they should not, near discoveries, interrupted confrontations, hidden motives, small details that matter later); ESCALATION (each development more complicated, more embarrassing, more emotional, funnier or more dangerous; reversals, misunderstandings, failed plans, interruptions; never predictable or repetitive; every scene adds new information, raises the stakes or changes what the viewer understands); a PAYOFF that rewards the anticipation and feels earned (a betrayal, a clever reversal, a public embarrassment, a secret exposed, an unexpected kindness, a character caught in their own scheme, an ironic consequence, a surprising reconciliation); a lasting final image or line, with a small unanswered question.
 - Comedy comes from character and situation, not random jokes: perfectly timed reactions, awkward silence, exaggerated faces, unexpected confidence, misunderstandings, clever deception, irony, role reversals, physical comedy, contrasting personalities. Balance it with real emotion: a story can be hilarious and still carry betrayal, disappointment, compassion or justice. No childish humour, no meaningless chaos, no predictable jokes.
 - Characters: each has a distinct personality, a clear motivation and a particular way of reacting to conflict, shown through mood and action. Keep them consistent and appealing.
@@ -155,27 +167,27 @@ LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} 
 TONE (the viewer must FEEL the tone of every scene within one second, with the sound on or off): give EVERY scene a "tone". playful = jokes, mischief, scheming (bouncy music, bright colours). joyful = triumph, celebration, a win (golden light, rising music, the narrator lifts). tense = danger, a plan going wrong, an argument, a chase (dark cold colours, low ticking music, a shaky camera). sad = loss, shame, being left out, a broken promise (grey-blue colours, slow falling notes, the narrator softer and lower). eerie = mystery, dread, something not right (green-teal mist, a low hum, sparse notes). tender = love, forgiveness, loyalty, a kind surprise (warm glow, soft music). calm = rest, quiet, scene-setting (use for at most two scenes in a part). The system turns the tone into colour, light, music, camera and the narrator's voice, so the tone must match the narration words and the faces: tense = scared, angry or shocked actors; sad = sad actors; playful and joyful = happy or smug actors. Change the tone at least twice in every part, as the story turns, and make the tone obvious in the words themselves (short, clipped sentences for tense; long, slow ones for sad; bouncy, surprising ones for playful). Dark tones (tense, sad, eerie) belong to world storm, night or dusk; joyful belongs to day, dawn or sunset. The FIRST scene of the story must already show a clear tone, never calm.
 
 THE STAGE (this is all that can be drawn, so write for it)
-- Cast: 1 to 4 characters, the PROTAGONIST FIRST. species "eagle" (cast "look": "orrin" = plain brown, "dad" = dark brown, "mom" = lighter brown with a pink scarf; give every eagle in the story a different look), "cat" (optional "coat": ginger|grey|black|white, optional "hat": "bowler"), "fox" (optional "hat": "bowler"), "rabbit" (optional "coat": grey|white|brown), "squirrel" (optional "hat": "bowler", optional "item": "popcorn"). Give each a short first name in "name". No other animals exist. Give every character a clear personality that drives the plot (typical: eagle = proud and dramatic, cat = aloof and vain but secretly soft-hearted, fox = cunning and charming, rabbit = anxious but braver than they think, squirrel = a hoarder and a gossip), and let the story break or test that personality.
-- Each scene: "world" (dawn|day|dusk|storm|night|sunset), "stage": "cliff" (a clifftop above a valley and sea, mountains and a distant castle), "nest" (the same with a big nest), or "tree" (a lone tree whose branch reaches toward the cliff).
+- Cast: 1 to 4 PEOPLE, the PROTAGONIST FIRST, each described by ROLE and never by name. Each cast entry: "role" (one of: {', '.join(PE.ROLES_LIST)}), "gender" ("male"|"female"), "age" ("child"|"adult"|"elder"), optional "skin" (light|fair|tan|brown|dark), optional "hair" (black|brown|blonde|red|grey|white), optional "extras" (a list from glasses|beard|mustache|bun|bald). The cast KEY is a short role word ("baker", "boss", "granny"), never a name. Make the cast look different from each other (different skin, hair, age, gender). Give every character a clear personality that drives the plot (a baker is proud and territorial, a boss pompous and secretly insecure, a grandmother sweet and ruthless, a mechanic gruff but soft-hearted, a student anxious and over-eager) and let the story break or test that personality.
+- Each scene: "world" (dawn|day|dusk|storm|night|sunset: the time of day and weather, seen outdoors or through the window) and "stage" (the SETTING: street|park|kitchen|shop|office|classroom|home). Change the setting only when the story moves the people somewhere new; match it to the roles (a baker in a kitchen or shop, a teacher in a classroom, a boss in an office).
 - "camera": hold|push_in|pull_back|pan_right|pan_left (optional: the system leans in on tense scenes and drifts away on sad ones). "tone": playful|joyful|tense|sad|eerie|tender|calm (see TONE). Optional "silence_before": a few words of the narration; the music cuts out and the picture freezes just before them (use on at most 2 scenes, for the biggest reveal).
-- "actors": who is on screen. "at": ground_left|ground_mid|ground_right (on the cliff; any species), branch_a|branch_b (squirrels only, needs stage "tree"), air_left|air_mid|air_right (eagles only, flying). "face": left|right (optional). "mood": neutral|sleepy|happy|angry|scared|sad|shocked|smug|dizzy. "action": stand|talk|hop|flap. "talk" moves the beak/mouth: give "from" and "to" (words in the narration) for when he speaks or give nothing for most of the scene. "enter": words in the narration at which this character flies or hops in from off-screen; "exit": words at which he leaves. Eagles may "carry": "fish".
-- "popups": comic speech bubbles ("kind": "bubble", a short spoken line or reaction) and impact words ("kind": "burst", e.g. CRASH, MINE, WHAT). "text" 1 to 4 words, "at": words in the narration when it pops, "near": which actor it belongs to. Use them in at least half the scenes: they are the punctuation of the jokes.
-- "fx": [{{"kind": "puff"|"sparkle"|"speed", "at": words, "near": actor}}]: a dust cloud for landings and crashes, a sparkle for magic or a lucky moment, speed streaks for a dash.
-- EVERY phrase you give ("from", "to", "enter", "exit", "at", "silence_before") must be copied EXACTLY (same capitals, same punctuation) from THAT scene's narration, a span of 2 to 5 words. Characters can only exist on screen if listed in "actors" of that scene. Keep a character in the same spot while nothing moves them; change spots only when the narration says so.
+- "actors": who is on screen, 1 to 3 people at once. "at": ground_left|ground_mid|ground_right (each person a different spot). "face": left|right (optional; by default people face each other). "mood": neutral|sleepy|happy|angry|scared|shocked|smug|sad|dizzy. "action": stand|talk|hop|flap ("talk": the person gestures while their mouth moves; "hop": a jump for joy or shock; "flap": waving both arms in panic or excitement). "talk" needs "from" and "to" (words in the narration for when they speak) or give nothing. "enter": words in the narration at which this person walks in from off-screen; "exit": words at which they walk off. "carry": an item in their hand (each role already holds its usual tool; "none" empties the hands): one of {', '.join(SB_ITEMS)}.
+- "popups": comic speech bubbles ("kind": "bubble", a short spoken line or reaction) and impact words ("kind": "burst", e.g. SPLAT, MINE, WHAT). "text" 1 to 4 words, "at": words in the narration when it pops, "near": which actor it belongs to. Use them in at least half the scenes: they are the punctuation of the jokes.
+- "fx": [{{"kind": "puff"|"sparkle"|"speed", "at": words, "near": actor}}]: a dust cloud for a fall or a crash, a sparkle for a lucky moment, speed streaks for a dash.
+- EVERY phrase you give ("from", "to", "enter", "exit", "at", "silence_before") must be copied EXACTLY (same capitals, same punctuation) from THAT scene's narration, a span of 2 to 5 words. Characters can only exist on screen if listed in "actors" of that scene. Keep a person in the same spot while nothing moves them; change spots only when the narration says so.
 - VARIETY (the channel must never feel like one template repeated): each story needs its own premise and plot shape (a heist, a rivalry, a rescue, a rumour, a bet, a misunderstanding, a trade that goes wrong, a contest, a secret, a prank that backfires, a visitor who changes everything ...), its own lead character, its own time of day and weather, and its own opening line. Do not start two stories the same way. Titles and the first sentence of the YouTube description should say plainly what the story is about, with the hook in the first 5 words.
 - Ending: the last part ends on its haunting last line. The system adds a plain end screen after the final part only, so never write a sign-off, a part announcement or a call to follow or subscribe in any narration.
 
 Reply with ONE JSON object, exactly this shape:
 {{"title": "Episode title (no series prefix)", "lesson": "...", "cause": "forgot|believed|no_options",
- "uncommon_word": {{"word": "...", "meaning": "..."}},  "cast": {{"key": {{"species": "eagle", "look": "orrin", "name": "Orrin"}}, "key2": {{"species": "squirrel", "hat": "bowler"}}}},
- "parts": [{{"thumbnail_scene": 2, "scenes": [{{"narration": "...", "world": "dawn", "stage": "cliff", "camera": "push_in", "tone": "playful",
-   "actors": [{{"who": "key", "at": "ground_mid", "mood": "smug", "action": "talk", "from": "words", "to": "words"}}],
-   "popups": [{{"text": "MINE.", "kind": "burst", "at": "words", "near": "key"}}], "fx": []}}]}}],
+ "uncommon_word": {{"word": "...", "meaning": "..."}},  "cast": {{"baker": {{"role": "baker", "gender": "female", "age": "adult", "skin": "tan", "hair": "black"}}, "boss": {{"role": "boss", "gender": "male", "age": "adult", "skin": "light", "hair": "grey", "extras": ["glasses"]}}}},
+ "parts": [{{"thumbnail_scene": 2, "scenes": [{{"narration": "...", "world": "dawn", "stage": "street", "camera": "push_in", "tone": "playful",
+   "actors": [{{"who": "baker", "at": "ground_mid", "mood": "smug", "action": "talk", "from": "words", "to": "words"}}],
+   "popups": [{{"text": "MINE.", "kind": "burst", "at": "words", "near": "baker"}}], "fx": []}}]}}],
  "youtube": {{"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"}},
  "tiktok": {{"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}}}"""
 
 
-CRITIC_PROMPT = """You are a ruthless story editor for Tidal Folio, a deadpan animal-fable channel. You get a story told in parts (the narration of every scene).
+CRITIC_PROMPT = """You are a ruthless story editor for Tidal Folio, a deadpan comedy channel about everyday people. You get a story told in parts (the narration of every scene).
 Score it 1 to 5 on each question, being honest (a 3 is acceptable, 1 or 2 means it must be rewritten):
 q1 Does the opening immediately create curiosity? q2 Is the central conflict easy to understand? q3 Does every scene give a reason to keep watching?
 q4 Does tension rise rather than stay flat? q5 Are there unexpected developments? q6 Is the comedy genuinely funny and situation-driven (not random or childish)?
@@ -277,12 +289,12 @@ def problems(sb, number):
 BIBLE_STEP = """STEP 1: plan the story. Do NOT write scenes yet, and ignore any instruction above to write every part at once: the parts are written one at a time in the next messages.
 Reply with ONE JSON object with exactly these keys:
 {"title": "Episode title (no series prefix)", "lesson": "...", "cause": "forgot|believed|no_options", "uncommon_word": {"word": "...", "meaning": "..."},
- "cast": {"key": {"species": "eagle", "look": "orrin", "name": "Orrin"}, "key2": {"species": "squirrel", "hat": "bowler"}},
+ "cast": {"baker": {"role": "baker", "gender": "female", "age": "adult", "skin": "tan", "hair": "black"}, "boss": {"role": "boss", "gender": "male", "age": "adult", "extras": ["glasses"]}},
  "tone": "the story's overall tone in 3 to 8 words, e.g. 'mischievous comedy that turns tender at the end'",
  "tone_arc": [EXACTLY %d strings, one per part: the tones of that part in order, from playful|joyful|tense|sad|eerie|tender|calm, e.g. "playful, tense, sad"],
  "planted_detail": "one odd, specific detail shown early (an object, a rule, a habit) that pays off in the last part",
  "twist": "the final reversal that changes how the viewer understands the first scene",
- "outline": [EXACTLY %d strings, one per part: what happens in that part (with who SAYS what, one quotable line each) and the line it stops on],
+ "outline": [EXACTLY %d strings, one per part: what happens in that part (told by role, never by name; with who SAYS what, one quotable line each) and the line it stops on],
  "youtube": {"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"},
  "tiktok": {"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}"""
 
@@ -322,14 +334,13 @@ def _bible_problems(b, n, used_words, lead=None):
         bad.append("'cast' must be an object with 1 to 4 characters.")
     else:
         for key, c in cast.items():
-            if not isinstance(c, dict) or c.get("species") not in SB.SPECIES:
-                bad.append(f"cast '{key}': species must be one of {SB.SPECIES}.")
-            elif c["species"] == "eagle" and c.get("look", "orrin") not in SB.LOOKS:
-                bad.append(f"cast '{key}': an eagle's look must be one of {SB.LOOKS}.")
+            if not isinstance(c, dict) or not PE.norm_role(c.get("role") or key):
+                bad.append(f"cast '{key}': needs a \"role\" that is one of {PE.ROLES_LIST} (people are described by role, never by name).")
+        SB.fix_cast(cast)
     if lead and isinstance(cast, dict) and cast:
         first = next(iter(cast.values()))
-        if not (isinstance(first, dict) and first.get("species") == lead):
-            bad.append(f"the FIRST character in 'cast' is the protagonist and must be a {lead} (species \"{lead}\").")
+        if not (isinstance(first, dict) and PE.norm_role(first.get("role") or "") == lead):
+            bad.append(f"the FIRST character in 'cast' is the protagonist and must be a {lead} (\"role\": \"{lead}\").")
     for k_ in ("planted_detail", "twist"):
         if not isinstance(b.get(k_), str) or len(b[k_].split()) < 4:
             bad.append(f"'{k_}' must be a specific sentence.")
@@ -367,6 +378,11 @@ MOOD_FIX = {"excited": "happy", "joyful": "happy", "cheerful": "happy", "proud":
 ACTION_FIX = {"fly": "flap", "flying": "flap", "speak": "talk", "speaking": "talk", "shout": "talk", "jump": "hop", "run": "hop", "walk": "hop", "sit": "stand"}
 
 
+STAGE_FIX = {"bakery": "shop", "store": "shop", "market": "shop", "restaurant": "kitchen", "cafe": "kitchen", "diner": "kitchen", "house": "home", "apartment": "home",
+             "living room": "home", "bedroom": "home", "school": "classroom", "garden": "park", "playground": "park", "road": "street", "city": "street", "town": "street",
+             "outside": "street", "workshop": "shop", "garage": "shop", "hospital": "office", "courtroom": "office", "library": "classroom"}
+
+
 def _sanitize(part, cast=None):
     """Repair small slips in a part instead of throwing the whole part away: timing phrases that are not words of the narration
     (the model often puts a character's speech there), moods and actions outside the list, over-long or misplaced pop-ups."""
@@ -388,6 +404,19 @@ def _sanitize(part, cast=None):
         for key, allowed, fix, default in (("world", SB.WORLDS, {}, "day"), ("stage", SB.STAGES, {}, "cliff"), ("camera", SB.CAMERAS, {}, "hold"), ("music", SB.MUSICS, {}, "calm")):
             if key in sc and sc[key] not in allowed:
                 sc[key] = default
+        if cast and any(c.get("species") == "human" for c in cast.values() if isinstance(c, dict)):
+            st = str(sc.get("stage", "")).lower()
+            sc["stage"] = st if st in SB.HUMAN_STAGES else STAGE_FIX.get(st, "street")
+            acts = [a for a in (sc.get("actors") or []) if isinstance(a, dict)][:3]
+            free = list(SB.HSLOTS)
+            for a in acts:                                  # three spots only, one person in each
+                at = a.get("at") if a.get("at") in free else (free[1] if free[1:] and "ground_mid" in free else free[0])
+                free.remove(at)
+                a["at"] = at
+                if a.get("carry") and a["carry"] not in SB.ITEMS:
+                    a.pop("carry")
+            if isinstance(sc.get("actors"), list):
+                sc["actors"] = acts
         sc["tone"] = SB.tone_of(sc)                   # synonyms ("funny", "scary") are mapped; an old "music" key still works
         sc.pop("music", None)
         if sc["tone"] in ("tense", "sad", "eerie") and sc.get("world") in ("day", "dawn", "sunset"):
@@ -505,20 +534,19 @@ def write_story(idea=None, series=None, parts=None, log=print):
 def _write_story(G, idea, series, parts, log):
     number = G.next_number()
     titles, counts = G.existing()
-    lead, last_species = choose_lead()
-    if idea:                                  # a story idea from ideas.txt decides its own animals
-        series = series or min(SERIES, key=lambda s: counts.get(s, 0))
+    lead, lead_gender, last_roles = choose_lead()
+    if idea:                                  # a story idea from ideas.txt decides its own people
         lead = None
-    series = series or ("Bird Banter" if lead == "eagle" else "Funny Animals")
-    log(f"Lead animal for this story: {lead or 'chosen by the idea'} (the last story used: {', '.join(last_species) or 'nothing yet'}).")
+    series = series if series in SERIES else "Funny People"
+    log(f"Lead for this story: {(lead_gender + ' ' + lead) if lead else 'chosen by the idea'} (the last stories led by: {', '.join(last_roles) or 'nobody yet'}).")
     n_parts = parts or choose_parts(log)
     cause = random.choice(["forgot", "believed", "no_options"])
     lessons, words = G.used_lessons(), G.used_words()
     system = system_prompt(6, 8, n_parts)
     brief = (f"Write the next story for the series \"{series}\" ({SERIES[series]}), told in exactly {n_parts} parts. "
              + (f"Story idea to use: {idea}. " if idea else "Invent a fresh, specific premise. ")
-             + (f"THE PROTAGONIST (the first entry of 'cast') MUST BE A {lead.upper()} ({PERSONA[lead]}). " if lead else "")
-             + (f"The last story used {', '.join(last_species)}: give the rest of the cast different animals where you can, so this story does not feel like a repeat. " if last_species else "")
+             + (f"THE PROTAGONIST (the first entry of 'cast') MUST BE A {lead_gender.upper()} {lead.upper()} (\"role\": \"{lead}\", \"gender\": \"{lead_gender}\"; {PERSONA.get(lead, 'a distinct character')}). " if lead else "")
+             + (f"The last stories were led by: {', '.join(last_roles)}: give the rest of the cast different roles where you can, so this story does not feel like a repeat. " if last_roles else "")
              + f"Use cause \"{cause}\" for the protagonist's key choice. "
              + (f"Do NOT reuse these lessons: {'; '.join(lessons[-12:])}. " if lessons else "")
              + (f"Do NOT reuse these uncommon words: {', '.join(words)}. " if words else "")
