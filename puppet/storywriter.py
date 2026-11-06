@@ -295,7 +295,7 @@ MOOD_FIX = {"excited": "happy", "joyful": "happy", "cheerful": "happy", "proud":
 ACTION_FIX = {"fly": "flap", "flying": "flap", "speak": "talk", "speaking": "talk", "shout": "talk", "jump": "hop", "run": "hop", "walk": "hop", "sit": "stand"}
 
 
-def _sanitize(part):
+def _sanitize(part, cast=None):
     """Repair small slips in a part instead of throwing the whole part away: timing phrases that are not words of the narration
     (the model often puts a character's speech there), moods and actions outside the list, over-long or misplaced pop-ups."""
     from . import storyboard as SB
@@ -305,7 +305,14 @@ def _sanitize(part):
     for sc in scenes:
         if not isinstance(sc, dict):
             continue
+        if isinstance(sc.get("narration"), str):      # straight quotes, and a proper full stop at the end of the line
+            t = sc["narration"].replace("\u201c", '"').replace("\u201d", '"').replace("\u2018", "'").replace("\u2019", "'").strip()
+            if not re.search(r'[.!?]"?$', t):
+                t = t.rstrip(" ,;:-\u2014\u2013\u2026") + "."
+            sc["narration"] = t
         nar = sc.get("narration") if isinstance(sc.get("narration"), str) else ""
+        if cast and isinstance(sc.get("actors"), list):   # an actor that is not in the cast cannot be drawn: leave them out of the scene
+            sc["actors"] = [a for a in sc["actors"] if not isinstance(a, dict) or a.get("who") in cast]
         for key, allowed, fix, default in (("world", SB.WORLDS, {}, "day"), ("stage", SB.STAGES, {}, "cliff"), ("camera", SB.CAMERAS, {}, "hold"), ("music", SB.MUSICS, {}, "calm")):
             if key in sc and sc[key] not in allowed:
                 sc[key] = default
@@ -346,7 +353,7 @@ def _part_problems(part, cast, k, word, uw_part):
         return [f"part {k}: the reply must be one JSON object with 'scenes'."]
     scenes = part.get("scenes")
     if isinstance(scenes, list) and all(isinstance(x, dict) for x in scenes):
-        _sanitize(part)
+        _sanitize(part, cast)
     if isinstance(scenes, list) and not all(isinstance(x, dict) for x in scenes):
         return [f"part {k}, every scene must be a JSON object."]
     bad = SB._check_scenes(scenes, cast, f"part {k}, ")
