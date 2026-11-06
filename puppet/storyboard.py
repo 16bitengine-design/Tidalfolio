@@ -78,6 +78,7 @@ def strip_quoted(text):
     t = re.sub(r'"[^"]*"', " ", t)                       # balanced "..." pairs
     t = re.sub(r'"[^"]*$', " ", t)                       # a quote opened and never closed: the rest is speech
     t = re.sub(r"(?<![\w])‘[^’]*’", " ", t)   # curly single-quoted speech
+    t = re.sub(r"(?<![\w'])'[^'\n]*'(?![\w])", " ", t)   # straight single-quoted speech: 'Show me,' he said. (an apostrophe inside a word never opens one)
     return t
 
 
@@ -87,6 +88,8 @@ def sentence_around(text, match):
     ends = [i for i in (text.find(c, match.end()) for c in ".!?") if i != -1]
     end = (min(ends) + 1) if ends else len(text)
     return text[start:end].strip()[:160]
+
+
 MAX_WORDS_BUBBLE = 4
 # words that do not belong on an all-ages channel (checked in narration and pop-ups)
 UNSAFE = re.compile(r"\b(fuck\w*|shit\w*|damn\w*|hell|bastard|bitch\w*|crap|ass|asshole|piss\w*|dick|sex\w*|naked|drunk|beer|wine|vodka|whisky|"
@@ -157,7 +160,7 @@ def personal_names(text):
     found = []
     for m in re.finditer(r"\b[A-Z][a-z]{2,}\b", text):
         before = text[:m.start()].rstrip()
-        if not before or before[-1] in '.!?"\u201c:' or m.group(0) in _NOT_NAMES:
+        if not before or before[-1] in '.!?"\u201c\u2018\':' or m.group(0) in _NOT_NAMES:   # a word right after an opening quote starts the speech, it is not a name
             continue
         if before.endswith(("Mr", "Mrs", "Ms", "Dr")):
             found.append(m.group(0))
