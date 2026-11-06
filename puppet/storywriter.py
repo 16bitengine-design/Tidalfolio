@@ -25,8 +25,46 @@ MIN_LEN, MAX_LEN = 45.0, 60.0
 AIM = "aim for 50 to 57 seconds"
 SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.55, 1.5, 3.5     # measured on the real narrator; used only when the voice model is absent
 
-SERIES = {"Bird Banter": "eagles and squirrels: pride, hunger, rivalry, bad decisions on a cliff",
-          "Funny Animals": "a rabbit, squirrels and eagles in absurd high-stakes situations"}
+SERIES = {"Bird Banter": "eagles (with squirrels, cats, foxes or rabbits around them): pride, hunger, rivalry, bad decisions on a cliff",
+          "Funny Animals": "cats, foxes, rabbits and squirrels in absurd high-stakes situations"}
+PERSONA = {"eagle": "proud, dramatic, easily offended", "squirrel": "a hoarder and a gossip, always scheming", "cat": "aloof, vain, secretly soft-hearted",
+           "fox": "cunning, charming, never quite trusted", "rabbit": "anxious, earnest, braver than they think"}
+
+
+def _species_of(path):
+    try:
+        d = json.loads(path.read_text())
+    except ValueError:
+        return None, set()
+    sp = d.get("series_part")
+    if not sp:
+        return None, set()
+    if d.get("cast_species"):
+        return sp["story"], set(d["cast_species"])
+    return sp["story"], {t.get("type") for sc in d.get("scenes", []) for t in sc.get("things", []) if isinstance(t, dict)} & {"eagle", "squirrel", "rabbit", "cat", "fox"}
+
+
+def recent_story_species(k=2):
+    """The set of species used by each of the last k stories, newest first (older scripts are read from their drawn things)."""
+    seen, out = [], []
+    for p in sorted(SCRIPTS.glob("*.json"), reverse=True):
+        story, sps = _species_of(p)
+        if story and story not in seen:
+            seen.append(story)
+            out.append(sps)
+            if len(out) == k:
+                break
+    return out
+
+
+def choose_lead():
+    """Every story gets a different lead animal from the story before it (and, when possible, from the one before that)."""
+    from . import storyboard as SB
+    recent = recent_story_species(2)
+    last = recent[0] if recent else set()
+    pool = [x for x in SB.SPECIES if x not in last] or list(SB.SPECIES)
+    fresh = [x for x in pool if not (len(recent) > 1 and x in recent[1])] or pool
+    return random.choice(fresh), sorted(last)
 
 
 def _lines(p):
@@ -94,6 +132,7 @@ CHANNEL RULES (all mandatory)
 - EVERY AGE: the channel is for everyone from young children to grandparents. No profanity or rude words (a bubble of symbols like #@%! is fine), no gore, no weapons, no real violence or death on screen or in the narration, no sexual or romantic content beyond a friendly hug, nothing frightening beyond mild, brief peril, no cruelty or bullying played as a joke, no drugs or alcohol, no politics or religion. Real feelings are welcome (loss, jealousy, regret, forgiveness) as long as they are told gently. Animals are never harmed: slapstick only.
 - STORY ENGINE (a funny video with no story is forgotten): (1) STAKES FIRST: scene 1 states a premise a stranger understands instantly, never scenery or a greeting. (2) ONE named PROTAGONIST who wants something badly and has something to lose. (3) THREE ESCALATING REVERSALS, each flipping what the viewer hopes for. (4) ONE REAL EMOTIONAL BEAT in the middle (loyalty, shame, fear, tenderness) played straight with no joke. (5) A calm, short, haunting LAST LINE that leaves the viewer pondering what it was really about. (6) One SHAREABLE moment so absurd or striking a viewer would show a friend.
 - A LESSON FOR HUMANS, but NEVER stated or hinted at in the video: the story shows through what the animals do and what it costs them. Write the lesson as ONE plain sentence in "lesson" (max 25 words) for the record only. People rarely go wrong because they are fools: set "cause" to why the protagonist makes the key choice: "forgot" (knew the value, lost it under pressure), "believed" (sincerely thought it was right), or "no_options" (every path cost something). Show that cause in their own reasoning so viewers understand the choice from the inside. Never say the cause aloud.
+- NOT PLAIN: a plain story is a summary. Every scene must contain something SPECIFIC and SURPRISING that could only happen in this story (an odd rule, an exact absurd number, a strange object, a character's petty obsession), never generic lines like 'they were happy' or 'it was a beautiful day'. In at least half the scenes a character SPEAKS: quote one short, characterful line in the narration (\"You call that a plan?\" hissed Mabel.) so the cast has voices and the narrator is not just describing. Give the protagonist one memorable quirk, plant one odd detail early that pays off late, and make the final reversal change how the viewer understands the first scene.
 - HUMOUR: deadpan gravity about trivial stakes; specific absurd numbers and rules; understatement after big action; one planted odd detail that returns later raising a question.
 
 CREATIVE DIRECTION (the Tidal Folio master brief; follow it, within the channel rules above and the stage limits below)
@@ -110,18 +149,18 @@ STORY IN PARTS: every story is told as {parts_text} consecutive videos (Part 1, 
 - Every part EXCEPT the last ends mid-story on a line that pulls straight into the next scene (a reveal, a worse problem, a question), told like any other line of the story: never "to be continued", never "in the next part", never an instruction.
 - Part 1 opens with the stakes; the last part holds the emotional resolution and the haunting last line. The one uncommon word appears exactly once in the WHOLE story. Characters, setting and objects stay consistent across parts.
 
-LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly and steadily (about 0.55 s per word, never rushed) and each scene adds about 1.5 s of pauses, so write {n_lo} to {n_hi} scenes of 9 to 14 words each per part (roughly 70 to 85 words per part). Open on the hook at once. No filler scene. Spend the few words on specific, surprising details and on what the characters say, never on scenery.
+LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly and steadily (about 0.55 s per word, never rushed) and each scene adds about 1.5 s of pauses, so write {n_lo} to {n_hi} scenes of 9 to 14 words each per part (roughly 68 to 82 words per part). Open on the hook at once. No filler scene. Spend the few words on specific, surprising details and on what the characters say, never on scenery.
 - NARRATION MUST BE EASY TO SPEAK: a voice reads it aloud. Use only ordinary words that are easy to pronounce (the one uncommon word aside), simple names (one or two syllables: Pip, Orrin, Mabel, Biscuit), numbers written as words ("forty-two"), no digits, no abbreviations, no symbols, no all-capital words in the narration, no invented words or unusual spellings. Keep sentences short to medium (at most about 16 words); put a comma at each natural pause.
 
 THE STAGE (this is all that can be drawn, so write for it)
-- Cast: 1 to 4 characters. species "eagle" (cast "look": "orrin" = plain brown, "dad" = dark brown, "mom" = lighter brown with a pink scarf; give every eagle in the story a different look), "squirrel" (optional "hat": "bowler", optional "item": "popcorn"), "rabbit". Give each a short first name in "name". No other animals exist.
+- Cast: 1 to 4 characters, the PROTAGONIST FIRST. species "eagle" (cast "look": "orrin" = plain brown, "dad" = dark brown, "mom" = lighter brown with a pink scarf; give every eagle in the story a different look), "cat" (optional "coat": ginger|grey|black|white, optional "hat": "bowler"), "fox" (optional "hat": "bowler"), "rabbit" (optional "coat": grey|white|brown), "squirrel" (optional "hat": "bowler", optional "item": "popcorn"). Give each a short first name in "name". No other animals exist. Give every character a clear personality that drives the plot (typical: eagle = proud and dramatic, cat = aloof and vain but secretly soft-hearted, fox = cunning and charming, rabbit = anxious but braver than they think, squirrel = a hoarder and a gossip), and let the story break or test that personality.
 - Each scene: "world" (dawn|day|dusk|storm|night|sunset), "stage": "cliff" (a clifftop above a valley and sea, mountains and a distant castle), "nest" (the same with a big nest), or "tree" (a lone tree whose branch reaches toward the cliff).
 - "camera": hold|push_in|pull_back|pan_right|pan_left. "music": calm|tense|sad|joyful (the music follows the emotion of the scene). Optional "silence_before": a few words of the narration; the music cuts out and the picture freezes just before them (use on at most 2 scenes, for the biggest reveal).
 - "actors": who is on screen. "at": ground_left|ground_mid|ground_right (on the cliff; any species), branch_a|branch_b (squirrels only, needs stage "tree"), air_left|air_mid|air_right (eagles only, flying). "face": left|right (optional). "mood": neutral|sleepy|happy|angry|scared|sad|shocked|smug|dizzy. "action": stand|talk|hop|flap. "talk" moves the beak/mouth: give "from" and "to" (words in the narration) for when he speaks or give nothing for most of the scene. "enter": words in the narration at which this character flies or hops in from off-screen; "exit": words at which he leaves. Eagles may "carry": "fish".
 - "popups": comic speech bubbles ("kind": "bubble", a short spoken line or reaction) and impact words ("kind": "burst", e.g. CRASH, MINE, WHAT). "text" 1 to 4 words, "at": words in the narration when it pops, "near": which actor it belongs to. Use them in at least half the scenes: they are the punctuation of the jokes.
 - "fx": [{{"kind": "puff"|"sparkle"|"speed", "at": words, "near": actor}}]: a dust cloud for landings and crashes, a sparkle for magic or a lucky moment, speed streaks for a dash.
 - EVERY phrase you give ("from", "to", "enter", "exit", "at", "silence_before") must be copied EXACTLY (same capitals, same punctuation) from THAT scene's narration, a span of 2 to 5 words. Characters can only exist on screen if listed in "actors" of that scene. Keep a character in the same spot while nothing moves them; change spots only when the narration says so.
-- VARIETY (the channel must never feel like one template repeated): each story needs its own premise and plot shape (a heist, a rivalry, a rescue, a rumour, a bet, a misunderstanding, a rivalry between friends, a trade that goes wrong ...), its own lead character, its own time of day and weather, and its own opening line. Do not start two stories the same way. Titles and the first sentence of the YouTube description should say plainly what the story is about, with the hook in the first 5 words.
+- VARIETY (the channel must never feel like one template repeated): each story needs its own premise and plot shape (a heist, a rivalry, a rescue, a rumour, a bet, a misunderstanding, a trade that goes wrong, a contest, a secret, a prank that backfires, a visitor who changes everything ...), its own lead character, its own time of day and weather, and its own opening line. Do not start two stories the same way. Titles and the first sentence of the YouTube description should say plainly what the story is about, with the hook in the first 5 words.
 - Ending: the last part ends on its haunting last line. The system adds a plain end screen after the final part only, so never write a sign-off, a part announcement or a call to follow or subscribe in any narration.
 
 Reply with ONE JSON object, exactly this shape:
@@ -237,7 +276,9 @@ BIBLE_STEP = """STEP 1: plan the story. Do NOT write scenes yet, and ignore any 
 Reply with ONE JSON object with exactly these keys:
 {"title": "Episode title (no series prefix)", "lesson": "...", "cause": "forgot|believed|no_options", "uncommon_word": {"word": "...", "meaning": "..."},
  "cast": {"key": {"species": "eagle", "look": "orrin", "name": "Orrin"}, "key2": {"species": "squirrel", "hat": "bowler"}},
- "outline": [EXACTLY %d strings, one per part: what happens in that part and the line it stops on],
+ "planted_detail": "one odd, specific detail shown early (an object, a rule, a habit) that pays off in the last part",
+ "twist": "the final reversal that changes how the viewer understands the first scene",
+ "outline": [EXACTLY %d strings, one per part: what happens in that part (with who SAYS what, one quotable line each) and the line it stops on],
  "youtube": {"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"},
  "tiktok": {"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}"""
 
@@ -247,17 +288,23 @@ PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "scenes": [ 6 
               "'action' one of stand, talk, hop, flap.")
 
 
-def _part_rules(k, n, word, uw_part):
+def _part_rules(k, n, word, uw_part, bible=None):
     role = ("It opens on the hook at once." if k == 1 else
             f"It carries on from the exact moment part {k - 1} stopped: no recap, no re-introduction of the characters or the setting, no announcement that a new part has started. "
             f"A viewer must not be able to tell where part {k - 1} ended.")
     role += (f" It ends mid-story on a line that pulls straight into part {k + 1} (never 'to be continued')." if k < n else
              " It holds the emotional resolution and the haunting last line.")
     w = (f'Use the uncommon word "{word}" exactly once in this part.' if k == uw_part else f'Do not use the uncommon word "{word}" in this part.')
-    return f"{role} {w}"
+    extra = ""
+    if bible:
+        if k == 1:
+            extra = f" Plant this detail casually, as if it were nothing: {bible['planted_detail']}"
+        if k == n:
+            extra += f" Pay off the planted detail ({bible['planted_detail']}) and land the twist: {bible['twist']}"
+    return f"{role} {w}{extra} Make it vivid: a specific surprising detail in every scene, and a short quoted line of speech in at least half of them."
 
 
-def _bible_problems(b, n, used_words):
+def _bible_problems(b, n, used_words, lead=None):
     from . import storyboard as SB
     if not isinstance(b, dict):
         return ["the reply must be one JSON object."]
@@ -271,6 +318,13 @@ def _bible_problems(b, n, used_words):
                 bad.append(f"cast '{key}': species must be one of {SB.SPECIES}.")
             elif c["species"] == "eagle" and c.get("look", "orrin") not in SB.LOOKS:
                 bad.append(f"cast '{key}': an eagle's look must be one of {SB.LOOKS}.")
+    if lead and isinstance(cast, dict) and cast:
+        first = next(iter(cast.values()))
+        if not (isinstance(first, dict) and first.get("species") == lead):
+            bad.append(f"the FIRST character in 'cast' is the protagonist and must be a {lead} (species \"{lead}\").")
+    for k_ in ("planted_detail", "twist"):
+        if not isinstance(b.get(k_), str) or len(b[k_].split()) < 4:
+            bad.append(f"'{k_}' must be a specific sentence.")
     outline = b.get("outline")
     if not (isinstance(outline, list) and len(outline) == n and all(isinstance(x, str) and x.strip() for x in outline)):
         bad.append(f"'outline' must be a list of exactly {n} non-empty strings, one per part.")
@@ -384,7 +438,7 @@ def _rewrite_part(G, system, bible, parts, k, bad, word, uw_part):
     n = len(parts)
     for _ in range(2):
         user = (_story_so_far(bible, parts) + f"\n\nRewrite ONLY part {k} of {n}. Fix these problems, keep it continuous with the part before and the part after it, and keep what already works:\n- "
-                + "\n- ".join(bad) + "\n\n" + _part_rules(k, n, word, uw_part) + "\n" + PART_SHAPE
+                + "\n- ".join(bad) + "\n\n" + _part_rules(k, n, word, uw_part, bible) + "\n" + PART_SHAPE
                 + f"\nThe current JSON of part {k} was:\n" + json.dumps(parts[k - 1], ensure_ascii=False))
         try:
             part = json.loads(G.call_openai([{"role": "system", "content": system}, {"role": "user", "content": user}], 0.7))
@@ -403,15 +457,43 @@ def write_story(idea=None, series=None, parts=None, log=print):
     sys.path.insert(0, str(ROOT))
     import generate_script as G
     SCRIPTS.mkdir(exist_ok=True)
+    if not os.environ.get("OPENAI_TEXT_MODEL"):
+        os.environ["OPENAI_TEXT_MODEL"] = "gpt-4o"     # a stronger writer than the cheap default; set the repo variable OPENAI_TEXT_MODEL to choose another
+    real_call = G.call_openai
+
+    def call_with_fallback(msgs, temperature=1.0):
+        try:
+            return real_call(msgs, temperature)
+        except SystemExit as e:                         # the account may not have this model: fall back to the cheap one instead of failing
+            if os.environ.get("OPENAI_TEXT_MODEL") != "gpt-4o-mini" and re.search(r"model|404|403", str(e.code), re.I):
+                log(f"The model {os.environ['OPENAI_TEXT_MODEL']} was refused ({str(e.code)[:120]}); using gpt-4o-mini instead.")
+                os.environ["OPENAI_TEXT_MODEL"] = "gpt-4o-mini"
+                return real_call(msgs, temperature)
+            raise
+    G.call_openai = call_with_fallback
+    try:
+        return _write_story(G, idea, series, parts, log)
+    finally:
+        G.call_openai = real_call
+
+
+def _write_story(G, idea, series, parts, log):
     number = G.next_number()
     titles, counts = G.existing()
-    series = series or min(SERIES, key=lambda s: counts.get(s, 0))
+    lead, last_species = choose_lead()
+    if idea:                                  # a story idea from ideas.txt decides its own animals
+        series = series or min(SERIES, key=lambda s: counts.get(s, 0))
+        lead = None
+    series = series or ("Bird Banter" if lead == "eagle" else "Funny Animals")
+    log(f"Lead animal for this story: {lead or 'chosen by the idea'} (the last story used: {', '.join(last_species) or 'nothing yet'}).")
     n_parts = parts or choose_parts(log)
     cause = random.choice(["forgot", "believed", "no_options"])
     lessons, words = G.used_lessons(), G.used_words()
     system = system_prompt(6, 8, n_parts)
     brief = (f"Write the next story for the series \"{series}\" ({SERIES[series]}), told in exactly {n_parts} parts. "
              + (f"Story idea to use: {idea}. " if idea else "Invent a fresh, specific premise. ")
+             + (f"THE PROTAGONIST (the first entry of 'cast') MUST BE A {lead.upper()} ({PERSONA[lead]}). " if lead else "")
+             + (f"The last story used {', '.join(last_species)}: give the rest of the cast different animals where you can, so this story does not feel like a repeat. " if last_species else "")
              + f"Use cause \"{cause}\" for the protagonist's key choice. "
              + (f"Do NOT reuse these lessons: {'; '.join(lessons[-12:])}. " if lessons else "")
              + (f"Do NOT reuse these uncommon words: {', '.join(words)}. " if words else "")
@@ -427,7 +509,7 @@ def write_story(idea=None, series=None, parts=None, log=print):
         except ValueError:
             last_bad = ["the reply was not valid JSON"]
         else:
-            last_bad = _bible_problems(cand, n_parts, words)
+            last_bad = _bible_problems(cand, n_parts, words, lead)
             if not last_bad:
                 bible = cand
                 break
@@ -443,7 +525,7 @@ def write_story(idea=None, series=None, parts=None, log=print):
 
     done = []
     for k in range(1, n_parts + 1):                                               # ---- 2. the parts, one at a time
-        req = {"role": "user", "content": f"STEP {k + 1}: write ONLY part {k} of {n_parts} now. {_part_rules(k, n_parts, word, uw_part)}\n{PART_SHAPE}"}
+        req = {"role": "user", "content": f"STEP {k + 1}: write ONLY part {k} of {n_parts} now. {_part_rules(k, n_parts, word, uw_part, bible)}\n{PART_SHAPE}"}
         tmsgs, part, last_bad = msgs + [req], None, []
         for attempt in range(1, 5):
             raw = G.call_openai(tmsgs, temperature=0.9 if attempt == 1 else 0.7)

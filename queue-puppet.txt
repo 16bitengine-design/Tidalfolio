@@ -2,5 +2,3 @@
 005-the-eagle-who-waited-toon-part-1.json
 005-the-eagle-who-waited-toon-part-2.json
 006-the-great-nut-heist-part-1.json
-006-the-great-nut-heist-part-2.json
-006-the-great-nut-heist-part-3.json
