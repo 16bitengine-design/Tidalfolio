@@ -13,7 +13,16 @@
     "title": "Bird Banter #2: The Eagle Who Waited (Part 1/2)",
     "video_id": "NUdwIJQ-N80",
     "privacy": "private",
-    "uploaded_at": "2026-11-01"
+    "uploaded_at": "2026-11-01",
+    "stats": {
+      "views": 0,
+      "averageViewPercentage": 0,
+      "averageViewDuration": 0,
+      "likes": 0,
+      "comments": 0,
+      "subscribersGained": 0,
+      "as_of": "2026-11-06"
+    }
   },
   {
     "slug": "005-the-eagle-who-waited-part-1",
@@ -29,7 +38,16 @@
     "title": "Bird Banter #2: The Eagle Who Waited (Part 1/2)",
     "video_id": "YqeRqYV8kjo",
     "privacy": "private",
-    "uploaded_at": "2026-11-02"
+    "uploaded_at": "2026-11-02",
+    "stats": {
+      "views": 0,
+      "averageViewPercentage": 0,
+      "averageViewDuration": 0,
+      "likes": 0,
+      "comments": 0,
+      "subscribersGained": 0,
+      "as_of": "2026-11-06"
+    }
   },
   {
     "slug": "005-the-eagle-who-waited-part-2",
@@ -45,7 +63,16 @@
     "title": "Bird Banter #2: The Eagle Who Waited (Part 2/2)",
     "video_id": "A2bzpsUrwLg",
     "privacy": "private",
-    "uploaded_at": "2026-11-02"
+    "uploaded_at": "2026-11-02",
+    "stats": {
+      "views": 0,
+      "averageViewPercentage": 0,
+      "averageViewDuration": 0,
+      "likes": 0,
+      "comments": 0,
+      "subscribersGained": 0,
+      "as_of": "2026-11-06"
+    }
   },
   {
     "slug": "005-the-eagle-who-waited-toon",
@@ -58,7 +85,16 @@
     "title": "Bird Banter #2: The Eagle Who Waited",
     "video_id": "2n9eMGPI53E",
     "privacy": "private",
-    "uploaded_at": "2026-11-03"
+    "uploaded_at": "2026-11-03",
+    "stats": {
+      "views": 0,
+      "averageViewPercentage": 0,
+      "averageViewDuration": 0,
+      "likes": 0,
+      "comments": 0,
+      "subscribersGained": 0,
+      "as_of": "2026-11-06"
+    }
   },
   {
     "slug": "005-the-eagle-who-waited-toon-part-1",
@@ -75,7 +111,16 @@
     "title": "Bird Banter #2: The Eagle Who Waited (Part 1/2)",
     "video_id": "BMl9QT25m2Y",
     "privacy": "public",
-    "uploaded_at": "2026-11-04"
+    "uploaded_at": "2026-11-04",
+    "stats": {
+      "views": 0,
+      "averageViewPercentage": 0,
+      "averageViewDuration": 0,
+      "likes": 0,
+      "comments": 0,
+      "subscribersGained": 0,
+      "as_of": "2026-11-06"
+    }
   },
   {
     "slug": "005-the-eagle-who-waited-toon-part-2",
@@ -92,7 +137,16 @@
     "title": "Bird Banter #2: The Eagle Who Waited (Part 2/2)",
     "video_id": "S27zZaU8s_k",
     "privacy": "public",
-    "uploaded_at": "2026-11-04"
+    "uploaded_at": "2026-11-04",
+    "stats": {
+      "views": 0,
+      "averageViewPercentage": 0,
+      "averageViewDuration": 0,
+      "likes": 0,
+      "comments": 0,
+      "subscribersGained": 0,
+      "as_of": "2026-11-06"
+    }
   },
   {
     "slug": "005-the-eagle-who-waited-toon-part-1",
@@ -109,6 +163,15 @@
     "title": "Bird Banter #2: The Eagle Who Waited (Part 1/2)",
     "video_id": "E0ZNdSTos_Q",
     "privacy": "public",
-    "uploaded_at": "2026-11-04"
+    "uploaded_at": "2026-11-04",
+    "stats": {
+      "views": 0,
+      "averageViewPercentage": 0,
+      "averageViewDuration": 0,
+      "likes": 0,
+      "comments": 0,
+      "subscribersGained": 0,
+      "as_of": "2026-11-06"
+    }
   }
 ]

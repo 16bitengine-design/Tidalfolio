@@ -1,0 +1,933 @@
+{
+ "engine": "puppet",
+ "look": "toon",
+ "slug": "006-the-great-nut-heist-part-1",
+ "title": "Funny Animals #6: The Great Nut Heist (Part 1/3)",
+ "short_title": "The Great Nut Heist",
+ "series_part": {
+  "story": "Funny Animals #6: The Great Nut Heist",
+  "part": 1,
+  "of": 3
+ },
+ "thumbnail_scene": 2,
+ "voice": {
+  "kokoro": "bm_george"
+ },
+ "story": {
+  "lesson": "Desperation can lead to choices that seem right at the moment but only create bigger problems later.",
+  "cause": "no_options"
+ },
+ "uncommon_word": {
+  "word": "maverick",
+  "meaning": "an independent-minded person or animal"
+ },
+ "scenes": [
+  {
+   "narration": "Orrin the eagle discovered a stash of winter nuts, cleverly hidden beneath a pile of leaves. It gleamed like treasure.",
+   "world": "toon_day",
+   "camera": {
+    "x": 470,
+    "y": 1000,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.0
+      ],
+      [
+       "@end",
+       1.24
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "eagle",
+     "id": "key",
+     "scale": 0.9,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "who": "orrin",
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "bob": {
+      "sin": {
+       "amp": 2,
+       "rate": 1.8
+      }
+     },
+     "x": 300.0,
+     "y": 1024.0,
+     "flap": {
+      "rate": 0,
+      "amp": 0,
+      "rest": -0.3
+     },
+     "legs": true
+    }
+   ],
+   "popups": [
+    {
+     "text": "MINE!",
+     "at": "@gleamed",
+     "dur": 2.2,
+     "x": 430,
+     "y": 714,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.45,
+    "pluck": {
+     "step": 1.6,
+     "notes": [
+      0,
+      3,
+      2,
+      4
+     ],
+     "vol": 0.5
+    }
+   }
+  },
+  {
+   "narration": "He had long flown far and wide, but never had he found such a bounty. The squirrels would be thrilled.",
+   "world": "toon_day",
+   "camera": {
+    "x": 470,
+    "y": 1000,
+    "z": 1.0
+   },
+   "things": [
+    {
+     "type": "eagle",
+     "id": "key",
+     "scale": 0.9,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "who": "orrin",
+     "eye": "open",
+     "brow": [
+      -6,
+      -4
+     ],
+     "beak": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@such a bounty.",
+       "to": "@The squirrels would be thrilled."
+      }
+     },
+     "bob": {
+      "sin": {
+       "amp": 2,
+       "rate": 1.8
+      }
+     },
+     "x": 300.0,
+     "y": 1024.0,
+     "flap": {
+      "rate": 0,
+      "amp": 0,
+      "rest": -0.3
+     },
+     "legs": true
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.45,
+    "pluck": {
+     "step": 1.6,
+     "notes": [
+      0,
+      3,
+      2,
+      4
+     ],
+     "vol": 0.5
+    }
+   }
+  },
+  {
+   "narration": "Meanwhile, two squirrels watched from a distance, their eyes wide with hunger and mischief. This was their chance.",
+   "world": "toon_day",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       330
+      ],
+      [
+       "@end",
+       470
+      ]
+     ]
+    },
+    "y": 960,
+    "z": 1.0
+   },
+   "things": [
+    {
+     "type": "tree",
+     "x": 640,
+     "base": 1285,
+     "top": 560
+    },
+    {
+     "type": "poly",
+     "pts": [
+      [
+       610,
+       930
+      ],
+      [
+       340,
+       880
+      ],
+      [
+       336,
+       910
+      ],
+      [
+       610,
+       990
+      ]
+     ],
+     "fill": [
+      104,
+      74,
+      50
+     ],
+     "w": 4,
+     "seed": 70
+    },
+    {
+     "type": "line",
+     "pts": [
+      [
+       430,
+       930
+      ],
+      [
+       400,
+       1000
+      ]
+     ],
+     "w": 4,
+     "seed": 71
+    },
+    {
+     "type": "line",
+     "pts": [
+      [
+       530,
+       950
+      ],
+      [
+       560,
+       1000
+      ]
+     ],
+     "w": 4,
+     "seed": 72
+    },
+    {
+     "type": "squirrel",
+     "id": "key2",
+     "scale": 0.8,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "hat": "bowler",
+     "bounce": {
+      "sin": {
+       "amp": 2,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      -0.6,
+      0
+     ],
+     "y": 884.0,
+     "x": 575.0
+    },
+    {
+     "type": "squirrel",
+     "id": "key2",
+     "scale": 0.8,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "hat": "bowler",
+     "bounce": {
+      "sin": {
+       "amp": 2,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 864.0,
+     "x": 465.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.7,
+    "pluck": {
+     "step": 0.9,
+     "notes": [
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.6
+    }
+   }
+  },
+  {
+   "narration": "One squirrel whispered, \"What if we distract him, and the other sneaks in to grab a few?\"",
+   "world": "toon_day",
+   "camera": {
+    "x": 400,
+    "y": 960,
+    "z": 1.0
+   },
+   "things": [
+    {
+     "type": "tree",
+     "x": 640,
+     "base": 1285,
+     "top": 560
+    },
+    {
+     "type": "poly",
+     "pts": [
+      [
+       610,
+       930
+      ],
+      [
+       340,
+       880
+      ],
+      [
+       336,
+       910
+      ],
+      [
+       610,
+       990
+      ]
+     ],
+     "fill": [
+      104,
+      74,
+      50
+     ],
+     "w": 4,
+     "seed": 70
+    },
+    {
+     "type": "line",
+     "pts": [
+      [
+       430,
+       930
+      ],
+      [
+       400,
+       1000
+      ]
+     ],
+     "w": 4,
+     "seed": 71
+    },
+    {
+     "type": "line",
+     "pts": [
+      [
+       530,
+       950
+      ],
+      [
+       560,
+       1000
+      ]
+     ],
+     "w": 4,
+     "seed": 72
+    },
+    {
+     "type": "squirrel",
+     "id": "key2",
+     "scale": 0.8,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "hat": "bowler",
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@What if we distract him,",
+       "to": "@and the other sneaks in to grab a few?"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 2,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 884.0,
+     "x": 575.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.7,
+    "pluck": {
+     "step": 0.9,
+     "notes": [
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.6
+    }
+   }
+  },
+  {
+   "narration": "The other squirrel nodded, a mischievous grin spreading across his face. He was always the maverick of the duo.",
+   "world": "toon_day",
+   "camera": {
+    "x": 400,
+    "y": 960,
+    "z": 1.0
+   },
+   "things": [
+    {
+     "type": "tree",
+     "x": 640,
+     "base": 1285,
+     "top": 560
+    },
+    {
+     "type": "poly",
+     "pts": [
+      [
+       610,
+       930
+      ],
+      [
+       340,
+       880
+      ],
+      [
+       336,
+       910
+      ],
+      [
+       610,
+       990
+      ]
+     ],
+     "fill": [
+      104,
+      74,
+      50
+     ],
+     "w": 4,
+     "seed": 70
+    },
+    {
+     "type": "line",
+     "pts": [
+      [
+       430,
+       930
+      ],
+      [
+       400,
+       1000
+      ]
+     ],
+     "w": 4,
+     "seed": 71
+    },
+    {
+     "type": "line",
+     "pts": [
+      [
+       530,
+       950
+      ],
+      [
+       560,
+       1000
+      ]
+     ],
+     "w": 4,
+     "seed": 72
+    },
+    {
+     "type": "squirrel",
+     "id": "key2",
+     "scale": 0.8,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "hat": "bowler",
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@the maverick",
+       "to": "@of the duo."
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 6,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 864.0,
+     "x": 465.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.7,
+    "pluck": {
+     "step": 0.9,
+     "notes": [
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.6
+    }
+   }
+  },
+  {
+   "narration": "They approached Orrin, weaving a fantastic tale of a treasure far beyond what he could imagine.",
+   "world": "toon_day",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       540
+      ],
+      [
+       "@end",
+       400
+      ]
+     ]
+    },
+    "y": 1000,
+    "z": 1.0
+   },
+   "things": [
+    {
+     "type": "squirrel",
+     "id": "key2",
+     "scale": 0.8,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "hat": "bowler",
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@of a treasure",
+       "to": "@far beyond what he could imagine."
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 2,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1172.8,
+     "x": 300.0
+    },
+    {
+     "type": "eagle",
+     "id": "key",
+     "scale": 0.9,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "who": "orrin",
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "bob": {
+      "sin": {
+       "amp": 2,
+       "rate": 1.8
+      }
+     },
+     "x": 300.0,
+     "y": 1024.0,
+     "flap": {
+      "rate": 0,
+      "amp": 0,
+      "rest": -0.3
+     },
+     "legs": true
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.8,
+    "pluck": {
+     "step": 0.8,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 0.9
+    }
+   }
+  },
+  {
+   "narration": "Orrin listened, intrigued but cautious. He sensed something was off. But he was hungry, too. Was it worth the risk?",
+   "world": "toon_day",
+   "camera": {
+    "x": 470,
+    "y": 1000,
+    "z": 1.0
+   },
+   "things": [
+    {
+     "type": "squirrel",
+     "id": "key2",
+     "scale": 0.8,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "hat": "bowler",
+     "bounce": {
+      "sin": {
+       "amp": 2,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1172.8,
+     "x": 300.0
+    },
+    {
+     "type": "eagle",
+     "id": "key",
+     "scale": 0.9,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "who": "orrin",
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "bob": {
+      "sin": {
+       "amp": 3,
+       "rate": 18
+      }
+     },
+     "x": 300.0,
+     "y": 1024.0,
+     "flap": {
+      "rate": 0,
+      "amp": 0,
+      "rest": -0.3
+     },
+     "legs": true
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.7,
+    "pluck": {
+     "step": 0.9,
+     "notes": [
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.6
+    }
+   }
+  },
+  {
+   "narration": "Suddenly, something caught Orrin's eye. A squirrel was sneaking behind him. What was happening?",
+   "world": "toon_day",
+   "camera": {
+    "x": 470,
+    "y": 1000,
+    "z": 1.0
+   },
+   "things": [
+    {
+     "type": "squirrel",
+     "id": "key2",
+     "scale": 0.8,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "hat": "bowler",
+     "bounce": {
+      "sin": {
+       "amp": 2,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1172.8,
+     "x": 300.0
+    },
+    {
+     "type": "eagle",
+     "id": "key",
+     "scale": 0.9,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "who": "orrin",
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "bob": {
+      "sin": {
+       "amp": 3,
+       "rate": 18
+      }
+     },
+     "x": 300.0,
+     "y": 1024.0,
+     "flap": {
+      "rate": 0,
+      "amp": 0,
+      "rest": -0.3
+     },
+     "legs": true
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.7,
+    "pluck": {
+     "step": 0.9,
+     "notes": [
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.6
+    }
+   }
+  },
+  {
+   "narration": "The first squirrel gestured wildly, trying to keep Orrin distracted. Would they succeed?",
+   "world": "toon_day",
+   "camera": {
+    "x": 470,
+    "y": 1000,
+    "z": 1.0
+   },
+   "things": [
+    {
+     "type": "squirrel",
+     "id": "key2",
+     "scale": 0.8,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "hat": "bowler",
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@keep Orrin distracted.",
+       "to": "@Would they succeed?"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 6,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1172.8,
+     "x": 300.0
+    },
+    {
+     "type": "eagle",
+     "id": "key",
+     "scale": 0.9,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "who": "orrin",
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "bob": {
+      "sin": {
+       "amp": 2,
+       "rate": 1.8
+      }
+     },
+     "x": 300.0,
+     "y": 1024.0,
+     "flap": {
+      "rate": 0,
+      "amp": 0,
+      "rest": -0.3
+     },
+     "legs": true
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.7,
+    "pluck": {
+     "step": 0.9,
+     "notes": [
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.6
+    }
+   }
+  }
+ ],
+ "youtube": {
+  "description": "Discover what happens when an eagle and two squirrels find themselves in a desperate situation over a hidden stash of winter nuts.\n\nPart 1 of 3. Part 2 is next.",
+  "tags": [
+   "funny animals",
+   "eagle",
+   "squirrel",
+   "heist",
+   "adventure",
+   "friendship",
+   "absurdity",
+   "nature comedy"
+  ],
+  "pinned_comment": "Have you ever made a decision under pressure that you regretted later?",
+  "title": "Funny Animals #6: The Great Nut Heist (Part 1/3)"
+ },
+ "tiktok": {
+  "caption": "Part 1/3: When desperate times call for outrageous measures, who will come out on top?",
+  "hashtags": [
+   "#funnyanimals",
+   "#eagle",
+   "#squirrel",
+   "#heist",
+   "#adventure"
+  ]
+ }
+}
