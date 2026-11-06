@@ -21,7 +21,7 @@ def main():
     ap.add_argument("--count", type=int, default=0, help="write this many new stories")
     ap.add_argument("--idea")
     ap.add_argument("--parts", type=int, choices=[2, 3, 4], help="how many parts (default: random 2 to 4)")
-    ap.add_argument("--series", choices=["Bird Banter", "Funny Animals"])
+    ap.add_argument("--series", choices=["Funny People", "Bird Banter", "Funny Animals"])
     ap.add_argument("--storyboard", help="skip the AI: validate this storyboard JSON file and queue it")
     a = ap.parse_args()
     from puppet import storywriter as W

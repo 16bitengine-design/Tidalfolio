@@ -877,6 +877,9 @@ def bake_world(pal, seed=1):
             top_c = tuple(int(v) for v in sky.getpixel((int(bp(gx, gy)[0]), int(bp(gx, gy)[1] - rad * BS * 1.1))))[:3]
             dd_.ellipse([ox0, oy0, ox1, oy1], fill=top_c + (255,))
     sky = _tex(sky, seed + 1, 4, 10)
+    if pal.get("town"):                          # a human setting (street, park, kitchen ...) instead of the clifftop
+        from . import towns
+        return towns.bake_town(pal, sky, seed)
 
     def ridge(base_y, amp, cols, depth_seed, ink_w, n=14):
         im = Image.new("RGBA", (BW, BH), (0, 0, 0, 0))

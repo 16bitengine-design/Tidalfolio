@@ -197,7 +197,7 @@ def _thing(d, th, u, clk, pos):
     x = g("x", 0.0)
     y = g("y")
     if y is None:
-        y = ledge_y(s) if typ == "eagle" else (1240 - 84 * s if typ in ("squirrel", "cat", "fox", "rabbit") else 0.0)
+        y = ledge_y(s) if typ == "eagle" else (1240 - 84 * s if typ in ("squirrel", "cat", "fox", "rabbit") else (1240.0 if typ == "human" else 0.0))
     if "attach" in th:        # follow another thing: {"to": id, "dx": .., "dy": ..}
         a = th["attach"]
         px, py = pos[a["to"]]
@@ -222,6 +222,12 @@ def _thing(d, th, u, clk, pos):
     elif typ in ("cat", "fox", "rabbit"):
         E.critter(d, x, y, s, face, t, kind=typ, coat=th.get("coat"), talk=g("talk", 0.0), eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
                   tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), hat=th.get("hat"), bounce=g("bounce", 0.0), mood=th.get("mood", "neutral"))
+    elif typ == "human":
+        from . import people
+        people.person(d, x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
+                      hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=g("talk", 0.0), eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
+                      tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=th.get("action", "stand"), mood=th.get("mood", "neutral"),
+                      bounce=g("bounce", 0.0), carry=th.get("carry"), seed=th.get("seed", 0))
     elif typ == "puff":
         E.puff(d, x, y, s, t, rgb(th.get("color"), (255, 226, 240)), th.get("seed", 1))
     elif typ == "sparkle":
@@ -285,5 +291,5 @@ def _end_card(img, u, D, script):
         layer(k * a / 255, lambda d: d.text(((W - d.textlength(text, font=f)) / 2, y + rise), text, font=f, fill=col + (255,)))
 
     centre("tidalfolio", 640, f1, (250, 240, 220), 0.4)
-    centre(script.get("tagline", "Funny animals. Wild moments. Endless smiles."), 790, f2, (255, 214, 120), 0.8)
+    centre(script.get("tagline") or ("Funny people. Wild moments. Endless smiles." if "human" in script.get("cast_species", []) else "Funny animals. Wild moments. Endless smiles."), 790, f2, (255, 214, 120), 0.8)
 

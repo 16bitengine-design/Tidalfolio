@@ -48,6 +48,12 @@ PRESETS.update({
                          glow=(700, 1010), glow_col=(255, 190, 90), disc=((255, 210, 70), 125, False), disc_style="rays", castle=(1040, 1000)),
 })
 
+from .towns import STAGES as TOWN_STAGES  # noqa: E402
+
+for _w in ("day", "dawn", "dusk", "storm", "night", "sunset"):      # every time of day in every human setting: "toon_day_street", ...
+    for _st in TOWN_STAGES:
+        PRESETS[f"toon_{_w}_{_st}"] = {**PRESETS[f"toon_{_w}"], "town": _st, "castle": None}
+
 _COLOR_KEYS = ("sky_top", "sky_bot", "far", "mid", "tree", "sea", "rock", "grass", "cloud", "mist", "glow_col")
 
 
@@ -59,6 +65,8 @@ def _norm(pal):
             out[k] = tuple(out[k])
     if out.get("castle"):
         out["castle"] = tuple(out["castle"])
+    else:
+        out.pop("castle", None)
     if "glow" in out:
         out["glow"] = tuple(out["glow"])
     if out.get("disc"):
