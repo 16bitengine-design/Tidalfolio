@@ -434,6 +434,156 @@ def squirrel(d, x, y, s=1.0, f=1, t=0.0, talk=0.0, item=None, look=(0, 0), hat=N
             blob(d, cx_ + ox * s, cy_ + oy * s, 15 * s, 13 * s, (255, 242, 200), 2.6 * s, seed=int(ox + 100))
 
 
+COATS = {   # body, belly, accent (ear tips / socks / inner ear)
+    "cat": {"ginger": ((236, 168, 72), (255, 236, 200), (240, 150, 150)), "grey": ((142, 148, 166), (228, 230, 238), (236, 160, 170)),
+            "black": ((72, 66, 96), (132, 124, 156), (214, 130, 160)), "white": ((246, 242, 234), (255, 252, 246), (244, 170, 180))},
+    "fox": {"red": ((206, 96, 40), (252, 238, 214), (58, 36, 40))},
+    "rabbit": {"grey": ((178, 166, 152), (236, 226, 214), (240, 170, 176)), "white": ((248, 246, 242), (255, 252, 248), (246, 176, 186)),
+              "brown": ((172, 120, 78), (240, 214, 180), (240, 170, 160))},
+}
+CRITTER_EYE = {"cat": (168, 204, 72), "fox": (236, 170, 40), "rabbit": (86, 52, 40)}
+
+
+def critter(d, x, y, s=1.0, f=1, t=0.0, kind="cat", coat=None, talk=0.0, eye="open", brow=(0, 0), tear=0.0, look=(0, 0), hat=None,
+            bounce=0.0, mood="neutral"):
+    """Cat, fox or rabbit sitting upright (same footprint as the squirrel: feet at y + 84 s)."""
+    coats = COATS[kind]
+    col, belly, acc = coats.get(coat) or next(iter(coats.values()))
+    col, belly = punch(col), punch(belly)
+
+    def L(lx, ly):
+        return (x + f * lx * s, y + ly * s + bounce)
+
+    def LB(cx, cy, rx, ry, c, w, ang, seed):
+        px_, py_ = L(cx, cy)
+        lit(d, px_, py_, rx * s, ry * s, c, w, ang * f, seed, light=(-0.18 * f, -0.2))
+
+    sway = math.sin(t * 3.0) * 0.12
+    # ---- tail (behind the body)
+    def smooth(pts, n=2):
+        for _ in range(n):
+            q = [pts[0]]
+            for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+                q += [(0.75 * x0 + 0.25 * x1, 0.75 * y0 + 0.25 * y1), (0.25 * x0 + 0.75 * x1, 0.25 * y0 + 0.75 * y1)]
+            pts = q + [pts[-1]]
+        return pts
+
+    if kind == "cat":
+        pts = smooth([(-36, 64), (-84, 58), (-116, 20), (-118, -34 + sway * 60), (-96, -84 + sway * 90)])
+        stroke(d, [L(*p) for p in pts], INK, 31 * s, 300, 0.0)
+        stroke(d, [L(*p) for p in pts], col, 22 * s, 301, 0.0)
+        blob(d, *L(*pts[-1]), 11.5 * s, 11.5 * s, col, 3 * s, seed=302)
+        blob(d, *L(*pts[0]), 11 * s, 11 * s, col, 0, seed=303)
+    elif kind == "fox":
+        pts = smooth([(-30, 62), (-84, 66), (-112, 36), (-116, -10 + sway * 50), (-100, -56 + sway * 80)], 2)
+        stroke(d, [L(*p) for p in pts], INK, 42 * s, 303, 0.0)
+        stroke(d, [L(*p) for p in pts], col, 34 * s, 304, 0.0)
+        blob(d, *L(*pts[-1]), 21 * s, 21 * s, (252, 248, 240), 3.6 * s, seed=305)
+        blob(d, *L(*pts[0]), 17 * s, 17 * s, col, 0, seed=306)
+    else:
+        blob(d, *L(-58, 44), 22 * s, 22 * s, (250, 248, 244), 3.4 * s, seed=305)
+    # ---- feet, body, belly, arm
+    for fx_, fw in ((-12, 27), (34, 25)):
+        blob(d, *L(fx_, 78), fw * s, 12 * s, shade(col, -0.06), 3.2 * s, seed=306 + fx_)
+    LB(0, 4, 56, 76, col, 4 * s, 0.0, 310)
+    LB(14, 20, 32, 52, belly, 3 * s, 0.0, 311)
+    LB(30, 22, 14, 32, col, 3 * s, 0.35, 312)
+    blob(d, *L(36, 48), 13 * s, 9 * s, belly if kind == "cat" else shade(col, 0.04), 2.8 * s, seed=313)
+    if kind == "fox":
+        blob(d, *L(36, 50), 13 * s, 10 * s, acc, 2.8 * s, seed=314)
+    # ---- ears (behind the head)
+    if kind == "cat":
+        far, near = [L(-16, -128), L(-26, -198), L(24, -142)], [L(30, -140), L(60, -200), L(68, -120)]
+        far_in, near_in = [L(-12, -138), L(-20, -182), L(12, -146)], [L(38, -146), L(58, -184), L(62, -130)]
+    elif kind == "fox":
+        far, near = [L(-12, -130), L(-26, -218), L(26, -142)], [L(30, -142), L(66, -222), L(76, -118)]
+        far_in, near_in = [L(-8, -140), L(-20, -196), L(14, -148)], [L(38, -148), L(64, -202), L(68, -130)]
+    else:
+        far, near = [L(-8, -136), L(-22, -262), L(22, -140)], [L(26, -140), L(50, -266), L(62, -128)]
+        far_in, near_in = [L(-4, -150), L(-14, -246), L(14, -152)], [L(32, -152), L(48, -250), L(54, -136)]
+    inked(d, far, shade(col, -0.08), 3.6 * s, 320, 0.8)
+    inked(d, far_in, acc if kind != "fox" else shade(col, -0.2), 0, 321, 0.3)
+    # ---- head
+    if kind == "fox":
+        LB(14, -96, 50, 45, col, 4 * s, 0.0, 322)
+        inked(d, [L(40, -112), L(118, -86), L(44, -66)], col, 4 * s, 323, 0.8)
+        inked(d, [L(42, -86), L(104, -80), L(46, -66)], belly, 0, 324, 0.4)
+        blob(d, *L(118, -86), 10 * s, 9 * s, INK, 0, seed=325)
+    elif kind == "rabbit":
+        LB(16, -96, 47, 46, col, 4 * s, 0.0, 322)
+        LB(40, -80, 26, 20, belly, 3 * s, 0.0, 323)
+        inked(d, [L(54, -96), L(66, -96), L(60, -86)], acc, 2.4 * s, 324, 0.3)
+    else:
+        LB(16, -96, 57, 47, col, 4 * s, 0.0, 322)
+        LB(42, -80, 27, 20, belly, 3 * s, 0.0, 323)
+        inked(d, [L(50, -98), L(64, -98), L(57, -88)], acc, 2.4 * s, 324, 0.3)
+    if kind == "cat" and coat in (None, "ginger"):     # tabby stripes
+        for k, (sx_, sy_) in enumerate([(4, -138), (22, -142), (40, -138)]):
+            stroke(d, [L(sx_, sy_), L(sx_ + 2, sy_ + 16)], shade(col, -0.34), 5 * s, 330 + k, 0.4)
+    # ---- ears (front)
+    inked(d, near, col, 3.6 * s, 326, 0.8)
+    inked(d, near_in, acc if kind != "fox" else shade(col, -0.25), 0, 327, 0.3)
+    if kind == "fox":
+        inked(d, [L(66, -222), L(60, -200), L(72, -198)], INK, 0, 328, 0.2)
+    # ---- face
+    ex, ey = (30, -110) if kind != "cat" else (30, -108)
+    px, py = P(*L(ex, ey))
+    er = 14 if kind == "cat" else 12
+    wide = eye in ("wide", "spiral")
+    rx_, ry_ = er * (1.3 if wide else 1.0), er * (1.35 if wide else 1.18)
+    lw = max(1, int(S(lw_(3) * s)))
+    if eye == "closed" or blink(t + 0.7):
+        d.arc([px - S(rx_ * s), py - S(ry_ * 0.7 * s), px + S(rx_ * s), py + S(ry_ * 0.7 * s)], 20, 160, fill=INK, width=lw + 1)
+    elif eye == "happy":
+        d.arc([px - S(rx_ * s), py - S(ry_ * 0.2 * s), px + S(rx_ * s), py + S(ry_ * 1.2 * s)], 200, 340, fill=INK, width=lw + 2)
+    else:
+        d.ellipse([px - S(rx_ * s), py - S(ry_ * s), px + S(rx_ * s), py + S(ry_ * s)], fill=(255, 255, 250), outline=INK, width=lw)
+        ir = CRITTER_EYE[kind]
+        if eye == "spiral":
+            for k in range(14):
+                a1 = k * 0.9
+                r1 = (k + 1) * rx_ * 0.07 * s
+                d.line([(px + S(r1 * math.cos(a1)), py + S(r1 * math.sin(a1))), (px + S((r1 + rx_ * 0.07 * s) * math.cos(a1 + 0.9)), py + S((r1 + rx_ * 0.07 * s) * math.sin(a1 + 0.9)))], fill=INK, width=max(1, lw - 1))
+        else:
+            pr = 0.62 if eye != "wide" else 0.34
+            ox, oy = look[0] * 4 * f, look[1] * 3
+            d.ellipse([px - S(rx_ * 0.72 * s) + ox, py - S(ry_ * 0.8 * s) + oy, px + S(rx_ * 0.72 * s) + ox, py + S(ry_ * 0.8 * s) + oy], fill=ir)
+            pw = rx_ * (0.20 if kind == "cat" else 0.42) * (pr + 0.5)
+            d.ellipse([px - S(pw * s) + ox, py - S(ry_ * 0.62 * s) + oy, px + S(pw * s) + ox, py + S(ry_ * 0.62 * s) + oy], fill=(18, 12, 10))
+            d.ellipse([px - S(rx_ * 0.3 * s) + ox, py - S(ry_ * 0.5 * s) + oy, px - S(rx_ * 0.05 * s) + ox, py - S(ry_ * 0.22 * s) + oy], fill=(255, 255, 255))
+        if eye == "half":
+            d.polygon([(px - S(rx_ * s), py - S(ry_ * s)), (px + S(rx_ * s), py - S(ry_ * s)), (px + S(rx_ * s), py - S(ry_ * 0.05 * s)), (px - S(rx_ * s), py - S(ry_ * 0.05 * s))], fill=shade(col, -0.05))
+            d.line([(px - S(rx_ * s), py - S(ry_ * 0.05 * s)), (px + S(rx_ * s), py - S(ry_ * 0.05 * s))], fill=INK, width=lw + 1)
+    a_, b_ = brow
+    stroke(d, [L(ex - 16, ey - 24 + a_), L(ex + 2, ey - 28 + (a_ + b_) / 2), L(ex + 20, ey - 22 + b_)], INK, 5.5 * s, 340, 0.4)
+    if tear > 0:
+        tx_, ty_ = P(*L(ex + 6, ey + 22 + tear * 50))
+        d.ellipse([tx_ - S(7 * s), ty_ - S(12 * s), tx_ + S(7 * s), ty_ + S(12 * s)], fill=(150, 200, 235), outline=INK)
+    # mouth + whiskers
+    mx, my = (112, -80) if kind == "fox" else (58, -86)
+    if kind == "fox":
+        mx, my = 96, -72
+    if talk > 0 or eye == "wide":
+        o = max(talk, 0.45 if eye == "wide" else 0)
+        inked(d, [L(mx - 14, my + 2), L(mx + 2, my), L(mx - 6, my + 6 + 22 * o)], (96, 30, 36), 3 * s, 341, 0.4)
+    elif mood in ("happy", "smug"):
+        stroke(d, [L(mx - 16, my + 2), L(mx - 6, my + 10), L(mx + 4, my + 2)], INK, 3.4 * s, 342, 0.3)
+    elif mood in ("angry", "sad", "scared"):
+        stroke(d, [L(mx - 16, my + 8), L(mx - 6, my + 2), L(mx + 4, my + 8)], INK, 3.4 * s, 342, 0.3)
+    else:
+        stroke(d, [L(mx - 14, my + 4), L(mx + 4, my + 4)], INK, 3.2 * s, 342, 0.3)
+    if kind == "cat":
+        for k, (wx, wy) in enumerate([(104, -98), (110, -84), (102, -68)]):
+            stroke(d, [L(60, -84 + (k - 1) * 4), L(wx, wy)], INK, 2.2 * s, 343 + k, 0.4)
+    # ---- hat
+    if hat == "bowler":
+        hx = 6 if kind != "rabbit" else 12
+        top = -140 if kind == "cat" else -142
+        inked(d, [L(hx - 18, top), L(hx + 52, top), L(hx + 50, top - 36), L(hx + 34, top - 56), L(hx + 2, top - 56), L(hx - 14, top - 36)], (58, 52, 58), 4 * s, 344, 0.8)
+        inked(d, [L(hx - 38, top), L(hx + 70, top), L(hx + 70, top + 10), L(hx - 38, top + 10)], (44, 38, 44), 3.6 * s, 345, 0.5)
+        inked(d, [L(hx - 12, top - 10), L(hx + 48, top - 10), L(hx + 48, top - 2), L(hx - 12, top - 2)], (170, 60, 60), 0, 346, 0.3)
+
+
 def fish(d, x, y, s=1.0, f=1, ang=0.0):
     body = rot(ell_pts(0, 0, 74, 30, 0, 24), ang)
     inked(d, [(x + f * a * s, y + b * s) for a, b in body], (116, 168, 190), 3.6 * s, 301, 0.8)

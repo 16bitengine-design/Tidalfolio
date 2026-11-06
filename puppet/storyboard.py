@@ -11,7 +11,9 @@ Storyboard JSON:
   "uncommon_word": {"word": "indolent", "meaning": "lazy"},
   "cast": {"orrin": {"species": "eagle", "look": "orrin|dad|mom", "name": "Orrin"},
            "pip":   {"species": "squirrel", "hat": "bowler", "item": "popcorn"},
-           "moss":  {"species": "rabbit"}},
+           "tom":   {"species": "cat", "coat": "ginger|grey|black|white", "hat": "bowler"},
+           "rusty": {"species": "fox"},
+           "moss":  {"species": "rabbit", "coat": "grey|white|brown"}},
   "scenes": [ {
      "narration": "...", "world": "dawn|day|dusk|storm|night|sunset", "stage": "cliff|nest|tree",
      "camera": "hold|push_in|pull_back|pan_right|pan_left", "music": "calm|tense|sad|joyful", "silence_before": "words",
@@ -23,7 +25,7 @@ Storyboard JSON:
 """
 import re
 
-SPECIES = ("eagle", "squirrel", "rabbit")
+SPECIES = ("eagle", "squirrel", "rabbit", "cat", "fox")
 LOOKS = ("orrin", "dad", "mom")
 WORLDS = ("dawn", "day", "dusk", "storm", "night", "sunset")
 STAGES = ("cliff", "nest", "tree")
@@ -47,6 +49,7 @@ UNSAFE = re.compile(r"\b(fuck\w*|shit\w*|damn\w*|hell|bastard|bitch\w*|crap|ass|
 DEFINING = re.compile(r"fancy word|which means|that means|\bmeaning\b|in other words|another word for|a word for|the word\b|is a word", re.I)
 
 # eagle face per mood: eye, brow, tear
+CRITTER_EYE_MOOD = {"neutral": "open", "sleepy": "closed", "happy": "happy", "angry": "open", "scared": "wide", "sad": "open", "shocked": "wide", "smug": "half", "dizzy": "spiral"}
 EAGLE_MOOD = {
     "neutral": ("open", [0, 0], 0.0), "sleepy": ("closed", [8, 6], 0.0), "happy": ("open", [-6, -4], 0.0),
     "angry": ("open", [-8, 10], 0.0), "scared": ("wide", [-4, -4], 0.0), "sad": ("open", [10, -6], 0.55),
@@ -206,7 +209,7 @@ def _screen(wx, wy, cam):
 def _slot_xy(at, species, scale):
     x, y = SLOTS[at]
     if y is None:
-        y = {"eagle": 1240 - 240 * scale, "squirrel": 1240 - 84 * scale, "rabbit": 1236 - 40 * scale}[species]
+        y = {"eagle": 1240 - 240 * scale, "squirrel": 1240 - 84 * scale, "rabbit": 1240 - 84 * scale, "cat": 1240 - 84 * scale, "fox": 1240 - 84 * scale}[species]
     return float(x), float(y)
 
 
@@ -218,7 +221,7 @@ def _off(x, left_of=None):
 def _scale(species, at, crowd):
     if species == "eagle":
         return 0.6 if at.startswith("air") else (0.72 if crowd > 1 else 0.9)
-    return 0.8 if species == "squirrel" else 0.85
+    return {"squirrel": 0.8, "cat": 1.1, "fox": 1.06, "rabbit": 1.06}.get(species, 0.85)
 
 
 def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
@@ -297,6 +300,20 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
         rate, amp = {"scared": (30, 5), "angry": (22, 4), "happy": (5, 6), "shocked": (26, 5)}.get(mood, (2.5, 2))
         th["bounce"] = {"sin": {"amp": amp, "rate": rate, "phase": (hash(who) % 7) * 0.5}}
         th["look"] = [0.6 * face, 0]
+    elif sp in ("cat", "fox", "rabbit"):
+        if c.get("coat"):
+            th["coat"] = c["coat"]
+        if c.get("hat") in ("bowler",):
+            th["hat"] = c["hat"]
+        _, brow, tear = EAGLE_MOOD[mood]
+        th.update(eye=CRITTER_EYE_MOOD[mood], brow=brow, mood=mood)
+        if tear:
+            th["tear"] = {"kf": [[0, 0], [2.0, tear]]}
+        if action == "talk":
+            th["talk"] = {"sin": {"base": 0.5, "amp": 0.5, "rate": 10, "from": t_from, "to": t_to}}
+        rate, amp = {"scared": (30, 5), "angry": (22, 4), "happy": (5, 6), "shocked": (26, 5)}.get(mood, (2.5, 2))
+        th["bounce"] = {"sin": {"amp": amp, "rate": rate, "phase": (hash(who) % 7) * 0.5}}
+        th["look"] = [0.6 * face, 0]
     if action == "hop":
         hop = {"amp": -60, "rate": 9}
         th["y"] = {"base": y, "sin": {**hop, "fn": "sin"}}
@@ -353,7 +370,7 @@ def _compile_scenes(scene_list, cast):
         crowd = sum(1 for a in actors if a.get("at", "ground_mid") in GROUND and cast[a["who"]]["species"] == "eagle")
         things = _stage_things(stage)
         pos = {}
-        for a in sorted(actors, key=lambda q: 0 if cast[q["who"]]["species"] == "squirrel" else 1):   # squirrels behind eagles
+        for a in sorted(actors, key=lambda q: 0 if cast[q["who"]]["species"] != "eagle" else 1):   # everyone else stands behind the eagles
             for th in _actor_things(a, cast, sc, crowd, centre_x, None):
                 things.append(th)
             at = a.get("at", "ground_mid")
@@ -364,7 +381,7 @@ def _compile_scenes(scene_list, cast):
         for p in sc.get("popups") or []:
             who = p.get("near") or (actors[0]["who"] if actors else None)
             (wx, wy), s, sp = pos.get(who, ((330, 1000), 1.0, "eagle"))
-            above = {"eagle": 300, "squirrel": 190, "rabbit": 150}[sp] * s
+            above = {"eagle": 300, "squirrel": 190, "rabbit": 250, "cat": 220, "fox": 240}[sp] * s
             sx, sy = _screen(wx, wy - above, cam_base)
             sx = max(230, min(850, sx + (60 if p.get("kind") == "burst" else 0)))
             sy = max(330, min(1300, sy))
@@ -412,7 +429,7 @@ def compile_storyboard(sb, number=None):
         tt["caption"] = f"Part {pi}/{n}: " + tt.get("caption", "")
         slug = f"{number:03d}-{_slug(title)}-part-{pi}" if number else f"{_slug(title)}-part-{pi}"
         out.append({
-            "engine": "puppet", "look": "toon", "slug": slug, "title": f"{title} (Part {pi}/{n})", "short_title": title,
+            "engine": "puppet", "look": "toon", "cast_species": sorted({c["species"] for c in sb["cast"].values()}), "slug": slug, "title": f"{title} (Part {pi}/{n})", "short_title": title,
             "series_part": {"story": title, "part": pi, "of": n},
             "thumbnail_scene": max(1, min(len(scenes), int(part.get("thumbnail_scene", 2)))),
             "voice": {"kokoro": "bm_george"},

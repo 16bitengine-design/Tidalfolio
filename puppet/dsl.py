@@ -197,7 +197,7 @@ def _thing(d, th, u, clk, pos):
     x = g("x", 0.0)
     y = g("y")
     if y is None:
-        y = ledge_y(s) if typ == "eagle" else (1240 - 84 * s if typ == "squirrel" else 0.0)
+        y = ledge_y(s) if typ == "eagle" else (1240 - 84 * s if typ in ("squirrel", "cat", "fox", "rabbit") else 0.0)
     if "attach" in th:        # follow another thing: {"to": id, "dx": .., "dy": ..}
         a = th["attach"]
         px, py = pos[a["to"]]
@@ -219,8 +219,9 @@ def _thing(d, th, u, clk, pos):
                    bounce=g("bounce", 0.0))
     elif typ == "fish":
         E.fish(d, x, y, s, face, g("ang", 0.0))
-    elif typ == "rabbit":
-        E.rabbit(d, x, y, s)
+    elif typ in ("cat", "fox", "rabbit"):
+        E.critter(d, x, y, s, face, t, kind=typ, coat=th.get("coat"), talk=g("talk", 0.0), eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
+                  tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), hat=th.get("hat"), bounce=g("bounce", 0.0), mood=th.get("mood", "neutral"))
     elif typ == "puff":
         E.puff(d, x, y, s, t, rgb(th.get("color"), (255, 226, 240)), th.get("seed", 1))
     elif typ == "sparkle":

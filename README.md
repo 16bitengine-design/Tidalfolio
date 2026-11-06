@@ -165,3 +165,9 @@ and aims its hooks, pacing and themes at what held viewers, and (3) picks the nu
 people do not come back for Part 2). It needs ONE YouTube refresh token authorised for all four permissions:
 `https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly`
 (steps 1 to 5 above, but paste all four scopes in the OAuth Playground; replace the `YT_REFRESH_TOKEN` secret with the new token). Learning starts once 4 public videos are at least 2 days old.
+
+## Puppet videos: length, voice and cast (current rules)
+
+- **Every part runs 45 to 60 seconds** (about 68 to 82 words in 6 to 8 scenes). The writer measures the real narration and rewrites any part outside that window.
+- **One steady narration pace** (Kokoro, `bm_george`, one speed for every sentence). No speeding up on long sentences.
+- **A different lead animal in every story**: eagle, squirrel, cat, fox or rabbit, never the same lead as the story before. Stories are written in stages (plan, then each part) with a stronger model (`gpt-4o`; set the repo variable `OPENAI_TEXT_MODEL` to change it, for example to `gpt-4o-mini` to save money).
