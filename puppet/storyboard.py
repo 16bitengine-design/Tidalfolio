@@ -69,7 +69,24 @@ SLOTS = {   # name: (world x, world y or None = standing on the cliff)
 GROUND = ("ground_left", "ground_mid", "ground_right")
 BRANCH = ("branch_a", "branch_b")
 CAM_BASE = {"cliff": (470, 1000), "nest": (470, 1000), "tree": (400, 960), **{st: (300, 1100) for st in TW.STAGES}}
-FIRST_PERSON = re.compile(r"(?<![\w'])(I|I'm|I'd|I'll|I've|me|my|mine|we|we're|our|us)(?![\w'])")
+FIRST_PERSON = re.compile(r"(?<![\w'])(I|I'm|I'd|I'll|I've|me|my|we|we're|our|us)(?![\w'])")   # no 'mine': it is also a noun (a gold mine)
+
+
+def strip_quoted(text):
+    """Remove quoted speech (straight or curly quotes, balanced or left open) so only the narrator's own words remain."""
+    t = (text or "").replace("“", '"').replace("”", '"')
+    t = re.sub(r'"[^"]*"', " ", t)                       # balanced "..." pairs
+    t = re.sub(r'"[^"]*$', " ", t)                       # a quote opened and never closed: the rest is speech
+    t = re.sub(r"(?<![\w])‘[^’]*’", " ", t)   # curly single-quoted speech
+    return t
+
+
+def sentence_around(text, match):
+    """The whole sentence containing a regex match, trimmed for an error message."""
+    start = max(text.rfind(c, 0, match.start()) for c in ".!?") + 1
+    ends = [i for i in (text.find(c, match.end()) for c in ".!?") if i != -1]
+    end = (min(ends) + 1) if ends else len(text)
+    return text[start:end].strip()[:160]
 MAX_WORDS_BUBBLE = 4
 # words that do not belong on an all-ages channel (checked in narration and pop-ups)
 UNSAFE = re.compile(r"\b(fuck\w*|shit\w*|damn\w*|hell|bastard|bitch\w*|crap|ass|asshole|piss\w*|dick|sex\w*|naked|drunk|beer|wine|vodka|whisky|"
@@ -179,12 +196,13 @@ def _check_scenes(scenes, cast, pre=""):
         if not isinstance(nar, str) or _w(nar) < 8:
             bad.append(f"{where}: narration is missing or too short.")
             continue
-        if not re.search(r"[.!?]\"?$", nar.strip()):
+        if not re.search(r"[.!?][\"”]?$", nar.strip()):
             bad.append(f"{where}: narration must end with . ! or ?")
-        unquoted = re.sub(r'"[^"]*"', "", nar)
+        unquoted = strip_quoted(nar)
         m = FIRST_PERSON.search(unquoted)
         if m:
-            bad.append(f"{where}: the narrator must never mention himself ('{m.group(0)}'). Tell it in the third person; only quoted speech may use I/me/we.")
+            bad.append(f"{where}: the narrator must never mention himself ('{m.group(0)}') in this sentence: \"{sentence_around(unquoted, m)}\". "
+                       "Rewrite that sentence in the third person (he, she, the driver); only words inside double quotation marks may use I/me/we.")
         popup_text = " ".join(p.get("text", "") for p in sc.get("popups") or [])
         mu = UNSAFE.search(nar + " " + popup_text)
         if mu:
