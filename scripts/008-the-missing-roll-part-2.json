@@ -1,0 +1,1203 @@
+{
+ "engine": "puppet",
+ "look": "toon",
+ "cast_species": [
+  "human"
+ ],
+ "cast_roles": [
+  "baker",
+  "mechanic",
+  "grandmother"
+ ],
+ "cast_lead": {
+  "role": "baker",
+  "gender": "female"
+ },
+ "slug": "008-the-missing-roll-part-2",
+ "title": "The Missing Roll (Part 2/3)",
+ "short_title": "The Missing Roll",
+ "series_part": {
+  "story": "The Missing Roll",
+  "part": 2,
+  "of": 3
+ },
+ "thumbnail_scene": 4,
+ "voice": {
+  "kokoro": "bm_george"
+ },
+ "story": {
+  "lesson": "Accusing someone is easy; asking why takes longer and costs more.",
+  "cause": "believed"
+ },
+ "uncommon_word": {},
+ "scenes": [
+  {
+   "narration": "The baker arrived at five, rolling pin raised. An old woman sat soaked on a flour sack.",
+   "world": "toon_dawn_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      "@The baker arrived-0.3",
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "stand",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": {
+      "base": 1240.0,
+      "sin": {
+       "amp": -3,
+       "rate": 10,
+       "to": "@The baker arrived+1.4"
+      }
+     },
+     "x": {
+      "kf": [
+       [
+        "@The baker arrived-0.3",
+        -300.0
+       ],
+       [
+        "@The baker arrived+1.4",
+        130.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "human",
+     "id": "grandmother",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandmother",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "white",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "stand",
+     "seed": 11,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "\"My husband baked here forty years,\" she said. \"The first roll was always mine.\"",
+   "world": "toon_dawn_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "grandmother",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandmother",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "white",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "talk",
+     "seed": 11,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@My husband baked",
+       "to": "@always mine"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    },
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "stand",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      41,
+      48,
+      53,
+      57
+     ],
+     [
+      43,
+      50,
+      55,
+      58
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ]
+    ],
+    "pluck": {
+     "step": 2.3,
+     "notes": [
+      4,
+      3,
+      2,
+      1,
+      0,
+      0
+     ],
+     "vol": 0.55,
+     "scale": [
+      57,
+      60,
+      62,
+      64,
+      67,
+      69
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "sad"
+  },
+  {
+   "narration": "\"He always left a coin,\" she said. \"He said free bread goes stale in the heart.\"",
+   "world": "toon_dawn_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "grandmother",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandmother",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "white",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "talk",
+     "seed": 11,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@He always left",
+       "to": "@in the heart"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    },
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "think",
+     "seed": 9,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "The mechanic walked in, toolbox swinging. He had fixed that lock himself. Badly, and on purpose.",
+   "world": "toon_dawn_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "point",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "grandmother",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandmother",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "white",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "stand",
+     "seed": 11,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "mechanic",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      "@The mechanic walked in-0.3",
+      null
+     ],
+     "role": "mechanic",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "black",
+     "extras": [
+      "beard"
+     ],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "shrug",
+     "seed": 41,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": {
+      "base": 1240.0,
+      "sin": {
+       "amp": -3,
+       "rate": 10,
+       "to": "@The mechanic walked in+1.4"
+      }
+     },
+     "x": {
+      "kf": [
+       [
+        "@The mechanic walked in-0.3",
+        900.0
+       ],
+       [
+        "@The mechanic walked in+1.4",
+        470.0
+       ]
+      ]
+     }
+    }
+   ],
+   "popups": [
+    {
+     "text": "YOU KNEW?",
+     "at": "@Badly, and on purpose",
+     "dur": 2.2,
+     "x": 130,
+     "y": 732,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "The baker, who was meticulous about everything, wrapped a clean towel around the old woman and said nothing.",
+   "world": "toon_dawn_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "stand",
+     "seed": 9,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "grandmother",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandmother",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "white",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "stand",
+     "seed": 11,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "She left a coin and walked into the storm. Her cane stayed on the counter.",
+   "world": "toon_storm_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "tremble",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "grandmother",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      "@walked into the storm+1.5"
+     ],
+     "role": "grandmother",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "white",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "stand",
+     "seed": 11,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": {
+      "base": 1240.0,
+      "sin": {
+       "amp": -3,
+       "rate": 10,
+       "from": "@walked into the storm"
+      }
+     },
+     "x": {
+      "kf": [
+       [
+        "@walked into the storm",
+        470.0
+       ],
+       [
+        "@walked into the storm+1.4",
+        900.0
+       ]
+      ]
+     }
+    }
+   ],
+   "popups": [
+    {
+     "text": "THE CANE!",
+     "at": "@cane stayed",
+     "dur": 2.2,
+     "x": 170,
+     "y": 690,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  }
+ ],
+ "youtube": {
+  "description": "A baker counts forty-two rolls every morning, and today there are forty-one. She knows exactly who took it. She is wrong, and what she finds at four in the morning is not what she expected.\n\nPart 2 of 3. Part 3 is next.",
+  "tags": [
+   "funny stories",
+   "everyday life",
+   "bakery",
+   "short story",
+   "animated story",
+   "storytime",
+   "comedy",
+   "heartwarming"
+  ],
+  "pinned_comment": "Who is the one person you would never think to ask 'why' before blaming?",
+  "title": "The Missing Roll (Part 2/3)"
+ },
+ "tiktok": {
+  "caption": "Part 2/3: One roll goes missing every night. She blames the wrong man.",
+  "hashtags": [
+   "#storytime",
+   "#funnystories",
+   "#everydaylife",
+   "#animatedstory",
+   "#bakery"
+  ]
+ }
+}

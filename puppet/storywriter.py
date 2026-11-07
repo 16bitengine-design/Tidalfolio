@@ -318,7 +318,7 @@ Reply with ONE JSON object with exactly these keys:
 PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "scenes": [ 6 to 8 scenes, each in exactly the scene format given in the instructions ]}. '
               "Use the cast keys exactly as planned. The timing phrases ('from', 'to', 'enter', 'exit', 'at', 'silence_before') must be copied EXACTLY from the NARRATOR's words in that same scene, "
               "never from what a character says in a speech bubble; if you are not sure, leave them out. 'mood' must be one of neutral, sleepy, happy, angry, scared, sad, shocked, smug, dizzy; "
-              "'action' one of stand, talk, hop, flap.")
+              "'action' one of stand, talk, hop, flap, point, shrug, cheer, facepalm, think, laugh, tremble ('go' optional: a ground spot to walk to).")
 
 
 def _part_rules(k, n, word, uw_part, bible=None):

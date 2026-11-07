@@ -1,0 +1,916 @@
+{
+ "engine": "puppet",
+ "look": "toon",
+ "cast_species": [
+  "human"
+ ],
+ "cast_roles": [
+  "baker",
+  "mechanic",
+  "grandmother"
+ ],
+ "cast_lead": {
+  "role": "baker",
+  "gender": "female"
+ },
+ "slug": "008-the-missing-roll-part-1",
+ "title": "The Missing Roll (Part 1/3)",
+ "short_title": "The Missing Roll",
+ "series_part": {
+  "story": "The Missing Roll",
+  "part": 1,
+  "of": 3
+ },
+ "thumbnail_scene": 6,
+ "voice": {
+  "kokoro": "bm_george"
+ },
+ "story": {
+  "lesson": "Accusing someone is easy; asking why takes longer and costs more.",
+  "cause": "believed"
+ },
+ "uncommon_word": {
+  "word": "meticulous",
+  "meaning": "careful about every detail"
+ },
+ "scenes": [
+  {
+   "narration": "Every morning the baker counted her rolls. Forty-two, always. This morning, forty-one.",
+   "world": "toon_dawn_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "point",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "FORTY-ONE",
+     "at": "@This morning, forty-one",
+     "dur": 2.2,
+     "x": 340,
+     "y": 690,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "She searched for crumbs, footprints, a confession. All she found was one small coin.",
+   "world": "toon_dawn_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      -8,
+      10
+     ],
+     "mood": "angry",
+     "action": "think",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 2.5,
+       "rate": 22,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "A COIN?",
+     "at": "@one small coin",
+     "dur": 2.2,
+     "x": 300,
+     "y": 690,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      41,
+      47,
+      53,
+      59
+     ],
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      39,
+      46,
+      51,
+      58
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.3
+    },
+    "pluck": {
+     "step": 2.0,
+     "notes": [
+      0,
+      5,
+      2,
+      6,
+      1
+     ],
+     "vol": 0.55,
+     "scale": [
+      76,
+      77,
+      82,
+      83,
+      88,
+      89,
+      94
+     ],
+     "len": 2.6
+    }
+   },
+   "tone": "eerie"
+  },
+  {
+   "narration": "Across the street, one man had greasy hands and no alibi.",
+   "world": "toon_day_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      -8,
+      10
+     ],
+     "mood": "angry",
+     "action": "point",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 2.5,
+       "rate": 22,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "mechanic",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mechanic",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "black",
+     "extras": [
+      "beard"
+     ],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 41,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "WHO, ME?",
+     "at": "@no alibi",
+     "dur": 2.2,
+     "x": 470,
+     "y": 760,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "\"Forty-one,\" she told the mechanic, waving a clipboard. \"Explain yourself.\" He studied the sky.",
+   "world": "toon_day_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      -8,
+      10
+     ],
+     "mood": "angry",
+     "action": "talk",
+     "seed": 9,
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@she told the mechanic",
+       "to": "@Explain yourself"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 2.5,
+       "rate": 22,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "mechanic",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mechanic",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "black",
+     "extras": [
+      "beard"
+     ],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "think",
+     "seed": 41,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "That evening, she balanced a bucket above the back door and went home smiling.",
+   "world": "toon_dusk_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [
+      "bun"
+     ],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "cheer",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "GOTCHA",
+     "at": "@balanced a bucket",
+     "dur": 2.2,
+     "x": 340,
+     "y": 690,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "At four, the back door creaked. The bucket tipped. Someone gasped, and it was not him.",
+   "world": "toon_night_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "grandmother",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandmother",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "white",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "mood": "scared",
+     "action": "tremble",
+     "seed": 11,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 30,
+       "phase": 2.5
+      }
+     },
+     "look": [
+      0.6,
+      0
+     ],
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "puff",
+     "x": 240.0,
+     "y": 1280.0,
+     "scale": 1.1,
+     "show": [
+      "@The bucket tipped",
+      "@The bucket tipped+1.3"
+     ],
+     "dx": -1,
+     "n": 6
+    }
+   ],
+   "popups": [
+    {
+     "text": "SPLASH",
+     "at": "@The bucket tipped",
+     "dur": 2.2,
+     "x": 340,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  }
+ ],
+ "youtube": {
+  "description": "A baker counts forty-two rolls every morning, and today there are forty-one. She knows exactly who took it. She is wrong, and what she finds at four in the morning is not what she expected.\n\nPart 1 of 3. Part 2 is next.",
+  "tags": [
+   "funny stories",
+   "everyday life",
+   "bakery",
+   "short story",
+   "animated story",
+   "storytime",
+   "comedy",
+   "heartwarming"
+  ],
+  "pinned_comment": "Who is the one person you would never think to ask 'why' before blaming?",
+  "title": "The Missing Roll (Part 1/3)"
+ },
+ "tiktok": {
+  "caption": "Part 1/3: One roll goes missing every night. She blames the wrong man.",
+  "hashtags": [
+   "#storytime",
+   "#funnystories",
+   "#everydaylife",
+   "#animatedstory",
+   "#bakery"
+  ]
+ }
+}

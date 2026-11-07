@@ -70,7 +70,7 @@ def make(frame, script, slug=None):
     # 1. the picture: a 16:9 band around the faces, a little more punch than the video frame
     fw, fh = frame.size
     ch = int(fw * 9 / 16)
-    focus = float(script.get("thumbnail_focus", 0.375))          # share of the frame height where the faces sit
+    focus = float(script.get("thumbnail_focus", 0.34))          # share of the frame height where the faces sit
     top = max(0, min(fh - ch, int(fh * focus - ch / 2)))
     img = frame.crop((0, top, fw, top + ch)).resize((W, H), Image.LANCZOS)
     img = ImageEnhance.Contrast(ImageEnhance.Color(img).enhance(1.25)).enhance(1.08)
