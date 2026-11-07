@@ -101,8 +101,11 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
     bounce = bounce + bob
     nod = (math.sin(t * 7.3 + seed) * 2.6 + math.sin(t * 3.1) * 1.4) * (1 if talk > 0 else 0) + {"sad": 11, "scared": 4, "shocked": -5, "smug": -4, "happy": -2}.get(mood, 0)
 
+    turn = min(1.0, walk * 1.6)                       # walking: the body turns three-quarters toward where it is going
+    shx = [0.0]                                       # sideways shift of the face and hat (set while they are drawn)
+
     def L(lx, ly):
-        return (x + f * lx * s, y + ly * s + bounce)
+        return (x + f * (lx + shx[0]) * s, y + ly * s + bounce)
 
     def B(cx, cy, rx, ry, c, w=3.6, ang=0.0, sd=1, lit_=True):
         px_, py_ = L(cx, cy)
@@ -124,12 +127,12 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
         sw_ = math.sin(gait + (0.0 if sx > 0 else math.pi)) * walk        # forward / back swing of this leg
         lift = max(0.0, math.cos(gait + (0.0 if sx > 0 else math.pi))) * 20 * walk
         fy = -bob / s                                                      # cancel the body bob so the feet stay on the ground
-        foot = (sx * 25 + sw_ * 36, -14 - lift + fy)
+        foot = (sx * 25 + sw_ * 26, -14 - lift + fy)
         line([(sx * 22, hip_y), foot], INK, 34, 11 + sx)
         line([(sx * 22, hip_y), foot], leg_col, 26, 13 + sx)
-        B(sx * 30 + sw_ * 36, -8 - lift + fy, 30, 13, shoe, 3.4, 0.0, 15 + sx, lit_=False)
+        B(sx * 30 + sw_ * 26 + 14 * turn, -8 - lift + fy, 30 + 10 * turn, 13, shoe, 3.4, 0.0, 15 + sx, lit_=False)
     # ---------------- torso
-    tw = 58 if not fem else 52
+    tw = (58 if not fem else 52) * (1 - 0.2 * turn)
     torso_col = spec.get("coat") or top
     if dress:
         poly([(-tw + 4, -150), (tw - 4, -150), (tw + 30, -66), (-tw - 30, -66)], torso_col if not spec.get("cardigan") else top, 3.8, 20)
@@ -185,6 +188,7 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
     # head
     B(0, hy, hrx, hry, skin_c, 4.2, 0.0, 47)
     # ---------------- face
+    shx[0] = 15 * turn
     ey, ex = hy - 6 * HS, 26 * HS
     er = 15 * HS
     px0, py0 = P(*L(0, ey))
@@ -297,10 +301,11 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
     elif hat == "beret":
         B(f * 8, top_y + 12, hrx * 0.9, 24, cc, 3.8, -0.1, 64, lit_=False)
         poly([(f * 8 - 4, top_y - 16), (f * 8 + 4, top_y - 16), (f * 8 + 3, top_y - 6), (f * 8 - 3, top_y - 6)], shade(cc, -0.3), 2.4, 65)
+    shx[0] = 0.0
     # ---------------- arms
     sh = -268 if not kid else -240
     pose = action
-    if pose == "stand":
+    if pose == "stand" and walk <= 0.3:            # a walking person swings their arms whatever their mood
         pose = {"shocked": "up", "scared": "up", "angry": "hips", "sad": "limp", "happy": "wave", "smug": "hips"}.get(mood, "stand")
     near = 1                                 # the arm on the side the person faces
     hands = {}

@@ -227,9 +227,12 @@ def _thing(d, th, u, clk, pos):
         # how fast is this person travelling? walking speed drives the legs, and the gait follows the ground covered
         gx = lambda u_: ev(th.get("x"), u_, clk, 0.0)
         step_ = 0.06
-        vx = abs(gx(u) - gx(u - step_)) / step_ if u > step_ else 0.0
-        walk = min(1.0, vx / 170.0)
-        gait = gx(u) * 0.052 if walk > 0.02 else 0.0
+        dx_ = (gx(u) - gx(u - step_)) / step_ if u > step_ else 0.0
+        vx = abs(dx_)
+        walk = min(1.0, 0.45 + vx / 150.0) if vx > 8 else 0.0
+        if walk > 0.12:                         # a person who is walking faces the way they are going (never crab-walks or backs away)
+            face = 1 if dx_ > 0 else -1
+        gait = u * 8.0 if walk > 0.02 else 0.0           # a steady cadence: about one stride every 0.8 s
         people.person(d, x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
                       hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=g("talk", 0.0), eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
                       tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=th.get("action", "stand"), mood=th.get("mood", "neutral"),
