@@ -94,6 +94,8 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
     skin_c = SKIN.get(skin, SKIN["fair"])
     hair_c = HAIR["grey" if elder else (hair if hair in HAIR else "brown")]
     top, bottom = spec["top"], spec["bottom"]
+    if walk > 0.3:                                  # walking or running: the profile view (see _side)
+        return _side(d, x, y, s, f, t, spec, role, kid, elder, fem, skin_c, hair_c, hair, extras, talk, mood, brow, bounce, carry, seed, walk, gait)
 
     # life: a breath, a bob when walking (the feet stay planted), a nod when talking, a drooping head when sad
     breath = math.sin(t * 1.7 + seed) * 1.6
@@ -376,6 +378,151 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
     if item:
         hx_, hy_ = hands[near]
         _item(d, L, item, hx_, hy_, s, f, seed)
+
+
+def _side(d, x, y, s, f, t, spec, role, kid, elder, fem, skin_c, hair_c, hair, extras, talk, mood, brow, bounce, carry, seed, walk, gait):
+    """A person in PROFILE, walking or running: jointed legs and arms, one eye, a nose, the head facing where they are going.
+    Same colours, hair, hat and clothes as the front view, so the character is the same person."""
+    HS = 1.22 if kid else 1.0
+    top, bottom = spec["top"], spec["bottom"]
+    dress = (fem and spec.get("dress") and not kid) or (kid and fem)
+    off = [bounce]
+
+    def L(lx, ly):
+        return (x + f * lx * s, y + ly * s + off[0])
+
+    def B(cx, cy, rx, ry, c, w=3.6, ang=0.0, sd=1, lit_=True):
+        px_, py_ = L(cx, cy)
+        (lit if lit_ else blob)(d, px_, py_, rx * s, ry * s, c, w * s, ang * f, seed + sd)
+
+    def poly(pts, c, w=3.6, sd=1):
+        inked(d, [L(*q) for q in pts], c, w * s, seed + sd, 0.8)
+
+    def line(pts, c, w, sd=1):
+        stroke(d, [L(*q) for q in pts], c, w * s, seed + sd, 0.4)
+
+    def limb(a, b, c, c2, w, sd):                      # an inked tube from a to b
+        line([a, b], INK, w + 8, sd)
+        line([a, b], c2 if c2 else c, w, sd + 1)
+
+    amp = 0.35 + 0.35 * min(1.0, walk)                 # a faster walk swings wider
+    hip = (-4, -146 if not kid else -132)
+    seg = 72 if not kid else 62
+    legs = []
+    for k in (0, 1):
+        ph = gait + k * math.pi
+        th = math.sin(ph) * amp
+        bend = 0.62 * max(0.0, math.cos(ph)) * min(1.0, walk + 0.3)
+        kn = (hip[0] + seg * math.sin(th), hip[1] + seg * math.cos(th))
+        ph2 = th - bend
+        ft = (kn[0] + seg * math.sin(ph2), kn[1] + seg * math.cos(ph2))
+        legs.append((kn, ft, k))
+    low = max(ft[1] for _, ft, _ in legs)
+    off[0] += (-6 - low) * s                             # plant the lowest foot on the ground
+    leg_col = skin_c if dress else bottom
+    for kn, ft, k in sorted(legs, key=lambda q: q[2], reverse=True):      # far leg first
+        shade_ = 0.0 if k == 0 else -0.18
+        c = shade(leg_col, shade_)
+        limb(hip, kn, c, None, 26, 10 + k * 4)
+        limb(kn, ft, c, None, 24, 11 + k * 4)
+        B(ft[0] + 16, ft[1] + 2, 34, 13, (46, 40, 48) if role not in ("doctor", "nurse") else (250, 250, 250), 3.4, 0.0, 16 + k, lit_=False)
+    # far arm (behind the body)
+    sh = (0, -268 if not kid else -240)
+    arms = []
+    for k in (0, 1):
+        a = -math.sin(gait + k * math.pi) * amp * 1.5
+        el = (sh[0] + 62 * math.sin(a), sh[1] + 62 * math.cos(a))
+        a2 = a + 0.55 + 0.25 * max(0.0, math.sin(gait + k * math.pi))
+        hd = (el[0] + 58 * math.sin(a2), el[1] + 58 * math.cos(a2))
+        arms.append((el, hd, k))
+    sleeve = spec.get("coat") or top
+    # torso
+    tw = 40
+    if dress:
+        poly([(-tw, -150), (tw - 6, -150), (tw + 22, -70), (-tw - 22, -70)], top, 3.8, 20)
+    B(0, -214, tw, 78 if not kid else 66, spec.get("coat") or top, 4.0, 0.06, 23)
+    if spec.get("coat"):
+        poly([(-tw, -150), (tw - 4, -150), (tw + 8, -62), (-tw - 8, -62)], spec["coat"], 3.8, 22)
+    if spec.get("apron"):
+        poly([(2, -246), (tw + 2, -240), (tw + 8, -118), (2, -122)], spec["apron"], 3.4, 33)
+    if spec.get("vest"):
+        poly([(-tw + 6, -278), (tw - 6, -270), (tw - 4, -154), (-tw + 8, -158)], spec["vest"], 3.2, 28)
+    if spec.get("bib"):
+        poly([(0, -262), (tw, -258), (tw + 2, -152), (0, -152)], spec["bib"], 3.4, 30)
+    if spec.get("tie"):
+        poly([(tw - 8, -282), (tw + 4, -276), (tw + 2, -200), (tw - 10, -204)], spec["tie"], 3.0, 35)
+    for el, hd, k in sorted(arms, key=lambda q: q[2]):
+        c = shade(sleeve, 0.0 if k == 0 else -0.2)
+        limb(sh, el, c, None, 22, 70 + k * 4)
+        limb(el, hd, c, None, 20, 72 + k * 4)
+        B(hd[0], hd[1] + 6, 14, 14, shade(skin_c, 0.0 if k == 0 else -0.12), 3.2, 0.0, 74 + k, lit_=False)
+    item = None if carry == "none" else (carry or spec.get("tool"))
+    if item:
+        near = arms[0]
+        _item(d, L, item, near[1][0], near[1][1], s, f, seed)
+    # neck, head in profile
+    hy = -350 if not kid else -318
+    hrx, hry = 56 * HS, 64 * HS
+    poly([(-8, -292), (22, -292), (24, hy + 40), (-4, hy + 40)], shade(skin_c, -0.1), 3.0, 43)
+    if (fem and not elder and not kid) or (kid and fem and "bun" not in extras):
+        B(-18, hy + 8, hrx - 4, hry + 12, hair_c, 4.0, 0.0, 44, lit_=False)
+        B(-34, hy + 62, 24, 66, hair_c, 3.8, 0.0, 45, lit_=False)
+    B(4, hy, hrx, hry, skin_c, 4.2, 0.0, 47)
+    B(-14, hy + 6, 13 * HS, 17 * HS, shade(skin_c, -0.06), 3.2, 0.0, 46, lit_=False)          # ear
+    B(hrx + 2, hy + 14 * HS, 13 * HS, 12 * HS, shade(skin_c, -0.08), 3.4, 0.0, 53, lit_=False)  # nose
+    ex, ey = 28 * HS, hy - 6 * HS
+    ex_, ey_ = P(*L(ex, ey))
+    lw = max(1, int(S(E.lw_(3) * s)))
+    r_ = 15 * HS
+    if E.blink(t + 0.7):
+        d.arc([ex_ - S(r_ * s), ey_ - S(r_ * 0.7 * s), ex_ + S(r_ * s), ey_ + S(r_ * 0.7 * s)], 20, 160, fill=INK, width=lw + 1)
+    else:
+        d.ellipse([ex_ - S(r_ * 1.05 * s), ey_ - S(r_ * 1.3 * s), ex_ + S(r_ * 1.05 * s), ey_ + S(r_ * 1.3 * s)], fill=(255, 255, 252), outline=INK, width=lw)
+        px_, py_ = P(*L(ex + 6, ey + 1))
+        d.ellipse([px_ - S(8 * s), py_ - S(10 * s), px_ + S(8 * s), py_ + S(10 * s)], fill=INK)
+    line([(ex - 16, ey - 30 + brow[0]), (ex + 14, ey - 28 + (-6 if mood in ("angry",) else 0))], hair_c if not elder else (130, 130, 138), 6.0, 50)
+    my = hy + 44 * HS
+    if talk > 0:
+        o = talk * (0.55 + 0.45 * math.sin(t * 17.0 + seed) ** 2)
+        poly([(26, my - 2), (50, my - 2), (46, my + 6 + 20 * o), (28, my + 6 + 20 * o)], (110, 30, 40), 3.0, 56)
+    elif mood in ("happy", "smug"):
+        line([(24, my + 2), (40, my + 8), (50, my - 4)], INK, 4.0, 58)
+    elif mood in ("angry", "sad", "scared", "shocked"):
+        line([(24, my + 8), (38, my), (50, my + 6)], INK, 4.0, 58)
+    else:
+        line([(26, my + 3), (50, my + 3)], INK, 3.6, 58)
+    if "mustache" in extras or "beard" in extras:
+        poly([(26, my - 8), (54, my - 6), (50, my + 4), (30, my + 2)], hair_c, 3.0, 59)
+    if "beard" in extras:
+        poly([(6, my - 6), (52, my - 2), (44, my + 44), (20, my + 52), (0, my + 30)], hair_c, 3.4, 60)
+    if spec.get("glasses") or "glasses" in extras:
+        d.ellipse([ex_ - S(26 * s * HS), ey_ - S(24 * s * HS), ex_ + S(26 * s * HS), ey_ + S(24 * s * HS)], outline=(40, 34, 40), width=lw + 1)
+        line([(-10, ey), (ex - 26 * HS, ey)], (40, 34, 40), 3.4, 61)
+    hat = spec.get("hat")
+    hat_hides = hat in ("hard", "fire", "police", "nurse", "chef", "cap", "bucket", "sun", "straw", "beret", "flatcap")
+    if "bald" not in extras and not (elder and not fem and hair == "bald"):
+        if not hat_hides or hat in ("cap", "flatcap", "bucket", "beret"):
+            cap_ = _arc(4, hy - 4, hrx + 4, hry + 4, 150, 340, 14)
+            poly(cap_ + [(hrx * 0.5, hy - 34), (hrx * 0.2, hy - 22)], hair_c, 3.8, 62)
+        if elder or "bun" in extras:
+            B(-30, hy - hry - 10, 28, 24, hair_c, 3.6, 0.0, 63, lit_=False)
+    top_y = hy - hry
+    cc = spec.get("capcol", (200, 60, 60))
+    if hat == "chef":
+        poly([(-30, top_y + 14), (44, top_y + 14), (48, top_y - 56), (-34, top_y - 56)], (252, 252, 252), 3.6, 64)
+        B(6, top_y - 62, 46, 30, (252, 252, 252), 3.6, 0.0, 65, lit_=False)
+    elif hat in ("cap", "flatcap"):
+        B(2, top_y + 8, hrx * 0.95, 28, cc, 3.8, 0.0, 64, lit_=False)
+        poly([(hrx - 14, top_y + 14), (hrx + 40, top_y + 22), (hrx + 38, top_y + 32), (hrx - 14, top_y + 28)], shade(cc, -0.15), 3.2, 65)
+    elif hat in ("hard", "fire", "police"):
+        B(4, top_y + 6, hrx * 0.98, 30, (250, 210, 40) if hat == "hard" else (60, 80, 150) if hat == "police" else (210, 50, 50), 3.8, 0.0, 64, lit_=False)
+    elif hat in ("straw", "sun", "bucket"):
+        B(4, top_y + 14, hrx + 26, 12, (236, 200, 110), 3.4, 0.0, 64, lit_=False)
+        B(4, top_y, hrx * 0.7, 22, (236, 200, 110), 3.4, 0.0, 65, lit_=False)
+    elif hat == "nurse":
+        poly([(-20, top_y + 10), (30, top_y + 10), (26, top_y - 14), (-16, top_y - 14)], (252, 252, 252), 3.4, 64)
+    elif hat == "beret":
+        B(8, top_y + 10, hrx * 0.9, 24, cc, 3.8, -0.1, 64, lit_=False)
 
 
 def _item(d, L, item, hx, hy, s, f, seed):
