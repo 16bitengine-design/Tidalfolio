@@ -21,7 +21,7 @@
   "part": 1,
   "of": 3
  },
- "thumbnail_scene": 6,
+ "thumbnail_scene": 5,
  "voice": {
   "kokoro": "bm_george"
  },
@@ -35,7 +35,7 @@
  },
  "scenes": [
   {
-   "narration": "Every morning the baker counted her rolls. Forty-two, always. This morning, forty-one.",
+   "narration": "Forty-two rolls, every morning, counted twice. Today there were forty-one, so she counted a third time out of spite.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -97,7 +97,7 @@
    "popups": [
     {
      "text": "FORTY-ONE",
-     "at": "@This morning, forty-one",
+     "at": "@Today there were forty-one",
      "dur": 2.2,
      "x": 340,
      "y": 690,
@@ -164,7 +164,7 @@
    "tone": "tense"
   },
   {
-   "narration": "She searched for crumbs, footprints, a confession. All she found was one small coin.",
+   "narration": "No crumbs, no footprints. Just one small coin by the flour bin, left like a tip.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -291,23 +291,12 @@
    "tone": "eerie"
   },
   {
-   "narration": "Across the street, one man had greasy hands and no alibi.",
+   "narration": "\"Forty-one,\" she told the mechanic across the street. \"Not saying it was you.\" He studied the sky.",
    "world": "toon_day_street",
    "camera": {
     "x": 300,
     "y": 1100,
-    "z": {
-     "kf": [
-      [
-       0,
-       1.5
-      ],
-      [
-       "@end",
-       1.7999999999999998
-      ]
-     ]
-    }
+    "z": 1.5
    },
    "things": [
     {
@@ -333,8 +322,17 @@
       10
      ],
      "mood": "angry",
-     "action": "point",
+     "action": "talk",
      "seed": 9,
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": "@she told the mechanic",
+       "to": "@was you"
+      }
+     },
      "bounce": {
       "sin": {
        "amp": 2.5,
@@ -372,7 +370,7 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": "think",
      "seed": 41,
      "bounce": {
       "sin": {
@@ -392,7 +390,7 @@
    "popups": [
     {
      "text": "WHO, ME?",
-     "at": "@no alibi",
+     "at": "@He studied the sky",
      "dur": 2.2,
      "x": 470,
      "y": 760,
@@ -456,173 +454,7 @@
    "tone": "playful"
   },
   {
-   "narration": "\"Forty-one,\" she told the mechanic, waving a clipboard. \"Explain yourself.\" He studied the sky.",
-   "world": "toon_day_street",
-   "camera": {
-    "x": 300,
-    "y": 1100,
-    "z": {
-     "kf": [
-      [
-       0,
-       1.5
-      ],
-      [
-       "@end",
-       1.7999999999999998
-      ]
-     ]
-    }
-   },
-   "things": [
-    {
-     "type": "human",
-     "id": "baker",
-     "scale": 1.0,
-     "face": 1,
-     "show": [
-      -0.1,
-      null
-     ],
-     "role": "baker",
-     "gender": "female",
-     "age": "adult",
-     "skin": "tan",
-     "hair": "black",
-     "extras": [
-      "bun"
-     ],
-     "eye": "open",
-     "brow": [
-      -8,
-      10
-     ],
-     "mood": "angry",
-     "action": "talk",
-     "seed": 9,
-     "talk": {
-      "sin": {
-       "base": 0.5,
-       "amp": 0.5,
-       "rate": 10,
-       "from": "@she told the mechanic",
-       "to": "@Explain yourself"
-      }
-     },
-     "bounce": {
-      "sin": {
-       "amp": 2.5,
-       "rate": 22,
-       "phase": 2.0
-      }
-     },
-     "look": [
-      0.6,
-      0
-     ],
-     "y": 1240.0,
-     "x": 130.0
-    },
-    {
-     "type": "human",
-     "id": "mechanic",
-     "scale": 1.0,
-     "face": -1,
-     "show": [
-      -0.1,
-      null
-     ],
-     "role": "mechanic",
-     "gender": "male",
-     "age": "adult",
-     "skin": "dark",
-     "hair": "black",
-     "extras": [
-      "beard"
-     ],
-     "eye": "open",
-     "brow": [
-      0,
-      0
-     ],
-     "mood": "neutral",
-     "action": "think",
-     "seed": 41,
-     "bounce": {
-      "sin": {
-       "amp": 1.5,
-       "rate": 2.5,
-       "phase": 0.0
-      }
-     },
-     "look": [
-      0.6,
-      0
-     ],
-     "y": 1240.0,
-     "x": 470.0
-    }
-   ],
-   "popups": [],
-   "music": {
-    "pad": 0.75,
-    "prog": [
-     [
-      38,
-      45,
-      50,
-      53
-     ],
-     [
-      38,
-      45,
-      50,
-      52
-     ],
-     [
-      37,
-      44,
-      49,
-      52
-     ],
-     [
-      38,
-      45,
-      50,
-      53
-     ]
-    ],
-    "drone": {
-     "from": 0.5,
-     "peak": 0.34
-    },
-    "pluck": {
-     "step": 0.42,
-     "notes": [
-      0,
-      0,
-      1,
-      0,
-      0,
-      1,
-      0,
-      2
-     ],
-     "vol": 0.8,
-     "scale": [
-      45,
-      46,
-      48,
-      51,
-      52
-     ],
-     "len": 0.7
-    }
-   },
-   "tone": "tense"
-  },
-  {
-   "narration": "That evening, she balanced a bucket above the back door and went home smiling.",
+   "narration": "That evening she balanced a bucket on the back door and went home feeling like a detective.",
    "world": "toon_dusk_shop",
    "camera": {
     "x": 300,
@@ -749,7 +581,7 @@
    "tone": "playful"
   },
   {
-   "narration": "At four, the back door creaked. The bucket tipped. Someone gasped, and it was not him.",
+   "narration": "At four, the door creaked. The bucket tipped. Someone gasped, and it was definitely not the mechanic.",
    "world": "toon_night_shop",
    "camera": {
     "x": 300,

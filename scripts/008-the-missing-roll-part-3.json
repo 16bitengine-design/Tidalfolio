@@ -32,7 +32,7 @@
  "uncommon_word": {},
  "scenes": [
   {
-   "narration": "The baker ran after her, cane in hand. The mechanic ran after the baker.",
+   "narration": "The baker ran after her, cane in hand. The mechanic ran after the baker, mostly out of habit.",
    "world": "toon_storm_street",
    "camera": {
     "x": 300,
@@ -95,7 +95,7 @@
         300.0
        ],
        [
-        "@after the baker",
+        "@out of habit",
         470.0
        ]
       ]
@@ -145,7 +145,7 @@
         130.0
        ],
        [
-        "@after the baker",
+        "@out of habit",
         300.0
        ]
       ]
@@ -211,7 +211,7 @@
    "tone": "tense"
   },
   {
-   "narration": "They found her at the bus stop, under a streetlight that had not worked in years.",
+   "narration": "They found her at the bus stop, under a broken streetlight. \"First bus,\" she said. \"He came home on it smelling of flour.\"",
    "world": "toon_storm_street",
    "camera": {
     "x": 300,
@@ -225,133 +225,6 @@
       [
        "@end",
        1.44
-      ]
-     ]
-    }
-   },
-   "things": [
-    {
-     "type": "human",
-     "id": "grandmother",
-     "scale": 1.0,
-     "face": 1,
-     "show": [
-      -0.1,
-      null
-     ],
-     "role": "grandmother",
-     "gender": "female",
-     "age": "elder",
-     "skin": "light",
-     "hair": "white",
-     "extras": [],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "stand",
-     "seed": 11,
-     "tear": {
-      "kf": [
-       [
-        0,
-        0
-       ],
-       [
-        2.0,
-        0.55
-       ]
-      ]
-     },
-     "bounce": {
-      "sin": {
-       "amp": 1.5,
-       "rate": 2.5,
-       "phase": 2.5
-      }
-     },
-     "look": [
-      0.6,
-      0
-     ],
-     "y": 1240.0,
-     "x": 300.0
-    }
-   ],
-   "popups": [],
-   "music": {
-    "pad": 0.6,
-    "prog": [
-     [
-      40,
-      46,
-      52,
-      58
-     ],
-     [
-      41,
-      47,
-      53,
-      59
-     ],
-     [
-      40,
-      46,
-      52,
-      58
-     ],
-     [
-      39,
-      46,
-      51,
-      58
-     ]
-    ],
-    "drone": {
-     "from": 0.5,
-     "peak": 0.3
-    },
-    "pluck": {
-     "step": 2.0,
-     "notes": [
-      0,
-      5,
-      2,
-      6,
-      1
-     ],
-     "vol": 0.55,
-     "scale": [
-      76,
-      77,
-      82,
-      83,
-      88,
-      89,
-      94
-     ],
-     "len": 2.6
-    }
-   },
-   "tone": "eerie"
-  },
-  {
-   "narration": "\"The first bus,\" she said softly. \"He came home on it, smelling of flour.\"",
-   "world": "toon_storm_street",
-   "camera": {
-    "x": 300,
-    "y": 1100,
-    "z": {
-     "kf": [
-      [
-       0,
-       1.5
-      ],
-      [
-       "@end",
-       1.7999999999999998
       ]
      ]
     }
@@ -397,7 +270,7 @@
        "base": 0.5,
        "amp": 0.5,
        "rate": 10,
-       "from": "@The first bus",
+       "from": "@First bus",
        "to": "@smelling of flour"
       }
      },
@@ -521,7 +394,7 @@
    "tone": "sad"
   },
   {
-   "narration": "The baker, who never lent anything, took off her apron and wrapped it around her.",
+   "narration": "The baker, who had never lent anything, wrapped her own apron around the old woman.",
    "world": "toon_dawn_street",
    "camera": {
     "x": 300,
@@ -684,7 +557,7 @@
    "tone": "tender"
   },
   {
-   "narration": "Next morning, the mechanic came to fix the lock properly. The baker told him to leave it.",
+   "narration": "Next morning the mechanic came to fix the lock properly. The baker told him to leave it alone.",
    "world": "toon_day_shop",
    "camera": {
     "x": 300,
@@ -828,7 +701,7 @@
    "tone": "playful"
   },
   {
-   "narration": "Every morning the baker counted forty-two rolls, then baked one more. Some mornings, a coin waited.",
+   "narration": "Every morning the baker counted forty-two rolls, then baked one more. Some mornings, a coin was waiting.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,

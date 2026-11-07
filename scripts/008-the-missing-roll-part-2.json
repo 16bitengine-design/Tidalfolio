@@ -32,7 +32,7 @@
  "uncommon_word": {},
  "scenes": [
   {
-   "narration": "The baker arrived at five, rolling pin raised. An old woman sat soaked on a flour sack.",
+   "narration": "She came at five with a rolling pin and a speech. It fell apart when she saw a soaked old woman holding one roll.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -57,7 +57,7 @@
      "scale": 1.0,
      "face": 1,
      "show": [
-      "@The baker arrived-0.3",
+      "@She came at five-0.3",
       null
      ],
      "role": "baker",
@@ -92,17 +92,17 @@
       "sin": {
        "amp": -3,
        "rate": 10,
-       "to": "@The baker arrived+1.4"
+       "to": "@She came at five+1.4"
       }
      },
      "x": {
       "kf": [
        [
-        "@The baker arrived-0.3",
+        "@She came at five-0.3",
         -300.0
        ],
        [
-        "@The baker arrived+1.4",
+        "@She came at five+1.4",
         130.0
        ]
       ]
@@ -217,7 +217,7 @@
    "tone": "tense"
   },
   {
-   "narration": "\"My husband baked here forty years,\" she said. \"The first roll was always mine.\"",
+   "narration": "\"My husband always left a coin,\" the old woman said. \"Free bread goes stale in the heart, he told me.\"",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -276,179 +276,8 @@
        "base": 0.5,
        "amp": 0.5,
        "rate": 10,
-       "from": "@My husband baked",
-       "to": "@always mine"
-      }
-     },
-     "bounce": {
-      "sin": {
-       "amp": 1.5,
-       "rate": 2.5,
-       "phase": 2.5
-      }
-     },
-     "look": [
-      0.6,
-      0
-     ],
-     "y": 1240.0,
-     "x": 470.0
-    },
-    {
-     "type": "human",
-     "id": "baker",
-     "scale": 1.0,
-     "face": 1,
-     "show": [
-      -0.1,
-      null
-     ],
-     "role": "baker",
-     "gender": "female",
-     "age": "adult",
-     "skin": "tan",
-     "hair": "black",
-     "extras": [
-      "bun"
-     ],
-     "eye": "wide",
-     "brow": [
-      -8,
-      -8
-     ],
-     "mood": "shocked",
-     "action": "stand",
-     "seed": 9,
-     "bounce": {
-      "sin": {
-       "amp": 3,
-       "rate": 26,
-       "phase": 2.0
-      }
-     },
-     "look": [
-      0.6,
-      0
-     ],
-     "y": 1240.0,
-     "x": 130.0
-    }
-   ],
-   "popups": [],
-   "music": {
-    "pad": 0.6,
-    "prog": [
-     [
-      45,
-      52,
-      57,
-      60
-     ],
-     [
-      41,
-      48,
-      53,
-      57
-     ],
-     [
-      43,
-      50,
-      55,
-      58
-     ],
-     [
-      45,
-      52,
-      57,
-      60
-     ]
-    ],
-    "pluck": {
-     "step": 2.3,
-     "notes": [
-      4,
-      3,
-      2,
-      1,
-      0,
-      0
-     ],
-     "vol": 0.55,
-     "scale": [
-      57,
-      60,
-      62,
-      64,
-      67,
-      69
-     ],
-     "len": 3.0
-    }
-   },
-   "tone": "sad"
-  },
-  {
-   "narration": "\"He always left a coin,\" she said. \"He said free bread goes stale in the heart.\"",
-   "world": "toon_dawn_shop",
-   "camera": {
-    "x": 300,
-    "y": 1100,
-    "z": {
-     "kf": [
-      [
-       0,
-       1.5
-      ],
-      [
-       "@end",
-       1.7999999999999998
-      ]
-     ]
-    }
-   },
-   "things": [
-    {
-     "type": "human",
-     "id": "grandmother",
-     "scale": 1.0,
-     "face": -1,
-     "show": [
-      -0.1,
-      null
-     ],
-     "role": "grandmother",
-     "gender": "female",
-     "age": "elder",
-     "skin": "light",
-     "hair": "white",
-     "extras": [],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "talk",
-     "seed": 11,
-     "tear": {
-      "kf": [
-       [
-        0,
-        0
-       ],
-       [
-        2.0,
-        0.55
-       ]
-      ]
-     },
-     "talk": {
-      "sin": {
-       "base": 0.5,
-       "amp": 0.5,
-       "rate": 10,
-       "from": "@He always left",
-       "to": "@in the heart"
+       "from": "@My husband always left",
+       "to": "@he told me"
       }
      },
      "bounce": {
@@ -572,7 +401,7 @@
    "tone": "tender"
   },
   {
-   "narration": "The mechanic walked in, toolbox swinging. He had fixed that lock himself. Badly, and on purpose.",
+   "narration": "The mechanic wandered in with his toolbox. He had fixed that lock three weeks ago. Badly. On purpose.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -685,7 +514,7 @@
      "scale": 0.92,
      "face": -1,
      "show": [
-      "@The mechanic walked in-0.3",
+      "@The mechanic wandered in-0.3",
       null
      ],
      "role": "mechanic",
@@ -720,17 +549,17 @@
       "sin": {
        "amp": -3,
        "rate": 10,
-       "to": "@The mechanic walked in+1.4"
+       "to": "@The mechanic wandered in+1.4"
       }
      },
      "x": {
       "kf": [
        [
-        "@The mechanic walked in-0.3",
+        "@The mechanic wandered in-0.3",
         900.0
        ],
        [
-        "@The mechanic walked in+1.4",
+        "@The mechanic wandered in+1.4",
         470.0
        ]
       ]
@@ -740,7 +569,7 @@
    "popups": [
     {
      "text": "YOU KNEW?",
-     "at": "@Badly, and on purpose",
+     "at": "@Badly. On purpose.",
      "dur": 2.2,
      "x": 130,
      "y": 732,
@@ -804,7 +633,7 @@
    "tone": "playful"
   },
   {
-   "narration": "The baker, who was meticulous about everything, wrapped a clean towel around the old woman and said nothing.",
+   "narration": "The baker, meticulous about everything, found a towel and wrapped the old woman in it. Nobody spoke.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -979,7 +808,7 @@
    "tone": "tender"
   },
   {
-   "narration": "She left a coin and walked into the storm. Her cane stayed on the counter.",
+   "narration": "The old woman left a coin and walked out into the storm. Her cane stayed on the counter.",
    "world": "toon_storm_shop",
    "camera": {
     "x": 300,
@@ -1044,7 +873,7 @@
      "face": -1,
      "show": [
       -0.1,
-      "@walked into the storm+1.5"
+      "@walked out into the storm+1.5"
      ],
      "role": "grandmother",
      "gender": "female",
@@ -1088,17 +917,17 @@
       "sin": {
        "amp": -3,
        "rate": 10,
-       "from": "@walked into the storm"
+       "from": "@walked out into the storm"
       }
      },
      "x": {
       "kf": [
        [
-        "@walked into the storm",
+        "@walked out into the storm",
         470.0
        ],
        [
-        "@walked into the storm+1.4",
+        "@walked out into the storm+1.4",
         900.0
        ]
       ]
