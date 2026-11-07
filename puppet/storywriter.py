@@ -193,7 +193,7 @@ Score it 1 to 5 on each question, being honest (a 3 is acceptable, 1 or 2 means 
 q1 Does the opening immediately create curiosity? q2 Is the central conflict easy to understand? q3 Does every scene give a reason to keep watching?
 q4 Does tension rise rather than stay flat? q5 Are there unexpected developments? q6 Is the comedy genuinely funny and situation-driven (not random or childish)?
 q7 Are the characters emotionally believable? q8 Is the climax satisfying and earned? q9 Does it keep a deeper meaning WITHOUT explaining it (no moral, no advice)?
-q10 Does every part hold attention and end (except the last) on a line that pulls straight into the next part?
+q10 Does every part except the last END at a moment of ESCALATION (a reveal, reversal or new danger with the consequence unseen) so that a viewer is desperate to watch the next part? Score 1 or 2 if any part ends on a joke, a reaction, a calm moment or a resolved question, and name that part in problems.
 Reply with ONE JSON object: {"scores": {"q1": 4, ...}, "problems": ["specific, actionable fixes naming the part and scene, only for scores of 1 or 2, max 5"]}"""
 
 
@@ -206,7 +206,7 @@ def critique(G, sb):
     except (ValueError, SystemExit):
         return []                               # the editor is a bonus: never block a story because it failed to answer
     scores = r.get("scores") or {}
-    low = [k for k, v in scores.items() if isinstance(v, (int, float)) and v <= 2]
+    low = [k for k, v in scores.items() if isinstance(v, (int, float)) and v <= (3 if k == "q10" else 2)]   # endings must be strong: a 3 on q10 is a rewrite
     if not low:
         return []
     return [f"an editor rejected the story (weak: {', '.join(sorted(low))}): " + "; ".join(r.get("problems") or ["make it more surprising, more tense and funnier"])]
@@ -295,7 +295,7 @@ Reply with ONE JSON object with exactly these keys:
  "tone_arc": [EXACTLY %d strings, one per part: the tones of that part in order, from playful|joyful|tense|sad|eerie|tender|calm, e.g. "playful, tense, sad"],
  "planted_detail": "one odd, specific detail shown early (an object, a rule, a habit) that pays off in the last part",
  "twist": "the final reversal that changes how the viewer understands the first scene",
- "outline": [EXACTLY %d strings, one per part: what happens in that part (told by role, never by name; with who SAYS what, one quotable line each) and the line it stops on],
+ "outline": [EXACTLY %d strings, one per part: what happens in that part (told by role, never by name; with who SAYS what, one quotable line each) and the line it stops on. EVERY PART EXCEPT THE LAST must stop at the moment things ESCALATE: a reveal, a reversal, a new danger or a surprising arrival that raises a question only the next part can answer. Write it at the end of the string as "ENDS ON: <that moment>". Never stop on a joke, a reaction shot or a calm moment],
  "youtube": {"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"},
  "tiktok": {"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}"""
 
@@ -309,7 +309,11 @@ def _part_rules(k, n, word, uw_part, bible=None):
     role = ("It opens on the hook at once." if k == 1 else
             f"It carries on from the exact moment part {k - 1} stopped: no recap, no re-introduction of the characters or the setting, no announcement that a new part has started. "
             f"A viewer must not be able to tell where part {k - 1} ended.")
-    role += (f" It ends mid-story on a line that pulls straight into part {k + 1} (never 'to be continued')." if k < n else
+    role += (f" THE ENDING OF THIS PART IS A CLIFFHANGER: the last two scenes must ESCALATE, so the viewer is dying to know what happens next. "
+             f"End at the instant of a reveal, a reversal, a new danger or a surprising arrival, with the consequence still unseen and the main question still open. "
+             f"The last scene needs a strong mood (never neutral) or a popup, and its narration is one short, sharp line that stops BEFORE the answer. "
+             f"Never end on a punchline, a joke, a calm moment, a character merely reacting (eyes widened, looked surprised) or a resolved question, and never say 'to be continued', 'find out' or 'next part'. "
+             f"Part {k + 1} must open by dealing with exactly this moment." if k < n else
              " It holds the emotional resolution and the haunting last line.")
     w = (f'Use the uncommon word "{word}" exactly once in this part.' if k == uw_part else f'Do not use the uncommon word "{word}" in this part.')
     extra = ""
@@ -455,7 +459,10 @@ def _sanitize(part, cast=None):
     return part
 
 
-def _part_problems(part, cast, k, word, uw_part):
+META_ENDING = re.compile(r"to be continued|find out|stay tuned|next (part|time|episode)|in part \d|keep watching|what happens next", re.I)
+
+
+def _part_problems(part, cast, k, word, uw_part, n=None):
     from . import storyboard as SB
     if not isinstance(part, dict):
         return [f"part {k}: the reply must be one JSON object with 'scenes'."]
@@ -471,6 +478,16 @@ def _part_problems(part, cast, k, word, uw_part):
             bad.append(f"part {k}: the tone must be clear and must change as the story turns: use at least two different tones, and at most two calm scenes (tones now: {', '.join(tones)}).")
         if k == 1 and tones[0] == "calm":
             bad.append("part 1, scene 1: the opening scene must show a clear tone (playful, tense, eerie ...), never calm.")
+        if n and k < n:                             # a part that is not the last must stop on an escalation the viewer can SEE and hear
+            last = scenes[-1]
+            hooked = bool(last.get("popups")) or any(a.get("mood", "neutral") != "neutral" for a in last.get("actors") or [] if isinstance(a, dict))
+            if not hooked:
+                bad.append(f"part {k}, last scene: this part must end on a cliffhanger the viewer can see: give an actor a strong mood (not neutral) or add a popup, and end on the moment things escalate.")
+            if SB.tone_of(last) == "calm":
+                bad.append(f"part {k}, last scene: a cliffhanger cannot be calm: use a tense, eerie or shocking tone and stop on the escalation.")
+            mm = META_ENDING.search(str(last.get("narration", "")))
+            if mm:
+                bad.append(f"part {k}, last scene: do not announce the next part ('{mm.group(0)}'). Stop on the escalating moment itself and let the curiosity do the work.")
     text = " ".join(str(x.get("narration", "")) for x in (scenes if isinstance(scenes, list) else []))
     want, got = (1 if k == uw_part else 0), len(re.findall(rf"\b{re.escape(word)}\b", text, re.I))
     if got != want:
@@ -499,7 +516,7 @@ def _rewrite_part(G, system, bible, parts, k, bad, word, uw_part):
             part = json.loads(G.call_openai([{"role": "system", "content": system}, {"role": "user", "content": user}], 0.7))
         except ValueError:
             continue
-        bad = _part_problems(part, bible["cast"], k, word, uw_part)
+        bad = _part_problems(part, bible["cast"], k, word, uw_part, n)
         if not bad:
             return part
     return None
@@ -588,7 +605,7 @@ def _write_story(G, idea, series, parts, log):
             except ValueError:
                 last_bad = [f"part {k}: the reply was not valid JSON"]
             else:
-                last_bad = _part_problems(cand, bible["cast"], k, word, uw_part)
+                last_bad = _part_problems(cand, bible["cast"], k, word, uw_part, n_parts)
                 if not last_bad:
                     part = cand
                     break
