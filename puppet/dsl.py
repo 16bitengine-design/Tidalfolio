@@ -224,10 +224,16 @@ def _thing(d, th, u, clk, pos):
                   tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), hat=th.get("hat"), bounce=g("bounce", 0.0), mood=th.get("mood", "neutral"))
     elif typ == "human":
         from . import people
+        # how fast is this person travelling? walking speed drives the legs, and the gait follows the ground covered
+        gx = lambda u_: ev(th.get("x"), u_, clk, 0.0)
+        step_ = 0.06
+        vx = abs(gx(u) - gx(u - step_)) / step_ if u > step_ else 0.0
+        walk = min(1.0, vx / 170.0)
+        gait = gx(u) * 0.052 if walk > 0.02 else 0.0
         people.person(d, x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
                       hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=g("talk", 0.0), eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
                       tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=th.get("action", "stand"), mood=th.get("mood", "neutral"),
-                      bounce=g("bounce", 0.0), carry=th.get("carry"), seed=th.get("seed", 0))
+                      bounce=g("bounce", 0.0), carry=th.get("carry"), seed=th.get("seed", 0), walk=walk, gait=gait)
     elif typ == "puff":
         E.puff(d, x, y, s, t, rgb(th.get("color"), (255, 226, 240)), th.get("seed", 1))
     elif typ == "sparkle":

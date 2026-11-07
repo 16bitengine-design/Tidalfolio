@@ -60,7 +60,7 @@ def tone_of(sc):
     """a scene's tone: its own "tone", else derived from the old "music" key"""
     return norm_tone(sc.get("tone")) or {"calm": "calm", "tense": "tense", "sad": "sad", "joyful": "joyful"}.get(sc.get("music", "calm"), "calm")
 MOODS = ("neutral", "sleepy", "happy", "angry", "scared", "sad", "shocked", "smug", "dizzy")
-ACTIONS = ("stand", "talk", "hop", "flap")
+ACTIONS = ("stand", "talk", "hop", "flap", "point", "shrug", "cheer", "facepalm", "think", "laugh", "tremble")
 SLOTS = {   # name: (world x, world y or None = standing on the cliff)
     "ground_left": (110, None), "ground_mid": (300, None), "ground_right": (500, None),
     "branch_a": (575, 884), "branch_b": (465, 864),
@@ -260,6 +260,8 @@ def _check_scenes(scenes, cast, pre=""):
                 bad.append(f"{where}: mood must be one of {MOODS}.")
             if a.get("action", "stand") not in ACTIONS:
                 bad.append(f"{where}: action must be one of {ACTIONS}.")
+            if a.get("go") is not None and a["go"] not in HSLOTS:
+                bad.append(f"{where}: 'go' must be one of {tuple(HSLOTS)} (the spot this person walks to).")
             for key in ("from", "to", "enter", "exit"):
                 if a.get(key) and not phrase_ok(nar, a[key]):
                     bad.append(f"{where}: {who} '{key}' words {a[key]!r} are not in the narration (copy them exactly).")
@@ -471,14 +473,19 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
         th["y"] = {"base": y, "sin": {**hop, "fn": "sin"}}
     else:
         th["y"] = y
-    walk = -12 if human else -40
+    walk = -3 if human else -40                     # people walk with their legs now (see people.py); only animals still bob
     if t_in:
         xs = _off(x, human)
         th["x"] = {"kf": [[t_in, xs], [f"@{a['enter']}+1.4", x]]}
         th["y"] = {"base": y, "sin": {"amp": walk, "rate": 10, "to": f"@{a['enter']}+1.4"}}
     else:
         th["x"] = x
-    if t_out:
+    go = a.get("go") if human else None
+    if go in HSLOTS and not t_in and not t_out:                # walk from "at" to "go" while the narrator speaks
+        x2 = _slot_xy(go, sp, s)[0]
+        th["x"] = {"kf": [[t_from, x], [t_to, x2]]}
+        th["face"] = 1 if x2 >= x else -1
+    elif t_out:
         xs = _off(x, human)
         th["x"] = {"kf": ([[t_in, _off(x, human)], [f"@{a['enter']}+1.4", x]] if t_in else []) + [[t_out, x], [f"{t_out}+1.4", xs]]}
         th["y"] = {"base": y, "sin": {"amp": walk, "rate": 10, "from": t_out}}

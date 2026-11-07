@@ -249,7 +249,10 @@ def render_script(script_path, dry=False, workers=None):
 
     thumb_i = int(script.get("thumbnail_scene", 1)) - 1
     sc = scenes[thumb_i]
-    frame(sc["_start"] + min(sc["_D"] - 2.0, LEAD + sc["_au"] * 0.6), with_text=False).save(out_root / "youtube" / "thumbnail.png")
+    key = frame(sc["_start"] + min(sc["_D"] - 2.0, LEAD + sc["_au"] * 0.6), with_text=False)
+    key.save(out_root / "youtube" / "thumbnail_frame.png")                       # the plain frame, kept for reference
+    from . import thumbnail
+    thumbnail.make(key, script, slug).save(out_root / "youtube" / "thumbnail.png")   # branded, unique to this story
     for sub in ("vertical", "youtube"):
         write_srt(scenes, out_root / sub / "captions.srt")
     write_metadata(script, out_root, total, slug, scenes)

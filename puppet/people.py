@@ -86,7 +86,7 @@ def _arc(cx, cy, rx, ry, a0, a1, n=12):
 
 
 def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult", skin="fair", hair="brown", extras=(), talk=0.0,
-           eye="open", brow=(0, 0), tear=0.0, look=(0, 0), action="stand", mood="neutral", bounce=0.0, carry=None, seed=0):
+           eye="open", brow=(0, 0), tear=0.0, look=(0, 0), action="stand", mood="neutral", bounce=0.0, carry=None, seed=0, walk=0.0, gait=0.0):
     spec = ROLES.get(role, ROLES["stranger"])
     kid, elder, fem = age == "child", age == "elder", gender == "female"
     s = s * (0.72 if kid else (0.97 if elder else 1.0))
@@ -94,6 +94,12 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
     skin_c = SKIN.get(skin, SKIN["fair"])
     hair_c = HAIR["grey" if elder else (hair if hair in HAIR else "brown")]
     top, bottom = spec["top"], spec["bottom"]
+
+    # life: a breath, a bob when walking (the feet stay planted), a nod when talking, a drooping head when sad
+    breath = math.sin(t * 1.7 + seed) * 1.6
+    bob = -abs(math.sin(gait)) * 9 * walk + breath
+    bounce = bounce + bob
+    nod = (math.sin(t * 7.3 + seed) * 2.6 + math.sin(t * 3.1) * 1.4) * (1 if talk > 0 else 0) + {"sad": 11, "scared": 4, "shocked": -5, "smug": -4, "happy": -2}.get(mood, 0)
 
     def L(lx, ly):
         return (x + f * lx * s, y + ly * s + bounce)
@@ -115,9 +121,13 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
     dress = fem and spec.get("dress") and not kid or (kid and fem)
     leg_col = skin_c if dress else bottom
     for sx in (-1, 1):
-        line([(sx * 22, hip_y), (sx * 25, -14)], INK, 34, 11 + sx)
-        line([(sx * 22, hip_y), (sx * 25, -14)], leg_col, 26, 13 + sx)
-        B(sx * 30 + 6 * 0, -8, 30, 13, shoe, 3.4, 0.0, 15 + sx, lit_=False)
+        sw_ = math.sin(gait + (0.0 if sx > 0 else math.pi)) * walk        # forward / back swing of this leg
+        lift = max(0.0, math.cos(gait + (0.0 if sx > 0 else math.pi))) * 20 * walk
+        fy = -bob / s                                                      # cancel the body bob so the feet stay on the ground
+        foot = (sx * 25 + sw_ * 36, -14 - lift + fy)
+        line([(sx * 22, hip_y), foot], INK, 34, 11 + sx)
+        line([(sx * 22, hip_y), foot], leg_col, 26, 13 + sx)
+        B(sx * 30 + sw_ * 36, -8 - lift + fy, 30, 13, shoe, 3.4, 0.0, 15 + sx, lit_=False)
     # ---------------- torso
     tw = 58 if not fem else 52
     torso_col = spec.get("coat") or top
@@ -160,7 +170,7 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
     if spec.get("smudge"):
         blob(d, *L(-20, -190), 14 * s, 9 * s, shade(top, -0.3), 0, seed=seed + 42)
     # ---------------- neck and head
-    hy = -350 if not kid else -318
+    hy = (-350 if not kid else -318) + nod
     hrx, hry = 62 * HS, 66 * HS
     poly([(-15, -292), (15, -292), (17, hy + 40), (-17, hy + 40)], shade(skin_c, -0.1), 3.0, 43)
     # back hair
@@ -217,7 +227,7 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
             B(sx * 40 * HS, hy + 28 * HS, 12 * HS, 8 * HS, (250, 150, 150), 0, 0.0, 54 + sx, lit_=False)
     my = hy + 44 * HS
     if talk > 0 or eye == "wide" and mood != "happy":
-        o = max(talk, 0.45 if eye == "wide" else 0)
+        o = max(talk * (0.55 + 0.45 * math.sin(t * 17.0 + seed) ** 2), 0.45 if eye == "wide" else 0)
         poly([(-20, my - 2), (20, my - 2), (16, my + 6 + 26 * o), (-16, my + 6 + 26 * o)], (110, 30, 40), 3.0, 56)
         if o > 0.5:
             poly([(-12, my + 6 + 26 * o - 4), (12, my + 6 + 26 * o - 4), (8, my + 6 + 26 * o), (-8, my + 6 + 26 * o)], (240, 110, 120), 0, 57)
@@ -298,7 +308,8 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
         ax, ay = sx * (tw + 2), sh + 6
         sway_ = 0.0
         if pose == "stand":
-            ex_, ey_, hx_, hy_ = ax + sx * 18, ay + 62, ax + sx * 26, ay + 128 + sw * 4 * sx
+            asw = math.sin(gait + (math.pi if sx > 0 else 0.0)) * walk
+            ex_, ey_, hx_, hy_ = ax + sx * 18 + asw * 8, ay + 62, ax + sx * 26 + asw * 20, ay + 128 + sw * 4 * sx - abs(asw) * 6
         elif pose == "limp":
             ex_, ey_, hx_, hy_ = ax + sx * 6, ay + 70, ax + sx * 10, ay + 138
         elif pose == "talk":
@@ -316,6 +327,31 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
             ex_, ey_, hx_, hy_ = ax + sx * 24, ay + 8, ax + sx * 6, ay - 50
         elif pose == "hips":
             ex_, ey_, hx_, hy_ = ax + sx * 54, ay + 54, ax + sx * 4, ay + 104
+        elif pose == "point":
+            if sx == near:
+                ex_, ey_, hx_, hy_ = ax + 36, ay + 16, ax + 108 + math.sin(t * 5) * 4, ay - 10
+            else:
+                ex_, ey_, hx_, hy_ = ax - 12, ay + 62, ax - 18, ay + 126
+        elif pose == "shrug":
+            k_ = math.sin(t * 4.0 + seed) * 5
+            ex_, ey_, hx_, hy_ = ax + sx * 48, ay + 42, ax + sx * 62, ay + 2 + k_
+        elif pose == "cheer":
+            ph = t * 9 + sx * 1.4
+            ex_, ey_, hx_, hy_ = ax + sx * 36, ay - 14, ax + sx * (30 + 8 * math.sin(ph)), ay - 112 + 14 * math.sin(ph * 1.3)
+        elif pose == "facepalm":
+            if sx == near:
+                ex_, ey_, hx_, hy_ = ax + 34, ay + 8, 12, hy + 6
+            else:
+                ex_, ey_, hx_, hy_ = ax - 8, ay + 66, ax - 14, ay + 130
+        elif pose == "think":
+            if sx == near:
+                ex_, ey_, hx_, hy_ = ax + 6, ay + 58, 10, hy + 62
+            else:
+                ex_, ey_, hx_, hy_ = ax - 4, ay + 70, 6, ay + 98
+        elif pose == "laugh":
+            ex_, ey_, hx_, hy_ = ax + sx * 30, ay + 56, sx * 16, ay + 100 + math.sin(t * 15 + sx) * 5
+        elif pose == "tremble":
+            ex_, ey_, hx_, hy_ = ax + sx * 14, ay + 56, ax + sx * 8 + math.sin(t * 38 + sx) * 3, ay + 108 + math.cos(t * 41) * 2
         elif pose == "wave":
             if sx == near:
                 g_ = math.sin(t * 8.0 + seed)
