@@ -462,6 +462,9 @@ def _sanitize(part, cast=None):
 META_ENDING = re.compile(r"to be continued|find out|stay tuned|next (part|time|episode)|in part \d|keep watching|what happens next", re.I)
 
 
+META_MORAL = re.compile(r"the (moral|lesson)\b|moral of|lesson (is|was)|teaches us|taught (him|her|them|us) (that|a lesson)|learn(ed|t)? (his|her|their|a|the) (lesson|mistake)|\bremember,? (that|this)\b|never forget|\bgoes to show\b", re.I)
+
+
 def _part_problems(part, cast, k, word, uw_part, n=None):
     from . import storyboard as SB
     if not isinstance(part, dict):
@@ -489,6 +492,9 @@ def _part_problems(part, cast, k, word, uw_part, n=None):
             if mm:
                 bad.append(f"part {k}, last scene: do not announce the next part ('{mm.group(0)}'). Stop on the escalating moment itself and let the curiosity do the work.")
     text = " ".join(str(x.get("narration", "")) for x in (scenes if isinstance(scenes, list) else []))
+    mo = META_MORAL.search(SB.strip_quoted(text))
+    if mo:                                          # the point must come from what happens, never from the narrator saying it
+        bad.append(f"part {k}: the narrator states a moral ('{mo.group(0)}'). Remove it: never name or explain a lesson; show it only through what the people do and what it costs them.")
     want, got = (1 if k == uw_part else 0), len(re.findall(rf"\b{re.escape(word)}\b", text, re.I))
     if got != want:
         bad.append(f"part {k}: the uncommon word {word!r} must appear exactly {want} time(s) in this part's narration (it appears {got}).")
