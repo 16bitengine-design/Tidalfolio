@@ -14,6 +14,46 @@ SR = 22050
 PENT = [69, 72, 74, 76, 79, 81, 84]       # A minor pentatonic
 PROG = [[45, 52, 57, 60], [41, 48, 53, 57], [48, 55, 60, 64], [43, 50, 55, 59]]
 
+# ---- the "nursery" theme: Brahms' Lullaby (Wiegenlied, Op. 49 No. 4, 1868: public domain) on a music box over a soft waltz.
+# Synthesized from scratch like the fusion theme, so it is copyright-safe. A script picks it with "theme": "nursery".
+NURSERY_BPM = 66
+# (midi pitch, beats) in 3/4, D major. The pitches follow the published melody; the rhythm is a simple lullaby reading.
+LULLABY = [(66, .5), (66, .5),                                   # pickup
+           (69, 2), (66, .5), (66, .5),                          # 1
+           (69, 1.5), (66, .5), (69, 1),                         # 2
+           (74, 1), (73, 1), (71, 1),                            # 3
+           (71, 1.5), (69, .5), (64, .5), (66, .5),              # 4
+           (67, 1.5), (64, .5), (64, .5), (66, .5),              # 5
+           (67, 1.5), (64, .5), (67, 1),                         # 6
+           (73, 1), (71, .5), (69, .5), (73, 1),                 # 7
+           (74, 3),                                              # 8
+           (74, 1), (71, 1), (67, 1),                            # 9
+           (69, 1), (66, 1), (62, 1),                            # 10
+           (67, 1), (69, 1), (71, 1),                            # 11
+           (69, 3),                                              # 12
+           (74, 1), (71, 1), (67, 1),                            # 13
+           (69, 1), (66, 1), (62, 1),                            # 14
+           (67, 1), (66, 1), (64, 1),                            # 15
+           (62, 3)]                                              # 16
+NURSERY_CHORDS = {"D": ([50, 57, 62, 66], 38), "G": ([43, 55, 59, 62], 43), "A": ([45, 57, 61, 64], 45)}   # (pad notes, bass note)
+NURSERY_BARS = "DDGDGGADGDGAGDAD"          # the chord under each of the 16 bars
+NURSERY_HOME = [50, 57, 62, 66]
+
+
+def lullaby_events(total, start=0.4):
+    """(time, midi, seconds) for every melody note and (time, chord, seconds) for every bar, repeating the tune until `total`."""
+    beat = 60.0 / NURSERY_BPM
+    notes, bars = [], []
+    while start < total - 1.5:
+        tm = start
+        for m, b in LULLABY:
+            notes.append((tm, m, b * beat))
+            tm += b * beat
+        bars.append((start, "D", beat))
+        bars += [(start + (1 + 3 * i) * beat, c, 3 * beat) for i, c in enumerate(NURSERY_BARS)]
+        start += (1 + 3 * 16 + 3) * beat           # the tune, then three quiet beats before it comes round again
+    return notes, bars
+
 
 def hz(m):
     return 440.0 * 2 ** ((m - 69) / 12)
@@ -24,11 +64,30 @@ def _ease(x):
     return x * x * (3 - 2 * x)
 
 
-def synth(scenes, starts, durs, total, nt, out_wav, seed=7, outro=4.5):
-    """scenes: list of scene dicts (with "_i"); starts/durs: seconds; nt(i, phrase) -> scene-relative time."""
+def synth(scenes, starts, durs, total, nt, out_wav, seed=7, outro=4.5, theme="fusion"):
+    """scenes: list of scene dicts (with "_i"); starts/durs: seconds; nt(i, phrase) -> scene-relative time.
+    theme: "fusion" (ethereal pad + pentatonic plucks) or "nursery" (Brahms' Lullaby on a music box)."""
+    nursery = theme == "nursery"
     rng = np.random.default_rng(seed)
     N = int(total * SR)
     t = np.arange(N) / SR
+
+    def box(f, length):                                # a music-box note: bright, with a quick ring-out
+        n = max(2, int(min(length + 1.2, 3.6) * SR))
+        tt = np.arange(n) / SR
+        rate = 2.4 if length < 1.2 else 1.6
+        o = np.sin(2 * np.pi * f * tt) + 0.42 * np.sin(2 * np.pi * 2.0 * f * tt) + 0.2 * np.sin(2 * np.pi * 3.01 * f * tt) + 0.08 * np.sin(2 * np.pi * 4.98 * f * tt)
+        return o * np.exp(-tt * rate) * np.minimum(1, tt / 0.004) * 0.8
+
+    def soft(freqs, length):                           # a gentle waltz chord
+        n = int((length + 0.6) * SR)
+        tt = np.arange(n) / SR
+        o = sum(np.sin(2 * np.pi * f * tt) + 0.2 * np.sin(4 * np.pi * f * tt) for f in freqs) / len(freqs)
+        return o * np.minimum(1, tt / 0.25) * np.clip((length + 0.6 - tt) / 0.6, 0, 1) * 0.7
+
+    def bass(f):
+        tt = np.arange(int(1.6 * SR)) / SR
+        return np.sin(2 * np.pi * f * tt) * np.exp(-tt * 1.4) * 0.8
 
     def pad(freqs, length):
         n = int(length * SR)
@@ -60,11 +119,21 @@ def synth(scenes, starts, durs, total, nt, out_wav, seed=7, outro=4.5):
 
     pad_mix, pl_mix = np.zeros(N), np.zeros(N)
     chord_i = 0
-    for sc, a0, D in zip(scenes, starts, durs):      # each scene's pad plays that scene's own chords (its tone)
-        prog = sc.get("music", {}).get("prog") or PROG
-        for s0 in np.arange(a0, a0 + D, 3.6):
-            add(pad_mix, pad([hz(m) for m in prog[chord_i % len(prog)]], 5.2), s0)
-            chord_i += 1
+    if nursery:                                      # the lullaby: a music-box tune over a soft waltz (bass on beat one, a chord under the bar)
+        tune, bars = lullaby_events(total)
+        for tm, m, sec in tune:
+            add(pl_mix, box(hz(m), sec), tm)
+        for tm, c, sec in bars:
+            notes, root = NURSERY_CHORDS[c]
+            add(pad_mix, soft([hz(m) for m in notes], sec), tm)
+            if sec > 1.5:
+                add(pad_mix, bass(hz(root)), tm)
+    else:
+        for sc, a0, D in zip(scenes, starts, durs):  # each scene's pad plays that scene's own chords (its tone)
+            prog = sc.get("music", {}).get("prog") or PROG
+            for s0 in np.arange(a0, a0 + D, 3.6):
+                add(pad_mix, pad([hz(m) for m in prog[chord_i % len(prog)]], 5.2), s0)
+                chord_i += 1
 
     pts_pad, pts_pl = [(0.0, 0.0)], [(0.0, 0.6)]
     silence, drone_pts = None, []
@@ -76,8 +145,9 @@ def synth(scenes, starts, durs, total, nt, out_wav, seed=7, outro=4.5):
         a1 = a0 + D
         last = a1 >= total - 0.01           # the closing scene keeps its level until the outro takes over
         pts_pad += [(a0 + 1.0, lv)] + ([] if last else [(a1 - 0.6, lv)])
-        pts_pl += [(a0 + 0.8, 1.0 if pl else 0.0)] + ([] if last else [(a1 - 0.6, 1.0 if pl else 0.0)])
-        if pl:
+        plv = (max(0.55, min(1.0, lv / 0.6)) if nursery else (1.0 if pl else 0.0))   # the lullaby follows each scene's emotion level
+        pts_pl += [(a0 + 0.8, plv)] + ([] if last else [(a1 - 0.6, plv)])
+        if pl and not nursery:
             k, tm = 0, a0 + 0.3
             while tm < a1 - 0.5:
                 sc_notes = pl.get("scale") or PENT
@@ -94,14 +164,14 @@ def synth(scenes, starts, durs, total, nt, out_wav, seed=7, outro=4.5):
         if m.get("silence_before"):
             tk = a0 + clk.t("@" + m["silence_before"])
             silence = (tk - 0.9, tk + 1.3)
-            add(pl_mix, pluck(hz(57), 3.0, 0.7), silence[1])
+            add(pl_mix, box(hz(62), 3.0) if nursery else pluck(hz(57), 3.0, 0.7), silence[1])
     # outro: the story's music settles onto a held home chord, a soft rising figure, then a long fade to nothing
     c0 = total - outro
     pts_pad += [(c0, 0.5), (c0 + 1.2, 0.62), (total - 1.4, 0.4), (total, 0.0)]
     pts_pl += [(c0 - 0.4, 1.0), (c0 + 0.6, 0.0), (c0 + 0.7, 1.0), (total - 1.6, 0.5), (total, 0.0)]
-    add(pad_mix, pad([hz(m) for m in PROG[0]], outro + 0.4), c0)
-    for j, m in enumerate((69, 72, 76, 81)):
-        add(pl_mix, pluck(hz(m), 3.2, 0.55), c0 + 0.7 + 0.28 * j)
+    add(pad_mix, pad([hz(m) for m in (NURSERY_HOME if nursery else PROG[0])], outro + 0.4), c0)
+    for j, m in enumerate((74, 78, 81, 86) if nursery else (69, 72, 76, 81)):     # a soft rising figure onto the home chord
+        add(pl_mix, box(hz(m), 3.2) * 0.7 if nursery else pluck(hz(m), 3.2, 0.55), c0 + 0.7 + 0.28 * j)
 
     xs = t[::200]
 

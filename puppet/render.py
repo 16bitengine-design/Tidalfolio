@@ -233,7 +233,7 @@ def render_script(script_path, dry=False, workers=None):
 
     print("[3/5] music", flush=True)
     music.synth(scenes, [s["_start"] for s in scenes], [s["_D"] for s in scenes], total, nt, work / "music.wav",
-                outro=END_CARD if any(sc.get("end_card") for sc in scenes) else 2.0)
+                outro=END_CARD if any(sc.get("end_card") for sc in scenes) else 2.0, theme=script.get("theme", "fusion"))
 
     print("[4/5] drawing frames", flush=True)
     workers = workers or max(1, os.cpu_count() or 2)
