@@ -32,7 +32,7 @@
  "uncommon_word": {},
  "scenes": [
   {
-   "narration": "The baker ran after her, cane in hand. The mechanic ran after the baker, mostly out of habit.",
+   "narration": "The baker ran after her with the cane. The mechanic ran after the baker, mostly out of habit.",
    "world": "toon_storm_street",
    "camera": {
     "x": 300,
@@ -83,10 +83,32 @@
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": {
       "kf": [
@@ -118,25 +140,47 @@
      "extras": [
       "beard"
      ],
-     "eye": "wide",
+     "eye": "open",
      "brow": [
-      -4,
-      -4
+      0,
+      0
      ],
-     "mood": "scared",
+     "mood": "neutral",
      "action": "stand",
      "seed": 41,
      "bounce": {
       "sin": {
-       "amp": 3,
-       "rate": 30,
+       "amp": 1.5,
+       "rate": 2.5,
        "phase": 0.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 2.59,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.0,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": {
       "kf": [
@@ -211,7 +255,7 @@
    "tone": "tense"
   },
   {
-   "narration": "They found her at the bus stop, under a broken streetlight. \"First bus,\" she said. \"He came home on it smelling of flour.\"",
+   "narration": "They found her at the bus stop, under a broken streetlight. \"First bus,\" she said. \"He used to come home on it. Smelling of flour.\"",
    "world": "toon_storm_street",
    "camera": {
     "x": 300,
@@ -245,13 +289,79 @@
      "skin": "light",
      "hair": "white",
      "extras": [],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "talk",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@First bus",
+        "open"
+       ],
+       [
+        "@Smelling of flour",
+        "happy"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@First bus",
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@Smelling of flour",
+        [
+         -6,
+         -4
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@First bus",
+        "sad"
+       ],
+       [
+        "@Smelling of flour",
+        "happy"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "talk"
+       ],
+       [
+        "@First bus",
+        "stand"
+       ],
+       [
+        "@Smelling of flour",
+        "stand"
+       ]
+      ]
+     },
      "seed": 11,
      "tear": {
       "kf": [
@@ -271,7 +381,7 @@
        "amp": 0.5,
        "rate": 10,
        "from": "@First bus",
-       "to": "@smelling of flour"
+       "to": "@Smelling of flour"
       }
      },
      "bounce": {
@@ -281,10 +391,32 @@
        "phase": 2.5
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@First bus",
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        "@Smelling of flour",
+        [
+         0.3,
+         -0.7
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 470.0
     },
@@ -305,13 +437,79 @@
      "extras": [
       "bun"
      ],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "stand",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@They found her",
+        "wide"
+       ],
+       [
+        "@First bus",
+        "open"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@They found her",
+        [
+         -8,
+         -8
+        ]
+       ],
+       [
+        "@First bus",
+        [
+         10,
+         -6
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@They found her",
+        "shocked"
+       ],
+       [
+        "@First bus",
+        "sad"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@They found her",
+        "stand"
+       ],
+       [
+        "@First bus",
+        "stand"
+       ]
+      ]
+     },
      "seed": 9,
      "tear": {
       "kf": [
@@ -332,10 +530,32 @@
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@They found her",
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@First bus",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 130.0
     }
@@ -394,7 +614,7 @@
    "tone": "sad"
   },
   {
-   "narration": "The baker, who had never lent anything, wrapped her own apron around the old woman.",
+   "narration": "The baker, who had never lent anything to anyone, wrapped her own apron around the old woman.",
    "world": "toon_dawn_street",
    "camera": {
     "x": 300,
@@ -430,13 +650,60 @@
      "extras": [
       "bun"
      ],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "stand",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@wrapped her own apron",
+        "happy"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@wrapped her own apron",
+        [
+         -6,
+         -4
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@wrapped her own apron",
+        "happy"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@wrapped her own apron",
+        "stand"
+       ]
+      ]
+     },
      "seed": 9,
      "tear": {
       "kf": [
@@ -457,10 +724,25 @@
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@wrapped her own apron",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 130.0
     },
@@ -479,25 +761,99 @@
      "skin": "light",
      "hair": "white",
      "extras": [],
-     "eye": "happy",
-     "brow": [
-      -6,
-      -4
-     ],
-     "mood": "happy",
-     "action": "stand",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@wrapped her own apron",
+        "happy"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@wrapped her own apron",
+        [
+         -6,
+         -4
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@wrapped her own apron",
+        "happy"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@wrapped her own apron",
+        "stand"
+       ]
+      ]
+     },
      "seed": 11,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
      "bounce": {
       "sin": {
-       "amp": 4,
-       "rate": 5,
+       "amp": 1.5,
+       "rate": 2.5,
        "phase": 2.5
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@wrapped her own apron",
+        [
+         0.1,
+         0.85
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 470.0
     }
@@ -557,7 +913,7 @@
    "tone": "tender"
   },
   {
-   "narration": "Next morning the mechanic came to fix the lock properly. The baker told him to leave it alone.",
+   "narration": "Next morning the mechanic arrived to fix the lock properly. The baker said leave it. He looked relieved.",
    "world": "toon_day_shop",
    "camera": {
     "x": 300,
@@ -582,25 +938,113 @@
      "extras": [
       "beard"
      ],
-     "eye": "wide",
-     "brow": [
-      -8,
-      -8
-     ],
-     "mood": "shocked",
-     "action": "shrug",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@The baker said leave it",
+        "wide"
+       ],
+       [
+        "@He looked relieved",
+        "happy"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         0,
+         0
+        ]
+       ],
+       [
+        "@The baker said leave it",
+        [
+         -8,
+         -8
+        ]
+       ],
+       [
+        "@He looked relieved",
+        [
+         -6,
+         -4
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "neutral"
+       ],
+       [
+        "@The baker said leave it",
+        "shocked"
+       ],
+       [
+        "@He looked relieved",
+        "happy"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@The baker said leave it",
+        "shrug"
+       ],
+       [
+        "@He looked relieved",
+        "laugh"
+       ]
+      ]
+     },
      "seed": 41,
      "bounce": {
       "sin": {
-       "amp": 3,
-       "rate": 26,
+       "amp": 1.5,
+       "rate": 2.5,
        "phase": 0.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 2.59,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@The baker said leave it",
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@He looked relieved",
+        [
+         -0.5,
+         0.25
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 470.0
     },
@@ -621,13 +1065,79 @@
      "extras": [
       "bun"
      ],
-     "eye": "half",
-     "brow": [
-      4,
-      6
-     ],
-     "mood": "smug",
-     "action": "point",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@The baker said leave it",
+        "half"
+       ],
+       [
+        "@He looked relieved",
+        "half"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         0,
+         0
+        ]
+       ],
+       [
+        "@The baker said leave it",
+        [
+         4,
+         6
+        ]
+       ],
+       [
+        "@He looked relieved",
+        [
+         4,
+         6
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "neutral"
+       ],
+       [
+        "@The baker said leave it",
+        "smug"
+       ],
+       [
+        "@He looked relieved",
+        "smug"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@The baker said leave it",
+        "point"
+       ],
+       [
+        "@He looked relieved",
+        "stand"
+       ]
+      ]
+     },
      "seed": 9,
      "bounce": {
       "sin": {
@@ -636,10 +1146,32 @@
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@The baker said leave it",
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@He looked relieved",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 130.0
     }
@@ -737,25 +1269,113 @@
      "extras": [
       "bun"
      ],
-     "eye": "happy",
-     "brow": [
-      -6,
-      -4
-     ],
-     "mood": "happy",
-     "action": "think",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@then baked one more",
+        "happy"
+       ],
+       [
+        "@a coin was waiting",
+        "happy"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         0,
+         0
+        ]
+       ],
+       [
+        "@then baked one more",
+        [
+         -6,
+         -4
+        ]
+       ],
+       [
+        "@a coin was waiting",
+        [
+         -6,
+         -4
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "neutral"
+       ],
+       [
+        "@then baked one more",
+        "happy"
+       ],
+       [
+        "@a coin was waiting",
+        "happy"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "think"
+       ],
+       [
+        "@then baked one more",
+        "stand"
+       ],
+       [
+        "@a coin was waiting",
+        "cheer"
+       ]
+      ]
+     },
      "seed": 9,
      "bounce": {
       "sin": {
-       "amp": 4,
-       "rate": 5,
+       "amp": 1.5,
+       "rate": 2.5,
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@then baked one more",
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        "@a coin was waiting",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 300.0
     }

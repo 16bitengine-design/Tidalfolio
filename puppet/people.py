@@ -101,7 +101,7 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
     breath = math.sin(t * 1.7 + seed) * 1.6
     bob = -abs(math.sin(gait)) * 9 * walk + breath
     bounce = bounce + bob
-    nod = (math.sin(t * 7.3 + seed) * 2.6 + math.sin(t * 3.1) * 1.4) * (1 if talk > 0 else 0) + {"sad": 11, "scared": 4, "shocked": -5, "smug": -4, "happy": -2}.get(mood, 0)
+    nod = max(0.0, math.sin(t * 0.9 + seed * 1.3)) ** 10 * 6 + (math.sin(t * 7.3 + seed) * 2.6 + math.sin(t * 3.1) * 1.4) * (1 if talk > 0 else 0) + {"sad": 11, "scared": 4, "shocked": -5, "smug": -4, "happy": -2}.get(mood, 0)
 
     turn = min(1.0, walk * 1.6)                       # walking: the body turns three-quarters toward where it is going
     shx = [0.0]                                       # sideways shift of the face and hat (set while they are drawn)
@@ -320,9 +320,16 @@ def person(d, x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adul
         elif pose == "limp":
             ex_, ey_, hx_, hy_ = ax + sx * 6, ay + 70, ax + sx * 10, ay + 138
         elif pose == "talk":
-            if sx == near:
-                g_ = math.sin(t * 6.0 + seed)
+            kind_ = int(t * 0.62 + seed * 0.37) % 4          # the hands do something different every second or two
+            g_ = math.sin(t * 6.0 + seed)
+            if kind_ == 0 and sx == near:
                 ex_, ey_, hx_, hy_ = ax + 30, ay + 44, ax + 58, ay - 26 + g_ * 18
+            elif kind_ == 1:                                  # both hands open, palms up
+                ex_, ey_, hx_, hy_ = ax + sx * 40, ay + 56, ax + sx * 58, ay + 40 + math.sin(t * 5 + sx) * 6
+            elif kind_ == 2 and sx == near:                   # one finger raised
+                ex_, ey_, hx_, hy_ = ax + 26, ay + 30, ax + 40, ay - 52 + g_ * 6
+            elif kind_ == 3 and sx == near:                   # a small chop for emphasis
+                ex_, ey_, hx_, hy_ = ax + 34, ay + 52, ax + 70, ay + 40 + abs(math.sin(t * 4.0)) * 28
             else:
                 ex_, ey_, hx_, hy_ = ax - 12, ay + 62, ax - 18, ay + 126
         elif pose == "hop":

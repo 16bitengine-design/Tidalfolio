@@ -32,7 +32,7 @@
  "uncommon_word": {},
  "scenes": [
   {
-   "narration": "She came at five with a rolling pin and a speech. It fell apart when she saw a soaked old woman holding one roll.",
+   "narration": "She came at five with a rolling pin and a speech. The speech lasted until she saw the old woman, soaked, holding one roll.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -68,25 +68,113 @@
      "extras": [
       "bun"
      ],
-     "eye": "wide",
-     "brow": [
-      -8,
-      -8
-     ],
-     "mood": "shocked",
-     "action": "stand",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@The speech lasted",
+        "open"
+       ],
+       [
+        "@soaked",
+        "wide"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         -8,
+         10
+        ]
+       ],
+       [
+        "@The speech lasted",
+        [
+         -8,
+         10
+        ]
+       ],
+       [
+        "@soaked",
+        [
+         -8,
+         -8
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "angry"
+       ],
+       [
+        "@The speech lasted",
+        "angry"
+       ],
+       [
+        "@soaked",
+        "shocked"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@The speech lasted",
+        "point"
+       ],
+       [
+        "@soaked",
+        "stand"
+       ]
+      ]
+     },
      "seed": 9,
      "bounce": {
       "sin": {
-       "amp": 3,
-       "rate": 26,
+       "amp": 2.5,
+       "rate": 22,
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@The speech lasted",
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@soaked",
+        [
+         0.1,
+         0.85
+        ]
+       ]
+      ]
+     },
      "y": {
       "base": 1240.0,
       "sin": {
@@ -123,13 +211,60 @@
      "skin": "light",
      "hair": "white",
      "extras": [],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "stand",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@holding one roll",
+        "open"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@holding one roll",
+        [
+         10,
+         -6
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@holding one roll",
+        "sad"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@holding one roll",
+        "stand"
+       ]
+      ]
+     },
      "seed": 11,
      "tear": {
       "kf": [
@@ -150,10 +285,25 @@
        "phase": 2.5
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@holding one roll",
+        [
+         0.1,
+         0.85
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 470.0
     }
@@ -217,7 +367,7 @@
    "tone": "tense"
   },
   {
-   "narration": "\"My husband always left a coin,\" the old woman said. \"Free bread goes stale in the heart, he told me.\"",
+   "narration": "\"He always left a coin,\" the old woman said. \"Free bread goes stale in the heart, he said. He had... views.\"",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -251,13 +401,79 @@
      "skin": "light",
      "hair": "white",
      "extras": [],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "talk",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@Free bread goes stale",
+        "happy"
+       ],
+       [
+        "@He had",
+        "open"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@Free bread goes stale",
+        [
+         -6,
+         -4
+        ]
+       ],
+       [
+        "@He had",
+        [
+         10,
+         -6
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@Free bread goes stale",
+        "happy"
+       ],
+       [
+        "@He had",
+        "sad"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "talk"
+       ],
+       [
+        "@Free bread goes stale",
+        "shrug"
+       ],
+       [
+        "@He had",
+        "think"
+       ]
+      ]
+     },
      "seed": 11,
      "tear": {
       "kf": [
@@ -276,8 +492,8 @@
        "base": 0.5,
        "amp": 0.5,
        "rate": 10,
-       "from": "@My husband always left",
-       "to": "@he told me"
+       "from": "@He always left",
+       "to": "@views"
       }
      },
      "bounce": {
@@ -287,10 +503,32 @@
        "phase": 2.5
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@Free bread goes stale",
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        "@He had",
+        [
+         0.1,
+         0.85
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 470.0
     },
@@ -311,13 +549,79 @@
      "extras": [
       "bun"
      ],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "think",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@stale in the heart",
+        "open"
+       ],
+       [
+        "@views",
+        "open"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@stale in the heart",
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@views",
+        [
+         10,
+         -6
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@stale in the heart",
+        "sad"
+       ],
+       [
+        "@views",
+        "sad"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@stale in the heart",
+        "think"
+       ],
+       [
+        "@views",
+        "stand"
+       ]
+      ]
+     },
      "seed": 9,
      "tear": {
       "kf": [
@@ -338,10 +642,32 @@
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@stale in the heart",
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@views",
+        [
+         0.1,
+         0.85
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 130.0
     }
@@ -401,7 +727,7 @@
    "tone": "tender"
   },
   {
-   "narration": "The mechanic wandered in with his toolbox. He had fixed that lock three weeks ago. Badly. On purpose.",
+   "narration": "The mechanic wandered in with his toolbox. He'd fixed that lock three weeks ago. Badly. On purpose.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -437,25 +763,125 @@
      "extras": [
       "bun"
      ],
-     "eye": "wide",
-     "brow": [
-      -8,
-      -8
-     ],
-     "mood": "shocked",
-     "action": "point",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@He'd fixed that lock",
+        "wide"
+       ],
+       [
+        "@Badly",
+        "open"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@He'd fixed that lock",
+        [
+         -8,
+         -8
+        ]
+       ],
+       [
+        "@Badly",
+        [
+         -8,
+         10
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@He'd fixed that lock",
+        "shocked"
+       ],
+       [
+        "@Badly",
+        "angry"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@He'd fixed that lock",
+        "point"
+       ],
+       [
+        "@Badly",
+        "facepalm"
+       ]
+      ]
+     },
      "seed": 9,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
      "bounce": {
       "sin": {
-       "amp": 3,
-       "rate": 26,
+       "amp": 1.5,
+       "rate": 2.5,
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@He'd fixed that lock",
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@Badly",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 130.0
     },
@@ -474,13 +900,60 @@
      "skin": "light",
      "hair": "white",
      "extras": [],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "stand",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@On purpose",
+        "happy"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@On purpose",
+        [
+         -6,
+         -4
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@On purpose",
+        "happy"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@On purpose",
+        "shrug"
+       ]
+      ]
+     },
      "seed": 11,
      "tear": {
       "kf": [
@@ -501,10 +974,25 @@
        "phase": 2.5
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@On purpose",
+        [
+         -0.5,
+         0.25
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 300.0
     },
@@ -525,13 +1013,79 @@
      "extras": [
       "beard"
      ],
-     "eye": "half",
-     "brow": [
-      4,
-      6
-     ],
-     "mood": "smug",
-     "action": "shrug",
+     "eye": {
+      "step": [
+       [
+        0,
+        "half"
+       ],
+       [
+        "@He'd fixed that lock",
+        "half"
+       ],
+       [
+        "@On purpose",
+        "half"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         4,
+         6
+        ]
+       ],
+       [
+        "@He'd fixed that lock",
+        [
+         4,
+         6
+        ]
+       ],
+       [
+        "@On purpose",
+        [
+         4,
+         6
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "smug"
+       ],
+       [
+        "@He'd fixed that lock",
+        "smug"
+       ],
+       [
+        "@On purpose",
+        "smug"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "shrug"
+       ],
+       [
+        "@He'd fixed that lock",
+        "stand"
+       ],
+       [
+        "@On purpose",
+        "shrug"
+       ]
+      ]
+     },
      "seed": 41,
      "bounce": {
       "sin": {
@@ -540,10 +1094,32 @@
        "phase": 0.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 2.59,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@He'd fixed that lock",
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        "@On purpose",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": {
       "base": 1240.0,
       "sin": {
@@ -633,7 +1209,7 @@
    "tone": "playful"
   },
   {
-   "narration": "The baker, meticulous about everything, found a towel and wrapped the old woman in it. Nobody spoke.",
+   "narration": "The baker, meticulous about everything, found a towel and wrapped the old woman in it. Nobody said anything clever.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -669,13 +1245,79 @@
      "extras": [
       "bun"
      ],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "stand",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@found a towel",
+        "open"
+       ],
+       [
+        "@Nobody said",
+        "open"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@found a towel",
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@Nobody said",
+        [
+         10,
+         -6
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@found a towel",
+        "sad"
+       ],
+       [
+        "@Nobody said",
+        "sad"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@found a towel",
+        "think"
+       ],
+       [
+        "@Nobody said",
+        "stand"
+       ]
+      ]
+     },
      "seed": 9,
      "tear": {
       "kf": [
@@ -696,10 +1338,32 @@
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@found a towel",
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        "@Nobody said",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 130.0
     },
@@ -718,13 +1382,60 @@
      "skin": "light",
      "hair": "white",
      "extras": [],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "stand",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@wrapped the old woman",
+        "happy"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@wrapped the old woman",
+        [
+         -6,
+         -4
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@wrapped the old woman",
+        "happy"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@wrapped the old woman",
+        "stand"
+       ]
+      ]
+     },
      "seed": 11,
      "tear": {
       "kf": [
@@ -745,10 +1456,25 @@
        "phase": 2.5
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@wrapped the old woman",
+        [
+         0.1,
+         0.85
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 470.0
     }
@@ -844,25 +1570,125 @@
      "extras": [
       "bun"
      ],
-     "eye": "wide",
-     "brow": [
-      -8,
-      -8
-     ],
-     "mood": "shocked",
-     "action": "tremble",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@walked out",
+        "wide"
+       ],
+       [
+        "@Her cane stayed",
+        "wide"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@walked out",
+        [
+         -8,
+         -8
+        ]
+       ],
+       [
+        "@Her cane stayed",
+        [
+         -4,
+         -4
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@walked out",
+        "shocked"
+       ],
+       [
+        "@Her cane stayed",
+        "scared"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@walked out",
+        "stand"
+       ],
+       [
+        "@Her cane stayed",
+        "tremble"
+       ]
+      ]
+     },
      "seed": 9,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
      "bounce": {
       "sin": {
-       "amp": 3,
-       "rate": 26,
+       "amp": 1.5,
+       "rate": 2.5,
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@walked out",
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        "@Her cane stayed",
+        [
+         0.1,
+         0.85
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 130.0
     },
@@ -908,10 +1734,32 @@
        "phase": 2.5
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.0,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": {
       "base": 1240.0,
       "sin": {

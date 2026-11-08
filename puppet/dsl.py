@@ -235,7 +235,7 @@ def _thing(d, th, u, clk, pos):
         gait = u * 8.0 if walk > 0.02 else 0.0           # a steady cadence: about one stride every 0.8 s
         people.person(d, x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
                       hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=g("talk", 0.0), eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
-                      tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=th.get("action", "stand"), mood=th.get("mood", "neutral"),
+                      tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=g("action", "stand"), mood=g("mood", "neutral"),
                       bounce=g("bounce", 0.0), carry=th.get("carry"), seed=th.get("seed", 0), walk=walk, gait=gait)
     elif typ == "puff":
         E.puff(d, x, y, s, t, rgb(th.get("color"), (255, 226, 240)), th.get("seed", 1))

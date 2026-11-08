@@ -18,7 +18,8 @@ Storyboard JSON:
      "narration": "...", "world": "dawn|day|dusk|storm|night|sunset", "stage": "cliff|nest|tree",
      "camera": "hold|push_in|pull_back|pan_right|pan_left", "tone": "playful|tense|sad|joyful|eerie|tender|calm", "silence_before": "words",
      "actors": [ {"who": "orrin", "at": "ground_mid", "face": "left|right", "mood": "...", "action": "stand|talk|hop|flap",
-                  "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish"} ],
+                  "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish",
+                  "beats": [{"at": "words", "mood": "...", "action": "...", "look": "at|away|down|up"}], "speaks": true} ],
      "popups": [ {"text": "CRASH", "kind": "burst|bubble", "at": "words", "near": "orrin"} ],
      "fx": [ {"kind": "puff|sparkle|speed", "at": "words", "near": "orrin"} ] } ],
   "youtube": {...}, "tiktok": {...} }
@@ -98,6 +99,7 @@ DEFINING = re.compile(r"fancy word|which means|that means|\bmeaning\b|in other w
 
 # eagle face per mood: eye, brow, tear
 CRITTER_EYE_MOOD = {"neutral": "open", "sleepy": "closed", "happy": "happy", "angry": "open", "scared": "wide", "sad": "open", "shocked": "wide", "smug": "half", "dizzy": "spiral"}
+LOOKS = {"at": [0.6, 0.0], "away": [-0.5, 0.25], "down": [0.1, 0.85], "up": [0.3, -0.7]}   # where a person's eyes go
 EAGLE_MOOD = {
     "neutral": ("open", [0, 0], 0.0), "sleepy": ("closed", [8, 6], 0.0), "happy": ("open", [-6, -4], 0.0),
     "angry": ("open", [-8, 10], 0.0), "scared": ("wide", [-4, -4], 0.0), "sad": ("open", [10, -6], 0.55),
@@ -260,6 +262,11 @@ def _check_scenes(scenes, cast, pre=""):
                 bad.append(f"{where}: mood must be one of {MOODS}.")
             if a.get("action", "stand") not in ACTIONS:
                 bad.append(f"{where}: action must be one of {ACTIONS}.")
+            for b in a.get("beats") or []:
+                if not phrase_ok(nar, b.get("at")):
+                    bad.append(f"{where}: {who} beat 'at' words {b.get('at')!r} are not in the narration (copy them exactly).")
+                if b.get("mood", "neutral") not in MOODS or b.get("action", "stand") not in ACTIONS or b.get("look", "at") not in LOOKS:
+                    bad.append(f"{where}: {who} beat needs mood in {MOODS}, action in {ACTIONS}, look in {tuple(LOOKS)}.")
             if a.get("go") is not None and a["go"] not in HSLOTS:
                 bad.append(f"{where}: 'go' must be one of {tuple(HSLOTS)} (the spot this person walks to).")
             for key in ("from", "to", "enter", "exit"):
@@ -388,11 +395,26 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
             th["carry"] = a["carry"]
         if tear:
             th["tear"] = {"kf": [[0, 0], [2.0, tear]]}
-        if action == "talk":
+        if action == "talk" or a.get("speaks"):                          # the mouth moves while this person speaks, whatever the hands are doing
             th["talk"] = {"sin": {"base": 0.5, "amp": 0.5, "rate": 10, "from": t_from, "to": t_to}}
         rate, amp = {"scared": (30, 3), "angry": (22, 2.5), "happy": (5, 4), "shocked": (26, 3)}.get(mood, (2.5, 1.5))
         th["bounce"] = {"sin": {"amp": amp, "rate": rate, "phase": (zlib.crc32(who.encode()) % 7) * 0.5}}
-        th["look"] = [0.6, 0]
+        sd = th["seed"]
+        th["t_offset"] = (sd % 17) * 0.37                                 # nobody blinks or breathes in step with anyone else
+        # eyes: mostly on the other person, with a glance away or down now and then that is different for each person
+        g0 = 1.8 + (sd % 5) * 0.7
+        looks = [[0, LOOKS["at"]], [g0, LOOKS["away" if sd % 2 else "down"]], [g0 + 0.9 + (sd % 3) * 0.3, LOOKS["at"]]]
+        beats = sorted(a.get("beats") or [], key=lambda b: 0)
+        if beats:                                                         # changes of mood, gesture and glance on specific words
+            ms, acs, es, brs, lk = [[0, mood]], [[0, action]], [[0, th["eye"]]], [[0, th["brow"]]], [[0, LOOKS["at"]]]
+            for b in beats:
+                tt = f"@{b['at']}"
+                bm = b.get("mood", mood)
+                ms.append([tt, bm]); acs.append([tt, b.get("action", "stand")]); es.append([tt, CRITTER_EYE_MOOD[bm]])
+                brs.append([tt, EAGLE_MOOD[bm][1]]); lk.append([tt, LOOKS[b.get("look", "at")]])
+            th["mood"], th["action"], th["eye"], th["brow"] = {"step": ms}, {"step": acs}, {"step": es}, {"step": brs}
+            looks = lk
+        th["look"] = {"step": looks}
     if sp == "eagle":
         th["who"] = c.get("look", "orrin")
         eye, brow, tear = EAGLE_MOOD[mood]

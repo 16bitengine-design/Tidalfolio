@@ -35,7 +35,7 @@
  },
  "scenes": [
   {
-   "narration": "Forty-two rolls, every morning, counted twice. Today there were forty-one, so she counted a third time out of spite.",
+   "narration": "Forty-two rolls every morning, counted twice. Today, forty-one. She counted a third time, out of spite. Still forty-one.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -71,13 +71,79 @@
      "extras": [
       "bun"
      ],
-     "eye": "wide",
-     "brow": [
-      -8,
-      -8
-     ],
-     "mood": "shocked",
-     "action": "point",
+     "eye": {
+      "step": [
+       [
+        0,
+        "wide"
+       ],
+       [
+        "@She counted a third time",
+        "open"
+       ],
+       [
+        "@Still forty-one",
+        "wide"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         -8,
+         -8
+        ]
+       ],
+       [
+        "@She counted a third time",
+        [
+         -8,
+         10
+        ]
+       ],
+       [
+        "@Still forty-one",
+        [
+         -8,
+         -8
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "shocked"
+       ],
+       [
+        "@She counted a third time",
+        "angry"
+       ],
+       [
+        "@Still forty-one",
+        "shocked"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "tremble"
+       ],
+       [
+        "@She counted a third time",
+        "point"
+       ],
+       [
+        "@Still forty-one",
+        "facepalm"
+       ]
+      ]
+     },
      "seed": 9,
      "bounce": {
       "sin": {
@@ -86,10 +152,32 @@
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@She counted a third time",
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        "@Still forty-one",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 300.0
     }
@@ -97,7 +185,7 @@
    "popups": [
     {
      "text": "FORTY-ONE",
-     "at": "@Today there were forty-one",
+     "at": "@Today, forty-one",
      "dur": 2.2,
      "x": 340,
      "y": 690,
@@ -164,7 +252,7 @@
    "tone": "tense"
   },
   {
-   "narration": "No crumbs, no footprints. Just one small coin by the flour bin, left like a tip.",
+   "narration": "No crumbs, no footprints. Just a coin by the flour bin, sitting there like a tip. Rude.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -200,13 +288,79 @@
      "extras": [
       "bun"
      ],
-     "eye": "open",
-     "brow": [
-      -8,
-      10
-     ],
-     "mood": "angry",
-     "action": "think",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@like a tip",
+        "wide"
+       ],
+       [
+        "@Rude",
+        "open"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         -8,
+         10
+        ]
+       ],
+       [
+        "@like a tip",
+        [
+         -8,
+         -8
+        ]
+       ],
+       [
+        "@Rude",
+        [
+         -8,
+         10
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "angry"
+       ],
+       [
+        "@like a tip",
+        "shocked"
+       ],
+       [
+        "@Rude",
+        "angry"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "think"
+       ],
+       [
+        "@like a tip",
+        "stand"
+       ],
+       [
+        "@Rude",
+        "shrug"
+       ]
+      ]
+     },
      "seed": 9,
      "bounce": {
       "sin": {
@@ -215,10 +369,32 @@
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@like a tip",
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        "@Rude",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 300.0
     }
@@ -226,7 +402,7 @@
    "popups": [
     {
      "text": "A COIN?",
-     "at": "@one small coin",
+     "at": "@a coin by the flour bin",
      "dur": 2.2,
      "x": 300,
      "y": 690,
@@ -291,7 +467,7 @@
    "tone": "eerie"
   },
   {
-   "narration": "\"Forty-one,\" she told the mechanic across the street. \"Not saying it was you.\" He studied the sky.",
+   "narration": "\"Forty-one,\" she told the mechanic across the street. \"I'm not saying it was you.\" He studied the sky. Politely.",
    "world": "toon_day_street",
    "camera": {
     "x": 300,
@@ -316,13 +492,79 @@
      "extras": [
       "bun"
      ],
-     "eye": "open",
-     "brow": [
-      -8,
-      10
-     ],
-     "mood": "angry",
-     "action": "talk",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@I'm not saying",
+        "open"
+       ],
+       [
+        "@He studied the sky",
+        "open"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         -8,
+         10
+        ]
+       ],
+       [
+        "@I'm not saying",
+        [
+         -8,
+         10
+        ]
+       ],
+       [
+        "@He studied the sky",
+        [
+         -8,
+         10
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "angry"
+       ],
+       [
+        "@I'm not saying",
+        "angry"
+       ],
+       [
+        "@He studied the sky",
+        "angry"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "talk"
+       ],
+       [
+        "@I'm not saying",
+        "point"
+       ],
+       [
+        "@He studied the sky",
+        "stand"
+       ]
+      ]
+     },
      "seed": 9,
      "talk": {
       "sin": {
@@ -340,10 +582,32 @@
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@I'm not saying",
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@He studied the sky",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 130.0
     },
@@ -364,13 +628,98 @@
      "extras": [
       "beard"
      ],
-     "eye": "open",
-     "brow": [
-      0,
-      0
-     ],
-     "mood": "neutral",
-     "action": "think",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@not saying it was you",
+        "wide"
+       ],
+       [
+        "@He studied the sky",
+        "open"
+       ],
+       [
+        "@Politely",
+        "half"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         0,
+         0
+        ]
+       ],
+       [
+        "@not saying it was you",
+        [
+         -8,
+         -8
+        ]
+       ],
+       [
+        "@He studied the sky",
+        [
+         0,
+         0
+        ]
+       ],
+       [
+        "@Politely",
+        [
+         4,
+         6
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "neutral"
+       ],
+       [
+        "@not saying it was you",
+        "shocked"
+       ],
+       [
+        "@He studied the sky",
+        "neutral"
+       ],
+       [
+        "@Politely",
+        "smug"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@not saying it was you",
+        "stand"
+       ],
+       [
+        "@He studied the sky",
+        "think"
+       ],
+       [
+        "@Politely",
+        "shrug"
+       ]
+      ]
+     },
      "seed": 41,
      "bounce": {
       "sin": {
@@ -379,10 +728,39 @@
        "phase": 0.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 2.59,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@not saying it was you",
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@He studied the sky",
+        [
+         0.3,
+         -0.7
+        ]
+       ],
+       [
+        "@Politely",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 470.0
     }
@@ -454,7 +832,7 @@
    "tone": "playful"
   },
   {
-   "narration": "That evening she balanced a bucket on the back door and went home feeling like a detective.",
+   "narration": "That evening she balanced a bucket on the back door and went home feeling like a detective. A small one.",
    "world": "toon_dusk_shop",
    "camera": {
     "x": 300,
@@ -490,13 +868,79 @@
      "extras": [
       "bun"
      ],
-     "eye": "half",
-     "brow": [
-      4,
-      6
-     ],
-     "mood": "smug",
-     "action": "cheer",
+     "eye": {
+      "step": [
+       [
+        0,
+        "half"
+       ],
+       [
+        "@went home",
+        "happy"
+       ],
+       [
+        "@A small one",
+        "open"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         4,
+         6
+        ]
+       ],
+       [
+        "@went home",
+        [
+         -6,
+         -4
+        ]
+       ],
+       [
+        "@A small one",
+        [
+         0,
+         0
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "smug"
+       ],
+       [
+        "@went home",
+        "happy"
+       ],
+       [
+        "@A small one",
+        "neutral"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "cheer"
+       ],
+       [
+        "@went home",
+        "laugh"
+       ],
+       [
+        "@A small one",
+        "think"
+       ]
+      ]
+     },
      "seed": 9,
      "bounce": {
       "sin": {
@@ -505,10 +949,32 @@
        "phase": 2.0
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@went home",
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@A small one",
+        [
+         0.1,
+         0.85
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 300.0
     }
@@ -581,7 +1047,7 @@
    "tone": "playful"
   },
   {
-   "narration": "At four, the door creaked. The bucket tipped. Someone gasped, and it was definitely not the mechanic.",
+   "narration": "At four, the door creaked. The bucket tipped. Somebody gasped, and it definitely wasn't the mechanic.",
    "world": "toon_night_shop",
    "camera": {
     "x": 300,
@@ -615,25 +1081,125 @@
      "skin": "light",
      "hair": "white",
      "extras": [],
-     "eye": "wide",
-     "brow": [
-      -4,
-      -4
-     ],
-     "mood": "scared",
-     "action": "tremble",
+     "eye": {
+      "step": [
+       [
+        0,
+        "open"
+       ],
+       [
+        "@the door creaked",
+        "wide"
+       ],
+       [
+        "@The bucket tipped",
+        "wide"
+       ]
+      ]
+     },
+     "brow": {
+      "step": [
+       [
+        0,
+        [
+         10,
+         -6
+        ]
+       ],
+       [
+        "@the door creaked",
+        [
+         -4,
+         -4
+        ]
+       ],
+       [
+        "@The bucket tipped",
+        [
+         -8,
+         -8
+        ]
+       ]
+      ]
+     },
+     "mood": {
+      "step": [
+       [
+        0,
+        "sad"
+       ],
+       [
+        "@the door creaked",
+        "scared"
+       ],
+       [
+        "@The bucket tipped",
+        "shocked"
+       ]
+      ]
+     },
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@the door creaked",
+        "tremble"
+       ],
+       [
+        "@The bucket tipped",
+        "flap"
+       ]
+      ]
+     },
      "seed": 11,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
      "bounce": {
       "sin": {
-       "amp": 3,
-       "rate": 30,
+       "amp": 1.5,
+       "rate": 2.5,
        "phase": 2.5
       }
      },
-     "look": [
-      0.6,
-      0
-     ],
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        "@the door creaked",
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        "@The bucket tipped",
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
      "y": 1240.0,
      "x": 300.0
     },
