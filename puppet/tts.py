@@ -101,21 +101,66 @@ def _say(text, voice, dry):
     return a
 
 
+LAST_DETAIL = []          # set by speak(): for every sentence, its clauses as (chars_from, chars_to, start_s, duration_s) in the spoken text
+
+
 def speak(text, voice="bm_george", dry=False):
-    """returns (audio float32 @24 kHz, marks) where marks = [(start_s, duration_s)] per sentence."""
+    """returns (audio float32 @24 kHz, marks) where marks = [(start_s, duration_s)] per sentence.
+    tts.LAST_DETAIL then holds the clause timings, so words can be placed in time much more exactly than by sentence."""
     sents = split_sents(text)
     if not sents:
         raise SystemExit(f"Narration has no full sentence (end each with . ? or !): {text!r}")
-    parts, t, marks = [], 0.0, []
+    parts, t, marks, detail = [], 0.0, [], []
     for snt in sents:
-        pieces = []
-        for k, c in enumerate(clauses(speakable(snt))):
+        pieces, cl, tc, pos = [], [], t, 0
+        spoken = speakable(snt)
+        for k, c in enumerate(clauses(spoken)):
             if k:
                 pieces.append(np.zeros(int(CLAUSE_GAP * SR), dtype="float32"))
-            pieces.append(_say(c, voice, dry))
+                tc += CLAUSE_GAP
+            a_ = _say(c, voice, dry)
+            pieces.append(a_)
+            c0 = spoken.find(c, pos)
+            pos = c0 + len(c)
+            cl.append((c0, pos, round(tc, 3), round(len(a_) / SR, 3)))
+            tc += len(a_) / SR
         a = np.concatenate(pieces)
         gap = SHORT_GAP if len(snt.split()) <= 3 else SENT_GAP
         marks.append((round(t, 3), round(len(a) / SR, 3)))
+        detail.append({"len": len(spoken), "clauses": cl})
         parts += [a, np.zeros(int(gap * SR), dtype=a.dtype)]
         t += len(a) / SR + gap
+    LAST_DETAIL[:] = detail
     return np.concatenate(parts[:-1]), marks
+
+
+def _syl(w):
+    return max(1, len(re.findall(r"[aeiouy]+", w.lower())))
+
+
+def word_time(snt, detail, idx):
+    """seconds (from the start of the narration) at which the character at position idx of the sentence is spoken:
+    first the clause it is in, then its place inside that clause weighted by syllables (a long word takes longer than a short one)."""
+    n = max(1, len(snt))
+    pos = min(detail["len"] - 1, int(idx * detail["len"] / n)) if detail["len"] else 0
+    cl = detail["clauses"]
+    c = next((c for c in cl if c[0] <= pos < c[1]), cl[-1] if pos >= cl[-1][1] else cl[0])
+    c0, c1, st, du = c
+    text = snt_text = None
+    # syllable weights are taken from the original sentence characters of this clause
+    s0 = int(c0 * n / max(1, detail["len"]))
+    s1 = int(c1 * n / max(1, detail["len"]))
+    seg = snt[s0:s1] or snt
+    rel = max(0, min(len(seg), idx - s0))
+    words = [(m.start(), m.end(), _syl(m.group(0))) for m in re.finditer(r"[\w'-]+", seg)] or [(0, len(seg), 1)]
+    total = sum(w[2] for w in words)
+    before = 0.0
+    for a, b, k in words:
+        if rel >= b:
+            before += k
+        elif rel >= a:
+            before += k * (rel - a) / max(1, b - a)
+            break
+        else:
+            break
+    return st + du * before / total

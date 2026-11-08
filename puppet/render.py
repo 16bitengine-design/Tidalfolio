@@ -46,14 +46,14 @@ def make_narration(script, scenes, narr_dir, dry):
     voice = (script.get("voice") or {}).get("kokoro", "bm_george")
     narr_dir.mkdir(parents=True, exist_ok=True)
     for i, sc in enumerate(scenes):
-        key = hashlib.sha1(f"{voice}|{sc['narration']}|{dry}".encode()).hexdigest()[:12]
+        key = hashlib.sha1(f"{voice}|{sc['narration']}|{dry}|w2".encode()).hexdigest()[:12]
         wav, meta = narr_dir / f"narr_{i:02}.wav", narr_dir / f"narr_{i:02}.json"
         if not (wav.exists() and meta.exists() and json.loads(meta.read_text()).get("key") == key):
             audio, marks = tts.speak(sc["narration"], voice, dry)
             sf.write(str(wav), audio, tts.SR)
-            meta.write_text(json.dumps({"key": key, "marks": marks, "dur": len(audio) / tts.SR}))
+            meta.write_text(json.dumps({"key": key, "marks": marks, "detail": list(tts.LAST_DETAIL), "dur": len(audio) / tts.SR}))
         m = json.loads(meta.read_text())
-        sc["_marks"], sc["_au"], sc["_wav"] = m["marks"], m["dur"], wav
+        sc["_marks"], sc["_au"], sc["_wav"], sc["_detail"] = m["marks"], m["dur"], wav, m.get("detail")
         sc["_i"] = i
 
 
@@ -74,10 +74,13 @@ def narration_time(scenes):
         if idx < 0:
             raise SystemExit(f"Scene {i + 1}: the words {phrase!r} are not in its narration, so nothing can be timed to them.")
         pos = 0
-        for (st, du), snt in zip(sc["_marks"], tts.split_sents(text)):
+        for k_, ((st, du), snt) in enumerate(zip(sc["_marks"], tts.split_sents(text))):
             s0 = text.find(snt, pos)
             pos = s0 + len(snt)
             if s0 <= idx < s0 + len(snt):
+                det = (sc.get("_detail") or [None] * 99)[k_]
+                if det:                                    # exact clause timing, syllable-weighted inside the clause
+                    return LEAD + tts.word_time(snt, det, idx - s0)
                 return LEAD + st + du * (idx - s0) / max(1, len(snt))
         return LEAD
     return nt

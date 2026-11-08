@@ -492,8 +492,16 @@
        "base": 0.5,
        "amp": 0.5,
        "rate": 10,
-       "from": "@He always left",
-       "to": "@views"
+       "gate": [
+        [
+         "@He",
+         "@the"
+        ],
+        [
+         "@Free",
+         "@end-1.0"
+        ]
+       ]
       }
      },
      "bounce": {

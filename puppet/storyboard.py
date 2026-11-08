@@ -369,6 +369,36 @@ def _scale(species, at, crowd):
     return {"squirrel": 0.8, "cat": 1.1, "fox": 1.06, "rabbit": 1.06}.get(species, 0.85)
 
 
+def _uniq(nar, i, forward=True):
+    """a few words of the narration starting at i that find() locates at i (so a timed @phrase means exactly that place)"""
+    seg = nar[i:].lstrip() if forward else nar[i:]
+    i = nar.index(seg[:1], i) if seg else i
+    words = nar[i:].split(" ")
+    for n in range(1, len(words) + 1):
+        ph = " ".join(words[:n]).rstrip()
+        if ph and nar.find(ph) == i:
+            return ph
+    return nar[i:].strip()
+
+
+def _quote_windows(nar, a, scene):
+    """times at which this actor is the one speaking: the words inside double quotes, shared out among the speaking actors in order"""
+    spans = [(m.start() + 1, m.end() - 1) for m in re.finditer(r'"[^"]+"', nar)]
+    if not spans:
+        return None
+    speakers = [x.get("who") for x in scene.get("actors", []) if x.get("action") == "talk" or x.get("speaks")]
+    if a.get("who") not in speakers:
+        return None
+    mine = [sp for k, sp in enumerate(spans) if speakers[k % len(speakers)] == a["who"]]
+    out = []
+    for q0, q1 in mine:
+        start = "@" + _uniq(nar, q0)
+        rest = nar[q1 + 1:].strip()
+        end = "@" + _uniq(nar, nar.index(rest, q1 + 1)) if rest else "@end-1.0"
+        out.append([start, end])
+    return out or None
+
+
 def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
     who, c = a["who"], cast[a["who"]]
     sp = c["species"]
@@ -397,6 +427,9 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
             th["tear"] = {"kf": [[0, 0], [2.0, tear]]}
         if action == "talk" or a.get("speaks"):                          # the mouth moves while this person speaks, whatever the hands are doing
             th["talk"] = {"sin": {"base": 0.5, "amp": 0.5, "rate": 10, "from": t_from, "to": t_to}}
+            gate = _quote_windows(scene.get("narration", ""), a, scene)
+            if gate:                                                      # only the quoted words are theirs: the narrator's "she said" is not
+                th["talk"]["sin"] = {"base": 0.5, "amp": 0.5, "rate": 10, "gate": gate}
         rate, amp = {"scared": (30, 3), "angry": (22, 2.5), "happy": (5, 4), "shocked": (26, 3)}.get(mood, (2.5, 1.5))
         th["bounce"] = {"sin": {"amp": amp, "rate": rate, "phase": (zlib.crc32(who.encode()) % 7) * 0.5}}
         sd = th["seed"]

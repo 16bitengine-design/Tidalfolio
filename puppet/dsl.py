@@ -83,6 +83,9 @@ def ev(spec, u, clk, default=None):
     sn = spec.get("sin")
     if sn is not None:
         t0, t1 = clk.t(sn.get("from")), clk.t(sn.get("to"))
+        gated = sn.get("gate")
+        if gated is not None and not any(clk.t(a) <= u < clk.t(b) for a, b in gated):
+            t0 = t1 = 1e9                              # outside every window: silent
         if (t0 is None or u >= t0) and (t1 is None or u < t1):
             fn = math.cos if sn.get("fn") == "cos" else math.sin
             add = sn.get("base", 0.0) + sn["amp"] * fn(u * sn["rate"] + sn.get("phase", 0.0))

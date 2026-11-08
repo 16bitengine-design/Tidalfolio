@@ -380,8 +380,16 @@
        "base": 0.5,
        "amp": 0.5,
        "rate": 10,
-       "from": "@First bus",
-       "to": "@Smelling of flour"
+       "gate": [
+        [
+         "@First",
+         "@she"
+        ],
+        [
+         "@He",
+         "@end-1.0"
+        ]
+       ]
       }
      },
      "bounce": {

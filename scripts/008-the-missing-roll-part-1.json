@@ -571,8 +571,16 @@
        "base": 0.5,
        "amp": 0.5,
        "rate": 10,
-       "from": "@she told the mechanic",
-       "to": "@was you"
+       "gate": [
+        [
+         "@Forty-one,\"",
+         "@she"
+        ],
+        [
+         "@I'm",
+         "@He"
+        ]
+       ]
       }
      },
      "bounce": {
