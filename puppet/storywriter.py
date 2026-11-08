@@ -218,22 +218,84 @@ q11 ORIGINALITY: is the premise fresh, with at least two details a viewer has ne
 q12 HUMAN VOICE: does it read as told by a real person who witnessed it (specific, odd, uneven rhythm, a point of view), or as smooth machine prose (generic detail, tidy triads, stock phrases, every sentence the same length, feelings named instead of shown)? Score 1 or 2 if it reads as machine prose.
 q13 EMOTIONAL TOUCH: is there at least one moment that would genuinely move a viewer, carried by a gesture or an object, with a character we care about before they are hurt or embarrassed? Score 1 or 2 if the feeling is only announced.
 q14 SET-UP AND PAYOFF: are at least two early details paid off late in a way that recasts them, with the protagonist's own choices driving the plot? Score 1 or 2 if events are just coincidences.
+q15 SHAREABILITY: would a viewer send this to a friend or retell it at dinner? Is there one line, image or twist people would quote? Score 1 or 2 if it is pleasant but forgettable.
+q16 HOOK: would a stranger scrolling past stop in the first 3 seconds of part 1? Score 1 or 2 if the opening is set-up, weather or introductions.
 Reply with ONE JSON object: {"scores": {"q1": 4, ...}, "problems": ["specific, actionable fixes naming the part and scene, only for scores of 1 or 2, max 5"]}"""
 
 
-def critique(G, sb):
-    """Second AI pass: an editor scores the story. Returns a list of problems (empty = approved)."""
+MIN_AVG = float(os.environ.get("STORY_MIN_SCORE", "3.9"))      # the pass mark: the editor's average over all questions must reach this
+STRICT = ("q10", "q11", "q12", "q13", "q15", "q16")            # endings, originality, voice, heart, shareability, hook: a 3 on any of these is a rewrite
+
+
+class StoryRejected(Exception):
+    """The story is not good enough to post, even after rewrites: it is dropped and a new one is written."""
+
+
+def critique_scored(G, sb):
+    """Second AI pass: an editor scores the story. Returns (problems, average score); problems empty = approved. average is None if the editor did not answer."""
     text = "\n".join(f"PART {pi}:\n" + "\n".join(f"  {n}. {sc['narration']}" for n, sc in enumerate(part["scenes"], 1))
                      for pi, part in enumerate(sb["parts"], 1))
     try:
         r = json.loads(G.call_openai([{"role": "system", "content": CRITIC_PROMPT}, {"role": "user", "content": f"Title: {sb.get('title')}\n{text}"}], 0.3))
     except (ValueError, SystemExit):
-        return []                               # the editor is a bonus: never block a story because it failed to answer
+        return [], None                         # the editor is a bonus: never block a story because it failed to answer
     scores = r.get("scores") or {}
-    low = [k for k, v in scores.items() if isinstance(v, (int, float)) and v <= (3 if k in ("q10", "q11", "q12", "q13") else 2)]   # endings, originality, voice and heart must be strong: a 3 is a rewrite
-    if not low:
-        return []
-    return [f"an editor rejected the story (weak: {', '.join(sorted(low))}): " + "; ".join(r.get("problems") or ["make it more surprising, more tense and funnier"])]
+    nums = [v for v in scores.values() if isinstance(v, (int, float))]
+    avg = sum(nums) / len(nums) if nums else None
+    low = [k for k, v in scores.items() if isinstance(v, (int, float)) and v <= (3 if k in STRICT else 2)]
+    why = r.get("problems") or ["make it more surprising, more tense and funnier"]
+    if low:
+        return [f"an editor rejected the story (weak: {', '.join(sorted(low))}): " + "; ".join(why)], avg
+    if avg is not None and avg < MIN_AVG:
+        return [f"an editor found the story below the pass mark (average {avg:.1f}, needs {MIN_AVG}): " + "; ".join(why)], avg
+    return [], avg
+
+
+def critique(G, sb):
+    return critique_scored(G, sb)[0]
+
+
+PREMISE_PROMPT = """You are the head of story development for a deadpan comedy channel about everyday people. Pitch %d completely different story premises for one %d-part story.
+Each must be specific and odd, not a stock situation (no lost wallets, mixed-up coffee orders or surprise parties). Each needs a first-three-seconds hook, one moment that would genuinely move a viewer carried by an object or a gesture, one early detail that pays off late, and an ending a viewer would retell.
+Reply with ONE JSON object: {"premises": [{"logline": "two sentences", "hook": "what the first line shows", "heart": "the moving moment", "payoff": "the early detail and how it pays off"}]}"""
+
+JUDGE_PROMPT = """You are a ruthless producer choosing which story premise to make. Score EVERY premise 1 to 5 on: hook (a stranger stops scrolling), fresh (not seen on any other channel), heart (a moment that moves you), share (someone would retell it to a friend), payoff (the ending recasts an early detail).
+Be harsh: most premises deserve 2 or 3. Reply with ONE JSON object: {"scores": [{"i": 0, "hook": 3, "fresh": 2, "heart": 4, "share": 3, "payoff": 3}]} with one entry per premise, in order."""
+
+
+def pick_premise(G, n_parts, brief_hint, log=print):
+    """Pitch several premises, have a second pass score them, return the text of the winner (None = could not, let the writer invent one)."""
+    n = int(os.environ.get("STORY_CANDIDATES", "5"))
+    if n < 2:
+        return None
+    try:
+        cands = json.loads(G.call_openai([{"role": "system", "content": PREMISE_PROMPT % (n, n_parts)},
+                                          {"role": "user", "content": brief_hint}], 1.0)).get("premises") or []
+        cands = [c for c in cands if isinstance(c, dict) and c.get("logline")]
+        if len(cands) < 2:
+            return None
+        listing = "\n".join(f"{i}. {c['logline']} | hook: {c.get('hook', '')} | heart: {c.get('heart', '')} | payoff: {c.get('payoff', '')}" for i, c in enumerate(cands))
+        rows = json.loads(G.call_openai([{"role": "system", "content": JUDGE_PROMPT}, {"role": "user", "content": listing}], 0.2)).get("scores") or []
+    except (ValueError, SystemExit, AttributeError):
+        return None                                             # a bonus step: never block a story because it failed
+    best, best_total = None, -1
+    for pos, row in enumerate(rows):
+        if not isinstance(row, dict):
+            continue
+        i = row.get("i", pos)
+        if not isinstance(i, int) or not 0 <= i < len(cands):
+            continue
+        vals = [row.get(k) for k in ("hook", "fresh", "heart", "share", "payoff")]
+        if not all(isinstance(v, (int, float)) for v in vals):
+            continue
+        total = sum(vals) + (row.get("fresh") or 0) + (row.get("share") or 0)     # fresh and share count double: they decide whether people pass it on
+        if total > best_total:
+            best, best_total = i, total
+    if best is None:
+        return None
+    c = cands[best]
+    log(f"Premises pitched: {len(cands)}; chose #{best} ({best_total} of 35): {c['logline'][:160]}")
+    return (f"{c['logline']} OPENING HOOK: {c.get('hook', '')} MOVING MOMENT: {c.get('heart', '')} PAYOFF: {c.get('payoff', '')}")
 
 
 def _measure(script):
@@ -591,7 +653,13 @@ def write_story(idea=None, series=None, parts=None, log=print):
             raise
     G.call_openai = call_with_fallback
     try:
-        return _write_story(G, idea, series, parts, log)
+        tries = max(1, int(os.environ.get("STORY_TRIES", "3")))
+        for t in range(1, tries + 1):                                         # a story that misses the pass mark is dropped; nothing weak is queued
+            try:
+                return _write_story(G, idea, series, parts, log)
+            except StoryRejected as e:
+                log(f"Story {t} of {tries} dropped, not good enough to post: {e}")
+        raise SystemExit(f"No story passed the quality bar in {tries} tries, so nothing was queued. Run again (or lower STORY_MIN_SCORE).")
     finally:
         G.call_openai = real_call
 
@@ -608,6 +676,10 @@ def _write_story(G, idea, series, parts, log):
     cause = random.choice(["forgot", "believed", "no_options"])
     lessons, words = G.used_lessons(), G.used_words()
     system = system_prompt(6, 8, n_parts)
+    if not idea:                                                              # ---- 0. pitch several premises, keep only the strongest
+        hint = (f"Series: {series} ({SERIES[series]}). " + (f"The protagonist is a {lead_gender} {lead}. " if lead else "")
+                + (f"Titles already used (be different): {'; '.join(titles[-15:])}. " if titles else ""))
+        idea = pick_premise(G, n_parts, hint, log)
     brief = (f"Write the next story for the series \"{series}\" ({SERIES[series]}), told in exactly {n_parts} parts. "
              + (f"Story idea to use: {idea}. " if idea else "Invent a fresh, specific premise. ")
              + (f"THE PROTAGONIST (the first entry of 'cast') MUST BE A {lead_gender.upper()} {lead.upper()} (\"role\": \"{lead}\", \"gender\": \"{lead_gender}\"; {PERSONA.get(lead, 'a distinct character')}). " if lead else "")
@@ -668,8 +740,11 @@ def _write_story(G, idea, series, parts, log):
     sb["parts"] = done
     for rnd in range(1, 4):                                                       # ---- 3. check everything, rewrite only the weak parts
         bad, scripts = problems(sb, number)
-        if not bad and rnd == 1 and os.environ.get("STORY_CRITIC", "1") != "0":
-            bad = critique(G, sb)
+        if not bad and os.environ.get("STORY_CRITIC", "1") != "0":
+            bad, avg = critique_scored(G, sb)
+            log(f"Editor round {rnd}: average {avg:.1f}" if avg is not None else f"Editor round {rnd}: no score")
+            if bad and rnd == 3:
+                raise StoryRejected("; ".join(bad)[:400])
         if not bad:
             t = re.sub(rf"^{re.escape(series)}\s*(#\d+)?\s*[:\-]\s*", "", sb["title"].strip(), flags=re.I) or sb["title"].strip()
             names = []
