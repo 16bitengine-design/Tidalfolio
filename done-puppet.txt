@@ -4,3 +4,4 @@
 006-the-great-nut-heist-part-1.json
 007-itchy-evidence-part-1.json
 008-the-missing-roll-part-1.json
+008-the-missing-roll-part-2.json
