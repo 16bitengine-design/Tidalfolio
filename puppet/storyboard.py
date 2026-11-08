@@ -559,7 +559,7 @@ def _camera(mode, stage):
         return {"x": {"lin": [[0, bx - 50], ["@end", bx + 50]]}, "y": by, "z": z0}
     if mode == "pan_left":
         return {"x": {"lin": [[0, bx + 50], ["@end", bx - 50]]}, "y": by, "z": z0}
-    return {"x": bx, "y": by, "z": z0}
+    return {"x": bx, "y": by, "z": {"kf": [[0, z0], ["@end", z0 * 1.045]]}}      # even a "hold" leans in a little
 
 
 def _stage_things(stage):

@@ -155,6 +155,11 @@ def draw_scene(img, sc, u, D, ctx):
     clk = Clock(lambda ph: ctx.nt(sc["_i"], ph), D)
     cam = sc.get("camera", {})
     C.cx, C.cy, C.z = ev(cam.get("x"), u, clk, 540), ev(cam.get("y"), u, clk, 960), ev(cam.get("z"), u, clk, 1.0)
+    sway = 0.5 + 0.5 * min(1.0, D / 8.0)                 # a living camera: a slow breath and a faint hand-held drift, never a still photograph
+    ph_ = u * D * 0.55 + sc.get("_i", 0) * 1.7
+    C.cx += 5.0 * sway * math.sin(ph_) + 2.5 * math.sin(ph_ * 2.3 + 1)
+    C.cy += 4.0 * sway * math.sin(ph_ * 0.8 + 2)
+    C.z *= 1.0 + 0.004 * math.sin(ph_ * 0.7)
     E.composite_world(img, ctx.worlds[sc["world"]])
     d = ImageDraw.Draw(img)
     fz = clk.t(sc.get("freeze"))
@@ -236,6 +241,7 @@ def _thing(d, th, u, clk, pos):
         if walk > 0.12:                         # a person who is walking faces the way they are going (never crab-walks or backs away)
             face = 1 if dx_ > 0 else -1
         gait = u * 8.0 if walk > 0.02 else 0.0           # a steady cadence: about one stride every 0.8 s
+        E.ground_shadow(d._image, x, y, s)
         people.person(d, x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
                       hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=g("talk", 0.0), eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
                       tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=g("action", "stand"), mood=g("mood", "neutral"),

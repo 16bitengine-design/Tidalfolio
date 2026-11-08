@@ -966,6 +966,20 @@ def bake_world(pal, seed=1):
     return [(0.12, sky), (0.35, far), (0.62, mid), (1.0, near)]
 
 
+def ground_shadow(img, x, y, s, spread=95, alpha=115):
+    """A soft contact shadow under a standing figure: it seats the person on the floor and gives the scene depth."""
+    cx, cy = P(x, y + 4 * s)
+    rx, ry = S(spread * s), S(spread * s * 0.2)
+    x0, y0, x1, y1 = int(cx - rx * 1.6), int(cy - ry * 2.6), int(cx + rx * 1.6), int(cy + ry * 2.6)
+    if x1 < 0 or y1 < 0 or x0 > img.width or y0 > img.height:
+        return
+    w_, h_ = x1 - x0, y1 - y0
+    m = Image.new("L", (w_, h_), 0)
+    ImageDraw.Draw(m).ellipse((w_ / 2 - rx, h_ / 2 - ry, w_ / 2 + rx, h_ / 2 + ry), fill=alpha)
+    m = m.filter(ImageFilter.GaussianBlur(max(2, ry * 0.7)))
+    img.paste(Image.new("RGB", (w_, h_), (22, 14, 40)), (x0, y0), m)
+
+
 def composite_world(img, layers):
     for depth, lay in layers:
         zz = 1.0 + (C.z - 1.0) * depth
