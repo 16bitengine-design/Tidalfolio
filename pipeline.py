@@ -133,13 +133,38 @@ def _openai_tts(text, cfg, out_wav, delivery=None, pace=None):
     return False
 
 
+def _kokoro_tts(text, cfg, out_wav):
+    """Free offline narrator (Kokoro), the same voice and steady pace the puppet engine uses (puppet/tts.py)."""
+    try:
+        import soundfile as sf
+        from puppet import tts
+        spoken = text.strip()
+        if spoken and spoken[-1] not in '.!?"':
+            spoken += "."                      # the voice pacing needs full sentences
+        audio, _ = tts.speak(spoken, cfg.get("kokoro_voice", "bm_george"))
+        raw = out_wav.with_suffix(".raw.wav")
+        sf.write(str(raw), audio, tts.SR)
+        run(["ffmpeg", "-y", "-i", raw, "-ar", "44100", "-ac", "2", out_wav])
+        raw.unlink()
+        return True
+    except (Exception, SystemExit) as e:
+        print(f"      Kokoro voice failed: {e}")
+        return False
+
+
 def make_narration(text, cfg, out_wav, dry, delivery=None, pace=None):
     if dry:
         d = max(1.5, len(text.split()) / 2.6)
         run(["ffmpeg", "-y", "-f", "lavfi", "-i", f"sine=frequency=220:duration={d}",
              "-af", "volume=0.08", "-ar", "44100", "-ac", "2", out_wav])
         return
-    if os.environ.get("OPENAI_API_KEY") and cfg.get("provider", "openai") == "openai":
+    provider = cfg.get("provider", "kokoro")
+    if provider == "kokoro":
+        # one steady speed for every line (per-scene "pace" is ignored on purpose: the pace must not change inside a story)
+        if _kokoro_tts(text, cfg, out_wav):
+            return
+        print("      Falling back to the Edge voice.")
+    elif os.environ.get("OPENAI_API_KEY") and provider == "openai":
         if _openai_tts(text, cfg, out_wav, delivery, pace):
             return
         print("      OpenAI voice failed, falling back to the free voice.")

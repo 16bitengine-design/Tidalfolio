@@ -37,6 +37,12 @@ jobs:
       - name: Install Python packages
         run: pip install -r requirements.txt
 
+      - name: Cache the narrator voice model (about 350 MB, downloaded once)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/tidalfolio/kokoro
+          key: kokoro-v1.0-model-files
+
       - name: Collect results of earlier videos and update insights
         # Never blocks a video: if YouTube stats cannot be read this just prints why.
         continue-on-error: true
