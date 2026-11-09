@@ -23,7 +23,7 @@ Output matches the image pipeline, so `upload_youtube.py` and `post_tiktok.py` w
 ## Script format
 
 A puppet script is JSON with `"engine": "puppet"`, plus the usual `slug`, `title`, `youtube`, `tiktok`, `series_part`,
-`thumbnail_scene`, and `voice` (`{"kokoro": "bm_george"}`; try `bm_fable`, `bm_daniel`, `am_michael`). Each scene:
+`thumbnail_scene`, and `voice` (`{"kokoro": "tidal"}`, the channel's own radio-presenter voice: a 60/40 blend of `bm_lewis` and `am_michael` with a radio finish, defined in `tts.py`; `bm_george` also maps to it; any other Kokoro name such as `bm_fable` or `am_michael` is used as a plain voice). Each scene:
 
 ```
 { "narration": "Full sentences. Short ones are spoken slowly and dramatically.",
