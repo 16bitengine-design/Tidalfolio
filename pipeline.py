@@ -141,7 +141,7 @@ def _kokoro_tts(text, cfg, out_wav):
         spoken = text.strip()
         if spoken and spoken[-1] not in '.!?"':
             spoken += "."                      # the voice pacing needs full sentences
-        audio, _ = tts.speak(spoken, cfg.get("kokoro_voice", "bm_george"))
+        audio, _ = tts.speak(spoken, cfg.get("kokoro_voice", tts.CHANNEL_VOICE))
         raw = out_wav.with_suffix(".raw.wav")
         sf.write(str(raw), audio, tts.SR)
         run(["ffmpeg", "-y", "-i", raw, "-ar", "44100", "-ac", "2", out_wav])

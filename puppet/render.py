@@ -43,10 +43,10 @@ def _srt_time(t):
 # ------------------------------------------------------------------ narration + timing
 def make_narration(script, scenes, narr_dir, dry):
     import soundfile as sf
-    voice = (script.get("voice") or {}).get("kokoro", "bm_george")
+    voice = (script.get("voice") or {}).get("kokoro", tts.CHANNEL_VOICE)
     narr_dir.mkdir(parents=True, exist_ok=True)
     for i, sc in enumerate(scenes):
-        key = hashlib.sha1(f"{voice}|{sc['narration']}|{dry}|w2".encode()).hexdigest()[:12]
+        key = hashlib.sha1(f"{voice}|{sc['narration']}|{dry}|w3radio".encode()).hexdigest()[:12]
         wav, meta = narr_dir / f"narr_{i:02}.wav", narr_dir / f"narr_{i:02}.json"
         if not (wav.exists() and meta.exists() and json.loads(meta.read_text()).get("key") == key):
             audio, marks = tts.speak(sc["narration"], voice, dry)
@@ -219,7 +219,7 @@ def render_script(script_path, dry=False, workers=None):
         for sc in scenes:
             sc.pop("end_card", None)
 
-    print(f"[1/5] narration ({len(scenes)} scenes, voice {(script.get('voice') or {}).get('kokoro', 'bm_george')})", flush=True)
+    print(f"[1/5] narration ({len(scenes)} scenes, voice {(script.get('voice') or {}).get('kokoro', tts.CHANNEL_VOICE)})", flush=True)
     make_narration(script, scenes, out_root / "narration", dry)
     total = plan_timing(scenes)
     print(f"      total runtime: {total:.1f}s", flush=True)

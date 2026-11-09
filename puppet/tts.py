@@ -3,7 +3,9 @@ Steady storyteller pacing: one speed for every sentence, a short breath between 
 The model files (about 350 MB) are downloaded once from the kokoro-onnx GitHub release and cached in ~/.cache/tidalfolio."""
 import os
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import numpy as np
@@ -44,6 +46,45 @@ def _kokoro():
         m, v = ensure_models()
         _k = Kokoro(str(m), str(v))
     return _k
+
+
+# The channel's own voice ("tidal"): a middle-aged radio presenter, easy and warm. It is a blend of two Kokoro voices
+# (60% bm_lewis, 40% am_michael) plus a radio finish (a touch lower, bass warmth, presence, gentle compression).
+# Old scripts that still ask for "bm_george" get this voice too, so every video sounds the same.
+CHANNEL_VOICE = "tidal"
+CHANNEL_BLEND = (("bm_lewis", 0.6), ("am_michael", 0.4))
+LEGACY_NAMES = ("bm_george", "tidal")
+PITCH_SEMITONES, BASS_DB, PRESENCE_DB = -0.5, 3.0, 2.5
+_style = None
+
+
+def channel_style():
+    global _style
+    if _style is None:
+        k = _kokoro()
+        _style = sum(w * k.get_voice_style(v) for v, w in CHANNEL_BLEND) / sum(w for _, w in CHANNEL_BLEND)
+    return _style
+
+
+def radio_finish(audio):
+    """Lower the pitch a little, add low-end warmth and presence, and level it gently (ffmpeg). The length stays the same, so the
+    sentence timings measured by speak() stay valid. If ffmpeg is missing the plain audio is returned."""
+    try:
+        import soundfile as sf
+        r = 2 ** (PITCH_SEMITONES / 12)
+        af = (f"asetrate={int(SR * r)},aresample={SR},atempo={1 / r:.4f},"
+              f"equalizer=f=110:t=h:w=100:g={BASS_DB},equalizer=f=3200:t=q:w=1.2:g={PRESENCE_DB},"
+              "acompressor=threshold=-20dB:ratio=3:attack=15:release=180:makeup=4,alimiter=limit=0.9:level=disabled")
+        with tempfile.TemporaryDirectory() as d:
+            src, dst = os.path.join(d, "in.wav"), os.path.join(d, "out.wav")
+            sf.write(src, audio, SR)
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", src, "-af", af, "-ac", "1", "-ar", str(SR), dst], check=True)
+            out, _ = sf.read(dst, dtype="float32")
+        n = len(audio)
+        return out[:n] if len(out) >= n else np.concatenate([out, np.zeros(n - len(out), dtype="float32")])
+    except Exception as e:
+        print(f"      radio finish skipped: {e}")
+        return audio
 
 
 SPEED = 0.82          # ONE speed for every sentence: the pace must never speed up or slow down inside a story
@@ -97,6 +138,9 @@ def _say(text, voice, dry):
     words = len(text.split())
     if dry:
         return np.zeros(int(words / 2.2 * SR), dtype="float32")
+    if voice in LEGACY_NAMES:
+        a, _ = _kokoro().create(text, voice=channel_style(), speed=SPEED, lang="en-gb")
+        return a
     a, _ = _kokoro().create(text, voice=voice, speed=SPEED, lang="en-gb" if voice.startswith("b") else "en-us")
     return a
 
@@ -104,7 +148,7 @@ def _say(text, voice, dry):
 LAST_DETAIL = []          # set by speak(): for every sentence, its clauses as (chars_from, chars_to, start_s, duration_s) in the spoken text
 
 
-def speak(text, voice="bm_george", dry=False):
+def speak(text, voice=CHANNEL_VOICE, dry=False):
     """returns (audio float32 @24 kHz, marks) where marks = [(start_s, duration_s)] per sentence.
     tts.LAST_DETAIL then holds the clause timings, so words can be placed in time much more exactly than by sentence."""
     sents = split_sents(text)
@@ -131,7 +175,10 @@ def speak(text, voice="bm_george", dry=False):
         parts += [a, np.zeros(int(gap * SR), dtype=a.dtype)]
         t += len(a) / SR + gap
     LAST_DETAIL[:] = detail
-    return np.concatenate(parts[:-1]), marks
+    audio = np.concatenate(parts[:-1])
+    if not dry and voice in LEGACY_NAMES:
+        audio = radio_finish(audio)
+    return audio, marks
 
 
 def _syl(w):
