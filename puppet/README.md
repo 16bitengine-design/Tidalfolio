@@ -87,3 +87,11 @@ hat and tool (baker, chef, doctor, teacher, mechanic, farmer, police officer, ju
 The writer refuses names in the narration (`storyboard.personal_names`) and picks a lead role and gender that differ from the last two stories.
 Settings (`puppet/towns.py`): street, park, kitchen, shop, office, classroom, home, each in every time of day. People stand in `ground_left|mid|right`
 (max 3 per scene) and the camera starts zoomed in (`ZOOM_H`). Older animal scripts still render.
+
+## The vector look (default for new stories)
+
+`"look": "vector"` draws everything with anti-aliased vector shapes (skia): flat rounded shapes, soft gradients, coloured shadows (violet instead of grey), no black outlines, and a different sky, light and palette for every time of day (dawn, day, dusk, storm, night, sunset). Backgrounds are drawn live, so the camera can move freely. It uses the same story files, roles, moods, poses, captions and music as the ink look; it draws people only (animal stories keep `"look": "toon"`).
+
+- `vector.py`: canvas helpers, skies, hills, streets, parks, and the five interiors (kitchen, shop, office, classroom, home)
+- `vector_people.py`: the people (front and walking views), hats, held items, puffs and sparkles
+- world names stay the same (`toon_dawn_shop` = dawn, shop interior); pop-ups, captions and the end card are restyled for this look in `engine.py`

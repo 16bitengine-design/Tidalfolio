@@ -15,7 +15,9 @@ LOOK = {}
 
 def set_look(name):
     LOOK.clear()
-    if name == "toon":
+    if name == "vector":      # modern flat-vector cartoon (puppet/vector.py): drawn with skia, no outlines
+        LOOK.update(toon=True, vector=True, lw=1.0, sat=1.0, eye=1.0, head=1.0, grain=0.2)
+    elif name == "toon":
         LOOK.update(toon=True, lw=1.8, sat=1.5, eye=1.5, head=1.22, grain=0.35)
     else:
         LOOK.update(toon=False, lw=1.0, sat=1.0, eye=1.0, head=1.0, grain=1.0)
@@ -712,6 +714,13 @@ def tone_grade(img, p, t=0.0, shake=0.0):
     if shake:
         from PIL import ImageChops
         img = ImageChops.offset(img, int(shake * math.sin(t * 19.0) + shake * 0.6 * math.sin(t * 7.3 + 1)), int(shake * math.sin(t * 15.0 + 2)))
+    if LOOK.get("vector"):       # the vector look is already carefully coloured: keep the tone's mood but never let it wash the colours out
+        p = dict(p)
+        p["sat"] = min(1.3, 1 + (p["sat"] - 1) * 0.45 + 0.14)
+        p["mist"] = p["mist"] * 0.35
+        p["contrast"] = 1 + (p["contrast"] - 1) * 0.6
+        p["bright"] = 1 + (p["bright"] - 1) * 0.7
+        p["tint"] = [1 + (c - 1) * 0.55 for c in p["tint"]]
     if (abs(p["sat"] - 1) < 0.01 and abs(p["bright"] - 1) < 0.01 and abs(p["contrast"] - 1) < 0.01 and p["vig"] < 0.11
             and p["mist"] < 0.01 and p["glow"] < 0.01 and all(abs(c - 1) < 0.01 for c in p["tint"])):
         return img
@@ -996,9 +1005,81 @@ def composite_world(img, layers):
 _pop_cache = {}
 
 
+def _bubble_vector(text, size, bg, fg, tail, shape):
+    """vector look: soft gradient bubbles with a coloured shadow and crisp anti-aliased text, no black outlines"""
+    import skia
+    tf = skia.Typeface.MakeFromFile(TOON_FONT)
+    font_ = skia.Font(tf, float(size))
+    tw = font_.measureText(text)
+    asc = size * 0.74
+    pad = 34
+    sh_ = 22
+    bw, bh = tw + 2 * pad + 22, size + 2 * pad - 6
+    if shape == "burst":
+        rx, ry = tw / 2 + 56, size / 2 + 50
+        w_, h_ = int(rx * 2 + 2 * sh_ + 30), int(ry * 2 + 2 * sh_ + 30)
+    else:
+        w_, h_ = int(bw + 2 * sh_ + 8), int(bh + 2 * sh_ + (84 if tail else 8))
+    surf = skia.Surface(w_, h_)
+    c = surf.getCanvas()
+    c.clear(skia.Color(0, 0, 0, 0))
+    cx = w_ / 2
+
+    def fillp(stops, y0, y1):
+        return skia.Paint(AntiAlias=True, Shader=skia.GradientShader.MakeLinear([(0, y0), (0, y1)], [skia.Color(*col, 255) for _, col in stops], [p for p, _ in stops]))
+
+    def shadow(path):
+        c.save()
+        c.translate(0, 9)
+        c.drawPath(path, skia.Paint(AntiAlias=True, Color=skia.Color(60, 20, 110, 110), MaskFilter=skia.MaskFilter.MakeBlur(skia.kNormal_BlurStyle, 9)))
+        c.restore()
+
+    if shape == "burst":
+        cy = h_ / 2
+        n = 14
+        path = skia.Path()
+        for k in range(n * 2):
+            a = math.pi * k / n
+            rr = 1.0 if k % 2 == 0 else 0.76
+            px, py = cx + rx * rr * math.cos(a), cy + ry * rr * math.sin(a)
+            path.moveTo(px, py) if k == 0 else path.lineTo(px, py)
+        path.close()
+        shadow(path)
+        c.drawPath(path, fillp([(0, (255, 240, 100)), (0.55, (255, 176, 64)), (1, (255, 96, 120))], cy - ry, cy + ry))
+        tx, ty = cx - tw / 2, cy + asc / 2
+        c.drawString(text, tx, ty + 5, font_, skia.Paint(AntiAlias=True, Color=skia.Color(120, 20, 90, 200)))
+        c.drawString(text, tx, ty, font_, skia.Paint(AntiAlias=True, Color=skia.Color(255, 255, 255, 255)))
+    else:
+        x0, y0 = sh_ + 4, sh_ + 4
+        path = skia.Path()
+        path.addRoundRect(skia.Rect(x0, y0, x0 + bw, y0 + bh), min(bh / 2.1, 44), min(bh / 2.1, 44))
+        if tail and shape != "card":
+            tcx = cx
+            path.moveTo(tcx - 24, y0 + bh - 8)
+            path.lineTo(tcx + tail * 2, y0 + bh + 62)
+            path.lineTo(tcx + 24, y0 + bh - 8)
+            path.close()
+        shadow(path)
+        top_c = tuple(min(255, v + 12) for v in bg) if bg != (255, 255, 255) else (255, 255, 255)
+        bot_c = tuple(int(v * 0.84 + 34) for v in bg) if bg != (255, 255, 255) else (226, 224, 255)
+        c.drawPath(path, fillp([(0, top_c), (1, bot_c)], y0, y0 + bh))
+        ring = skia.Paint(AntiAlias=True, Style=skia.Paint.kStroke_Style, StrokeWidth=5.0,
+                          Shader=skia.GradientShader.MakeLinear([(x0, y0), (x0 + bw, y0 + bh)], [skia.Color(255, 120, 190), skia.Color(120, 170, 255), skia.Color(120, 230, 200)], [0, .5, 1]))
+        c.drawPath(path, ring)
+        fc = (58, 30, 90) if fg in ((52, 32, 24), INK) else fg
+        tx, ty = x0 + pad + 11, y0 + bh / 2 + asc / 2 - 2
+        c.drawString(text, tx, ty, font_, skia.Paint(AntiAlias=True, Color=skia.Color(*fc, 255)))
+    a = surf.makeImageSnapshot().toarray(colorType=skia.kRGBA_8888_ColorType)
+    im = Image.fromarray(np.ascontiguousarray(a), "RGBA")
+    return im
+
+
 def _bubble(text, size, bg, fg, tail, shape="card"):
-    key = (text, size, bg, fg, tail, shape, LOOK["toon"])
+    key = (text, size, bg, fg, tail, shape, LOOK["toon"], bool(LOOK.get("vector")))
     if key in _pop_cache:
+        return _pop_cache[key]
+    if LOOK.get("vector") and shape in ("bubble", "burst", "card"):
+        _pop_cache[key] = _bubble_vector(text, size, bg, fg, tail, shape)
         return _pop_cache[key]
     fnt = tfont(size)
     if LOOK["toon"] and shape in ("bubble", "burst"):
@@ -1073,6 +1154,9 @@ def popup(img, text, x, y, u, start, dur=2.0, size=52, bg=(240, 226, 190), fg=(5
     px, py = P(x, y)
     px += math.sin(u * 60) * shake
     py += math.cos(u * 47) * shake * 0.6
+    if LOOK.get("vector"):                       # keep every pop-up fully on screen, whatever the camera does
+        px = min(max(px, sw / 2 + 26), W - sw / 2 - 26)
+        py = min(max(py, sh / 2 + 40), H - sh / 2 - 330)
     img.paste(b2, (int(px - sw / 2), int(py - sh / 2)), b2)
 
 
@@ -1108,7 +1192,7 @@ def captions(img, text, u, D, y=1600, size=60, lead=0.25, tail=0.35):
             col = (255, 220, 120) if idx == active and u >= t0 else (250, 244, 228)
             if LOOK["toon"]:
                 col = (255, 214, 30) if idx == active and u >= t0 else (255, 255, 255)
-            d.text((xx, yy), w, font=fnt, fill=col, stroke_width=9 if LOOK["toon"] else 7, stroke_fill=(30, 20, 18))
+            d.text((xx, yy), w, font=fnt, fill=col, stroke_width=9 if LOOK["toon"] else 7, stroke_fill=(46, 20, 74) if LOOK.get("vector") else (30, 20, 18))
             xx += ww + space
             idx += 1
         yy += lh

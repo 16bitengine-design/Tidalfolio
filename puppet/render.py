@@ -197,7 +197,7 @@ def render_stills(script_path, times, outdir):
     plan_timing(scenes)
     E.set_look(script.get("look", "ink"))
     ctx = type("Ctx", (), {})()
-    ctx.worlds, ctx.nt, ctx.script = worlds.bake_for(script), narration_time(scenes), script
+    ctx.worlds, ctx.nt, ctx.script = ({} if script.get("look") == "vector" else worlds.bake_for(script)), narration_time(scenes), script
     _JOB.update(scenes=scenes, ctx=ctx)
     for i, sc in enumerate(scenes):
         for t in times:
@@ -231,7 +231,7 @@ def render_script(script_path, dry=False, workers=None):
     print("[2/5] painting the worlds", flush=True)
     E.set_look(script.get("look", "ink"))
     ctx = type("Ctx", (), {})()
-    ctx.worlds, ctx.nt, ctx.script = worlds.bake_for(script), nt, script
+    ctx.worlds, ctx.nt, ctx.script = ({} if script.get("look") == "vector" else worlds.bake_for(script)), nt, script
     _JOB.update(scenes=scenes, ctx=ctx, total=total)
 
     print("[3/5] music", flush=True)

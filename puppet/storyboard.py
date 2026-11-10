@@ -657,7 +657,7 @@ def compile_storyboard(sb, number=None):
         tt["caption"] = f"Part {pi}/{n}: " + tt.get("caption", "")
         slug = f"{number:03d}-{_slug(title)}-part-{pi}" if number else f"{_slug(title)}-part-{pi}"
         out.append({
-            "engine": "puppet", "look": "toon", "cast_species": sorted({c["species"] for c in sb["cast"].values()}),
+            "engine": "puppet", "look": "vector", "cast_species": sorted({c["species"] for c in sb["cast"].values()}),
             "cast_roles": [c.get("role") for c in sb["cast"].values() if c.get("role")], "cast_lead": {k: sb["cast"][next(iter(sb["cast"]))].get(k) for k in ("role", "gender")}, "slug": slug, "title": f"{title} (Part {pi}/{n})", "short_title": title,
             "series_part": {"story": title, "part": pi, "of": n},
             "thumbnail_scene": max(1, min(len(scenes), int(part.get("thumbnail_scene", 2)))),
