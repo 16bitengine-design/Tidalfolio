@@ -19,6 +19,8 @@ INDOOR = ("kitchen", "shop", "office", "classroom", "home")
 
 _surf = None
 cv = None
+SEED = 0                     # set per story: the same story always looks the same, the next story looks different
+KIND = "street"
 
 
 # ------------------------------------------------------------------ canvas and colour helpers
@@ -431,6 +433,8 @@ def window(x0, y0, x1, y1, T, t, curtain=None, city=True):
 def wall_and_floor(kind, T, t):
     cam(1.0)
     w0, w1 = WALLS[kind]
+    dh = ((SEED % 7) - 3) * 0.018
+    w0, w1 = hue(w0, dh), hue(w1, dh)
     w0, w1 = mixc(w0, (40, 30, 110), T["dim"] * 0.45), mixc(w1, (40, 30, 110), T["dim"] * 0.45)
     rect(-2600, -1400, 3800, GROUND + 4, paint(shader=lin(0, -300, 0, GROUND, [(0, lite(w0, 0.15)), (1, w1)])))
     if kind in ("home", "shop", "office"):                  # wallpaper stripes
@@ -597,11 +601,17 @@ def stage_world(name, t):
     """Draw the whole background of a scene in world coordinates under the current camera."""
     tm, st = parse_world(name)
     T = TIMES[tm]
+    global KIND
+    KIND = st
+    from . import vector_props as VPR
     if st in INDOOR:
         indoor(st, T, t)
+        cam(1.0)
+        VPR.DRESS[st](T, t, SEED)
     else:
         sky(T, t)
         (park if st == "park" else street)(T, t)
+        VPR.outdoor_dressing(T, t, SEED, st == "park")
     return T
 
 
@@ -622,6 +632,8 @@ def finish_world(T, t):
     rect(0, 0, W, H, paint(shader=lin(0, 0, W, H, [(0, (80, 220, 255, 34)), (.5, (255, 90, 200, 20)), (1, (255, 170, 60, 34))]), mode=skia.BlendMode.kSoftLight))
     if T.get("rain"):
         rain(T, t)
+    from . import vector_props as VPR
+    VPR.foreground(KIND, T, t, SEED)
 
 
 def ground_shadow(x, y, s):
