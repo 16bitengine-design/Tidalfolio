@@ -111,6 +111,17 @@ def frame(gt, with_text=True):
     return img
 
 
+def _thumb_frame(sc):
+    """the thumbnail's picture: the story's key moment in a clean hero pose (hands off the face, mouth shut, eyes open)"""
+    gt = sc["_start"] + min(sc["_D"] - 2.0, LEAD + sc["_au"] * 0.6)
+    old_blink = E.blink
+    dsl.THUMB, E.blink = True, (lambda t: False)
+    try:
+        return frame(gt, with_text=False)
+    finally:
+        dsl.THUMB, E.blink = False, old_blink
+
+
 def _frame_bytes(i):
     return frame(i / E.FPS).tobytes()
 
@@ -171,16 +182,20 @@ def write_srt(scenes, path):
 
 
 def write_metadata(script, out_root, total, slug, scenes):
-    yt, tt = script.get("youtube", {}), script.get("tiktok", {})
+    from . import metadata
+    m = metadata.build(script, total)                  # descriptions, tags and #hashtags for every platform, always filled in
+    yt, tt, ig, fb = m["youtube"], m["tiktok"], m["instagram"], m["facebook"]
     sp = script.get("series_part")
     part_line = f"Part {sp['part']} of {sp['of']} of \"{sp['story']}\"" if sp else "Single video"
-    md = [f"# {script.get('title', slug)}", f"Runtime: {total:.1f}s", part_line, "",
+    md = [f"# {script.get('title', slug)}", f"Runtime: {total:.1f}s", part_line, f"Thumbnail hook: {m['thumbnail_hook']}", "",
           "## YouTube (youtube/video.mp4)", f"**Title:** {yt.get('title', '')}", "", "**Description:**", yt.get("description", ""), "",
           f"**Tags:** {', '.join(yt.get('tags', []))}", "", f"**Pinned comment:** {yt.get('pinned_comment', '')}", "",
-          "## TikTok (vertical/video.mp4)", f"**Caption:** {tt.get('caption', '')}", "", f"**Hashtags:** {' '.join(tt.get('hashtags', []))}", ""]
+          "## TikTok (vertical/video.mp4)", f"**Caption:** {tt.get('caption', '')}", "", f"**Hashtags:** {' '.join(tt.get('hashtags', []))}", "",
+          "## Instagram Reels (vertical/video.mp4)", ig.get("caption", ""), "",
+          "## Facebook Reels (vertical/video.mp4)", fb.get("caption", ""), ""]
     (out_root / "metadata.md").write_text("\n".join(md))
     (out_root / "metadata.json").write_text(json.dumps(
-        {"title": script.get("title", slug), "youtube": yt, "tiktok": tt,
+        {"title": script.get("title", slug), "youtube": yt, "tiktok": tt, "instagram": ig, "facebook": fb,
          "info": {"slug": slug, "series": script.get("title", "").split(" #")[0] if " #" in script.get("title", "") else "",
                   "runtime": round(total, 1), "scene_count": len(scenes), "part": sp, "engine": "puppet",
                   "hook": scenes[0]["narration"][:200]}}, indent=2))
@@ -252,7 +267,7 @@ def render_script(script_path, dry=False, workers=None):
 
     thumb_i = int(script.get("thumbnail_scene", 1)) - 1
     sc = scenes[thumb_i]
-    key = frame(sc["_start"] + min(sc["_D"] - 2.0, LEAD + sc["_au"] * 0.6), with_text=False)
+    key = _thumb_frame(sc)
     key.save(out_root / "youtube" / "thumbnail_frame.png")                       # the plain frame, kept for reference
     from . import thumbnail
     thumbnail.make(key, script, slug).save(out_root / "youtube" / "thumbnail.png")   # branded, unique to this story

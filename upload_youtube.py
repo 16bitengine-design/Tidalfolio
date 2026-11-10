@@ -32,7 +32,7 @@ def with_hashtags(desc):
     """YouTube shows the first three #hashtags above the title and uses them for discovery."""
     if "#" in desc:
         return desc
-    return (desc.rstrip() + "\n\n#AnimalStories #Shorts #tidalfolio").strip()
+    return (desc.rstrip() + "\n\n#Shorts #storytime #tidalfolio").strip()
 
 
 def story_name(meta):
@@ -104,7 +104,7 @@ def main():
         "snippet": {
             "title": yt.get("title", meta["title"])[:100],
             "description": with_hashtags(yt.get("description", "")),
-            "tags": (yt.get("tags", []) + [t for t in ("shorts", "animal stories") if t not in yt.get("tags", [])])[:15],
+            "tags": (yt.get("tags", []) + [t for t in ("shorts", "storytime") if t not in yt.get("tags", [])])[:15],
             "categoryId": str(yt.get("category_id", "23")),   # 23 = Comedy
             "defaultLanguage": "en",
             "defaultAudioLanguage": "en",

@@ -1464,5 +1464,6 @@
    "#animatedstory",
    "#bakery"
   ]
- }
+ },
+ "thumbnail_hook": "WHERE IS SHE?"
 }

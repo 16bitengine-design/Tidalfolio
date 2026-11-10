@@ -1264,5 +1264,6 @@
    "#itch",
    "#quirky"
   ]
- }
+ },
+ "thumbnail_hook": "LOOK DOWN!"
 }

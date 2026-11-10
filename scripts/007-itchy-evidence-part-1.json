@@ -1259,5 +1259,6 @@
    "#itch",
    "#quirky"
   ]
- }
+ },
+ "thumbnail_hook": "WHO ITCHES?"
 }

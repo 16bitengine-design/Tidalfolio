@@ -668,6 +668,7 @@ def compile_storyboard(sb, number=None):
             "cast_roles": [c.get("role") for c in sb["cast"].values() if c.get("role")], "cast_lead": {k: sb["cast"][next(iter(sb["cast"]))].get(k) for k in ("role", "gender")}, "slug": slug, "title": f"{title} (Part {pi}/{n})", "short_title": title,
             "series_part": {"story": title, "part": pi, "of": n},
             "thumbnail_scene": max(1, min(len(scenes), int(part.get("thumbnail_scene", 2)))),
+            "thumbnail_hook": str(part.get("thumbnail_hook") or "").strip().upper()[:22],
             "voice": {"kokoro": "tidal"},
             "story": {"lesson": sb["lesson"].strip(), "cause": sb["cause"]},
             "uncommon_word": {"word": word.get("word", ""), "meaning": word.get("meaning", "")} if pi == 1 else {},
