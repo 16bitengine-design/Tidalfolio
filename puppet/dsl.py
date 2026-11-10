@@ -155,6 +155,9 @@ def draw_scene(img, sc, u, D, ctx):
     clk = Clock(lambda ph: ctx.nt(sc["_i"], ph), D)
     cam = sc.get("camera", {})
     C.cx, C.cy, C.z = ev(cam.get("x"), u, clk, 540), ev(cam.get("y"), u, clk, 960), ev(cam.get("z"), u, clk, 1.0)
+    if sc.get("_i", 0) == 0:                             # the opening starts a little closer and eases out: movement from frame one
+        from . import opening
+        C.z *= opening.punch(u)
     sway = 0.5 + 0.5 * min(1.0, D / 8.0)                 # a living camera: a slow breath and a faint hand-held drift, never a still photograph
     ph_ = u * D * 0.55 + sc.get("_i", 0) * 1.7
     C.cx += 5.0 * sway * math.sin(ph_) + 2.5 * math.sin(ph_ * 2.3 + 1)
