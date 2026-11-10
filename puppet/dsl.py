@@ -222,17 +222,33 @@ def _vthing(th, u, clk, pos):
     t = u + th.get("t_offset", 0.0)
     if typ == "human":
         gx = lambda u_: ev(th.get("x"), u_, clk, 0.0)
-        step_ = 0.06
-        dx_ = (gx(u) - gx(u - step_)) / step_ if u > step_ else 0.0
+        # speed over a short window, so the walk eases in and out instead of switching on
+        def speed_at(u_):
+            return (gx(u_) - gx(u_ - 0.25)) / 0.25 if u_ > 0.25 else 0.0
+        dx_ = speed_at(u)
         vx = abs(dx_)
-        walk = min(1.0, 0.45 + vx / 150.0) if vx > 8 else 0.0
-        if walk > 0.12:
+        k_ = max(0.0, min(1.0, (vx - 6.0) / 30.0))
+        wblend = k_ * k_ * (3 - 2 * k_)
+        walk = wblend * min(1.0, 0.55 + vx / 160.0)
+        if vx > 10:
             face = 1 if dx_ > 0 else -1
-        gait = u * 8.0 if walk > 0.02 else 0.0
+        gait = gx(u) / (44.0 * max(s, 0.3)) * (1 if face > 0 else -1) if walk > 0.02 else 0.0     # feet follow the ground covered
+        # when did the pose last change? blend from the old pose to the new over about half a second
+        act, mood = g("action", "stand"), g("mood", "neutral")
+        prev_a, prev_m, blend = act, mood, 1.0
+        for i in range(1, 13):
+            ua = u - i * 0.05
+            if ua < 0:
+                break
+            a2, m2 = ev(th.get("action"), ua, clk, "stand"), ev(th.get("mood"), ua, clk, "neutral")
+            if (a2, m2) != (act, mood):
+                prev_a, prev_m, blend = a2, m2, (i - 1) * 0.05 / 0.5
+                break
         VP.person(x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
                   hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=g("talk", 0.0), eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
-                  tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=g("action", "stand"), mood=g("mood", "neutral"),
-                  bounce=g("bounce", 0.0), carry=th.get("carry"), seed=th.get("seed", 0), walk=walk, gait=gait)
+                  tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=act, mood=mood,
+                  bounce=g("bounce", 0.0), carry=th.get("carry"), seed=th.get("seed", 0), walk=walk, gait=gait,
+                  prev_action=prev_a, prev_mood=prev_m, blend=blend, wblend=wblend)
     elif typ == "puff":
         VP.puff(x, y, s, t, rgb(th.get("color"), (255, 226, 240)), th.get("seed", 1))
     elif typ == "sparkle":
