@@ -3,3 +3,4 @@ pillow>=10.0
 soundfile>=0.12
 kokoro-onnx>=0.4
 requests>=2.31
+skia-python>=138

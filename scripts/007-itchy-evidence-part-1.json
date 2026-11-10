@@ -1,6 +1,6 @@
 {
  "engine": "puppet",
- "look": "toon",
+ "look": "vector",
  "theme": "nursery",
  "cast_species": [
   "human"

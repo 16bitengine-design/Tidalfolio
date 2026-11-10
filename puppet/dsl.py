@@ -160,6 +160,8 @@ def draw_scene(img, sc, u, D, ctx):
     C.cx += 5.0 * sway * math.sin(ph_) + 2.5 * math.sin(ph_ * 2.3 + 1)
     C.cy += 4.0 * sway * math.sin(ph_ * 0.8 + 2)
     C.z *= 1.0 + 0.004 * math.sin(ph_ * 0.7)
+    if E.LOOK.get("vector"):
+        return _draw_vector(img, sc, u, D, ctx, clk)
     E.composite_world(img, ctx.worlds[sc["world"]])
     d = ImageDraw.Draw(img)
     fz = clk.t(sc.get("freeze"))
@@ -171,6 +173,74 @@ def draw_scene(img, sc, u, D, ctx):
         _popup(img, p, u, clk)
     if sc.get("end_card"):
         _end_card(img, u, D, ctx.script)
+
+
+def _draw_vector(img, sc, u, D, ctx, clk):
+    """The vector look: the whole scene is drawn with skia (anti-aliased shapes, gradients), then pop-ups and the end card go on top."""
+    from . import vector as V
+    V.begin()
+    fz = clk.t(sc.get("freeze"))
+    uu = u if fz is None else min(u, fz)
+    tw = sc.get("_start", 0.0) + uu
+    T = V.stage_world(sc["world"], tw)
+    V.tint_world(T)
+    V.cam(1.0)
+    pos = {}
+    for th in sc.get("things", []):
+        _vthing(th, uu, clk, pos)
+    V.finish_world(T, tw)
+    img.paste(V.to_pil(), (0, 0))
+    for p in sc.get("popups", []):
+        _popup(img, p, u, clk)
+    if sc.get("end_card"):
+        _end_card(img, u, D, ctx.script)
+
+
+def _vthing(th, u, clk, pos):
+    from . import vector as V, vector_people as VP
+    if not _shown(th, u, clk):
+        return
+    g = lambda k, dflt=None: ev(th.get(k), u, clk, dflt)
+    typ = th["type"]
+    if typ == "poly":
+        return V.poly([tuple(p) for p in th["pts"]], V.paint(rgb(th.get("fill"))))
+    if typ == "line":
+        pts = [tuple(p) for p in th["pts"]]
+        return V.curve(pts, V.paint(rgb(th.get("color"), (52, 30, 56)), stroke=th.get("w", 4))) if len(pts) > 2 else V.line(*pts[0], *pts[1], rgb(th.get("color"), (52, 30, 56)), th.get("w", 4))
+    s = g("scale", 1.0)
+    x = g("x", 0.0)
+    y = g("y")
+    if y is None:
+        y = 1240.0
+    if "attach" in th:
+        a = th["attach"]
+        px, py = pos[a["to"]]
+        x, y = px + a.get("dx", 0), py + a.get("dy", 0)
+    if th.get("id"):
+        pos[th["id"]] = (x, y)
+    face = th.get("face", 1)
+    t = u + th.get("t_offset", 0.0)
+    if typ == "human":
+        gx = lambda u_: ev(th.get("x"), u_, clk, 0.0)
+        step_ = 0.06
+        dx_ = (gx(u) - gx(u - step_)) / step_ if u > step_ else 0.0
+        vx = abs(dx_)
+        walk = min(1.0, 0.45 + vx / 150.0) if vx > 8 else 0.0
+        if walk > 0.12:
+            face = 1 if dx_ > 0 else -1
+        gait = u * 8.0 if walk > 0.02 else 0.0
+        VP.person(x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
+                  hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=g("talk", 0.0), eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
+                  tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=g("action", "stand"), mood=g("mood", "neutral"),
+                  bounce=g("bounce", 0.0), carry=th.get("carry"), seed=th.get("seed", 0), walk=walk, gait=gait)
+    elif typ == "puff":
+        VP.puff(x, y, s, t, rgb(th.get("color"), (255, 226, 240)), th.get("seed", 1))
+    elif typ == "sparkle":
+        VP.sparkle(x, y, s, t, rgb(th.get("color"), (255, 240, 120)))
+    elif typ == "speed":
+        VP.speed(x, y, th.get("dx", 1), th.get("n", 6), s, t)
+    else:
+        raise ValueError(f"the vector look draws people only (not {typ!r}); use \"look\": \"toon\" for animal stories")
 
 
 def _shown(th, u, clk):

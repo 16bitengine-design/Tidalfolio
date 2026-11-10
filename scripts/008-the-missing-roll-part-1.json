@@ -1,6 +1,6 @@
 {
  "engine": "puppet",
- "look": "toon",
+ "look": "vector",
  "cast_species": [
   "human"
  ],
