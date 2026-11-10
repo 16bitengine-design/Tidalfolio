@@ -96,8 +96,10 @@ def two_bone(S, Hd, l1, l2, side, ywt=0.35):
     return (e1 if sc(e1) >= sc(e2) else e2), end
 
 
-def resolve_pose(action, mood, walk):
+def resolve_pose(action, mood, walk, talk=0.0):
     if action == "stand" and walk <= 0.3:
+        if talk > 0.05 and mood not in ("sad", "scared"):                 # someone who is speaking always gestures
+            return "talk"
         return {"shocked": "up", "scared": "up", "angry": "hips", "sad": "limp", "happy": "wave", "smug": "hips"}.get(mood, "stand")
     return action
 
@@ -153,6 +155,27 @@ def hand_target(pose, sx, ax, ay, t, seed, near, head_y, gait, walk, sw):
         return (sx * 16, ay + 100 + math.sin(t * 15 + sx) * 5)
     if pose == "tremble":
         return (ax + sx * 8 + math.sin(t * 38 + sx) * 3, ay + 108 + math.cos(t * 41) * 2)
+    if pose == "offer":                                    # holds something out to the other person
+        return (ax + 84, ay + 30 + math.sin(t * 1.6) * 5) if sx == near else (ax - 12, ay + 118)
+    if pose == "hold":                                     # clutches something close to the chest
+        return (sx * 20 + math.sin(t * 1.4 + sx) * 2, ay + 70)
+    if pose == "clasp":                                    # hands together in front: worry, tenderness, waiting
+        return (sx * 7 + math.sin(t * 1.9) * 2, ay + 82 + math.sin(t * 1.3 + sx) * 3)
+    if pose == "wrap":                                     # arms come round in front, as if wrapping someone
+        k = 0.5 + 0.5 * math.sin(t * 1.2)
+        return (sx * (44 - 30 * k), ay + 66 + 8 * k)
+    if pose == "place":                                    # sets something down, forward and low
+        return (ax + 58, ay + 104 + abs(math.sin(t * 1.4)) * 14) if sx == near else (ax - 18, ay + 126)
+    if pose == "reach":
+        return (ax + 98, ay + 46 + math.sin(t * 2.0) * 6) if sx == near else (ax - 18, ay + 124)
+    if pose == "beckon":
+        return (ax + 62, ay - 14 + math.sin(t * 7.0) * 14) if sx == near else (ax - 18, ay + 126)
+    if pose == "hugself":                                  # arms folded over the chest: cold, wet, shy
+        return (-sx * 30 + math.sin(t * 22 + sx) * 1.5, ay + 52)
+    if pose == "wipe":
+        return (24 + math.sin(t * 4.0) * 5, head_y + 14) if sx == near else (ax - 14, ay + 126)
+    if pose == "cower":
+        return (sx * 36 + math.sin(t * 30 + sx) * 2, head_y + 44)
     if pose == "wave":
         return (ax + 50 + math.sin(t * 8.0 + seed) * 20, ay - 82) if sx == near else (ax - 18, ay + 126)
     return (ax + sx * 26, ay + 128)
@@ -160,7 +183,7 @@ def hand_target(pose, sx, ax, ay, t, seed, near, head_y, gait, walk, sw):
 
 def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult", skin="fair", hair="brown", extras=(), talk=0.0,
            eye="open", brow=(0, 0), tear=0.0, look=(0, 0), action="stand", mood="neutral", bounce=0.0, carry=None, seed=0, walk=0.0, gait=0.0,
-           prev_action=None, prev_mood=None, blend=1.0, wblend=None):
+           prev_action=None, prev_mood=None, blend=1.0, wblend=None, listening=0.0):
     cv = V.cv
     spec = ROLES.get(role, ROLES["stranger"])
     kid, elder, fem = age == "child", age == "elder", gender == "female"
@@ -168,7 +191,7 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
     c = dict(spec=spec, role=role, kid=kid, elder=elder, fem=fem, skin=skin, hair=hair, skin_c=SKIN.get(skin, SKIN["fair"]),
              hair_c=HAIR["grey" if elder else (hair if hair in HAIR else "brown")], extras=extras, talk=talk, eye=eye, brow=brow, tear=tear,
              look=look, action=action, mood=mood, bounce=bounce, carry=carry, seed=seed, walk=walk, gait=gait,
-             prev_action=prev_action if prev_action is not None else action, prev_mood=prev_mood if prev_mood is not None else mood, blend=blend)
+             prev_action=prev_action if prev_action is not None else action, prev_mood=prev_mood if prev_mood is not None else mood, blend=blend, listening=listening)
     V.ground_shadow(x, y, s)
     if wblend is None:
         wblend = 1.0 if walk > 0.3 else 0.0
@@ -186,7 +209,7 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
 
 
 def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c, extras, talk, eye, brow, tear, look, action, mood, bounce, carry,
-           seed, walk, gait, prev_action, prev_mood, blend):
+           seed, walk, gait, prev_action, prev_mood, blend, listening=0.0):
     cv = V.cv
     top, bottom = spec["top"], spec["bottom"]
     HS = 1.22 if kid else 1.0
@@ -198,7 +221,7 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     lean = -sway * 0.22 + math.sin(t * 3.0 + seed * 2) * 0.8 * talking + {"sad": 2.2, "scared": -1.5, "smug": -1.8, "happy": -0.8}.get(mood, 0)
     beat = max(0.0, math.sin(t * 2.6 + seed * 1.3)) ** 8
     bounce = bounce - abs(math.sin(gait)) * 9 * walk + breath * 1.4
-    nod = beat * 5 * talking + math.sin(t * 7.3 + seed) * 1.8 * talking + {"sad": 11, "scared": 4, "shocked": -5, "smug": -4, "happy": -2}.get(mood, 0)
+    nod = listening * (max(0.0, math.sin(t * 1.9 + seed * 2.1)) ** 6 * 6) + beat * 5 * talking + math.sin(t * 7.3 + seed) * 1.8 * talking + {"sad": 11, "scared": 4, "shocked": -5, "smug": -4, "happy": -2}.get(mood, 0)
     tilt = nz(t * 0.6, seed + 4) * 2.2 + math.sin(t * 3.0 + seed) * 1.6 * talking + {"sad": -5, "smug": 4, "scared": 3, "happy": 2, "angry": -2}.get(mood, 0)
     turn = min(1.0, walk * 1.6)
     cv.save()
@@ -416,8 +439,8 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
 
     # ---------------- arms: each hand has a target; the elbow is solved so the arm keeps its length and bends like a real arm
     sh = -268 if not kid else -240
-    pose = resolve_pose(action, mood, walk)
-    prev_pose = resolve_pose(prev_action, prev_mood, walk)
+    pose = resolve_pose(action, mood, walk, talk)
+    prev_pose = resolve_pose(prev_action, prev_mood, walk, talk)
     e_ = back(blend)
     near = 1
     hands = {}
@@ -488,7 +511,7 @@ def _hat(hat, top_y, hrx, spec, f, shx=0.0):
 
 # ------------------------------------------------------------------ walking and running: the profile view
 def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c, extras, talk, eye, brow, tear, look, action, mood, bounce, carry,
-          seed, walk, gait, prev_action, prev_mood, blend):
+          seed, walk, gait, prev_action, prev_mood, blend, listening=0.0):
     cv = V.cv
     top, bottom = spec["top"], spec["bottom"]
     HS = 1.22 if kid else 1.0

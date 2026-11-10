@@ -74,7 +74,14 @@
       -4
      ],
      "mood": "scared",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "reach"
+       ]
+      ]
+     },
      "seed": 22,
      "bounce": {
       "sin": {
@@ -113,7 +120,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "hold"
+       ]
+      ]
+     },
      "seed": 6,
      "bounce": {
       "sin": {
@@ -229,7 +243,14 @@
       -4
      ],
      "mood": "scared",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "think"
+       ]
+      ]
+     },
      "seed": 22,
      "bounce": {
       "sin": {
@@ -401,7 +422,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "think"
+       ]
+      ]
+     },
      "seed": 22,
      "bounce": {
       "sin": {
@@ -486,7 +514,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "hips"
+       ]
+      ]
+     },
      "seed": 6,
      "bounce": {
       "sin": {
@@ -610,7 +645,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "think"
+       ]
+      ]
+     },
      "seed": 22,
      "bounce": {
       "sin": {
@@ -686,7 +728,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "hold"
+       ]
+      ]
+     },
      "seed": 6,
      "bounce": {
       "sin": {
@@ -797,7 +846,14 @@
       -4
      ],
      "mood": "happy",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "offer"
+       ]
+      ]
+     },
      "seed": 9,
      "carry": "tray",
      "bounce": {
@@ -923,7 +979,14 @@
       6
      ],
      "mood": "smug",
-     "action": "talk",
+     "action": {
+      "step": [
+       [
+        0,
+        "offer"
+       ]
+      ]
+     },
      "seed": 9,
      "talk": {
       "sin": {
