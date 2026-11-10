@@ -182,6 +182,8 @@ def _draw_vector(img, sc, u, D, ctx, clk):
     fz = clk.t(sc.get("freeze"))
     uu = u if fz is None else min(u, fz)
     tw = sc.get("_start", 0.0) + uu
+    import zlib
+    V.SEED = zlib.crc32(str((ctx.script or {}).get("short_title", "story")).encode()) % 1000
     T = V.stage_world(sc["world"], tw)
     V.tint_world(T)
     V.cam(1.0)
