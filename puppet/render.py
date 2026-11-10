@@ -57,10 +57,19 @@ def make_narration(script, scenes, narr_dir, dry):
         sc["_i"] = i
 
 
+OPEN_LEAD = 0.15                # the first line starts almost at once: a silent half second at the start loses viewers
+
+
+def _lead(sc):
+    return sc.get("_lead", LEAD)
+
+
 def plan_timing(scenes):
+    if scenes:
+        scenes[0]["_lead"] = OPEN_LEAD
     t = 0.0
     for sc in scenes:
-        sc["_D"] = sc["_au"] + LEAD + TAIL + (END_CARD if sc.get("end_card") else 0.0)
+        sc["_D"] = sc["_au"] + _lead(sc) + TAIL + (END_CARD if sc.get("end_card") else 0.0)
         sc["_start"] = t
         t += sc["_D"]
     return t
@@ -80,9 +89,9 @@ def narration_time(scenes):
             if s0 <= idx < s0 + len(snt):
                 det = (sc.get("_detail") or [None] * 99)[k_]
                 if det:                                    # exact clause timing, syllable-weighted inside the clause
-                    return LEAD + tts.word_time(snt, det, idx - s0)
-                return LEAD + st + du * (idx - s0) / max(1, len(snt))
-        return LEAD
+                    return _lead(sc) + tts.word_time(snt, det, idx - s0)
+                return _lead(sc) + st + du * (idx - s0) / max(1, len(snt))
+        return _lead(sc)
     return nt
 
 
@@ -102,8 +111,11 @@ def frame(gt, with_text=True):
     i = scenes.index(sc)
     prev = scenes[i - 1].get("tone", "calm") if i else tone
     img = E.tone_grade(img, E.grade_params(prev, tone, u / 0.8), gt, E.TONE_SHAKE.get(tone, 0.0))
-    if with_text and u < LEAD + sc["_au"] + 0.3:
-        E.captions(img, sc["narration"], u, LEAD + sc["_au"], lead=LEAD, tail=0.0)
+    if with_text and gt < 2.5:                      # the opening: a hook ribbon (and a part badge) in the first seconds
+        from . import opening
+        img = opening.overlay(img, gt, _JOB["ctx"].script)
+    if with_text and u < _lead(sc) + sc["_au"] + 0.3:
+        E.captions(img, sc["narration"], u, _lead(sc) + sc["_au"], lead=_lead(sc), tail=0.0)
     img = img.resize((OUT_W, OUT_H), Image.LANCZOS)
     tail = _JOB.get("total", 1e9) - gt
     if tail < FADE_OUT:                             # soft fade to black on the very last moments
@@ -113,7 +125,7 @@ def frame(gt, with_text=True):
 
 def _thumb_frame(sc):
     """the thumbnail's picture: the story's key moment in a clean hero pose (hands off the face, mouth shut, eyes open)"""
-    gt = sc["_start"] + min(sc["_D"] - 2.0, LEAD + sc["_au"] * 0.6)
+    gt = sc["_start"] + min(sc["_D"] - 2.0, _lead(sc) + sc["_au"] * 0.6)
     old_blink = E.blink
     dsl.THUMB, E.blink = True, (lambda t: False)
     try:
@@ -155,7 +167,7 @@ def _voice_filter(tone):
 
 def mux(silent, music_wav, scenes, out, total):
     inputs, filt, labels = ["-i", str(silent), "-i", str(music_wav)], [], []
-    tracks = [(sc["_wav"], sc["_start"] + LEAD, sc.get("tone", "calm")) for sc in scenes]
+    tracks = [(sc["_wav"], sc["_start"] + _lead(sc), sc.get("tone", "calm")) for sc in scenes]
     for n, (wav, at, tone) in enumerate(tracks):
         inputs += ["-i", str(wav)]
         ms = int(at * 1000)
@@ -175,7 +187,7 @@ def write_srt(scenes, path):
     lines, n = [], 1
     for sc in scenes:
         for (st, du), snt in zip(sc["_marks"], tts.split_sents(sc["narration"])):
-            a = sc["_start"] + LEAD + st
+            a = sc["_start"] + _lead(sc) + st
             lines += [str(n), f"{_srt_time(a)} --> {_srt_time(a + du)}", snt.strip(), ""]
             n += 1
     path.write_text("\n".join(lines))
