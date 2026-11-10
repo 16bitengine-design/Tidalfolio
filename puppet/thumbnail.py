@@ -18,6 +18,7 @@ W, H = 1280, 720
 INK = (27, 18, 48)
 CREAM = (255, 244, 214)
 MOON = (255, 224, 102)
+BRAND = (255, 98, 132)          # the channel colour: the same frame on every thumbnail, so they are recognised in a feed
 # (accent, second accent): brand colours, one pair per story
 PALETTES = [((255, 194, 74), (56, 150, 240)), ((250, 120, 150), (255, 224, 102)), ((104, 196, 98), (170, 120, 210)),
             ((255, 150, 70), (56, 150, 240)), ((170, 120, 210), (255, 194, 74)), ((56, 150, 240), (250, 120, 150)),
@@ -70,17 +71,17 @@ def make(frame, script, slug=None):
     # 1. the picture: a 16:9 band around the faces, a little more punch than the video frame
     fw, fh = frame.size
     ch = int(fw * 9 / 16)
-    focus = float(script.get("thumbnail_focus", 0.34))          # share of the frame height where the faces sit
+    focus = float(script.get("thumbnail_focus", 0.30))          # share of the frame height where the faces sit
     top = max(0, min(fh - ch, int(fh * focus - ch / 2)))
     img = frame.crop((0, top, fw, top + ch)).resize((W, H), Image.LANCZOS)
-    img = ImageEnhance.Contrast(ImageEnhance.Color(img).enhance(1.25)).enhance(1.08)
+    img = ImageEnhance.Sharpness(ImageEnhance.Contrast(ImageEnhance.Color(img).enhance(1.35)).enhance(1.14)).enhance(1.4)
     d = ImageDraw.Draw(img, "RGBA")
 
     # 2. a soft shade behind the title side so the words are always readable
     shade = Image.new("L", (W, H), 0)
     sd = ImageDraw.Draw(shade)
     for i in range(W // 2):
-        a = int(150 * (1 - i / (W / 2)) ** 1.6)
+        a = int(130 * (1 - i / (W / 2)) ** 1.6)
         x = i if title_left else W - 1 - i
         sd.line([(x, 0), (x, H)], fill=a)
     img.paste(Image.new("RGB", (W, H), INK), (0, 0), shade)
@@ -114,6 +115,25 @@ def make(frame, script, slug=None):
         d.text((bx, 94), "PART", font=f1, fill=INK, anchor="mm")
         d.text((bx, 146), f"{sp['part']}/{sp['of']}", font=f2, fill=INK, anchor="mm")
 
+    # 4b. the hook: a tilted ribbon with a 1-3 word tease, on the picture side, so the thumbnail asks a question
+    from . import metadata
+    hook = metadata.hook_for(script)
+    if hook:
+        hf = _font(74)
+        while hf.size > 40 and d.textlength(hook, font=hf) > W * 0.46:
+            hf = _font(hf.size - 4)
+        tw_ = d.textlength(hook, font=hf)
+        rw, rh = int(tw_ + 70), int(hf.size * 1.5)
+        rib = Image.new("RGBA", (rw + 30, rh + 30), (0, 0, 0, 0))
+        rd = ImageDraw.Draw(rib)
+        rd.rounded_rectangle((16, 18, rw + 14, rh + 18), radius=24, fill=INK)
+        rd.rounded_rectangle((8, 8, rw + 6, rh + 8), radius=24, fill=MOON, outline=INK, width=7)
+        rd.text((8 + (rw - 2) / 2 + 2, 8 + rh / 2 + 2), hook, font=hf, fill=INK, anchor="mm")
+        rib = rib.rotate(4 if title_left else -4, expand=True, resample=Image.BICUBIC)
+        rx = (W - rib.width - 44) if title_left else 44
+        img.paste(rib, (rx, H - rib.height - 38), rib)
+        d = ImageDraw.Draw(img, "RGBA")
+
     # 5. the channel mark: crater moon + "tidalfolio" on a pill, always in the same corner
     pf = _font(40)
     label = "tidalfolio"
@@ -128,8 +148,8 @@ def make(frame, script, slug=None):
     d.ellipse((mx + 4, my + 3, mx + 11, my + 10), fill=(242, 194, 48), outline=INK, width=2)
     d.text((px0 + 66, my + 1), label, font=pf, fill=INK, anchor="lm")
 
-    # 6. a thick frame in the story's accent colour, inked on both sides
+    # 6. the channel frame: always the same coral, inked on both sides
     d.rectangle((0, 0, W - 1, H - 1), outline=INK, width=10)
-    d.rectangle((10, 10, W - 11, H - 11), outline=acc, width=14)
+    d.rectangle((10, 10, W - 11, H - 11), outline=BRAND, width=14)
     d.rectangle((24, 24, W - 25, H - 25), outline=INK, width=5)
     return img.convert("RGB")

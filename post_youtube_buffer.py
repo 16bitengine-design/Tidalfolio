@@ -40,7 +40,8 @@ def main():
     meta = json.loads((base / "metadata.json").read_text())
     yt = meta.get("youtube", {})
     title = (yt.get("title") or meta.get("title") or slug)[:100]
-    text = (yt.get("description", "").strip() + "\n\n#shorts").strip()[:5000]
+    desc = yt.get("description", "").strip()
+    text = (desc if "#" in desc else desc + "\n\n#shorts #storytime #tidalfolio").strip()[:5000]
     privacy = os.environ.get("UPLOAD_PRIVACY", "private").strip() or "private"
     if privacy not in ("private", "unlisted", "public"):
         sys.exit("UPLOAD_PRIVACY must be private, unlisted or public")

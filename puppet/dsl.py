@@ -193,12 +193,14 @@ def _draw_vector(img, sc, u, D, ctx, clk):
         _vthing(th, uu, clk, pos)
     V.finish_world(T, tw)
     img.paste(V.to_pil(), (0, 0))
-    for p in sc.get("popups", []):
+    for p in ([] if THUMB else sc.get("popups", [])):
         _popup(img, p, u, clk)
     if sc.get("end_card"):
         _end_card(img, u, D, ctx.script)
 
 
+THUMB = False       # when True, people are drawn in a clean "hero pose" for the thumbnail: hands away from the face, mouth closed, eyes open
+THUMB_POSE = {"shocked": "up", "scared": "cower", "angry": "hips", "sad": "clasp", "happy": "cheer", "smug": "hips", "neutral": "clasp"}
 _CAST = []          # the people on screen this frame: (id, x, how much they are speaking)
 
 
@@ -263,6 +265,8 @@ def _vthing(th, u, clk, pos):
                 listening = 1.0
             if abs(tgt[1] - gx(u)) > 20:
                 face = 1 if tgt[1] > gx(u) else -1
+        if THUMB:
+            act, prev_a, prev_m, blend, my_talk, listening = THUMB_POSE.get(mood, "clasp"), THUMB_POSE.get(mood, "clasp"), mood, 1.0, 0.0, 0.0
         VP.person(x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
                   hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=my_talk, eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
                   tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=act, mood=mood, listening=listening,

@@ -201,7 +201,7 @@ THE STAGE (this is all that can be drawn, so write for it)
 Reply with ONE JSON object, exactly this shape:
 {{"title": "Episode title (no series prefix)", "lesson": "...", "cause": "forgot|believed|no_options",
  "uncommon_word": {{"word": "...", "meaning": "..."}},  "cast": {{"baker": {{"role": "baker", "gender": "female", "age": "adult", "skin": "tan", "hair": "black"}}, "boss": {{"role": "boss", "gender": "male", "age": "adult", "skin": "light", "hair": "grey", "extras": ["glasses"]}}}},
- "parts": [{{"thumbnail_scene": 2, "scenes": [{{"narration": "...", "world": "dawn", "stage": "street", "camera": "push_in", "tone": "playful",
+ "parts": [{{"thumbnail_scene": 2, "thumbnail_hook": "1-3 word tease in capitals, e.g. WHO TOOK IT?", "scenes": [{{"narration": "...", "world": "dawn", "stage": "street", "camera": "push_in", "tone": "playful",
    "actors": [{{"who": "baker", "at": "ground_mid", "mood": "smug", "action": "talk", "from": "words", "to": "words"}}],
    "popups": [{{"text": "MINE.", "kind": "burst", "at": "words", "near": "baker"}}], "fx": []}}]}}],
  "youtube": {{"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"}},
@@ -385,10 +385,10 @@ Reply with ONE JSON object with exactly these keys:
  "youtube": {"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"},
  "tiktok": {"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}"""
 
-PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "scenes": [ 6 to 8 scenes, each in exactly the scene format given in the instructions ]}. '
+PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "thumbnail_hook": "a 1 to 3 word tease in capitals for the thumbnail, a question or a gasp, never a spoiler", "scenes": [ 6 to 8 scenes, each in exactly the scene format given in the instructions ]}. '
               "Use the cast keys exactly as planned. The timing phrases ('from', 'to', 'enter', 'exit', 'at', 'silence_before') must be copied EXACTLY from the NARRATOR's words in that same scene, "
               "never from what a character says in a speech bubble; if you are not sure, leave them out. 'mood' must be one of neutral, sleepy, happy, angry, scared, sad, shocked, smug, dizzy; "
-              "'action' one of stand, talk, hop, flap, point, shrug, cheer, facepalm, think, laugh, tremble ('go' optional: a ground spot to walk to).")
+              "'action' one of stand, talk, hop, flap, point, shrug, cheer, facepalm, think, laugh, tremble, offer, hold, clasp, wrap, place, reach, beckon, hugself, wipe, cower, wave, hips: choose the one that matches what that person is DOING at that moment in the narration (holds something out = offer, wraps a towel round someone = wrap, sets something down = place, cold or wet = hugself ...); give listeners a calm action such as clasp or hips ('go' optional: a ground spot to walk to).")
 
 
 def _part_rules(k, n, word, uw_part, bible=None):
