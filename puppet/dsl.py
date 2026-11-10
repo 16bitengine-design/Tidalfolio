@@ -186,6 +186,9 @@ def _draw_vector(img, sc, u, D, ctx, clk):
     V.tint_world(T)
     V.cam(1.0)
     pos = {}
+    global _CAST
+    _CAST = [(th.get("id"), ev(th.get("x"), uu, clk, 0.0), ev(th.get("talk"), uu, clk, 0.0)) for th in sc.get("things", [])
+             if th.get("type") == "human" and _shown(th, uu, clk)]
     for th in sc.get("things", []):
         _vthing(th, uu, clk, pos)
     V.finish_world(T, tw)
@@ -194,6 +197,9 @@ def _draw_vector(img, sc, u, D, ctx, clk):
         _popup(img, p, u, clk)
     if sc.get("end_card"):
         _end_card(img, u, D, ctx.script)
+
+
+_CAST = []          # the people on screen this frame: (id, x, how much they are speaking)
 
 
 def _vthing(th, u, clk, pos):
@@ -244,9 +250,22 @@ def _vthing(th, u, clk, pos):
             if (a2, m2) != (act, mood):
                 prev_a, prev_m, blend = a2, m2, (i - 1) * 0.05 / 0.5
                 break
+        # conversation: listeners turn to the speaker and nod; the speaker turns to the nearest listener
+        my_talk = g("talk", 0.0)
+        others = [(i_, ox_, tk_) for i_, ox_, tk_ in _CAST if i_ != th.get("id")]
+        listening = 0.0
+        if others and walk < 0.1:
+            speakers = [o for o in others if o[2] > 0.05]
+            if my_talk > 0.05 or not speakers:
+                tgt = min(others, key=lambda o: abs(o[1] - gx(u)))
+            else:
+                tgt = max(speakers, key=lambda o: o[2])
+                listening = 1.0
+            if abs(tgt[1] - gx(u)) > 20:
+                face = 1 if tgt[1] > gx(u) else -1
         VP.person(x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
-                  hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=g("talk", 0.0), eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
-                  tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=act, mood=mood,
+                  hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=my_talk, eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
+                  tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=act, mood=mood, listening=listening,
                   bounce=g("bounce", 0.0), carry=th.get("carry"), seed=th.get("seed", 0), walk=walk, gait=gait,
                   prev_action=prev_a, prev_mood=prev_m, blend=blend, wblend=wblend)
     elif typ == "puff":

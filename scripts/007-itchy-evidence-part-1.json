@@ -77,7 +77,18 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ],
+       [
+        "@started to itch",
+        "reach"
+       ]
+      ]
+     },
      "seed": 22,
      "carry": "none",
      "bounce": {
@@ -117,7 +128,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "hold"
+       ]
+      ]
+     },
      "seed": 6,
      "carry": "clipboard",
      "bounce": {
@@ -290,7 +308,14 @@
       -8
      ],
      "mood": "shocked",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "hold"
+       ]
+      ]
+     },
      "seed": 6,
      "bounce": {
       "sin": {
@@ -417,7 +442,14 @@
       10
      ],
      "mood": "angry",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "shrug"
+       ]
+      ]
+     },
      "seed": 22,
      "bounce": {
       "sin": {
@@ -456,7 +488,14 @@
       6
      ],
      "mood": "smug",
-     "action": "talk",
+     "action": {
+      "step": [
+       [
+        0,
+        "talk"
+       ]
+      ]
+     },
      "seed": 6,
      "talk": {
       "sin": {
@@ -590,7 +629,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "shrug"
+       ]
+      ]
+     },
      "seed": 22,
      "bounce": {
       "sin": {
@@ -629,7 +675,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "hips"
+       ]
+      ]
+     },
      "seed": 6,
      "bounce": {
       "sin": {
@@ -743,7 +796,14 @@
       -4
      ],
      "mood": "happy",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "hips"
+       ]
+      ]
+     },
      "seed": 41,
      "bounce": {
       "sin": {
@@ -1001,7 +1061,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "stand"
+       ]
+      ]
+     },
      "seed": 22,
      "bounce": {
       "sin": {
@@ -1038,7 +1105,14 @@
       6
      ],
      "mood": "smug",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "think"
+       ]
+      ]
+     },
      "seed": 41,
      "bounce": {
       "sin": {
@@ -1077,7 +1151,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "think"
+       ]
+      ]
+     },
      "seed": 6,
      "bounce": {
       "sin": {

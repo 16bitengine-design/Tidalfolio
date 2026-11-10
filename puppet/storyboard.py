@@ -17,7 +17,7 @@ Storyboard JSON:
   "scenes": [ {
      "narration": "...", "world": "dawn|day|dusk|storm|night|sunset", "stage": "cliff|nest|tree",
      "camera": "hold|push_in|pull_back|pan_right|pan_left", "tone": "playful|tense|sad|joyful|eerie|tender|calm", "silence_before": "words",
-     "actors": [ {"who": "orrin", "at": "ground_mid", "face": "left|right", "mood": "...", "action": "stand|talk|hop|flap",
+     "actors": [ {"who": "orrin", "at": "ground_mid", "face": "left|right", "mood": "...", "action": "stand|talk|point|offer|hold|clasp|wrap|place|reach|beckon|hugself|wipe|cower|wave|hips|shrug|think|facepalm|cheer|laugh|tremble",
                   "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish",
                   "beats": [{"at": "words", "mood": "...", "action": "...", "look": "at|away|down|up"}], "speaks": true} ],
      "popups": [ {"text": "CRASH", "kind": "burst|bubble", "at": "words", "near": "orrin"} ],
@@ -61,7 +61,14 @@ def tone_of(sc):
     """a scene's tone: its own "tone", else derived from the old "music" key"""
     return norm_tone(sc.get("tone")) or {"calm": "calm", "tense": "tense", "sad": "sad", "joyful": "joyful"}.get(sc.get("music", "calm"), "calm")
 MOODS = ("neutral", "sleepy", "happy", "angry", "scared", "sad", "shocked", "smug", "dizzy")
-ACTIONS = ("stand", "talk", "hop", "flap", "point", "shrug", "cheer", "facepalm", "think", "laugh", "tremble")
+ACTIONS = ("stand", "talk", "hop", "flap", "point", "shrug", "cheer", "facepalm", "think", "laugh", "tremble",
+           "offer", "hold", "clasp", "wrap", "place", "reach", "beckon", "hugself", "wipe", "cower", "wave", "hips")
+# pick the action that matches what the narration says this person is DOING at that moment:
+#   offer = holds something out · hold = clutches something to the chest · clasp = hands together (worry, tenderness)
+#   wrap = arms round someone · place = sets something down · reach = reaches for something · beckon = calls someone over
+#   hugself = arms folded over the chest (cold, wet, shy) · wipe = hand to the eye · cower = shrinks back · wave = greets
+#   point = points at something/someone · hips = hands on hips (cross, bossy) · facepalm = dismay · think = hand to chin
+# Anyone who is speaking gestures while they talk; listeners turn to the speaker and nod, so give them a calm action.
 SLOTS = {   # name: (world x, world y or None = standing on the cliff)
     "ground_left": (110, None), "ground_mid": (300, None), "ground_right": (500, None),
     "branch_a": (575, 884), "branch_b": (465, 864),

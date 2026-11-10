@@ -74,7 +74,14 @@
       0
      ],
      "mood": "neutral",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "reach"
+       ]
+      ]
+     },
      "seed": 22,
      "bounce": {
       "sin": {
@@ -409,7 +416,14 @@
       -8
      ],
      "mood": "shocked",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "point"
+       ]
+      ]
+     },
      "seed": 22,
      "bounce": {
       "sin": {
@@ -874,7 +888,14 @@
       -4
      ],
      "mood": "happy",
-     "action": "stand",
+     "action": {
+      "step": [
+       [
+        0,
+        "hips"
+       ]
+      ]
+     },
      "seed": 22,
      "bounce": {
       "sin": {
