@@ -47,45 +47,185 @@ def arc_pts(cx, cy, rx, ry, a0, a1, n=12):
     return [(cx + rx * math.cos(math.radians(a0 + (a1 - a0) * i / n)), cy + ry * math.sin(math.radians(a0 + (a1 - a0) * i / n))) for i in range(n + 1)]
 
 
+# ------------------------------------------------------------------ motion helpers: everything eases, nothing snaps
+def ease(k):
+    k = max(0.0, min(1.0, k))
+    return k * k * (3 - 2 * k)
+
+
+def back(k):
+    """ease-out with a small overshoot: a hand arrives a touch past its mark, then settles (feels alive, not mechanical)"""
+    k = max(0.0, min(1.0, k))
+    k1 = k - 1
+    return 1 + 2.2 * k1 ** 3 + 1.2 * k1 ** 2
+
+
+def lerp(a, b, k):
+    return a + (b - a) * k
+
+
+def nz(t, seed, f=1.0):
+    """smooth wandering value in about -1..1"""
+    return 0.5 * math.sin(t * 1.13 * f + seed * 1.7) + 0.3 * math.sin(t * 2.31 * f + seed * 3.1) + 0.2 * math.sin(t * 0.57 * f + seed * 0.9)
+
+
+def _hash(i, seed):
+    return ((int(i) * 7919 + int(seed) * 104729 + 13) % 11) / 5.0 - 1.0
+
+
+def saccade(t, seed):
+    """eyes do not stare: they jump to a new spot every second or so, quickly, then rest"""
+    ph = t * 1.1 + seed * 0.37
+    i = math.floor(ph)
+    k = ease((ph - i) * 8)
+    return (lerp(_hash(i - 1, seed), _hash(i, seed), k) * 2.0, lerp(_hash(i - 1, seed + 5), _hash(i, seed + 5), k) * 1.3)
+
+
+def two_bone(S, Hd, l1, l2, side, ywt=0.35):
+    """a two-segment limb that keeps its length and bends at the elbow or knee. Returns (joint, end)."""
+    dx, dy = Hd[0] - S[0], Hd[1] - S[1]
+    d = math.hypot(dx, dy) or 1e-3
+    d2 = min(max(d, abs(l1 - l2) + 1.0), l1 + l2 - 0.5)
+    ux, uy = dx / d, dy / d
+    end = (S[0] + ux * d2, S[1] + uy * d2)
+    a = (l1 * l1 - l2 * l2 + d2 * d2) / (2 * d2)
+    h = math.sqrt(max(l1 * l1 - a * a, 0.0))
+    px, py = S[0] + ux * a, S[1] + uy * a
+    e1, e2 = (px - uy * h, py + ux * h), (px + uy * h, py - ux * h)
+    sc = lambda e: e[0] * side + ywt * e[1]
+    return (e1 if sc(e1) >= sc(e2) else e2), end
+
+
+def resolve_pose(action, mood, walk):
+    if action == "stand" and walk <= 0.3:
+        return {"shocked": "up", "scared": "up", "angry": "hips", "sad": "limp", "happy": "wave", "smug": "hips"}.get(mood, "stand")
+    return action
+
+
+def _talk_target(kind, sx, ax, ay, t, seed, near):
+    g_ = math.sin(t * 6.0 + seed)
+    if kind == 0 and sx == near:
+        return (ax + 58, ay - 26 + g_ * 18)
+    if kind == 1:
+        return (ax + sx * 58, ay + 40 + math.sin(t * 5 + sx) * 6)
+    if kind == 2 and sx == near:
+        return (ax + 40, ay - 52 + g_ * 6)
+    if kind == 3 and sx == near:
+        return (ax + 70, ay + 40 + abs(math.sin(t * 4.0)) * 28)
+    return (ax - 18, ay + 126)
+
+
+def hand_target(pose, sx, ax, ay, t, seed, near, head_y, gait, walk, sw):
+    """where the hand wants to be for a pose, in character units; the elbow follows by itself (two_bone)"""
+    if pose == "stand":
+        asw = math.sin(gait + (math.pi if sx > 0 else 0.0)) * walk
+        return (ax + sx * 26 + asw * 20, ay + 128 + sw * 4 * sx - abs(asw) * 6)
+    if pose == "limp":
+        return (ax + sx * 10, ay + 138)
+    if pose == "talk":
+        ph = t * 0.62 + seed * 0.37
+        k0 = math.floor(ph)
+        w = ease((ph - k0) / 0.22)
+        a = _talk_target(int(k0 - 1) % 4, sx, ax, ay, t, seed, near)
+        b = _talk_target(int(k0) % 4, sx, ax, ay, t, seed, near)
+        return (lerp(a[0], b[0], w), lerp(a[1], b[1], w))
+    if pose == "hop":
+        return (ax + sx * 48, ay - 96)
+    if pose == "flap":
+        ph = t * 14 + (0 if sx > 0 else 1.6)
+        return (ax + sx * (46 + 12 * math.sin(ph)), ay - 100 + 26 * math.sin(ph + 1.2))
+    if pose == "up":
+        return (ax + sx * 6, ay - 50)
+    if pose == "hips":
+        return (ax + sx * 4, ay + 104)
+    if pose == "point":
+        return (ax + 108 + math.sin(t * 5) * 4, ay - 10) if sx == near else (ax - 18, ay + 126)
+    if pose == "shrug":
+        return (ax + sx * 62, ay + 2 + math.sin(t * 4.0 + seed) * 5)
+    if pose == "cheer":
+        ph = t * 9 + sx * 1.4
+        return (ax + sx * (30 + 8 * math.sin(ph)), ay - 112 + 14 * math.sin(ph * 1.3))
+    if pose == "facepalm":
+        return (12, head_y + 6) if sx == near else (ax - 14, ay + 130)
+    if pose == "think":
+        return (10, head_y + 62) if sx == near else (6, ay + 98)
+    if pose == "laugh":
+        return (sx * 16, ay + 100 + math.sin(t * 15 + sx) * 5)
+    if pose == "tremble":
+        return (ax + sx * 8 + math.sin(t * 38 + sx) * 3, ay + 108 + math.cos(t * 41) * 2)
+    if pose == "wave":
+        return (ax + 50 + math.sin(t * 8.0 + seed) * 20, ay - 82) if sx == near else (ax - 18, ay + 126)
+    return (ax + sx * 26, ay + 128)
+
+
 def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult", skin="fair", hair="brown", extras=(), talk=0.0,
-           eye="open", brow=(0, 0), tear=0.0, look=(0, 0), action="stand", mood="neutral", bounce=0.0, carry=None, seed=0, walk=0.0, gait=0.0):
+           eye="open", brow=(0, 0), tear=0.0, look=(0, 0), action="stand", mood="neutral", bounce=0.0, carry=None, seed=0, walk=0.0, gait=0.0,
+           prev_action=None, prev_mood=None, blend=1.0, wblend=None):
     cv = V.cv
     spec = ROLES.get(role, ROLES["stranger"])
     kid, elder, fem = age == "child", age == "elder", gender == "female"
     s = s * (0.72 if kid else (0.97 if elder else 1.0))
-    HS = 1.22 if kid else 1.0
-    skin_c = SKIN.get(skin, SKIN["fair"])
-    hair_c = HAIR["grey" if elder else (hair if hair in HAIR else "brown")]
-    top, bottom = spec["top"], spec["bottom"]
+    c = dict(spec=spec, role=role, kid=kid, elder=elder, fem=fem, skin=skin, hair=hair, skin_c=SKIN.get(skin, SKIN["fair"]),
+             hair_c=HAIR["grey" if elder else (hair if hair in HAIR else "brown")], extras=extras, talk=talk, eye=eye, brow=brow, tear=tear,
+             look=look, action=action, mood=mood, bounce=bounce, carry=carry, seed=seed, walk=walk, gait=gait,
+             prev_action=prev_action if prev_action is not None else action, prev_mood=prev_mood if prev_mood is not None else mood, blend=blend)
     V.ground_shadow(x, y, s)
-    if walk > 0.3:
-        return _side(x, y, s, f, t, spec, role, kid, elder, fem, skin_c, hair_c, hair, skin, extras, talk, mood, brow, bounce, carry, seed, walk, gait)
+    if wblend is None:
+        wblend = 1.0 if walk > 0.3 else 0.0
+    if wblend < 0.02:
+        _front(x, y, s, f, t, **c)
+    elif wblend > 0.98:
+        _side(x, y, s, f, t, **c)
+    else:                                              # turning from facing us to walking away: crossfade the two views
+        for fn, a in ((_front, 1.0 - wblend), (_side, wblend)):
+            pt = skia.Paint()
+            pt.setAlpha(int(255 * a))
+            cv.saveLayer(None, pt)
+            fn(x, y, s, f, t, **c)
+            cv.restore()
 
-    breath = math.sin(t * 1.7 + seed) * 1.6
-    bob = -abs(math.sin(gait)) * 9 * walk + breath
-    bounce = bounce + bob
-    nod = max(0.0, math.sin(t * 0.9 + seed * 1.3)) ** 10 * 6 + (math.sin(t * 7.3 + seed) * 2.6 + math.sin(t * 3.1) * 1.4) * (1 if talk > 0 else 0) + \
-        {"sad": 11, "scared": 4, "shocked": -5, "smug": -4, "happy": -2}.get(mood, 0)
+
+def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c, extras, talk, eye, brow, tear, look, action, mood, bounce, carry,
+           seed, walk, gait, prev_action, prev_mood, blend):
+    cv = V.cv
+    top, bottom = spec["top"], spec["bottom"]
+    HS = 1.22 if kid else 1.0
+    talking = 1.0 if talk > 0 else 0.0
+
+    # ---- body motion: weight shifts from one foot to the other, the upper body counter-leans, breathing, and speech makes the body move
+    breath = math.sin(t * 1.7 + seed)
+    sway = nz(t * 0.35, seed) * 6.0 + math.sin(t * 2.1 + seed) * 2.2 * talking + math.sin(gait) * 5 * walk
+    lean = -sway * 0.22 + math.sin(t * 3.0 + seed * 2) * 0.8 * talking + {"sad": 2.2, "scared": -1.5, "smug": -1.8, "happy": -0.8}.get(mood, 0)
+    beat = max(0.0, math.sin(t * 2.6 + seed * 1.3)) ** 8
+    bounce = bounce - abs(math.sin(gait)) * 9 * walk + breath * 1.4
+    nod = beat * 5 * talking + math.sin(t * 7.3 + seed) * 1.8 * talking + {"sad": 11, "scared": 4, "shocked": -5, "smug": -4, "happy": -2}.get(mood, 0)
+    tilt = nz(t * 0.6, seed + 4) * 2.2 + math.sin(t * 3.0 + seed) * 1.6 * talking + {"sad": -5, "smug": 4, "scared": 3, "happy": 2, "angry": -2}.get(mood, 0)
     turn = min(1.0, walk * 1.6)
     cv.save()
     cv.translate(x, y + bounce)
     cv.scale(f * s, s)
     sw = math.sin(t * 2.2 + seed)
 
-    # ---------------- legs and shoes
+    # ---------------- legs and shoes (feet stay planted; the hips move over them)
     hip_y = -140 if not kid else -128
+    hipx = sway * 0.8
     shoe = (250, 250, 252) if role in ("doctor", "nurse") else SHOES[(seed + len(role)) % len(SHOES)]
     dress = fem and spec.get("dress") and not kid or (kid and fem)
     leg_col = skin_c if dress else bottom
     for sx in (-1, 1):
-        fy = -bounce / s + 0
-        foot = (sx * 25, -14 + fy * 0)
-        V.cv.drawLine(sx * 22, hip_y, foot[0], foot[1], paint(dark(leg_col, 0.24), stroke=36))
-        V.cv.drawLine(sx * 22 + f * -2, hip_y, foot[0] - f * 2, foot[1], paint(leg_col, stroke=30))
-        V.cv.drawLine(sx * 22 - f * 7, hip_y, foot[0] - f * 7, foot[1], paint(lite(leg_col, 0.3), 140, stroke=8))
+        foot = (sx * 25, -14)
+        V.cv.drawLine(sx * 22 + hipx, hip_y, foot[0], foot[1], paint(dark(leg_col, 0.24), stroke=36))
+        V.cv.drawLine(sx * 22 + hipx - f * 2, hip_y, foot[0] - f * 2, foot[1], paint(leg_col, stroke=30))
+        V.cv.drawLine(sx * 22 + hipx - f * 7, hip_y, foot[0] - f * 7, foot[1], paint(lite(leg_col, 0.3), 140, stroke=8))
         ball(sx * 30, -9, 31, 15, shoe, f)
         V.oval(sx * 30, -2, 29, 6, paint(dark(shoe, 0.4), 150))
-    # ---------------- torso
+
+    # ---------------- the upper body moves as one piece around the hips
+    cv.save()
+    cv.translate(hipx, -146)
+    cv.rotate(lean)
+    cv.scale(1.0, 1.0 + breath * 0.008)
+    cv.translate(0, 146)
     tw = (58 if not fem else 52) * (1 - 0.2 * turn)
     torso_col = spec.get("coat") or top
     if dress:
@@ -140,11 +280,16 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
     neck_c = dark(skin_c, 0.12)
     rrect(-17, -296, 17, hy + 44, 9, paint(neck_c))
     V.oval(0, hy + 52, 26, 12, paint(dark(skin_c, 0.34), 130, blur=5))
+    cv.save()                                   # the head tilts on the neck
+    cv.translate(0, hy + 52)
+    cv.rotate(tilt)
+    cv.translate(0, -(hy + 52))
     long_back = fem and not elder and not kid or (kid and fem and "bun" not in extras)
+    hsw = (math.sin(t * 2.1 + seed) * 2.5 * (talking + walk) - lean * 0.9)      # long hair swings a little behind the head
     if long_back:
         ball(0, hy - 4, hrx + 14, hry + 14, hair_c, f)
         for sx in (-1, 1):
-            ball(sx * (hrx + 4), hy + 58, 21, 64, hair_c, f)
+            ball(sx * (hrx + 4) + hsw, hy + 58, 21, 64, hair_c, f)
     for sx in (-1, 1):
         ball(sx * (hrx - 2), hy + 6, 14 * HS, 18 * HS, dark(skin_c, 0.08), f)
     ball(0, hy, hrx, hry, skin_c, f)
@@ -156,6 +301,7 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
     er = 15 * HS
     wide = eye in ("wide", "spiral")
     iris = IRIS[0] if skin in ("brown", "dark") else IRIS[1] if hair in ("blonde", "red") else IRIS[(seed * 7 + 2) % len(IRIS)]
+    sac = saccade(t, seed)
     for sx in (-1, 1):
         ecx, ecy = sx * ex + shx, ey
         rx_, ry_ = er * (1.3 if wide else 1.08), er * (1.62 if wide else 1.32)
@@ -174,7 +320,7 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
                 pts = [(ecx + (k * 0.9) * math.cos(k * 0.55 + t * 4) * rx_ / 6.5, ecy + (k * 0.9) * math.sin(k * 0.55 + t * 4) * rx_ / 6.5) for k in range(1, 18)]
                 curve(pts, paint(INKC, stroke=3.5))
             else:
-                ox, oy = look[0] * 6 * f + f * 1.5 + 0, look[1] * 5
+                ox, oy = look[0] * 6 * f + f * 1.5 + sac[0] * f, look[1] * 5 + sac[1]
                 pr = 0.34 if eye == "wide" else 0.5
                 ir = rx_ * 0.74
                 oval(ecx + ox, ecy + oy, ir, ir * 1.04, paint(shader=rad(ecx + ox, ecy + oy + ir * 0.2, ir * 1.3, [(0, lite(iris, 0.45)), (0.55, iris), (1, dark(iris, 0.45))])))
@@ -182,15 +328,15 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
                 oval(ecx + ox - ir * 0.34, ecy + oy - ir * 0.4, ir * 0.27, ir * 0.27, paint((255, 255, 255)))
                 oval(ecx + ox + ir * 0.34, ecy + oy + ir * 0.32, ir * 0.12, ir * 0.12, paint((255, 255, 255), 200))
             if eye in ("half", "sleepy"):
-                rect_h = ry_ * 1.1
-                V.rect(ecx - rx_ - 2, ecy - ry_ - 2, ecx + rx_ + 2, ecy - ry_ + rect_h, paint(shader=lin(0, ecy - ry_, 0, ecy, [(0, lite(skin_c, 0.05)), (1, skin_c)])))
+                V.rect(ecx - rx_ - 2, ecy - ry_ - 2, ecx + rx_ + 2, ecy - ry_ + ry_ * 1.1, paint(shader=lin(0, ecy - ry_, 0, ecy, [(0, lite(skin_c, 0.05)), (1, skin_c)])))
             cv.restore()
             lid_y = ecy - ry_ + (ry_ * 1.1 if eye in ("half", "sleepy") else 0)
-            curve([(ecx - rx_, ecy - ry_ * 0.12), (ecx - rx_ * 0.5, lid_y - ry_ * 0.02 + ry_ * 0.06), (ecx + rx_ * 0.5, lid_y - ry_ * 0.02 + ry_ * 0.06), (ecx + rx_, ecy - ry_ * 0.12)] if eye not in ("half", "sleepy") else
+            curve([(ecx - rx_, ecy - ry_ * 0.12), (ecx - rx_ * 0.5, lid_y + ry_ * 0.04), (ecx + rx_ * 0.5, lid_y + ry_ * 0.04), (ecx + rx_, ecy - ry_ * 0.12)] if eye not in ("half", "sleepy") else
                   [(ecx - rx_, lid_y), (ecx, lid_y + 3), (ecx + rx_, lid_y)], paint(INKC, stroke=5.5))
             if fem and eye not in ("half", "sleepy"):                      # lashes
                 V.line(ecx + sx * rx_, ecy - ry_ * 0.18, ecx + sx * (rx_ + 9), ecy - ry_ * 0.52, INKC, 4)
         a_, b_ = (brow[0], brow[1]) if sx > 0 else (brow[1], brow[0])
+        a_, b_ = a_ - 4 * beat * talking, b_ - 4 * beat * talking + (1.5 * beat * talking if sx > 0 else 0)      # brows lift on emphasised words
         bc = dark(hair_c, 0.15) if not elder else (140, 140, 156)
         bpts = [(ecx - 19, ey - 30 + a_), (ecx, ey - 35 + (a_ + b_) / 2), (ecx + 19, ey - 28 + b_)] if sx > 0 else \
                [(ecx + 19, ey - 30 + a_), (ecx, ey - 35 + (a_ + b_) / 2), (ecx - 19, ey - 28 + b_)]
@@ -208,7 +354,8 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
     my = hy + 44 * HS
     mx = shx
     if talk > 0 or (eye == "wide" and mood != "happy"):
-        o = max(talk * (0.55 + 0.45 * math.sin(t * 17.0 + seed) ** 2), 0.45 if eye == "wide" else 0)
+        syll = abs(math.sin(t * 9.0 + seed)) * (0.55 + 0.45 * abs(math.sin(t * 2.3 + seed * 1.7)))      # syllables of uneven size, not a buzz
+        o = max(talk * (0.2 + 0.8 * syll), 0.45 if eye == "wide" else 0)
         dep = 8 + 28 * o
         mp = skia.Path()
         mp.moveTo(mx - 21, my - 3)
@@ -265,91 +412,38 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
         if fem and (elder or "bun" in extras):
             ball(0, hy - hry - 22, 31, 27, hair_c, f)
     _hat(hat, hy - hry, hrx, spec, f, shx)
-    cv.restore()
+    cv.restore()                                # end of head tilt
 
-    # ---------------- arms (drawn in the world again: the pose table is in character units)
-    cv.save()
-    cv.translate(x, y + bounce)
-    cv.scale(f * s, s)
+    # ---------------- arms: each hand has a target; the elbow is solved so the arm keeps its length and bends like a real arm
     sh = -268 if not kid else -240
-    pose = action
-    if pose == "stand" and walk <= 0.3:
-        pose = {"shocked": "up", "scared": "up", "angry": "hips", "sad": "limp", "happy": "wave", "smug": "hips"}.get(mood, "stand")
+    pose = resolve_pose(action, mood, walk)
+    prev_pose = resolve_pose(prev_action, prev_mood, walk)
+    e_ = back(blend)
     near = 1
     hands = {}
     for sx in (-1, 1):
-        ax, ay = sx * (tw + 2), sh + 6
-        if pose == "stand":
-            asw = math.sin(gait + (math.pi if sx > 0 else 0.0)) * walk
-            ex_, ey_, hx_, hy_ = ax + sx * 18 + asw * 8, ay + 62, ax + sx * 26 + asw * 20, ay + 128 + sw * 4 * sx - abs(asw) * 6
-        elif pose == "limp":
-            ex_, ey_, hx_, hy_ = ax + sx * 6, ay + 70, ax + sx * 10, ay + 138
-        elif pose == "talk":
-            kind_ = int(t * 0.62 + seed * 0.37) % 4
-            g_ = math.sin(t * 6.0 + seed)
-            if kind_ == 0 and sx == near:
-                ex_, ey_, hx_, hy_ = ax + 30, ay + 44, ax + 58, ay - 26 + g_ * 18
-            elif kind_ == 1:
-                ex_, ey_, hx_, hy_ = ax + sx * 40, ay + 56, ax + sx * 58, ay + 40 + math.sin(t * 5 + sx) * 6
-            elif kind_ == 2 and sx == near:
-                ex_, ey_, hx_, hy_ = ax + 26, ay + 30, ax + 40, ay - 52 + g_ * 6
-            elif kind_ == 3 and sx == near:
-                ex_, ey_, hx_, hy_ = ax + 34, ay + 52, ax + 70, ay + 40 + abs(math.sin(t * 4.0)) * 28
-            else:
-                ex_, ey_, hx_, hy_ = ax - 12, ay + 62, ax - 18, ay + 126
-        elif pose == "hop":
-            ex_, ey_, hx_, hy_ = ax + sx * 36, ay - 24, ax + sx * 48, ay - 96
-        elif pose == "flap":
-            ph = t * 14 + (0 if sx > 0 else 1.6)
-            ex_, ey_, hx_, hy_ = ax + sx * 40, ay - 20, ax + sx * (46 + 12 * math.sin(ph)), ay - 100 + 26 * math.sin(ph + 1.2)
-        elif pose == "up":
-            ex_, ey_, hx_, hy_ = ax + sx * 24, ay + 8, ax + sx * 6, ay - 50
-        elif pose == "hips":
-            ex_, ey_, hx_, hy_ = ax + sx * 54, ay + 54, ax + sx * 4, ay + 104
-        elif pose == "point":
-            if sx == near:
-                ex_, ey_, hx_, hy_ = ax + 36, ay + 16, ax + 108 + math.sin(t * 5) * 4, ay - 10
-            else:
-                ex_, ey_, hx_, hy_ = ax - 12, ay + 62, ax - 18, ay + 126
-        elif pose == "shrug":
-            k_ = math.sin(t * 4.0 + seed) * 5
-            ex_, ey_, hx_, hy_ = ax + sx * 48, ay + 42, ax + sx * 62, ay + 2 + k_
-        elif pose == "cheer":
-            ph = t * 9 + sx * 1.4
-            ex_, ey_, hx_, hy_ = ax + sx * 36, ay - 14, ax + sx * (30 + 8 * math.sin(ph)), ay - 112 + 14 * math.sin(ph * 1.3)
-        elif pose == "facepalm":
-            if sx == near:
-                ex_, ey_, hx_, hy_ = ax + 34, ay + 8, 12, hy + 6
-            else:
-                ex_, ey_, hx_, hy_ = ax - 8, ay + 66, ax - 14, ay + 130
-        elif pose == "think":
-            if sx == near:
-                ex_, ey_, hx_, hy_ = ax + 6, ay + 58, 10, hy + 62
-            else:
-                ex_, ey_, hx_, hy_ = ax - 4, ay + 70, 6, ay + 98
-        elif pose == "laugh":
-            ex_, ey_, hx_, hy_ = ax + sx * 30, ay + 56, sx * 16, ay + 100 + math.sin(t * 15 + sx) * 5
-        elif pose == "tremble":
-            ex_, ey_, hx_, hy_ = ax + sx * 14, ay + 56, ax + sx * 8 + math.sin(t * 38 + sx) * 3, ay + 108 + math.cos(t * 41) * 2
-        elif pose == "wave":
-            if sx == near:
-                g_ = math.sin(t * 8.0 + seed)
-                ex_, ey_, hx_, hy_ = ax + 40, ay - 10, ax + 50 + g_ * 20, ay - 82
-            else:
-                ex_, ey_, hx_, hy_ = ax - 12, ay + 62, ax - 18, ay + 126
-        else:
-            ex_, ey_, hx_, hy_ = ax + sx * 18, ay + 62, ax + sx * 26, ay + 128
-        hands[sx] = (hx_, hy_)
+        ax, ay = sx * (tw + 2), sh + 6 + breath * 1.0
+        tgt_new = hand_target(pose, sx, ax, ay, t, seed, near, hy, gait, walk, sw)
+        tgt_old = hand_target(prev_pose, sx, ax, ay, t, seed, near, hy, gait, walk, sw) if blend < 1.0 else tgt_new
+        hx_, hy_ = lerp(tgt_old[0], tgt_new[0], e_), lerp(tgt_old[1], tgt_new[1], e_)
+        if pose not in ("flap", "cheer", "tremble", "laugh", "hop"):               # hands are never perfectly still
+            hx_ += nz(t, seed + sx * 3, 1.3) * 4.0 + sway * 0.2
+            hy_ += nz(t, seed + sx * 5 + 1, 1.1) * 3.5 + breath * 1.2
+        el, wr = two_bone((ax, ay), (hx_, hy_ - 12), 64, 68, sx)
+        ddx, ddy = wr[0] - el[0], wr[1] - el[0 + 1]
+        dn = math.hypot(ddx, ddy) or 1.0
+        hand = (wr[0] + ddx / dn * 12, wr[1] + ddy / dn * 12)
+        hands[sx] = hand
         sleeve = spec.get("coat") or top
-        limb((ax, ay), (ex_, ey_), 33, sleeve, f)
-        limb((ex_, ey_), (hx_, hy_ - 12), 29, sleeve, f)
-        cuff = lite(sleeve, 0.35)
-        limb((hx_ + (ex_ - hx_) * 0.18, hy_ - 12 + (ey_ - hy_ + 12) * 0.18), (hx_, hy_ - 12), 31, cuff, f)
-        ball(hx_, hy_, 16, 16, skin_c, f)
-        ball(hx_ + f * 9, hy_ - 6, 6.5, 9, skin_c, f)
+        limb((ax, ay), el, 33, sleeve, f)
+        limb(el, wr, 29, sleeve, f)
+        limb((wr[0] - ddx / dn * 14, wr[1] - ddy / dn * 14), wr, 31, lite(sleeve, 0.35), f)
+        ball(hand[0], hand[1], 16, 16, skin_c, f)
+        ball(hand[0] + f * 9, hand[1] - 6, 6.5, 9, skin_c, f)
     item = None if carry == "none" else (carry or spec.get("tool"))
     if item:
         _item(item, hands[near][0], hands[near][1], f)
+    cv.restore()                                # end of upper body
     cv.restore()
 
 
@@ -393,47 +487,52 @@ def _hat(hat, top_y, hrx, spec, f, shx=0.0):
 
 
 # ------------------------------------------------------------------ walking and running: the profile view
-def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin_c, hair_c, hair, skin, extras, talk, mood, brow, bounce, carry, seed, walk, gait):
+def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c, extras, talk, eye, brow, tear, look, action, mood, bounce, carry,
+          seed, walk, gait, prev_action, prev_mood, blend):
     cv = V.cv
     top, bottom = spec["top"], spec["bottom"]
     HS = 1.22 if kid else 1.0
-    bob = -abs(math.sin(gait)) * 11 * walk + math.sin(t * 1.7 + seed) * 1.2
+    run = 1.25 if walk > 0.9 else 1.0
+    bob = -abs(math.sin(gait)) * 11 * walk * run + math.sin(t * 1.7 + seed) * 1.2
+    lean = (2.5 + 3.0 * (run - 1.0) * 4) * walk                       # leans into the walk, more when running
     cv.save()
     cv.translate(x, y + bounce + bob * s)
     cv.scale(f * s, s)
     dress = fem and spec.get("dress") and not kid or (kid and fem)
     leg_col = skin_c if dress else bottom
     shoe = (250, 250, 252) if role in ("doctor", "nurse") else SHOES[(seed + len(role)) % len(SHOES)]
-    run = 1.25 if walk > 0.9 else 1.0
     hip = (0, -142 if not kid else -128)
     fyc = -bob                                              # cancel the bob so the feet stay on the ground
 
     def leg(ph, behind):
         sw_ = math.sin(gait + ph) * walk
-        lift = max(0.0, math.cos(gait + ph)) * 24 * walk * run
-        foot = (sw_ * 56 * run, -14 - lift + fyc)
-        knee = ((hip[0] + foot[0]) / 2 + 18 + max(0, math.cos(gait + ph)) * 16 * walk, (hip[1] + foot[1]) / 2 + 4)
+        lift = max(0.0, math.cos(gait + ph)) * 26 * walk * run              # the foot only rises while it swings forward
+        foot = (sw_ * 58 * run, -14 - lift + fyc)
+        knee, foot = two_bone(hip, foot, 72, 70, 1, 0.0)
         c = dark(leg_col, 0.18) if behind else leg_col
         V.cv.drawLine(hip[0], hip[1], knee[0], knee[1], paint(dark(c, 0.22), stroke=38))
         V.cv.drawLine(knee[0], knee[1], foot[0], foot[1], paint(dark(c, 0.22), stroke=34))
         V.cv.drawLine(hip[0], hip[1], knee[0], knee[1], paint(c, stroke=32))
         V.cv.drawLine(knee[0], knee[1], foot[0], foot[1], paint(c, stroke=28))
         sc_ = dark(shoe, 0.2) if behind else shoe
-        ball(foot[0] + 16, foot[1] + 6, 33, 15, sc_, 1)
+        toe = max(0.0, math.cos(gait + ph)) * 7 * walk                       # toes point down as the foot lifts
+        ball(foot[0] + 16, foot[1] + 6 + toe * 0.4, 33, 15, sc_, 1)
 
     leg(math.pi, True)
+    cv.save()                                                  # the upper body leans from the hips and rocks with each step
+    cv.translate(0, -146)
+    cv.rotate(lean + math.sin(gait * 2) * 0.9 * walk)
+    cv.translate(0, 146)
     tw = 46
     torso_col = spec.get("coat") or top
-    arm_ph = lambda ph: math.sin(gait + ph) * walk
 
     def arm(ph, behind):
-        a = arm_ph(ph)
+        a = math.sin(gait + ph) * walk
         sh = (0, -266 if not kid else -238)
-        el = (a * 28, sh[1] + 62)
-        hd = (a * 58 * run, sh[1] + 118 - abs(a) * 22 * run)
+        hd = (a * 60 * run, sh[1] + 118 - abs(a) * 22 * run)
         if run > 1.0:
-            el = (a * 40 + 14, sh[1] + 54)
             hd = (a * 70 + 28, sh[1] + 56 - abs(a) * 8)
+        el, hd = two_bone(sh, hd, 64, 66, -1, 0.35)
         c = dark(torso_col, 0.2) if behind else torso_col
         limb(sh, el, 32, c, 1)
         limb(el, hd, 28, c, 1)
@@ -448,13 +547,16 @@ def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin_c, hair_c, hair, skin
         smooth([(-4, -248), (36, -248), (42, -124), (-4, -124)], paint(spec["apron"]))
     if spec.get("tie"):
         poly([(8, -286), (24, -280), (26, -250), (14, -200)], paint(spec["tie"]))
-    leg(0.0, False)
-    # head in profile
+    # head in profile, nodding gently against the lean
     hy = (-346 if not kid else -314)
+    cv.save()
+    cv.translate(0, hy + 52)
+    cv.rotate(-lean * 0.7 + math.sin(gait * 2 + 0.6) * 1.2 * walk)
+    cv.translate(0, -(hy + 52))
     hrx, hry = 60 * HS, 65 * HS
     rrect(-14, -296, 20, hy + 40, 9, paint(dark(skin_c, 0.12)))
     if fem and not elder and not kid:
-        ball(-16, hy + 18, hrx + 4, hry + 30, hair_c, 1)
+        ball(-16 - walk * 5, hy + 18, hrx + 4, hry + 30, hair_c, 1)
     ball(8, hy, hrx, hry, skin_c, 1)
     ball(30, hy + 14, 14 * HS, 11 * HS, dark(skin_c, 0.06), 1)                      # nose
     oval(-12, hy + 8, 13 * HS, 17 * HS, paint(dark(skin_c, 0.12)))                  # ear
@@ -468,7 +570,7 @@ def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin_c, hair_c, hair, skin
         curve([(ex_ - 12, ey_ - 4), (ex_, ey_ - 18 * HS), (ex_ + 13, ey_ - 6)], paint(INKC, stroke=4.5))
     curve([(ex_ - 14, ey_ - 30), (ex_ + 2, ey_ - 34), (ex_ + 18, ey_ - 28)], paint(dark(hair_c, 0.15), stroke=7))
     oval(34, hy + 30, 11, 8, paint((255, 130, 150), 130, blur=3))
-    if mood in ("happy",):
+    if mood == "happy":
         curve([(24, hy + 42), (40, hy + 50), (52, hy + 38)], paint(INKC, stroke=4.5))
     else:
         curve([(26, hy + 44), (40, hy + 46), (50, hy + 42)], paint(INKC, stroke=4.5))
@@ -480,10 +582,13 @@ def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin_c, hair_c, hair, skin
     if spec.get("glasses") or "glasses" in extras:
         cv.drawOval(skia.Rect(ex_ - 20, ey_ - 22, ex_ + 24, ey_ + 24), paint((46, 40, 74), stroke=4))
     _hat(hat, hy - hry, hrx, spec, 1, 8 * 0.4)
+    cv.restore()                                                  # end of head
     ahd = arm(math.pi, False)
     item = None if carry == "none" else (carry or spec.get("tool"))
     if item:
         _item(item, ahd[0], ahd[1], 1)
+    cv.restore()                                                  # end of upper body
+    leg(0.0, False)
     cv.restore()
 
 
