@@ -277,8 +277,14 @@ def _vthing(th, u, clk, pos):
         VP.person(x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
                   hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=my_talk, eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
                   tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=act, mood=mood, listening=listening,
-                  bounce=g("bounce", 0.0), carry=g("carry", th.get("carry")), draped=g("draped", "none"), seed=th.get("seed", 0), walk=walk, gait=gait,
+                  bounce=g("bounce", 0.0), design=th.get("design"), carry=g("carry", th.get("carry")), draped=g("draped", "none"), seed=th.get("seed", 0), walk=walk, gait=gait,
                   prev_action=prev_a, prev_mood=prev_m, blend=blend, wblend=wblend)
+    elif typ == "prop":                                    # a set piece the story's writer designed: a campfire, a cart, a lantern on a post
+        from . import design as DZ
+        rec = DZ.PROPS.get(th.get("item"))
+        if rec:
+            V.ground_shadow(x, y, s * 0.8)
+            DZ.draw_recipe(rec, x, y, s, th.get("face", 1), t)
     elif typ == "puff":
         VP.puff(x, y, s, t, rgb(th.get("color"), (255, 226, 240)), th.get("seed", 1))
     elif typ == "sparkle":

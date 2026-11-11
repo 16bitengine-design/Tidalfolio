@@ -8,6 +8,7 @@ import skia
 from . import engine as E
 from . import vector as V
 from .people import HAIR, ROLES, SKIN
+from . import design as DZ
 from .vector import dark, lite, mixc, oval, paint, poly, rad, lin, rrect, smooth, curve
 
 SHOES = [(236, 90, 110), (70, 80, 150), (58, 54, 74), (244, 190, 80), (80, 176, 154), (186, 110, 220)]
@@ -189,15 +190,21 @@ def hand_target(pose, sx, ax, ay, t, seed, near, head_y, gait, walk, sw):
 
 def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult", skin="fair", hair="brown", extras=(), talk=0.0,
            eye="open", brow=(0, 0), tear=0.0, look=(0, 0), action="stand", mood="neutral", bounce=0.0, carry=None, seed=0, walk=0.0, gait=0.0,
-           prev_action=None, prev_mood=None, blend=1.0, wblend=None, listening=0.0, draped="none"):
+           prev_action=None, prev_mood=None, blend=1.0, wblend=None, listening=0.0, draped="none", design=None):
     cv = V.cv
-    spec = ROLES.get(role, ROLES["stranger"])
+    dz = DZ.sanitize_design(design)                         # always cleaned, whatever sent it
+    spec = DZ.build_spec(ROLES.get(role, ROLES["stranger"]), dz)
+    skin, hair = dz.get("skin", skin), dz.get("hair", hair)
     kid, elder, fem = age == "child", age == "elder", gender == "female"
-    s = s * (0.72 if kid else (0.97 if elder else 1.0))
+    s = s * (0.72 if kid else (0.97 if elder else 1.0)) * dz.get("height", 1.0)
     c = dict(spec=spec, role=role, kid=kid, elder=elder, fem=fem, skin=skin, hair=hair, skin_c=SKIN.get(skin, SKIN["fair"]),
              hair_c=HAIR["grey" if elder else (hair if hair in HAIR else "brown")], extras=extras, talk=talk, eye=eye, brow=brow, tear=tear,
              look=look, action=action, mood=mood, bounce=bounce, carry=carry, seed=seed, walk=walk, gait=gait,
-             prev_action=prev_action if prev_action is not None else action, prev_mood=prev_mood if prev_mood is not None else mood, blend=blend, listening=listening, draped=draped)
+             prev_action=prev_action if prev_action is not None else action, prev_mood=prev_mood if prev_mood is not None else mood, blend=blend, listening=listening, draped=draped, design=dz)
+    if dz.get("skin_rgb"):
+        c["skin_c"] = dz["skin_rgb"]
+    if dz.get("hair_rgb"):
+        c["hair_c"] = dz["hair_rgb"]
     V.ground_shadow(x, y, s)
     if wblend is None:
         wblend = 1.0 if walk > 0.3 else 0.0
@@ -241,9 +248,10 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
 
 
 def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c, extras, talk, eye, brow, tear, look, action, mood, bounce, carry,
-           seed, walk, gait, prev_action, prev_mood, blend, listening=0.0, draped="none"):
+           seed, walk, gait, prev_action, prev_mood, blend, listening=0.0, draped="none", design=None):
     cv = V.cv
     top, bottom = spec["top"], spec["bottom"]
+    dz_ = design or {}
     HS = 1.22 if kid else 1.0
     talking = 1.0 if talk > 0 else 0.0
 
@@ -281,8 +289,11 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     cv.rotate(lean)
     cv.scale(1.0, 1.0 + breath * 0.008)
     cv.translate(0, 146)
-    tw = (58 if not fem else 52) * (1 - 0.2 * turn)
+    tw = (58 if not fem else 52) * (1 - 0.2 * turn) * DZ.BUILDS.get(dz_.get("build"), 1.0)
     torso_col = spec.get("coat") or top
+    if isinstance(spec.get("cape"), tuple):                                          # a cape hangs behind the body
+        cp = spec["cape"]
+        fill_grad([(-tw - 6, -290), (tw + 6, -290), (tw + 50 + math.sin(t * 1.4 + seed) * 5, -52), (-tw - 50 - math.sin(t * 1.4 + seed) * 5, -52)], cp, f, tw + 40)
     if dress:
         skirt = torso_col if not spec.get("cardigan") else top
         fill_grad([(-tw + 6, -156), (tw - 6, -156), (tw + 32, -70), (0, -60), (-tw - 32, -70)], skirt, f, tw + 30)
@@ -338,6 +349,20 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
         oval(0, -292, tw * 1.12, 17, paint(shader=lin(-tw, 0, tw, 0, [(0, lite(dc, 0.35)), (1, dark(dc, 0.15))])))
         V.line(-tw * 0.12, -280, -tw * 0.2, -176, dark(dc, 0.25), 4, 160)          # the overlap where the two ends meet
 
+    if isinstance(spec.get("belt"), tuple):
+        rrect(-tw * 0.92, -184, tw * 0.92, -162, 5, paint(spec["belt"]))
+        rrect(-12, -186, 12, -160, 4, paint((250, 214, 90)))
+    if isinstance(spec.get("bowtie"), tuple):
+        poly([(0, -280), (-26, -296), (-26, -264)], paint(spec["bowtie"]))
+        poly([(0, -280), (26, -296), (26, -264)], paint(spec["bowtie"]))
+        oval(0, -280, 7, 7, paint(dark(spec["bowtie"], 0.25)))
+    if isinstance(spec.get("scarf"), tuple):
+        sc_ = spec["scarf"]
+        rrect(-36, -306, 36, -272, 14, paint(shader=lin(-36, 0, 36, 0, [(0, lite(sc_, 0.25)), (1, dark(sc_, 0.2))])))
+        rrect(10 + math.sin(t * 2 + seed) * 2, -290, 38 + math.sin(t * 2 + seed) * 2, -196, 8, paint(dark(sc_, 0.1)))
+        for k_ in range(3):
+            V.line(14, -272 + k_ * 22, 36, -270 + k_ * 22, lite(sc_, 0.5), 4, 150)
+
     # ---------------- neck and head
     hy = (-350 if not kid else -318) + nod
     hrx, hry = 62 * HS, 66 * HS
@@ -348,12 +373,23 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     cv.translate(0, hy + 52)
     cv.rotate(tilt)
     cv.translate(0, -(hy + 52))
-    long_back = fem and not elder and not kid or (kid and fem and "bun" not in extras)
+    hs = dz_.get("hair_style")
+    long_back = (hs == "long") if hs else (fem and not elder and not kid or (kid and fem and "bun" not in extras))
     hsw = (math.sin(t * 2.1 + seed) * 2.5 * (talking + walk) - lean * 0.9)      # long hair swings a little behind the head
     if long_back:
         ball(0, hy - 4, hrx + 14, hry + 14, hair_c, f)
         for sx in (-1, 1):
             ball(sx * (hrx + 4) + hsw, hy + 58, 21, 64, hair_c, f)
+    if hs == "afro":
+        ball(0, hy - 18, hrx + 36, hry + 30, hair_c, f)
+    elif hs == "ponytail":
+        ball(-f * (hrx + 24) + hsw, hy + 28, 20, 50, hair_c, f)
+        ball(-f * (hrx - 2), hy - 30, 13, 13, spec.get("scarf") if isinstance(spec.get("scarf"), tuple) else (236, 90, 110), f)
+    elif hs == "braids":
+        for sx in (-1, 1):
+            V.line(sx * (hrx - 6), hy + 24, sx * (hrx + 4) + hsw, hy + 130, dark(hair_c, 0.1), 17)
+            V.line(sx * (hrx - 6), hy + 24, sx * (hrx + 4) + hsw, hy + 130, lite(hair_c, 0.2), 4, 140)
+            ball(sx * (hrx + 4) + hsw, hy + 134, 11, 11, (250, 200, 80), f)
     for sx in (-1, 1):
         ball(sx * (hrx - 2), hy + 6, 14 * HS, 18 * HS, dark(skin_c, 0.08), f)
     ball(0, hy, hrx, hry, skin_c, f)
@@ -461,6 +497,7 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     else:
         curve([(mx - 16, my + 3), (mx, my + 6), (mx + 16, my + 3)], paint(INKC, stroke=5))
     # facial hair
+    extras = tuple(extras) + tuple(a for a in dz_.get("accessories", ()) if a in ("beard", "mustache"))
     if "mustache" in extras or "beard" in extras or (role == "grandfather" and not fem):
         smooth([(mx - 28, my - 8), (mx - 6, my - 15), (mx, my - 7), (mx + 6, my - 15), (mx + 28, my - 8), (mx + 18, my + 3), (mx, my - 3), (mx - 18, my + 3)], paint(hair_c))
     if "beard" in extras:
@@ -472,8 +509,8 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
         V.line(-ex + 27 * HS + shx, ey, ex - 27 * HS + shx, ey, (46, 40, 74), 4)
     # ---------------- front hair
     hat = spec.get("hat")
-    hat_hides = hat in ("hard", "fire", "police", "nurse", "chef", "cap", "bucket", "sun", "straw", "beret", "flatcap")
-    if "bald" not in extras and not (elder and not fem and hair == "bald"):
+    hat_hides = hat in ("hard", "fire", "police", "nurse", "chef", "cap", "bucket", "sun", "straw", "beret", "flatcap", "beanie", "tophat", "helmet", "headscarf")
+    if "bald" not in extras and hs != "bald" and not (elder and not fem and hair == "bald"):
         edge = [(hrx * 0.9, hy - 24), (hrx * 0.45, hy - 40), (0, hy - 26), (-hrx * 0.5, hy - 44), (-hrx * 0.96, hy - 22)] if fem else \
                [(hrx * 0.96, hy - 28), (hrx * 0.5, hy - 38), (0, hy - 26), (-hrx * 0.45, hy - 40), (-hrx * 0.96, hy - 26)]
         capp = arc_pts(0, hy - 2, hrx + 5, hry + 8, 190, 350, 14)
@@ -483,6 +520,21 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
             curve([(-hrx * 0.55 + shx * 0.4, hy - hry * 0.78), (-hrx * 0.1, hy - hry * 0.98), (hrx * 0.3, hy - hry * 0.94)], paint(lite(hair_c, 0.45), 130, stroke=7))
         if fem and (elder or "bun" in extras):
             ball(0, hy - hry - 22, 31, 27, hair_c, f)
+    if not hat_hides or hat == "crown":
+        if hs == "curly":
+            for k_ in range(9):
+                a_ = math.radians(188 + k_ * 20)
+                ball(math.cos(a_) * (hrx + 4) + shx * 0.4, hy - 2 + math.sin(a_) * (hry + 4), 19, 19, hair_c, f)
+        elif hs == "spiky":
+            for k_ in range(7):
+                a_ = math.radians(196 + k_ * 24)
+                bx, by = math.cos(a_) * (hrx - 4) + shx * 0.4, hy - 6 + math.sin(a_) * (hry - 4)
+                poly([(bx - 13, by + 4), (bx + 13, by + 4), (bx + math.cos(a_) * 30, by + math.sin(a_) * 44)], paint(hair_c))
+    if spec.get("sunglasses"):
+        for sx in (-1, 1):
+            rrect(sx * ex + shx - 27 * HS, ey - 16 * HS, sx * ex + shx + 27 * HS, ey + 20 * HS, 12, paint((30, 26, 46), 235))
+            V.line(sx * ex + shx - 14, ey - 8, sx * ex + shx - 4, ey - 12, (255, 255, 255), 3, 150)
+        V.line(-ex + 27 * HS + shx, ey - 4, ex - 27 * HS + shx, ey - 4, (30, 26, 46), 5)
     _hat(hat, hy - hry, hrx, spec, f, shx)
     cv.restore()                                # end of head tilt
 
@@ -553,6 +605,29 @@ def _hat(hat, top_y, hrx, spec, f, shx=0.0):
         col = (255, 210, 60)
         smooth([(cx - hrx - 4, top_y + 36)] + arc_pts(cx, top_y + 32, hrx + 4, 46, 190, 350, 10) + [(cx + hrx + 4, top_y + 36)], paint(shader=lin(-f * hrx, 0, f * hrx, 0, [(0, lite(col, 0.25)), (1, dark(col, 0.2))])))
         oval(cx, top_y + 38, hrx + 30, 13, paint(dark(col, 0.12)))
+    elif hat == "beanie":
+        smooth([(cx - hrx - 2, top_y + 34)] + arc_pts(cx, top_y + 32, hrx + 3, 62, 184, 356, 12) + [(cx + hrx + 2, top_y + 34)], paint(shader=lin(-f * hrx, 0, f * hrx, 0, [(0, lite(cc, 0.2)), (1, dark(cc, 0.25))])))
+        rrect(cx - hrx - 5, top_y + 22, cx + hrx + 5, top_y + 46, 9, paint(dark(cc, 0.12)))
+        for k_ in range(5):
+            V.line(cx - hrx + 12 + k_ * (hrx * 0.45), top_y + 24, cx - hrx + 12 + k_ * (hrx * 0.45), top_y + 44, dark(cc, 0.32), 3, 150)
+        oval(cx, top_y - 30, 15, 15, paint(lite(cc, 0.4)))
+    elif hat == "tophat":
+        rrect(cx - hrx * 0.62, top_y - 78, cx + hrx * 0.62, top_y + 28, 8, paint(shader=lin(-f * hrx, 0, f * hrx, 0, [(0, lite(cc, 0.15)), (1, dark(cc, 0.3))])))
+        oval(cx, top_y + 30, hrx + 28, 12, paint(dark(cc, 0.2)))
+        rrect(cx - hrx * 0.62, top_y + 2, cx + hrx * 0.62, top_y + 22, 4, paint((250, 214, 90)))
+    elif hat == "headscarf":
+        smooth([(cx - hrx - 4, top_y + 56)] + arc_pts(cx, top_y + 40, hrx + 5, 70, 186, 354, 12) + [(cx + hrx + 4, top_y + 56), (cx + hrx * 0.4, top_y + 30), (cx - hrx * 0.4, top_y + 30)], paint(shader=lin(-f * hrx, 0, f * hrx, 0, [(0, lite(cc, 0.2)), (1, dark(cc, 0.2))])))
+        poly([(cx + f * hrx * 0.7, top_y + 40), (cx + f * (hrx + 34), top_y + 76), (cx + f * (hrx + 6), top_y + 86)], paint(dark(cc, 0.12)))
+        for k_ in range(5):
+            oval(cx - hrx * 0.7 + k_ * hrx * 0.35, top_y + 8 + (k_ % 2) * 12, 5, 5, paint(lite(cc, 0.6), 220))
+    elif hat == "helmet":
+        smooth([(cx - hrx - 8, top_y + 70)] + arc_pts(cx, top_y + 44, hrx + 10, 84, 180, 360, 14) + [(cx + hrx + 8, top_y + 70)], paint(shader=lin(-f * hrx, 0, f * hrx, 0, [(0, lite(cc, 0.3)), (1, dark(cc, 0.2))])))
+        oval(cx + f * 8, top_y + 36, hrx * 0.5, hrx * 0.42, paint((120, 200, 250, 150)))
+        V.line(cx - hrx * 0.5, top_y - 6, cx - hrx * 0.2, top_y - 36, (255, 255, 255), 5, 160)
+    elif hat == "crown":
+        poly([(cx - hrx * 0.6, top_y + 18), (cx - hrx * 0.6, top_y - 30), (cx - hrx * 0.3, top_y - 6), (cx, top_y - 40), (cx + hrx * 0.3, top_y - 6), (cx + hrx * 0.6, top_y - 30), (cx + hrx * 0.6, top_y + 18)], paint(shader=lin(0, top_y - 40, 0, top_y + 18, [(0, (255, 232, 120)), (1, (226, 164, 40))])))
+        for k_ in range(3):
+            oval(cx - hrx * 0.3 + k_ * hrx * 0.3, top_y + 6, 5, 5, paint((226, 60, 90)))
     elif hat == "beret":
         oval(cx + f * 8, top_y + 12, hrx * 0.92, 26, paint(shader=lin(0, top_y - 14, 0, top_y + 40, [(0, lite(cc, 0.25)), (1, dark(cc, 0.25))])))
         oval(cx + f * 8, top_y - 14, 5, 7, paint(dark(cc, 0.35)))
@@ -560,7 +635,7 @@ def _hat(hat, top_y, hrx, spec, f, shx=0.0):
 
 # ------------------------------------------------------------------ walking and running: the profile view
 def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c, extras, talk, eye, brow, tear, look, action, mood, bounce, carry,
-          seed, walk, gait, prev_action, prev_mood, blend, listening=0.0, draped="none"):
+          seed, walk, gait, prev_action, prev_mood, blend, listening=0.0, draped="none", design=None):
     cv = V.cv
     top, bottom = spec["top"], spec["bottom"]
     HS = 1.22 if kid else 1.0
@@ -667,6 +742,9 @@ def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c
 # ------------------------------------------------------------------ held things
 def _item(item, hx, hy, f):
     cv = V.cv
+    if item in DZ.PROPS:                                   # an object the story's writer designed
+        DZ.draw_recipe(DZ.PROPS[item], hx + 6 * f, hy - 4, 1.0, f)
+        return
 
     def box(x0, y0, x1, y1, c, r=5):
         rrect(x0, y0, x1, y1, r, paint(shader=lin(x0, y0, x1, y1, [(0, lite(c, 0.22)), (1, dark(c, 0.2))])))

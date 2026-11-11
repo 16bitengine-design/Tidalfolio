@@ -28,6 +28,7 @@ import re
 import zlib
 
 from . import people as PE
+from . import design as DZ
 from . import towns as TW
 
 SPECIES = ("human", "eagle", "squirrel", "rabbit", "cat", "fox")     # new stories use people only; the animals stay for stories already made
@@ -139,6 +140,13 @@ def fix_cast(cast):
         if not isinstance(c, dict) or not (c.get("role") or c.get("species") == "human"):
             continue
         role = PE.norm_role(c.get("role") or key)
+        design = DZ.sanitize_design(c.get("design"))
+        if design:
+            c["design"] = design
+        elif "design" in c:
+            c.pop("design")
+        if not role and design:                       # a role the writer invented: it is drawn from its design (the label is only used for tags)
+            role = re.sub(r"[^a-z ]", "", str(c.get("role") or key).lower()).strip()[:30] or "stranger"
         if role:
             c["role"] = role
         c["species"] = "human"
@@ -155,7 +163,7 @@ def fix_cast(cast):
             c["hair"] = c.get("hair") if c.get("hair") in PE.HAIR else hair
             ex = c.get("extras")
             c["extras"] = [e for e in (ex if isinstance(ex, list) else []) if e in EXTRAS]
-            if c["gender"] == "female" or role == "mechanic":
+            if c["gender"] == "female" or role == "mechanic":            # (a designer may still give anyone a beard through the design)
                 c["extras"] = [e for e in c["extras"] if e not in ("beard", "mustache")]
     return cast
 
@@ -280,8 +288,8 @@ def _check_scenes(scenes, cast, pre=""):
                 if a.get(key) and not phrase_ok(nar, a[key]):
                     bad.append(f"{where}: {who} '{key}' words {a[key]!r} are not in the narration (copy them exactly).")
             if a.get("carry") and sp == "human":
-                if a["carry"] not in ITEMS:
-                    bad.append(f"{where}: 'carry' must be one of {ITEMS}.")
+                if a["carry"] not in ITEMS and a["carry"] not in _PROP_NAMES:
+                    bad.append(f"{where}: 'carry' must be one of {ITEMS} or an object you designed in 'props'.")
             elif a.get("carry") and (a["carry"] != "fish" or sp != "eagle"):
                 bad.append(f"{where}: only eagles can carry, and only a 'fish'.")
         for p in sc.get("popups") or []:
@@ -300,7 +308,12 @@ def _check_scenes(scenes, cast, pre=""):
 
 
 # ------------------------------------------------------------------------------------- checks
+_PROP_NAMES = set()      # the objects the story's writer designed (so "carry" and scene props may use them)
+
+
 def check_storyboard(sb):
+    global _PROP_NAMES
+    _PROP_NAMES = set(DZ.sanitize_props(sb.get("props") if isinstance(sb, dict) else None))
     """Return a list of plain-language problems (empty = fine). A story is 2 to 4 PARTS, each a 45-90 s video."""
     bad = []
     if not isinstance(sb, dict):
@@ -312,8 +325,8 @@ def check_storyboard(sb):
     fix_cast(cast)
     for k, c in cast.items():
         if isinstance(c, dict) and c.get("species") == "human":
-            if not PE.norm_role(c.get("role")):
-                bad.append(f"cast '{k}': role must be one of {PE.ROLES_LIST}.")
+            if not PE.norm_role(c.get("role")) and not c.get("design"):
+                bad.append(f"cast '{k}': a role outside {PE.ROLES_LIST} needs a design.")
         elif not isinstance(c, dict) or c.get("species") not in SPECIES:
             bad.append(f"cast '{k}': needs a role (one of {PE.ROLES_LIST}).")
         elif c["species"] == "eagle" and c.get("look", "orrin") not in LOOKS:
@@ -428,7 +441,9 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
         _, brow, tear = EAGLE_MOOD[mood]
         th.update(type="human", role=c["role"], gender=c["gender"], age=c["age"], skin=c["skin"], hair=c["hair"], extras=c.get("extras", []),
                   eye=CRITTER_EYE_MOOD[mood], brow=brow, mood=mood, action=action, seed=zlib.crc32(who.encode()) % 50)
-        if a.get("carry") in ITEMS:
+        if c.get("design"):
+            th["design"] = c["design"]
+        if a.get("carry") in ITEMS or a.get("carry") in _PROP_NAMES:
             th["carry"] = a["carry"]
             if a.get("carry_from"):                                       # carried only for a while: from these words until carry_to (then the usual tool again)
                 th["carry"] = {"step": [[0, None], ["@" + a["carry_from"], a["carry"]], ["@" + a["carry_to"], None] if a.get("carry_to") else [999, None]]}
@@ -597,6 +612,10 @@ def _compile_scenes(scene_list, cast):
         centre_x = sum(slots) / len(slots) if slots else 330
         crowd = (len(actors) if is_h else sum(1 for a in actors if a.get("at", "ground_mid") in GROUND and cast[a["who"]]["species"] == "eagle"))
         things = _stage_things(stage)
+        for k_, pr in enumerate(sc.get("props") or []):                   # set pieces the writer designed, drawn behind the people
+            if isinstance(pr, dict) and pr.get("item") in _PROP_NAMES:
+                things.append({"type": "prop", "id": f"prop{k_}", "item": pr["item"], "x": float(HSLOTS.get(pr.get("at", "ground_mid"), 300.0)), "y": 1240.0,
+                               "scale": max(0.4, min(2.5, float(pr.get("size", 1.0) or 1.0))), "face": 1})
         pos = {}
         for a in sorted(actors, key=lambda q: 0 if cast[q["who"]]["species"] != "eagle" else 1):   # everyone else stands behind the eagles
             for th in _actor_things(a, cast, sc, crowd, centre_x, None):
@@ -652,6 +671,8 @@ def _compile_scenes(scene_list, cast):
 
 def compile_storyboard(sb, number=None):
     """Return a LIST of puppet scripts, one per part (Part 1 .. Part n). Call check_storyboard() first."""
+    global _PROP_NAMES
+    _PROP_NAMES = set(DZ.sanitize_props(sb.get("props")))
     cast = fix_cast(sb["cast"])
     title = sb.get("title", "Untitled").strip()
     word = sb.get("uncommon_word") or {}
@@ -676,5 +697,5 @@ def compile_storyboard(sb, number=None):
             "voice": {"kokoro": "tidal"},
             "story": {"lesson": sb["lesson"].strip(), "cause": sb["cause"]},
             "uncommon_word": {"word": word.get("word", ""), "meaning": word.get("meaning", "")} if pi == 1 else {},
-            "scenes": scenes, "youtube": yt, "tiktok": tt})
+            "props": DZ.sanitize_props(sb.get("props")), "scenes": scenes, "youtube": yt, "tiktok": tt})
     return out

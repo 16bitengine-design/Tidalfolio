@@ -224,6 +224,8 @@ def render_stills(script_path, times, outdir):
     make_narration(script, scenes, outdir / "narration", True)
     plan_timing(scenes)
     E.set_look(script.get("look", "ink"))
+    from . import design as _DZ
+    _DZ.PROPS = _DZ.sanitize_props(script.get("props"))      # objects the story's writer designed
     V_.STYLE = script.get("style", "classic")        # "classic": soft shading, squash and stretch, painterly backgrounds; "flat": the earlier plain vector look
     ctx = type("Ctx", (), {})()
     ctx.worlds, ctx.nt, ctx.script = ({} if script.get("look") == "vector" else worlds.bake_for(script)), narration_time(scenes), script
@@ -259,6 +261,8 @@ def render_script(script_path, dry=False, workers=None):
     nt = narration_time(scenes)
     print("[2/5] painting the worlds", flush=True)
     E.set_look(script.get("look", "ink"))
+    from . import design as _DZ
+    _DZ.PROPS = _DZ.sanitize_props(script.get("props"))      # objects the story's writer designed
     V_.STYLE = script.get("style", "classic")        # "classic": soft shading, squash and stretch, painterly backgrounds; "flat": the earlier plain vector look
     ctx = type("Ctx", (), {})()
     ctx.worlds, ctx.nt, ctx.script = ({} if script.get("look") == "vector" else worlds.bake_for(script)), nt, script
