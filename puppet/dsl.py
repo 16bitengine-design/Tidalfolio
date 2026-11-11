@@ -189,6 +189,8 @@ def _draw_vector(img, sc, u, D, ctx, clk):
     V.SEED = zlib.crc32(str((ctx.script or {}).get("short_title", "story")).encode()) % 1000
     T = V.stage_world(sc["world"], tw)
     V.tint_world(T)
+    if V.STYLE == "classic":
+        V.painterly(T, tw)
     V.cam(1.0)
     pos = {}
     global _CAST
