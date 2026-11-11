@@ -277,7 +277,7 @@ def _vthing(th, u, clk, pos):
         VP.person(x, y, s, face, t, role=th.get("role", "stranger"), gender=th.get("gender", "male"), age=th.get("age", "adult"), skin=th.get("skin", "fair"),
                   hair=th.get("hair", "brown"), extras=tuple(th.get("extras") or ()), talk=my_talk, eye=g("eye", "open"), brow=tuple(g("brow", [0, 0])),
                   tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=act, mood=mood, listening=listening,
-                  bounce=g("bounce", 0.0), carry=th.get("carry"), seed=th.get("seed", 0), walk=walk, gait=gait,
+                  bounce=g("bounce", 0.0), carry=g("carry", th.get("carry")), draped=g("draped", "none"), seed=th.get("seed", 0), walk=walk, gait=gait,
                   prev_action=prev_a, prev_mood=prev_m, blend=blend, wblend=wblend)
     elif typ == "puff":
         VP.puff(x, y, s, t, rgb(th.get("color"), (255, 226, 240)), th.get("seed", 1))

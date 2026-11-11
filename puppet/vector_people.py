@@ -167,9 +167,9 @@ def hand_target(pose, sx, ax, ay, t, seed, near, head_y, gait, walk, sw):
         return (sx * 20 + math.sin(t * 1.4 + sx) * 2, ay + 70)
     if pose == "clasp":                                    # hands together in front: worry, tenderness, waiting
         return (sx * 7 + math.sin(t * 1.9) * 2, ay + 82 + math.sin(t * 1.3 + sx) * 3)
-    if pose == "wrap":                                     # arms come round in front, as if wrapping someone
-        k = 0.5 + 0.5 * math.sin(t * 1.2)
-        return (sx * (44 - 30 * k), ay + 66 + 8 * k)
+    if pose == "wrap":                                     # both arms reach out toward the other person and draw in, as if putting something round them
+        k = 0.5 + 0.5 * math.sin(t * 1.5)
+        return (ax + (96 - 22 * k), ay + 54 + 10 * k) if sx == near else (ax + (70 - 14 * k), ay + 84 - 4 * k)
     if pose == "place":                                    # sets something down, forward and low
         return (ax + 58, ay + 104 + abs(math.sin(t * 1.4)) * 14) if sx == near else (ax - 18, ay + 126)
     if pose == "reach":
@@ -189,7 +189,7 @@ def hand_target(pose, sx, ax, ay, t, seed, near, head_y, gait, walk, sw):
 
 def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult", skin="fair", hair="brown", extras=(), talk=0.0,
            eye="open", brow=(0, 0), tear=0.0, look=(0, 0), action="stand", mood="neutral", bounce=0.0, carry=None, seed=0, walk=0.0, gait=0.0,
-           prev_action=None, prev_mood=None, blend=1.0, wblend=None, listening=0.0):
+           prev_action=None, prev_mood=None, blend=1.0, wblend=None, listening=0.0, draped="none"):
     cv = V.cv
     spec = ROLES.get(role, ROLES["stranger"])
     kid, elder, fem = age == "child", age == "elder", gender == "female"
@@ -197,7 +197,7 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
     c = dict(spec=spec, role=role, kid=kid, elder=elder, fem=fem, skin=skin, hair=hair, skin_c=SKIN.get(skin, SKIN["fair"]),
              hair_c=HAIR["grey" if elder else (hair if hair in HAIR else "brown")], extras=extras, talk=talk, eye=eye, brow=brow, tear=tear,
              look=look, action=action, mood=mood, bounce=bounce, carry=carry, seed=seed, walk=walk, gait=gait,
-             prev_action=prev_action if prev_action is not None else action, prev_mood=prev_mood if prev_mood is not None else mood, blend=blend, listening=listening)
+             prev_action=prev_action if prev_action is not None else action, prev_mood=prev_mood if prev_mood is not None else mood, blend=blend, listening=listening, draped=draped)
     V.ground_shadow(x, y, s)
     if wblend is None:
         wblend = 1.0 if walk > 0.3 else 0.0
@@ -241,7 +241,7 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
 
 
 def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c, extras, talk, eye, brow, tear, look, action, mood, bounce, carry,
-           seed, walk, gait, prev_action, prev_mood, blend, listening=0.0):
+           seed, walk, gait, prev_action, prev_mood, blend, listening=0.0, draped="none"):
     cv = V.cv
     top, bottom = spec["top"], spec["bottom"]
     HS = 1.22 if kid else 1.0
@@ -328,6 +328,15 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     if spec.get("pack"):
         V.line(-tw + 6, -282, -tw + 4, -176, (250, 190, 60), 10)
         V.line(tw - 6, -282, tw - 4, -176, (250, 190, 60), 10)
+
+    if draped in ("towel", "blanket"):                      # something put round the shoulders: a towel or a blanket
+        dc = (96, 186, 232) if draped == "towel" else (236, 140, 112)
+        fill_grad([(-tw * 1.08, -292), (tw * 1.08, -292), (tw * 1.18, -226), (tw * 0.8, -134), (-tw * 0.8, -134), (-tw * 1.18, -226)], dc, f, tw * 1.1)
+        for k_ in range(3):
+            yy = -246 + k_ * 38
+            V.line(-tw * 1.04 + k_ * 4, yy, tw * 1.04 - k_ * 4, yy + 4, (255, 255, 255), 6, 190)
+        oval(0, -292, tw * 1.12, 17, paint(shader=lin(-tw, 0, tw, 0, [(0, lite(dc, 0.35)), (1, dark(dc, 0.15))])))
+        V.line(-tw * 0.12, -280, -tw * 0.2, -176, dark(dc, 0.25), 4, 160)          # the overlap where the two ends meet
 
     # ---------------- neck and head
     hy = (-350 if not kid else -318) + nod
@@ -551,7 +560,7 @@ def _hat(hat, top_y, hrx, spec, f, shx=0.0):
 
 # ------------------------------------------------------------------ walking and running: the profile view
 def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c, extras, talk, eye, brow, tear, look, action, mood, bounce, carry,
-          seed, walk, gait, prev_action, prev_mood, blend, listening=0.0):
+          seed, walk, gait, prev_action, prev_mood, blend, listening=0.0, draped="none"):
     cv = V.cv
     top, bottom = spec["top"], spec["bottom"]
     HS = 1.22 if kid else 1.0
@@ -686,6 +695,10 @@ def _item(item, hx, hy, f):
     elif item == "rolling_pin":
         ln(hx - 24, hy - 6, hx + 44, hy - 28, (226, 164, 96), 17)
         ln(hx - 34, hy - 3, hx - 24, hy - 6, (190, 120, 70), 9)
+    elif item == "towel":                                  # a folded towel
+        box(hx - 12, hy - 34, hx + 42, hy + 6, (96, 186, 232), 8)
+        for k in range(2):
+            ln(hx - 6, hy - 22 + k * 14, hx + 36, hy - 22 + k * 14, (255, 255, 255), 5)
     elif item == "pan":
         ball_(hx + 24, hy - 32, 31, 15, (96, 96, 126))
         ln(hx, hy, hx + 9, hy - 24, (70, 70, 94), 9)
