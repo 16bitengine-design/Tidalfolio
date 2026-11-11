@@ -69,6 +69,7 @@ CHANNEL RULES (all mandatory):
   6. AN OPEN THREAD: end with one unresolved consequence or question that makes a Part 2 necessary. The final scene narration is the haunting line; the sign-off "This is tidalfolio." may follow only in the same final scene.
   7. THE SHAREABLE MOMENT: one line or image so absurd or striking that a viewer would show a friend. Mark it with "shareable_scene" (1-based).
   8. A LESSON FOR HUMANS. Every episode teaches one real human lesson (courage, generosity, pride, patience, honesty, jealousy, loyalty, fear, greed, forgiveness, humility, curiosity...) through what the animals do and what it costs them. The lesson is the reason the protagonist's choice at the emotional beat matters, so story and lesson are one thing. SHOW it through consequence; never lecture. Forbidden: "the moral is", "remember kids", "lesson learned", any sermon. At most one understated line (a character's remark or the narrator's dry observation) may point at it, and the last haunting line must stay unresolved, not preachy. Write the lesson as ONE plain sentence in story.lesson (max 25 words), something an adult would nod at and a child could repeat. Never reuse a lesson already used on the channel. THE WHY BEHIND THE CHOICE: people rarely go wrong because they are fools. Pick ONE cause for the protagonist's key choice and write it in story.cause: "forgot" (they knew the value and lost it under pressure), "believed" (they sincerely thought it was the right thing and were wrong or only half right) or "no_options" (every path cost something and they took the least bad one). Show that cause through the protagonist's own reasoning and circumstances so a viewer understands the choice from the inside and never just judges it; for "believed" let their logic make real sense, for "no_options" make the alternatives visibly worse. Vary the cause from story to story, and make the human mirror scenes carry the SAME cause. Never state the cause aloud.
+  8b. THE PROMISE (hidden, never mentioned in the video). Every story carries one promise, written in story.promise as five short plain sentences that answer: who (the kind of person the story is about and speaks to, by role or profession, never a name), why (why they act as they do), what (what happens and what the viewer carries away), when (the moment in life where this applies), how (how it unfolds: cause, choice, consequence). The scenes must answer all five questions for a viewer who never reads the promise. Never state the promise aloud.
   9. THE MIRROR (the lesson reaches humans). About two thirds in, right after the animal story has shown its lesson in action (after the emotional beat and the choice), cut away for 2 to 3 consecutive scenes to a very short HUMAN vignette: a plain stick-figure everyman (white round head, simple grey clothes, thin dark outline) in an ordinary modern place (office, shop, kitchen, school, bus stop) facing the SAME lesson in a small everyday situation, with the same shape of choice and the same kind of consequence. It must be a complete miniature (want, choice, consequence), never a recap. The first mirror narration is a short dry bridge like "Humans live by this river too." (adapt the animal's world). Then cut back to the animal story for the ending twist. The mirror scenes are not the first scene, not among the last three, and never explain the lesson. Give each mirror scene "look": "mirror"; put "transition": "dissolve" on the first mirror scene and on the first animal scene after it. Define the mirror art style in top-level "style_mirror" (flat, clean 2D editorial illustration, expressive round-headed stick figures, warm light, {{frame}}, no text, no watermark) and add the human characters (e.g. "human", "colleague") to "characters".
 - Each image_prompt describes ONE frozen moment and states each visible character's exact action and expression beat by beat (what the body, wings, beak, legs, eyes are doing). No broad summaries. Under 600 characters each. Prefer dramatic or slow-motion moments (frozen splashes, mid-air collisions, extreme close-ups).
 - Characters: 2 to 4 recurring characters (plus the witness), each with a locked visual description (species, colours, size, distinctive feature, build). The "characters" list in a scene uses the keys from the characters object. Use the same key whenever that character appears.
@@ -97,7 +98,7 @@ Reply with ONE JSON object only, in exactly this shape:
 {{
   "title": "Series Name #N: Episode Title",
   "characters": {{"key": "Name: locked visual description"}},
-  "story": {{"protagonist": "key", "want": "...", "risk": "what they lose", "lesson": "one plain sentence, the human lesson the story shows", "cause": "forgot | believed | no_options", "reversals": ["...", "...", "..."], "emotional_beat_scene": 1-based, "open_thread": "the unresolved question for Part 2"}},
+  "story": {{"protagonist": "key", "want": "...", "risk": "what they lose", "lesson": "one plain sentence, the human lesson the story shows", "cause": "forgot | believed | no_options", "promise": {{"who": "...", "why": "...", "what": "...", "when": "...", "how": "..."}}, "reversals": ["...", "...", "..."], "emotional_beat_scene": 1-based, "open_thread": "the unresolved question for Part 2"}},
   "setting": "one locked sentence: the place, time of day, weather and light of the animal story",
   "style_mirror": "art style for the mirror act scenes",
   "music_prompt": "one sentence describing a wry, warm instrumental music bed that suits this story (no vocals, no drums)",
@@ -417,7 +418,10 @@ def validate(d, mirror=True):
         lesson = str(st.get("lesson", "")).strip()
         if not lesson or len(lesson.split()) > 25 or len(lesson.split()) < 5:
             errs.append("story.lesson must be one plain sentence of 5 to 25 words: the human lesson the story teaches")
-        elif re.search(r"\bthe moral\b|\blesson learned\b|\bremember,? kids\b", json.dumps(scenes).lower()):
+        pr = st.get("promise")
+        if not isinstance(pr, dict) or any(len(str(pr.get(k, "")).split()) < 3 for k in ("who", "why", "what", "when", "how")):
+            errs.append("story.promise must answer who, why, what, when and how, each in a short plain sentence")
+        if re.search(r"\bthe moral\b|\blesson learned\b|\bremember,? kids\b", json.dumps(scenes).lower()):
             errs.append("the narration must not preach: remove phrases like 'the moral is' or 'lesson learned'; show the lesson through consequence")
     uw = d.get("uncommon_word")
     if not isinstance(uw, dict) or not str(uw.get("word", "")).strip() or not str(uw.get("meaning", "")).strip():
@@ -615,6 +619,7 @@ def plan_story(series, idea, n):
     user = (f'Plan ONE story for the series "{series}" (theme: {SERIES[series]}) that will be told across exactly {n} separate videos '
             f'("parts"), each 40 to 50 seconds (about 11 to 12 scenes). Reply with ONE JSON object: '
             '{"title": "the story title, no part number", "setting": "one locked sentence: the place, time of day, weather and light every animal scene shares", "lesson": "one plain sentence, the human lesson (5 to 25 words)", '
+            '"promise": {"who": "...", "why": "...", "what": "...", "when": "...", "how": "..."}, '
             '"characters": {"key": "Name: locked visual description (species, colours, size, distinctive feature)"}, '
             '"parts": [{"summary": "2 to 3 sentences: what happens in this part and what changes", '
             '"ending": "how this part ends: a cliffhanger reversal for every part except the last; for the last part, the quiet impossible final image"}]}. '
@@ -635,7 +640,7 @@ def plan_story(series, idea, n):
         ok = (isinstance(plan.get("title"), str) and isinstance(plan.get("characters"), dict) and "witness" in plan["characters"]
               and 3 <= len(plan["characters"]) <= 6 and isinstance(plan.get("parts"), list) and len(plan["parts"]) == n
               and all(isinstance(x, dict) and x.get("summary") and x.get("ending") for x in plan["parts"])
-              and 5 <= len(str(plan.get("lesson", "")).split()) <= 25 and len(str(plan.get("setting", "")).split()) >= 6)
+              and 5 <= len(str(plan.get("lesson", "")).split()) <= 25 and isinstance(plan.get("promise"), dict) and all(str(plan["promise"].get(k, "")).strip() for k in ("who", "why", "what", "when", "how")) and len(str(plan.get("setting", "")).split()) >= 6)
         if ok:
             return plan
         print("  story plan rejected: needs title, lesson, a cast with a witness, and exactly %d parts" % n)
