@@ -19,6 +19,8 @@ INDOOR = ("kitchen", "shop", "office", "classroom", "home")
 
 _surf = None
 cv = None
+_GRAIN = None
+STYLE = "classic"           # "classic" (painterly, soft-shaded) or "flat"
 SEED = 0                     # set per story: the same story always looks the same, the next story looks different
 KIND = "street"
 
@@ -639,3 +641,25 @@ def finish_world(T, t):
 def ground_shadow(x, y, s):
     """soft violet shadow under a character's feet (world coordinates)"""
     soft_shadow(x, y + 6 * s, 96 * s, 17 * s, (40, 18, 96), 120, 9 * s)
+
+
+def painterly(T, t):
+    """what makes the backgrounds look painted rather than drawn: shafts of light, a faint canvas grain and a warm vignette"""
+    cv.resetMatrix()
+    # shafts of daylight falling from the top right
+    if T["dim"] < 0.3 and KIND in INDOOR:
+        for k, (x0, w) in enumerate(((900, 120), (1090, 90), (720, 70))):
+            sway = math.sin(t * 0.3 + k) * 14
+            poly([(x0 + sway, -20), (x0 + w + sway, -20), (x0 - 640 + w, 1500), (x0 - 740, 1500)],
+                 paint(shader=lin(x0, 0, x0 - 600, 1500, [(0, (255, 244, 200, 70)), (1, (255, 244, 200, 0))]), blur=18))
+    # canvas grain (the texture is made once and reused, which is far cheaper than computing noise every frame)
+    global _GRAIN
+    if _GRAIN is None:
+        rng = np.random.default_rng(7)
+        g = rng.random((H // 3, W // 3)).astype(np.float32)
+        g = (g * 255).astype(np.uint8)
+        rgba = np.stack([g, g, g, np.full_like(g, 255)], axis=-1)
+        _GRAIN = skia.Image.fromarray(np.ascontiguousarray(rgba), colorType=skia.kRGBA_8888_ColorType).makeShader(skia.TileMode.kRepeat, skia.TileMode.kRepeat, skia.SamplingOptions(skia.FilterMode.kLinear), skia.Matrix.Scale(3, 3))
+    cv.drawRect(skia.Rect(0, 0, W, H), skia.Paint(Shader=_GRAIN, Alphaf=0.09, BlendMode=skia.BlendMode.kSoftLight))
+    # warm-violet vignette
+    cv.drawRect(skia.Rect(0, 0, W, H), skia.Paint(Shader=rad(W / 2, H * 0.46, H * 0.78, [(0, (60, 20, 90, 0)), (0.7, (60, 20, 90, 0)), (1, (50, 16, 80, 90))])))

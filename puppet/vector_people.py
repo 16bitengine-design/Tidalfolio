@@ -81,6 +81,12 @@ def saccade(t, seed):
     return (lerp(_hash(i - 1, seed), _hash(i, seed), k) * 2.0, lerp(_hash(i - 1, seed + 5), _hash(i, seed + 5), k) * 1.3)
 
 
+def blink_amount(t):
+    """0 = open, 1 = shut: the lids close and open over about a tenth of a second instead of switching"""
+    ph = (t % 3.3) / 0.16
+    return math.sin(ph * math.pi) if ph < 1.0 else 0.0
+
+
 def two_bone(S, Hd, l1, l2, side, ywt=0.35):
     """a two-segment limb that keeps its length and bends at the elbow or knee. Returns (joint, end)."""
     dx, dy = Hd[0] - S[0], Hd[1] - S[1]
@@ -195,6 +201,21 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
     V.ground_shadow(x, y, s)
     if wblend is None:
         wblend = 1.0 if walk > 0.3 else 0.0
+    classic = V.STYLE == "classic"
+    if classic:
+        # squash and stretch about the feet: crouch before a new move (anticipation), overshoot upward as it lands (follow-through),
+        # a little give with every step, and a tiny lift on stressed words
+        ant = math.sin(min(1.0, blend) * math.pi) * (1.0 if blend < 1.0 else 0.0)
+        over = max(0.0, back(blend) - 1.0) * 2.0 if blend < 1.0 else 0.0
+        beat_ = max(0.0, math.sin(t * 2.6 + seed * 1.3)) ** 8 * (1.0 if talk > 0 else 0.0)
+        sy = 1.0 - 0.055 * ant + 0.05 * over + 0.014 * beat_ + 0.012 * math.sin(t * 1.7 + seed) - 0.03 * walk * abs(math.sin(gait))
+        sy = max(0.9, min(1.1, sy))
+        sx = 1.0 / sy ** 0.7
+        cv.save()
+        cv.translate(x, y)
+        cv.scale(sx, sy)
+        cv.translate(-x, -y)
+        cv.saveLayer(None, None)
     if wblend < 0.02:
         _front(x, y, s, f, t, **c)
     elif wblend > 0.98:
@@ -206,6 +227,17 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
             cv.saveLayer(None, pt)
             fn(x, y, s, f, t, **c)
             cv.restore()
+    if classic:
+        # one steady light from the upper left: a warm rim on the lit side, a cool violet shade on the other, darker toward the feet.
+        # Painted only onto the character itself (SrcATop), so it gives the figure volume without touching the background.
+        X = x - 200 * s, x + 200 * s
+        top, bot = y - 470 * s, y + 10 * s
+        atop = skia.BlendMode.kSrcATop
+        cv.drawRect(skia.Rect(X[0], top, X[1], bot), skia.Paint(BlendMode=atop, Shader=lin(x - 150 * s, 0, x - 70 * s, 0, [(0, (255, 226, 170, 120)), (1, (255, 226, 170, 0))])))
+        cv.drawRect(skia.Rect(X[0], top, X[1], bot), skia.Paint(BlendMode=atop, Shader=lin(x + 20 * s, 0, x + 150 * s, 0, [(0, (70, 40, 130, 0)), (1, (70, 40, 130, 95))])))
+        cv.drawRect(skia.Rect(X[0], top, X[1], bot), skia.Paint(BlendMode=atop, Shader=lin(0, y - 190 * s, 0, y, [(0, (70, 40, 130, 0)), (1, (70, 40, 130, 70))])))
+        cv.restore()
+        cv.restore()
 
 
 def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c, extras, talk, eye, brow, tear, look, action, mood, bounce, carry,
@@ -321,14 +353,18 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     # ---------------- face (the face shifts a little toward where the person walks)
     shx = 15 * turn
     ey, ex = hy - 6 * HS, 27 * HS
-    er = 15 * HS
+    CL = V.STYLE == "classic"
+    er = (15 * 1.14 if CL else 15) * HS
+    bk = (blink_amount(t + 0.7) if E.blink.__name__ == "blink" else 0.0) if CL else 0.0
     wide = eye in ("wide", "spiral")
     iris = IRIS[0] if skin in ("brown", "dark") else IRIS[1] if hair in ("blonde", "red") else IRIS[(seed * 7 + 2) % len(IRIS)]
     sac = saccade(t, seed)
     for sx in (-1, 1):
         ecx, ecy = sx * ex + shx, ey
         rx_, ry_ = er * (1.3 if wide else 1.08), er * (1.62 if wide else 1.32)
-        if eye == "closed" or E.blink(t + 0.7):
+        if CL and bk > 0 and bk < 0.7 and eye not in ("closed", "happy"):
+            ry_ *= 1.0 - bk * 1.15                        # the lid is on its way down or up
+        if eye == "closed" or (bk >= 0.7 if CL else E.blink(t + 0.7)):
             curve([(ecx - rx_, ecy), (ecx, ecy + ry_ * 0.34), (ecx + rx_, ecy)], paint(INKC, stroke=5.5))
         elif eye == "happy":
             curve([(ecx - rx_, ecy + ry_ * 0.3), (ecx, ecy - ry_ * 0.6), (ecx + rx_, ecy + ry_ * 0.3)], paint(INKC, stroke=6.5))
@@ -359,6 +395,8 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
             if fem and eye not in ("half", "sleepy"):                      # lashes
                 V.line(ecx + sx * rx_, ecy - ry_ * 0.18, ecx + sx * (rx_ + 9), ecy - ry_ * 0.52, INKC, 4)
         a_, b_ = (brow[0], brow[1]) if sx > 0 else (brow[1], brow[0])
+        if CL:
+            a_, b_ = a_ * 1.35, b_ * 1.35
         a_, b_ = a_ - 4 * beat * talking, b_ - 4 * beat * talking + (1.5 * beat * talking if sx > 0 else 0)      # brows lift on emphasised words
         bc = dark(hair_c, 0.15) if not elder else (140, 140, 156)
         bpts = [(ecx - 19, ey - 30 + a_), (ecx, ey - 35 + (a_ + b_) / 2), (ecx + 19, ey - 28 + b_)] if sx > 0 else \
@@ -379,11 +417,13 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     if talk > 0 or (eye == "wide" and mood != "happy"):
         syll = abs(math.sin(t * 9.0 + seed)) * (0.55 + 0.45 * abs(math.sin(t * 2.3 + seed * 1.7)))      # syllables of uneven size, not a buzz
         o = max(talk * (0.2 + 0.8 * syll), 0.45 if eye == "wide" else 0)
-        dep = 8 + 28 * o
+        vw = _hash(int((t * 9.0 + seed) / math.pi), seed) if CL else 0.0          # each syllable has its own mouth shape: wide 'ee' or round 'oo'
+        mw = 21 * (1.0 + 0.22 * vw)
+        dep = (8 + 28 * o) * (1.0 - 0.28 * vw)
         mp = skia.Path()
-        mp.moveTo(mx - 21, my - 3)
-        mp.quadTo(mx, my + 4, mx + 21, my - 3)
-        mp.cubicTo(mx + 20, my + dep, mx - 20, my + dep, mx - 21, my - 3)
+        mp.moveTo(mx - mw, my - 3)
+        mp.quadTo(mx, my + 4, mx + mw, my - 3)
+        mp.cubicTo(mx + mw - 1, my + dep, mx - mw + 1, my + dep, mx - mw, my - 3)
         cv.drawPath(mp, paint((122, 30, 56)))
         cv.save()
         cv.clipPath(mp, doAntiAlias=True)
