@@ -137,9 +137,7 @@
      "age": "adult",
      "skin": "dark",
      "hair": "black",
-     "extras": [
-      "beard"
-     ],
+     "extras": [],
      "eye": "open",
      "brow": [
       0,
@@ -939,9 +937,7 @@
      "age": "adult",
      "skin": "dark",
      "hair": "black",
-     "extras": [
-      "beard"
-     ],
+     "extras": [],
      "eye": {
       "step": [
        [

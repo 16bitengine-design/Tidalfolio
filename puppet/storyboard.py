@@ -18,7 +18,7 @@ Storyboard JSON:
      "narration": "...", "world": "dawn|day|dusk|storm|night|sunset", "stage": "cliff|nest|tree",
      "camera": "hold|push_in|pull_back|pan_right|pan_left", "tone": "playful|tense|sad|joyful|eerie|tender|calm", "silence_before": "words",
      "actors": [ {"who": "orrin", "at": "ground_mid", "face": "left|right", "mood": "...", "action": "stand|talk|point|offer|hold|clasp|wrap|place|reach|beckon|hugself|wipe|cower|wave|hips|shrug|think|facepalm|cheer|laugh|tremble",
-                  "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish",
+                  "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish", "carry_from": "words", "carry_to": "words", "drape": {"at": "words", "item": "towel|blanket"},
                   "beats": [{"at": "words", "mood": "...", "action": "...", "look": "at|away|down|up"}], "speaks": true} ],
      "popups": [ {"text": "CRASH", "kind": "burst|bubble", "at": "words", "near": "orrin"} ],
      "fx": [ {"kind": "puff|sparkle|speed", "at": "words", "near": "orrin"} ] } ],
@@ -39,7 +39,7 @@ STAGES = ANIMAL_STAGES + HUMAN_STAGES
 HSLOTS = {"ground_left": 130.0, "ground_mid": 300.0, "ground_right": 470.0}
 ZOOM_H = 1.5                                  # people are drawn bigger than animals: the camera starts closer
 EXTRAS = ("glasses", "beard", "mustache", "bun", "bald")
-ITEMS = ("none", "book", "clipboard", "paper", "tray", "wrench", "rolling_pin", "pan", "hammer", "umbrella", "cake", "baguette", "cup", "phone", "camera", "letter", "bag", "fish", "flask", "brush", "cane")
+ITEMS = ("none", "book", "clipboard", "paper", "tray", "wrench", "rolling_pin", "pan", "hammer", "umbrella", "cake", "towel", "baguette", "cup", "phone", "camera", "letter", "bag", "fish", "flask", "brush", "cane")
 CAMERAS = ("hold", "push_in", "pull_back", "pan_right", "pan_left")
 MUSICS = ("calm", "tense", "sad", "joyful")          # old key, still accepted
 TONES = ("playful", "tense", "sad", "joyful", "eerie", "tender", "calm")
@@ -155,7 +155,7 @@ def fix_cast(cast):
             c["hair"] = c.get("hair") if c.get("hair") in PE.HAIR else hair
             ex = c.get("extras")
             c["extras"] = [e for e in (ex if isinstance(ex, list) else []) if e in EXTRAS]
-            if c["gender"] == "female":
+            if c["gender"] == "female" or role == "mechanic":
                 c["extras"] = [e for e in c["extras"] if e not in ("beard", "mustache")]
     return cast
 
@@ -430,6 +430,10 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
                   eye=CRITTER_EYE_MOOD[mood], brow=brow, mood=mood, action=action, seed=zlib.crc32(who.encode()) % 50)
         if a.get("carry") in ITEMS:
             th["carry"] = a["carry"]
+            if a.get("carry_from"):                                       # carried only for a while: from these words until carry_to (then the usual tool again)
+                th["carry"] = {"step": [[0, None], ["@" + a["carry_from"], a["carry"]], ["@" + a["carry_to"], None] if a.get("carry_to") else [999, None]]}
+        if isinstance(a.get("drape"), dict) and a["drape"].get("item") in ("towel", "blanket") and a["drape"].get("at"):
+            th["draped"] = {"step": [[0, "none"], ["@" + a["drape"]["at"], a["drape"]["item"]]]}     # something put round this person's shoulders from these words on
         if tear:
             th["tear"] = {"kf": [[0, 0], [2.0, tear]]}
         if action == "talk" or a.get("speaks"):                          # the mouth moves while this person speaks, whatever the hands are doing

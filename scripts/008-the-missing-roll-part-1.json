@@ -633,9 +633,7 @@
      "age": "adult",
      "skin": "dark",
      "hair": "black",
-     "extras": [
-      "beard"
-     ],
+     "extras": [],
      "eye": {
       "step": [
        [
