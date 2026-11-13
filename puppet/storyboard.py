@@ -169,7 +169,12 @@ def fix_cast(cast):
 
 
 _NOT_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "January", "February", "March", "April", "June", "July", "August",
-              "September", "October", "November", "December", "Christmas", "Halloween", "Thanksgiving", "Easter", "God", "Mister", "Missus"}
+              "September", "October", "November", "December", "Christmas", "Halloween", "Thanksgiving", "Easter", "God", "Mister", "Missus",
+              # signs, school subjects and section labels (a library shelf, a classroom door): things, not people
+              "Science", "Sciences", "Studies", "Anthropology", "History", "Geography", "Biology", "Chemistry", "Physics", "Math", "Maths", "Mathematics",
+              "Art", "Arts", "Music", "Fiction", "Nonfiction", "Poetry", "Reference", "Philosophy", "Literature", "Language", "Languages", "English", "Psychology",
+              "Cooking", "Travel", "Children", "Kids", "Staff", "Exit", "Entrance", "Open", "Closed", "Sale", "Special", "Menu", "Fragile", "Danger", "Caution", "Wet",
+              "Library", "Bakery", "Market", "School", "Office", "Hospital", "Station", "Street", "Avenue", "Park", "Square", "Hall", "Room", "Floor", "Aisle", "Shelf"}
 
 
 def personal_names(text):
@@ -253,7 +258,7 @@ def _check_scenes(scenes, cast, pre=""):
             bad.append(f"{where}: two people cannot stand in the same spot: give each a different 'at' (ground_left|ground_mid|ground_right).")
         if humans:
             for nm in personal_names(nar):
-                bad.append(f"{where}: '{nm}' looks like a personal name. Nobody has a name on this channel: refer to people by role, gender or profession ('the baker', 'the old woman', 'her boss').")
+                bad.append(f"{where}: '{nm}' looks like a personal name. Nobody has a name on this channel: refer to people by role, gender or profession ('the baker', 'the old woman', 'her boss'). If it is a sign, shelf label, subject or place and not a person, write it in lowercase.")
                 break
         for a in actors:
             who = a.get("who")
