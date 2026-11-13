@@ -1,0 +1,1265 @@
+{
+ "engine": "puppet",
+ "look": "vector",
+ "cast_species": [
+  "human"
+ ],
+ "cast_roles": [
+  "sweeper",
+  "baker",
+  "boss"
+ ],
+ "cast_lead": {
+  "role": "sweeper",
+  "gender": "male"
+ },
+ "slug": "009-wishful-sweeping-part-3",
+ "title": "Funny People #9: Wishful Sweeping (Part 3/3)",
+ "short_title": "Wishful Sweeping",
+ "series_part": {
+  "story": "Funny People #9: Wishful Sweeping",
+  "part": 3,
+  "of": 3
+ },
+ "thumbnail_scene": 2,
+ "thumbnail_hook": "A MAGIC MOMENT",
+ "voice": {
+  "kokoro": "tidal"
+ },
+ "story": {
+  "lesson": "Unintended consequences of wish fulfillment can surprise us into seeing what truly matters.",
+  "cause": "no_options"
+ },
+ "uncommon_word": {},
+ "props": {},
+ "scenes": [
+  {
+   "narration": "The shadow passed, revealing the sweeper grinning, holding his vinyl player high.",
+   "world": "toon_dawn_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "sweeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "sweeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "grey",
+     "extras": [
+      "beard"
+     ],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "hold",
+     "seed": 23,
+     "design": {
+      "build": "average",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       40,
+       56,
+       110
+      ],
+      "bottom": [
+       150,
+       152,
+       166
+      ],
+      "accent": [
+       60,
+       168,
+       170
+      ],
+      "hat_color": [
+       150,
+       152,
+       166
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "cap",
+      "hair_style": "curly"
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "LET'S DANCE!",
+     "at": "@holding his vinyl player high",
+     "dur": 2.2,
+     "x": 340,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "Music filled the street, its rhythm pulling people from their homes, smiles spreading.",
+   "world": "toon_dawn_street",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "clasp",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "boss",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boss",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 6,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    },
+    {
+     "type": "sparkle",
+     "x": 130.0,
+     "y": 1120.0,
+     "scale": 1.1,
+     "show": [
+      "@smiles spreading",
+      "@smiles spreading+1.3"
+     ],
+     "dx": -1,
+     "n": 6
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "The baker twirled, flour dusted the air, laughter ringing through the street.",
+   "world": "toon_dawn_street",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "laugh",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "TWIRL!",
+     "at": "@laughter ringing",
+     "dur": 2.2,
+     "x": 130,
+     "y": 690,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "The boss swung into a salsa step, drawing cheers from the crowd.",
+   "world": "toon_dawn_street",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       350
+      ],
+      [
+       "@end",
+       250
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "boss",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boss",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "hips",
+     "seed": 6,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "SALSA!",
+     "at": "@drawing cheers",
+     "dur": 2.2,
+     "x": 470,
+     "y": 760,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "The sweeper watched, beaming, as music wove a bond among them.",
+   "world": "toon_dawn_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "sweeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "sweeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "grey",
+     "extras": [
+      "beard"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "clasp",
+     "seed": 23,
+     "design": {
+      "build": "average",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       40,
+       56,
+       110
+      ],
+      "bottom": [
+       150,
+       152,
+       166
+      ],
+      "accent": [
+       60,
+       168,
+       170
+      ],
+      "hat_color": [
+       150,
+       152,
+       166
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "cap",
+      "hair_style": "curly"
+     },
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "sparkle",
+     "x": 300.0,
+     "y": 1120.0,
+     "scale": 1.1,
+     "show": [
+      "@wove a bond",
+      "@wove a bond+1.3"
+     ],
+     "dx": -1,
+     "n": 6
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "As the sun rose, he realized the real magic was not in wishes.",
+   "world": "toon_dawn_street",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "sweeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "sweeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "grey",
+     "extras": [
+      "beard"
+     ],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "think",
+     "seed": 23,
+     "design": {
+      "build": "average",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       40,
+       56,
+       110
+      ],
+      "bottom": [
+       150,
+       152,
+       166
+      ],
+      "accent": [
+       60,
+       168,
+       170
+      ],
+      "hat_color": [
+       150,
+       152,
+       166
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "cap",
+      "hair_style": "curly"
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "His gaze lingered on the vinyl, now cracked yet cherished, a symbol of unity.",
+   "world": "toon_dawn_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "sweeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "sweeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "grey",
+     "extras": [
+      "beard"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "offer",
+     "seed": 23,
+     "design": {
+      "build": "average",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       40,
+       56,
+       110
+      ],
+      "bottom": [
+       150,
+       152,
+       166
+      ],
+      "accent": [
+       60,
+       168,
+       170
+      ],
+      "hat_color": [
+       150,
+       152,
+       166
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "cap",
+      "hair_style": "curly"
+     },
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender",
+   "end_card": true
+  }
+ ],
+ "youtube": {
+  "description": "One night, a street sweeper stumbles upon a glowing egg that grants wishes, leading to mysterious town events. As he unwittingly unites his town through music, discover the serendipity in unintended magic.\n\nPart 3 of 3. The end.",
+  "tags": [
+   "comedy",
+   "magic",
+   "street sweeper",
+   "wishes",
+   "community",
+   "music",
+   "town",
+   "mysterious",
+   "unexpected",
+   "serendipity"
+  ],
+  "pinned_comment": "If you could have one wish unintentionally granted, what would you hope for?",
+  "title": "Funny People #9: Wishful Sweeping (Part 3/3)"
+ },
+ "tiktok": {
+  "caption": "Part 3/3: A street sweeper's magic find turns his town into a wish granting wonder! #Magic #Sweeper #Wishes",
+  "hashtags": [
+   "#Magic",
+   "#Sweeper",
+   "#Wishes",
+   "#Community",
+   "#Unexpected"
+  ]
+ }
+}

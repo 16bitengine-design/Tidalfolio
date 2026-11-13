@@ -1,0 +1,1470 @@
+{
+ "engine": "puppet",
+ "look": "vector",
+ "cast_species": [
+  "human"
+ ],
+ "cast_roles": [
+  "sweeper",
+  "baker",
+  "boss"
+ ],
+ "cast_lead": {
+  "role": "sweeper",
+  "gender": "male"
+ },
+ "slug": "009-wishful-sweeping-part-1",
+ "title": "Funny People #9: Wishful Sweeping (Part 1/3)",
+ "short_title": "Wishful Sweeping",
+ "series_part": {
+  "story": "Funny People #9: Wishful Sweeping",
+  "part": 1,
+  "of": 3
+ },
+ "thumbnail_scene": 2,
+ "thumbnail_hook": "MAGIC EGG?",
+ "voice": {
+  "kokoro": "tidal"
+ },
+ "story": {
+  "lesson": "Unintended consequences of wish fulfillment can surprise us into seeing what truly matters.",
+  "cause": "no_options"
+ },
+ "uncommon_word": {
+  "word": "serendipity",
+  "meaning": "the occurrence of events by chance that results in a happy or beneficial way"
+ },
+ "props": {},
+ "scenes": [
+  {
+   "narration": "Under the sweeper's broom, a small, glowing egg pulsed gently.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "sweeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "sweeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "grey",
+     "extras": [
+      "beard"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "tremble",
+     "seed": 23,
+     "design": {
+      "build": "average",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       40,
+       56,
+       110
+      ],
+      "bottom": [
+       150,
+       152,
+       166
+      ],
+      "accent": [
+       60,
+       168,
+       170
+      ],
+      "hat_color": [
+       150,
+       152,
+       166
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "cap",
+      "hair_style": "curly"
+     },
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "GLOW!",
+     "at": "@glowing egg pulsed gently",
+     "dur": 2.2,
+     "x": 340,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      41,
+      47,
+      53,
+      59
+     ],
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      39,
+      46,
+      51,
+      58
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.3
+    },
+    "pluck": {
+     "step": 2.0,
+     "notes": [
+      0,
+      5,
+      2,
+      6,
+      1
+     ],
+     "vol": 0.55,
+     "scale": [
+      76,
+      77,
+      82,
+      83,
+      88,
+      89,
+      94
+     ],
+     "len": 2.6
+    }
+   },
+   "tone": "eerie"
+  },
+  {
+   "narration": "He scratched his head, muttering, \"Must be the moon playing tricks,\" and moved on.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "sweeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "sweeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "grey",
+     "extras": [
+      "beard"
+     ],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "talk",
+     "seed": 23,
+     "design": {
+      "build": "average",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       40,
+       56,
+       110
+      ],
+      "bottom": [
+       150,
+       152,
+       166
+      ],
+      "accent": [
+       60,
+       168,
+       170
+      ],
+      "hat_color": [
+       150,
+       152,
+       166
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "cap",
+      "hair_style": "curly"
+     },
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "gate": [
+        [
+         "@Must",
+         "@and"
+        ]
+       ]
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "HMM.",
+     "at": "@Must be the moon",
+     "dur": 2.2,
+     "x": 300,
+     "y": 760,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "Nearby, the baker peered out, startled to find chickens clucking in her yard.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "think",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "CHICKENS?",
+     "at": "@chickens clucking in her yard",
+     "dur": 2.2,
+     "x": 130,
+     "y": 690,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "The boss found roses strewn across his path, scratching his head in confusion.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       350
+      ],
+      [
+       "@end",
+       250
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "boss",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boss",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "stand",
+     "seed": 6,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "ROSES?",
+     "at": "@roses strewn across his path",
+     "dur": 2.2,
+     "x": 470,
+     "y": 760,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "The sweeper paused, noticing his old vinyl now shimmering beside the glowing egg.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "sweeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "sweeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "grey",
+     "extras": [
+      "beard"
+     ],
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "mood": "scared",
+     "action": "tremble",
+     "seed": 23,
+     "design": {
+      "build": "average",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       40,
+       56,
+       110
+      ],
+      "bottom": [
+       150,
+       152,
+       166
+      ],
+      "accent": [
+       60,
+       168,
+       170
+      ],
+      "hat_color": [
+       150,
+       152,
+       166
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "cap",
+      "hair_style": "curly"
+     },
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 30,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "WHAT?",
+     "at": "@shimmering beside the glowing egg",
+     "dur": 2.2,
+     "x": 340,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "The streetlight flickered, casting long shadows over the cobblestones.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "sweeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "sweeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "grey",
+     "extras": [
+      "beard"
+     ],
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "mood": "scared",
+     "action": "cower",
+     "seed": 23,
+     "design": {
+      "build": "average",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       40,
+       56,
+       110
+      ],
+      "bottom": [
+       150,
+       152,
+       166
+      ],
+      "accent": [
+       60,
+       168,
+       170
+      ],
+      "hat_color": [
+       150,
+       152,
+       166
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "cap",
+      "hair_style": "curly"
+     },
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 30,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "SHADOWS!",
+     "at": "@casting long shadows",
+     "dur": 2.2,
+     "x": 340,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    },
+    "silence_before": "casting long shadows over the cobblestones."
+   },
+   "tone": "tense",
+   "freeze": "@casting long shadows over the cobblestones.-0.3"
+  },
+  {
+   "narration": "A strange hum filled the air, growing louder as the egg glowed brighter.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "sweeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "sweeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "grey",
+     "extras": [
+      "beard"
+     ],
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "mood": "scared",
+     "action": "tremble",
+     "seed": 23,
+     "design": {
+      "build": "average",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       40,
+       56,
+       110
+      ],
+      "bottom": [
+       150,
+       152,
+       166
+      ],
+      "accent": [
+       60,
+       168,
+       170
+      ],
+      "hat_color": [
+       150,
+       152,
+       166
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "cap",
+      "hair_style": "curly"
+     },
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 30,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "HUM!",
+     "at": "@growing louder",
+     "dur": 2.2,
+     "x": 340,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "The egg split open, flooding the street with dazzling light.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "sweeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "sweeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "grey",
+     "extras": [
+      "beard"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "tremble",
+     "seed": 23,
+     "design": {
+      "build": "average",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       40,
+       56,
+       110
+      ],
+      "bottom": [
+       150,
+       152,
+       166
+      ],
+      "accent": [
+       60,
+       168,
+       170
+      ],
+      "hat_color": [
+       150,
+       152,
+       166
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "cap",
+      "hair_style": "curly"
+     },
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 2.2199999999999998,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "LIGHT!",
+     "at": "@flooding the street",
+     "dur": 2.2,
+     "x": 340,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  }
+ ],
+ "youtube": {
+  "description": "One night, a street sweeper stumbles upon a glowing egg that grants wishes, leading to mysterious town events. As he unwittingly unites his town through music, discover the serendipity in unintended magic.\n\nPart 1 of 3. Part 2 is next.",
+  "tags": [
+   "comedy",
+   "magic",
+   "street sweeper",
+   "wishes",
+   "community",
+   "music",
+   "town",
+   "mysterious",
+   "unexpected",
+   "serendipity"
+  ],
+  "pinned_comment": "If you could have one wish unintentionally granted, what would you hope for?",
+  "title": "Funny People #9: Wishful Sweeping (Part 1/3)"
+ },
+ "tiktok": {
+  "caption": "Part 1/3: A street sweeper's magic find turns his town into a wish granting wonder! #Magic #Sweeper #Wishes",
+  "hashtags": [
+   "#Magic",
+   "#Sweeper",
+   "#Wishes",
+   "#Community",
+   "#Unexpected"
+  ]
+ }
+}
