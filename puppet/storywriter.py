@@ -228,8 +228,14 @@ MIN_AVG = float(os.environ.get("STORY_MIN_SCORE", "3.9"))      # the pass mark: 
 STRICT = ("q10", "q11", "q12", "q13", "q15", "q16")            # endings, originality, voice, heart, shareability, hook: a 3 on any of these is a rewrite
 
 
+FLOOR_AVG = float(os.environ.get("STORY_FLOOR_SCORE", "2.5"))   # the fallback: if no story reaches the pass mark, the best valid one is still posted when it averages at least this
+ACCEPT_BEST = os.environ.get("STORY_ACCEPT_BEST", "1") != "0"   # set the repo variable STORY_ACCEPT_BEST to 0 to post nothing rather than a story below the pass mark
+
+
 class StoryRejected(Exception):
-    """The story is not good enough to post, even after rewrites: it is dropped and a new one is written."""
+    """The story is not good enough to post, even after rewrites: it is dropped and a new one is written.
+    `payload` keeps the finished, valid story (avg, storyboard, compiled scripts, series, number, n_parts) in case it is the best of a bad lot."""
+    payload = None
 
 
 def critique_scored(G, sb):
@@ -237,7 +243,7 @@ def critique_scored(G, sb):
     text = "\n".join(f"PART {pi}:\n" + "\n".join(f"  {n}. {sc['narration']}" for n, sc in enumerate(part["scenes"], 1))
                      for pi, part in enumerate(sb["parts"], 1))
     try:
-        r = json.loads(G.call_openai([{"role": "system", "content": CRITIC_PROMPT}, {"role": "user", "content": f"Title: {sb.get('title')}\n{text}"}], 0.3))
+        r = json.loads(G.call_openai([{"role": "system", "content": CRITIC_PROMPT}, {"role": "user", "content": f"Title: {sb.get('title')}\nThis story has {len(sb['parts'])} parts. Part {len(sb['parts'])} is the LAST part: it is supposed to resolve the story, so judge q10 only on parts 1 to {len(sb['parts']) - 1} and judge how the last part lands under q8 and q9 instead.\n{text}"}], 0.3))
     except (ValueError, SystemExit):
         return [], None                         # the editor is a bonus: never block a story because it failed to answer
     scores = r.get("scores") or {}
@@ -687,14 +693,41 @@ def write_story(idea=None, series=None, parts=None, log=print):
     G.call_openai = call_with_fallback
     try:
         tries = max(1, int(os.environ.get("STORY_TRIES", "3")))
-        for t in range(1, tries + 1):                                         # a story that misses the pass mark is dropped; nothing weak is queued
+        rejected = []
+        for t in range(1, tries + 1):                                         # a story that misses the pass mark is dropped and a new one is written
             try:
                 return _write_story(G, idea, series, parts, log)
             except StoryRejected as e:
                 log(f"Story {t} of {tries} dropped, not good enough to post: {e}")
+                if e.payload and e.payload[0] is not None and e.payload[2]:
+                    rejected.append(e.payload)
+        if ACCEPT_BEST and rejected:                                          # never let the channel go silent: post the best story that is at least structurally sound
+            best = max(rejected, key=lambda q: q[0])
+            if best[0] >= FLOOR_AVG:
+                names = _save_story(best[1], best[2], best[3], best[4], best[5])
+                log(f"No story reached the pass mark of {MIN_AVG}; queued the best one (editor average {best[0]:.1f}, floor {FLOOR_AVG}): {', '.join(names)}")
+                return names
+            log(f"The best story averaged {best[0]:.1f}, below the floor of {FLOOR_AVG}, so nothing was queued.")
         raise SystemExit(f"No story passed the quality bar in {tries} tries, so nothing was queued. Run again (or lower STORY_MIN_SCORE).")
     finally:
         G.call_openai = real_call
+
+
+def _save_story(sb, scripts, series, number, n_parts):
+    """Step 4: write the compiled part scripts and queue them in order."""
+    t = re.sub(rf"^{re.escape(series)}\s*(#\d+)?\s*[:\-]\s*", "", sb["title"].strip(), flags=re.I) or sb["title"].strip()
+    names = []
+    for sc in scripts:
+        sc["short_title"] = t
+        sc["series_part"]["story"] = f"{series} #{number}: {t}"
+        sc["title"] = f"{series} #{number}: {t} (Part {sc['series_part']['part']}/{n_parts})"
+        sc["youtube"]["title"] = sc["title"][:100]
+        path = SCRIPTS / f"{sc['slug']}.json"
+        path.write_text(json.dumps(sc, indent=1))
+        names.append(path.name)
+    with open(QUEUE, "a") as f:
+        f.write("\n".join(names) + "\n")
+    return names
 
 
 def _write_story(G, idea, series, parts, log):
@@ -777,20 +810,11 @@ def _write_story(G, idea, series, parts, log):
             bad, avg = critique_scored(G, sb)
             log(f"Editor round {rnd}: average {avg:.1f}" if avg is not None else f"Editor round {rnd}: no score")
             if bad and rnd == CHECK_ROUNDS:
-                raise StoryRejected("; ".join(bad)[:400])
+                e = StoryRejected("; ".join(bad)[:400])
+                e.payload = (avg, sb, scripts, series, number, n_parts)
+                raise e
         if not bad:
-            t = re.sub(rf"^{re.escape(series)}\s*(#\d+)?\s*[:\-]\s*", "", sb["title"].strip(), flags=re.I) or sb["title"].strip()
-            names = []
-            for sc in scripts:                                                    # ---- 4. save and queue
-                sc["short_title"] = t
-                sc["series_part"]["story"] = f"{series} #{number}: {t}"
-                sc["title"] = f"{series} #{number}: {t} (Part {sc['series_part']['part']}/{n_parts})"
-                sc["youtube"]["title"] = sc["title"][:100]
-                path = SCRIPTS / f"{sc['slug']}.json"
-                path.write_text(json.dumps(sc, indent=1))
-                names.append(path.name)
-            with open(QUEUE, "a") as f:
-                f.write("\n".join(names) + "\n")
+            names = _save_story(sb, scripts, series, number, n_parts)
             log(f"Wrote {n_parts} parts (check round {rnd}): {', '.join(names)}, queued in order.")
             return names
         by_part = {}
