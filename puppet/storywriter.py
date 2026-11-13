@@ -497,7 +497,19 @@ def _sanitize(part, cast=None):
             sc["narration"] = t
         nar = sc.get("narration") if isinstance(sc.get("narration"), str) else ""
         if cast and isinstance(sc.get("actors"), list):   # an actor that is not in the cast cannot be drawn: leave them out of the scene
-            sc["actors"] = [a for a in sc["actors"] if not isinstance(a, dict) or a.get("who") in cast]
+            def _norm(x):
+                return re.sub(r"[^a-z0-9]", "", re.sub(r"^\s*(the|a|an)\s+", "", str(x).lower()))
+            by_norm = {}
+            for ck, cv in cast.items():
+                by_norm.setdefault(_norm(ck), ck)
+                if isinstance(cv, dict) and cv.get("role"):
+                    by_norm.setdefault(_norm(cv["role"]), ck)
+            for a in sc["actors"]:                       # "The Baker" / "baker " / a role instead of the key: map it to the cast member it means
+                if isinstance(a, dict) and a.get("who") not in cast and _norm(a.get("who")) in by_norm:
+                    a["who"] = by_norm[_norm(a.get("who"))]
+            kept = [a for a in sc["actors"] if not isinstance(a, dict) or a.get("who") in cast]
+            if kept or not sc["actors"]:                 # never empty a scene silently: if nobody matches, keep them so the check names the bad key
+                sc["actors"] = kept
         for key, allowed, fix, default in (("world", SB.WORLDS, {}, "day"), ("stage", SB.STAGES, {}, "cliff"), ("camera", SB.CAMERAS, {}, "hold"), ("music", SB.MUSICS, {}, "calm")):
             if key in sc and sc[key] not in allowed:
                 sc[key] = default
