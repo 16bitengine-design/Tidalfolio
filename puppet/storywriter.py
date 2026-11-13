@@ -9,6 +9,7 @@ This module then
 Needs OPENAI_API_KEY (text only: a few cents per story). Model: OPENAI_TEXT_MODEL (default gpt-4o-mini; a stronger one writes better stories).
 """
 import json
+import time
 import os
 import random
 import re
@@ -27,7 +28,9 @@ DONE = ROOT / "done-puppet.txt"
 MIN_LEN, MAX_LEN = 45.0, 60.0
 CHECK_ROUNDS = 5       # check-and-rewrite rounds before a story is dropped (3 was too few when a rewrite fixed the editor notes but broke the length)
 AIM = "aim for 50 to 57 seconds"
-SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.55, 1.5, 3.5     # measured on the real narrator; used only when the voice model is absent
+WORDS_LO, WORDS_HI = 90, 102      # narration words per part that land on 50 to 57 s with the real narrator (measured on published videos: 94 to 99 words ran 50.7 to 57 s)
+WORDS_MIN, WORDS_MAX = 86, 106    # outside this a part is sent back at once, before the slow real-voice measurement
+SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.55, 0.3, 3.5     # measured on the real narrator; used only when the voice model is absent
 
 SERIES = {"Funny People": "ordinary people in extraordinary little crises: a baker, a boss, a mechanic, a grandmother, a teacher ... pride, rivalry, secrets, misunderstandings"}
 LOCKED_GENDER = {"mother": "female", "girl": "female", "grandmother": "female", "father": "male", "boy": "male", "grandfather": "male"}
@@ -182,7 +185,7 @@ STORY IN PARTS: every story is told as {parts_text} consecutive videos (Part 1, 
 - COLD OPEN: scene 1 of every part opens on the most striking moment of that part, already happening: the problem, the accusation, the spill, the gasp. Never a quiet scene-setting line ("It was a sunny morning", "There was a baker ...", "Once ..."); say who and what is wrong in the first sentence, in at most 12 words. The characters are already in place (nobody walks in during the first seconds), at least one has a strong mood (never neutral) and a gesture that matches the words, and there is a popup within the first two seconds. If the most striking moment comes later in the part, open on a short glimpse of it, then let the story rewind to its natural order.
 - Part 1 opens with the stakes; the last part holds the emotional resolution and the haunting last line. The one uncommon word appears exactly once in the WHOLE story. Characters, setting and objects stay consistent across parts.
 
-LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly and steadily (about 0.55 s per word, never rushed) and each scene adds about 1.5 s of pauses, so write {n_lo} to {n_hi} scenes of 9 to 14 words each per part (roughly 68 to 82 words per part). Open on the hook at once. No filler scene. Spend the few words on specific, surprising details and on what the characters say, never on scenery.
+LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly and steadily (about 0.55 s per word, never rushed; the pauses between scenes are already included), so write {n_lo} to {n_hi} scenes of 11 to 16 words each per part, {WORDS_LO} to {WORDS_HI} words per part in total (measured on the real narrator: 70 words run only about 40 s, 95 words about 53 s). Count the words before you answer. Open on the hook at once. No filler scene. Spend the few words on specific, surprising details and on what the characters say, never on scenery.
 - NARRATION MUST BE EASY TO SPEAK: a voice reads it aloud. Use only ordinary words that are easy to pronounce (the one uncommon word aside), no personal names at all (people are known by role), numbers written as words ("forty-two"), no digits, no abbreviations, no symbols, no all-capital words in the narration, no invented words or unusual spellings. Keep sentences short to medium (at most about 16 words); put a comma at each natural pause.
 
 TONE (the viewer must FEEL the tone of every scene within one second, with the sound on or off): give EVERY scene a "tone". playful = jokes, mischief, scheming (bouncy music, bright colours). joyful = triumph, celebration, a win (golden light, rising music, the narrator lifts). tense = danger, a plan going wrong, an argument, a chase (dark cold colours, low ticking music, a shaky camera). sad = loss, shame, being left out, a broken promise (grey-blue colours, slow falling notes, the narrator softer and lower). eerie = mystery, dread, something not right (green-teal mist, a low hum, sparse notes). tender = love, forgiveness, loyalty, a kind surprise (warm glow, soft music). calm = rest, quiet, scene-setting (use for at most two scenes in a part). The system turns the tone into colour, light, music, camera and the narrator's voice, so the tone must match the narration words and the faces: tense = scared, angry or shocked actors; sad = sad actors; playful and joyful = happy or smug actors. Change the tone at least twice in every part, as the story turns, and make the tone obvious in the words themselves (short, clipped sentences for tense; long, slow ones for sad; bouncy, surprising ones for playful). Dark tones (tense, sad, eerie) belong to world storm, night or dusk; joyful belongs to day, dawn or sunset. The FIRST scene of the story must already show a clear tone, never calm.
@@ -229,6 +232,7 @@ STRICT = ("q10", "q11", "q12", "q13", "q15", "q16")            # endings, origin
 
 
 FLOOR_AVG = float(os.environ.get("STORY_FLOOR_SCORE", "2.5"))   # the fallback: if no story reaches the pass mark, the best valid one is still posted when it averages at least this
+BUDGET_S = int(float(os.environ.get("STORY_BUDGET_MIN", "28")) * 60)     # stop starting new stories after this long (the job limit is 45 minutes)
 ACCEPT_BEST = os.environ.get("STORY_ACCEPT_BEST", "1") != "0"   # set the repo variable STORY_ACCEPT_BEST to 0 to post nothing rather than a story below the pass mark
 
 
@@ -615,6 +619,10 @@ def _part_problems(part, cast, k, word, uw_part, n=None):
         tones = [SB.tone_of(x) for x in scenes]
         if len(set(tones)) < 2 or sum(t != "calm" for t in tones) < 3:
             bad.append(f"part {k}: the tone must be clear and must change as the story turns: use at least two different tones, and at most two calm scenes (tones now: {', '.join(tones)}).")
+        nwords = sum(len(re.findall(r"[A-Za-z0-9']+", str(x.get("narration", "")))) for x in scenes)
+        if not WORDS_MIN <= nwords <= WORDS_MAX:
+            bad.append(f"part {k}: the narration has {nwords} words; every part needs {WORDS_LO} to {WORDS_HI} words in total to run 50 to 57 seconds. "
+                       f"{'Add' if nwords < WORDS_MIN else 'Cut'} about {abs(int((WORDS_LO + WORDS_HI) / 2) - nwords)} words (longer or sharper lines, not filler scenes).")
         first = scenes[0]
         _open_hook(first)                      # a missing opening mood or popup is a mechanical slip: add it rather than loop on it
         fa = [a for a in first.get("actors") or [] if isinstance(a, dict)]
@@ -716,10 +724,17 @@ def write_story(idea=None, series=None, parts=None, log=print):
     G.call_openai = call_with_fallback
     try:
         tries = max(1, int(os.environ.get("STORY_TRIES", "3")))
-        rejected = []
+        rejected, started = [], time.time()
         for t in range(1, tries + 1):                                         # a story that misses the pass mark is dropped and a new one is written
+            if t > 1 and time.time() - started > BUDGET_S:
+                log(f"Stopping after {t - 1} stories: the {BUDGET_S // 60}-minute time budget for writing is used up.")
+                break
             try:
                 return _write_story(G, idea, series, parts, log)
+            except SystemExit as e:                                           # a story that could not be made valid (length, names...) is dropped; the next one gets a go
+                if t == tries or (isinstance(e.code, str) and re.search(r"API|OPENAI|key|HTTP|401|429", e.code, re.I)):
+                    raise
+                log(f"Story {t} of {tries} could not be made valid, trying another: {str(e.code)[:300]}")
             except StoryRejected as e:
                 log(f"Story {t} of {tries} dropped, not good enough to post: {e}")
                 if e.payload and e.payload[0] is not None and e.payload[2]:
