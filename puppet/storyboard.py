@@ -263,7 +263,7 @@ def _check_scenes(scenes, cast, pre=""):
         for a in actors:
             who = a.get("who")
             if who not in cast:
-                bad.append(f"{where}: actor {who!r} is not in the cast.")
+                bad.append(f"{where}: actor {who!r} is not in the cast. Use exactly one of these cast keys in \"who\": {sorted(cast)}.")
                 continue
             sp = cast[who].get("species")
             at = a.get("at", "ground_mid")
