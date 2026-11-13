@@ -579,6 +579,28 @@ META_MORAL = re.compile(r"the (moral|lesson)\b|moral of|lesson (is|was)|teaches 
 META_AI = re.compile(r"little did|in that moment|a testament to|time (stood|seemed to stand) still|couldn'?t help but|heart (pounded|raced|skipped)|let out a breath|the air (was|grew) thick|a mix of|tapestry|symphony|\bdance of\b|whispered secrets|unbeknownst|\bsuddenly\b|shivers? (ran )?down|once upon a time|it was a (\w+ ){0,2}(day|night|morning|evening)\b|\u2014|\u2013|\bnot (just |only )?\w+( \w+)?, but\b", re.I)
 
 
+_TONE_MOOD = {"tense": "scared", "eerie": "scared", "playful": "smug", "joyful": "happy", "tender": "happy", "sad": "sad", "calm": "shocked"}
+_MOOD_POP = {"scared": "OH NO.", "smug": "AHEM.", "happy": "YES!", "sad": "OH.", "shocked": "WHAT?!", "angry": "HEY!"}
+
+
+def _open_hook(sc):
+    """The opening scene of a part needs one actor in a strong mood and a popup in the first seconds. If the writer forgot either, add it
+    (mood from the scene's tone, a one-word popup beside that actor on the narration's first words) instead of rejecting the whole part."""
+    from . import storyboard as SB
+    acts = [a for a in sc.get("actors") or [] if isinstance(a, dict) and a.get("who")]
+    nar = sc.get("narration") if isinstance(sc.get("narration"), str) else ""
+    if not acts or not nar.strip():
+        return
+    if not any(a.get("mood", "neutral") != "neutral" for a in acts):
+        acts[0]["mood"] = _TONE_MOOD.get(SB.tone_of(sc), "shocked")
+    if not sc.get("popups"):
+        who = next((a for a in acts if a.get("mood", "neutral") != "neutral"), acts[0])
+        words = nar.split()
+        at = " ".join(words[:2]) if len(words) >= 2 else nar.strip()
+        if SB.phrase_ok(nar, at):
+            sc["popups"] = [{"text": _MOOD_POP.get(who.get("mood"), "WHAT?!"), "kind": "burst", "at": at, "near": who["who"]}]
+
+
 def _part_problems(part, cast, k, word, uw_part, n=None):
     from . import storyboard as SB
     if not isinstance(part, dict):
@@ -594,6 +616,7 @@ def _part_problems(part, cast, k, word, uw_part, n=None):
         if len(set(tones)) < 2 or sum(t != "calm" for t in tones) < 3:
             bad.append(f"part {k}: the tone must be clear and must change as the story turns: use at least two different tones, and at most two calm scenes (tones now: {', '.join(tones)}).")
         first = scenes[0]
+        _open_hook(first)                      # a missing opening mood or popup is a mechanical slip: add it rather than loop on it
         fa = [a for a in first.get("actors") or [] if isinstance(a, dict)]
         if not first.get("popups") or not any(a.get("mood", "neutral") != "neutral" for a in fa):
             bad.append(f"part {k}, scene 1: open on the most striking moment: give at least one actor a strong mood (not neutral) and add a popup that pops in the first two seconds.")
