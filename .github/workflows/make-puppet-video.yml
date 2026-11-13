@@ -40,7 +40,7 @@ jobs:
           cache-dependency-path: puppet/requirements.txt
 
       - name: Install ffmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg libfontconfig1 libgl1
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg libfontconfig1 libgl1 libegl1 libgles2
 
       - name: Install Python packages
         run: pip install -r puppet/requirements.txt -r requirements.txt
