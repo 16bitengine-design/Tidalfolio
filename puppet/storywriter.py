@@ -25,6 +25,7 @@ SCRIPTS = ROOT / "scripts"
 QUEUE = ROOT / "queue-puppet.txt"
 DONE = ROOT / "done-puppet.txt"
 MIN_LEN, MAX_LEN = 45.0, 60.0
+CHECK_ROUNDS = 5       # check-and-rewrite rounds before a story is dropped (3 was too few when a rewrite fixed the editor notes but broke the length)
 AIM = "aim for 50 to 57 seconds"
 SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.55, 1.5, 3.5     # measured on the real narrator; used only when the voice model is absent
 
@@ -630,12 +631,14 @@ def _story_so_far(bible, parts):
 
 
 def _rewrite_part(G, system, bible, parts, k, bad, word, uw_part):
-    """Ask for part k again with the problems listed; returns the new part, or None if it still fails."""
+    """Ask for part k again with the problems listed; returns the new part, or None if it still fails.
+    Every retry keeps the original problems (length, editor notes) in view and edits the latest attempt, not the old part."""
     n = len(parts)
-    for _ in range(2):
+    orig, current = list(bad), parts[k - 1]
+    for _ in range(3):
         user = (_story_so_far(bible, parts) + f"\n\nRewrite ONLY part {k} of {n}. Fix these problems, keep it continuous with the part before and the part after it, and keep what already works:\n- "
                 + "\n- ".join(bad) + "\n\n" + _part_rules(k, n, word, uw_part, bible) + "\n" + PART_SHAPE
-                + f"\nThe current JSON of part {k} was:\n" + json.dumps(parts[k - 1], ensure_ascii=False))
+                + f"\nThe current JSON of part {k} was:\n" + json.dumps(current, ensure_ascii=False))
         try:
             part = json.loads(G.call_openai([{"role": "system", "content": system}, {"role": "user", "content": user}], 0.7))
         except ValueError:
@@ -643,6 +646,8 @@ def _rewrite_part(G, system, bible, parts, k, bad, word, uw_part):
         bad = _part_problems(part, bible["cast"], k, word, uw_part, n)
         if not bad:
             return part
+        current = part
+        bad = orig + [b for b in bad if b not in orig]
     return None
 
 
@@ -753,12 +758,12 @@ def _write_story(G, idea, series, parts, log):
 
     sb = {key: v for key, v in bible.items() if key != "outline"}
     sb["parts"] = done
-    for rnd in range(1, 4):                                                       # ---- 3. check everything, rewrite only the weak parts
+    for rnd in range(1, CHECK_ROUNDS + 1):                                       # ---- 3. check everything, rewrite only the weak parts
         bad, scripts = problems(sb, number)
         if not bad and os.environ.get("STORY_CRITIC", "1") != "0":
             bad, avg = critique_scored(G, sb)
             log(f"Editor round {rnd}: average {avg:.1f}" if avg is not None else f"Editor round {rnd}: no score")
-            if bad and rnd == 3:
+            if bad and rnd == CHECK_ROUNDS:
                 raise StoryRejected("; ".join(bad)[:400])
         if not bad:
             t = re.sub(rf"^{re.escape(series)}\s*(#\d+)?\s*[:\-]\s*", "", sb["title"].strip(), flags=re.I) or sb["title"].strip()
@@ -781,10 +786,10 @@ def _write_story(G, idea, series, parts, log):
             for k in ks:
                 by_part.setdefault(k, []).append(m)
         log(f"Check round {rnd} found problems in part(s) {sorted(by_part)}: " + " | ".join(bad)[:600])
-        if rnd == 3:
+        if rnd == CHECK_ROUNDS:
             break
         for k, msgs_k in sorted(by_part.items()):
             new = _rewrite_part(G, system, bible, sb["parts"], k, msgs_k, word, uw_part)
             if new:
                 sb["parts"][k - 1] = new
-    raise SystemExit("Could not get a story that passes every check after 3 rounds. Last problems: " + "; ".join(bad))
+    raise SystemExit(f"Could not get a story that passes every check after {CHECK_ROUNDS} rounds. Last problems: " + "; ".join(bad))
