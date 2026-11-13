@@ -490,6 +490,7 @@ def _sanitize(part, cast=None):
     for sc in scenes:
         if not isinstance(sc, dict):
             continue
+        SB.tidy_lists(sc)
         if isinstance(sc.get("narration"), str):      # straight quotes, and a proper full stop at the end of the line
             t = sc["narration"].replace("\u201c", '"').replace("\u201d", '"').replace("\u2018", "'").replace("\u2019", "'").strip()
             if not re.search(r'[.!?]"?$', t):

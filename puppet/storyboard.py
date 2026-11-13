@@ -203,6 +203,24 @@ def phrase_ok(narration, phrase):
     return isinstance(phrase, str) and phrase.strip() != "" and phrase in narration
 
 
+def tidy_lists(sc):
+    """The model sometimes writes a popup as a bare string, or leaves junk in a list: make popups, actors and fx lists of objects."""
+    if not isinstance(sc, dict):
+        return sc
+    pops = []
+    for pu in sc.get("popups") or []:
+        if isinstance(pu, str) and pu.strip():
+            pops.append({"text": pu.strip(), "kind": "bubble"})
+        elif isinstance(pu, dict):
+            pops.append(pu)
+    if "popups" in sc or pops:
+        sc["popups"] = pops
+    for key in ("actors", "fx"):
+        if key in sc:
+            sc[key] = [x for x in sc[key] if isinstance(x, dict)] if isinstance(sc[key], list) else []
+    return sc
+
+
 def _check_scenes(scenes, cast, pre=""):
     bad = []
     if not isinstance(scenes, list) or not 4 <= len(scenes) <= 10:
@@ -210,6 +228,10 @@ def _check_scenes(scenes, cast, pre=""):
     prev_sig = None
     for n, sc in enumerate(scenes, 1):
         where = f"{pre}scene {n}"
+        if not isinstance(sc, dict):
+            bad.append(f"{where}: every scene must be a JSON object.")
+            continue
+        tidy_lists(sc)
         sig = (sc.get("world"), sc.get("stage"), sc.get("camera"),
                tuple((a.get("who"), a.get("at"), a.get("mood"), a.get("action")) for a in sc.get("actors") or []))
         if sig == prev_sig:
