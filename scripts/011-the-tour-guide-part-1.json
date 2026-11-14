@@ -1,0 +1,1402 @@
+{
+ "engine": "puppet",
+ "look": "vector",
+ "cast_species": [
+  "human"
+ ],
+ "cast_roles": [
+  "tourist",
+  "boy",
+  "grandmother"
+ ],
+ "cast_lead": {
+  "role": "tourist",
+  "gender": "male"
+ },
+ "slug": "011-the-tour-guide-part-1",
+ "title": "The Tour Guide (Part 1/3)",
+ "short_title": "The Tour Guide",
+ "series_part": {
+  "story": "The Tour Guide",
+  "part": 1,
+  "of": 3
+ },
+ "thumbnail_scene": 4,
+ "thumbnail_hook": "NATURALLY.",
+ "voice": {
+  "kokoro": "tidal"
+ },
+ "story": {
+  "lesson": "Admitting you are lost lets other people help you find your way, and maybe a better place to be.",
+  "cause": "believed"
+ },
+ "uncommon_word": {
+  "word": "intrepid",
+  "meaning": "fearless and adventurous"
+ },
+ "props": {},
+ "scenes": [
+  {
+   "narration": "The tourist was lost, and he would rather be lost than ask. He called it exploring.",
+   "world": "toon_day_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "tourist",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "tourist",
+     "gender": "male",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "hips",
+     "seed": 48,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "NOT LOST.",
+     "at": "@than ask",
+     "dur": 2.2,
+     "x": 340,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "The intrepid tourist held his map upside down, since the right way up had not helped.",
+   "world": "toon_day_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "tourist",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "tourist",
+     "gender": "male",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "open",
+     "brow": [
+      -8,
+      10
+     ],
+     "mood": "angry",
+     "action": "hold",
+     "seed": 48,
+     "bounce": {
+      "sin": {
+       "amp": 2.5,
+       "rate": 22,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "A boy tugged his sleeve. \"Are you the tour guide?\" he asked.",
+   "world": "toon_day_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "talk",
+     "seed": 38,
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "gate": [
+        [
+         "@Are",
+         "@he asked."
+        ]
+       ]
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    },
+    {
+     "type": "human",
+     "id": "tourist",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "tourist",
+     "gender": "male",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "cower",
+     "seed": 48,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "GUIDE?",
+     "at": "@tugged his sleeve",
+     "dur": 2.2,
+     "x": 470,
+     "y": 886,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "The tourist looked at the map, then the boy. \"Naturally,\" he said.",
+   "world": "toon_day_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "tourist",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "tourist",
+     "gender": "male",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "hips",
+     "seed": 48,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 38,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "NATURALLY.",
+     "at": "@looked at the map",
+     "dur": 2.2,
+     "x": 170,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "He pointed at a bakery. \"Built in the year of the great bread.\" Nobody checked.",
+   "world": "toon_day_street",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "tourist",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "tourist",
+     "gender": "male",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "point",
+     "seed": 48,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 38,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "GREAT BREAD?",
+     "at": "@year of the great",
+     "dur": 2.2,
+     "x": 470,
+     "y": 886,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "By the corner, eleven people were following him. A grandmother was taking notes.",
+   "world": "toon_sunset_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "tourist",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "tourist",
+     "gender": "male",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 48,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "grandmother",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandmother",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "white",
+     "extras": [
+      "bun"
+     ],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "think",
+     "seed": 11,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.0,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "She tapped his map with one finger. \"Young man,\" she said, \"this is a different town.\"",
+   "world": "toon_dusk_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "grandmother",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandmother",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "white",
+     "extras": [
+      "bun"
+     ],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "point",
+     "seed": 11,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.0,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    },
+    {
+     "type": "human",
+     "id": "tourist",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "tourist",
+     "gender": "male",
+     "age": "adult",
+     "skin": "tan",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "cower",
+     "seed": 48,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "WRONG TOWN?!",
+     "at": "@a different town",
+     "dur": 2.2,
+     "x": 170,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    },
+    "silence_before": "this is a different town"
+   },
+   "tone": "tense",
+   "freeze": "@this is a different town-0.3"
+  }
+ ],
+ "youtube": {
+  "description": "A tourist who would rather be lost than ask for directions says one proud word to a small boy. By evening he is leading half the town in the wrong direction, and not one of them has said a thing.\n\nPart 1 of 3. Part 2 is next.",
+  "tags": [
+   "short story",
+   "comedy",
+   "tourist",
+   "lost in town",
+   "funny stories",
+   "heartwarming",
+   "animated story",
+   "storytime",
+   "tidalfolio",
+   "travel"
+  ],
+  "pinned_comment": "Have you ever pretended to know the way instead of asking?",
+  "title": "The Tour Guide (Part 1/3)"
+ },
+ "tiktok": {
+  "caption": "Part 1/3: He was lost. He told a boy he was the tour guide. Thirty people followed.",
+  "hashtags": [
+   "#storytime",
+   "#comedy",
+   "#lostintown",
+   "#shorts",
+   "#heartwarming"
+  ]
+ }
+}

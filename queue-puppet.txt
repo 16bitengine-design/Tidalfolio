@@ -8,3 +8,12 @@
 009-wishful-sweeping-part-1.json
 009-wishful-sweeping-part-2.json
 009-wishful-sweeping-part-3.json
+010-the-usual-part-1.json
+010-the-usual-part-2.json
+010-the-usual-part-3.json
+011-the-tour-guide-part-1.json
+011-the-tour-guide-part-2.json
+011-the-tour-guide-part-3.json
+012-a-second-late-part-1.json
+012-a-second-late-part-2.json
+012-a-second-late-part-3.json
