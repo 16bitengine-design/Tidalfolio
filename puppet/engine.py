@@ -682,13 +682,20 @@ TONE_GRADE = {   # sat, bright, contrast, tint (r, g, b), vignette, mist, glow
     "calm":    dict(sat=1.00, bright=1.00, contrast=1.00, tint=(1.00, 1.00, 1.00), vig=0.10, mist=0.0, glow=0.0),
     "playful": dict(sat=1.12, bright=1.04, contrast=1.05, tint=(1.03, 1.00, 0.96), vig=0.06, mist=0.0, glow=0.06),
     "joyful":  dict(sat=1.22, bright=1.09, contrast=1.06, tint=(1.07, 1.02, 0.88), vig=0.08, mist=0.0, glow=0.16),
-    "tense":   dict(sat=0.72, bright=0.84, contrast=1.24, tint=(0.90, 0.94, 1.06), vig=0.62, mist=0.0, glow=0.0),
-    "sad":     dict(sat=0.46, bright=0.90, contrast=0.94, tint=(0.86, 0.95, 1.12), vig=0.40, mist=0.06, glow=0.0),
-    "eerie":   dict(sat=0.62, bright=0.80, contrast=1.12, tint=(0.78, 1.05, 1.04), vig=0.52, mist=0.26, glow=0.0),
+    "tense":   dict(sat=0.78, bright=0.96, contrast=1.18, tint=(0.92, 0.95, 1.05), vig=0.34, mist=0.0, glow=0.0),
+    "sad":     dict(sat=0.52, bright=1.00, contrast=0.96, tint=(0.88, 0.96, 1.10), vig=0.22, mist=0.06, glow=0.0),
+    "eerie":   dict(sat=0.68, bright=0.95, contrast=1.10, tint=(0.82, 1.05, 1.04), vig=0.30, mist=0.20, glow=0.0),
     "tender":  dict(sat=0.96, bright=1.07, contrast=0.92, tint=(1.09, 1.00, 0.90), vig=0.26, mist=0.0, glow=0.30),
 }
 TONE_SHAKE = {"tense": 4.0, "eerie": 2.0}      # px of hand-held tremble on the 1080-wide frame
 _VIG = {}
+LIFT = float(os.environ.get("PUPPET_LIFT", "0.86"))     # gamma below 1 lifts the shadows and mid-tones (the videos read as too dark on a phone); 1.0 = off
+_LIFT_LUT = [int(round(255 * (i / 255.0) ** LIFT)) for i in range(256)]
+
+
+def lift(img):
+    """Brighten shadows and mid-tones without clipping the highlights (applied after the tone grade, before captions)."""
+    return img if abs(LIFT - 1.0) < 0.005 else img.point(_LIFT_LUT * 3)
 
 
 def _vignette(w, h, k):
