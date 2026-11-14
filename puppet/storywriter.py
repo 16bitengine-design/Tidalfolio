@@ -180,7 +180,7 @@ CREATIVE DIRECTION (the Tidal Folio master brief; follow it, within the channel 
 - Before you answer, silently check: does the opening create curiosity? is the conflict easy to understand? does every scene give a reason to keep watching? does tension rise rather than stay flat? is there at least one unexpected development? is the comedy situation-driven? are the characters believable? is the climax satisfying and memorable? does the story keep its deeper meaning without explaining it? If any answer is no, rewrite that part first. Story quality beats spectacle, comedy beats noise, essence beats a shocking twist.
 
 STORY IN PARTS: every story is told as {parts_text} consecutive videos (Part 1, Part 2 ...), published one after another. Write ALL parts now, in "parts": [{{"scenes": [...]}}, ...].
-- The parts play one right after another, so the viewer should barely notice where one ends and the next begins. Part 1 opens with the hook. Every later part carries on from the exact moment the previous part stopped: NO recap, NO re-introduction of the characters or setting, NO "previously" and NO announcement that a new part has started. Each part still has its own small reversal so it never drags.
+- The parts play one right after another, so the viewer should barely notice where one ends and the next begins. Part 1 opens with the hook. Every later part carries on from the exact moment the previous part stopped: NO recap, NO "previously" and NO announcement that a new part has started. BUT many viewers land on a later part first (the feed shows parts one at a time), so the FIRST SENTENCE of every later part must make sense to someone who never saw the earlier parts: name the main person by role ("the baker", never just "he", "she" or "they") and say in plain words what is wrong or at stake right now, inside the action itself. Each part still has its own small reversal so it never drags.
 - Every part EXCEPT the last ends mid-story on a line that pulls straight into the next scene (a reveal, a worse problem, a question), told like any other line of the story: never "to be continued", never "in the next part", never an instruction.
 - COLD OPEN: scene 1 of every part opens on the most striking moment of that part, already happening: the problem, the accusation, the spill, the gasp. Never a quiet scene-setting line ("It was a sunny morning", "There was a baker ...", "Once ..."); say who and what is wrong in the first sentence, in at most 12 words. The characters are already in place (nobody walks in during the first seconds), at least one has a strong mood (never neutral) and a gesture that matches the words, and there is a popup within the first two seconds. If the most striking moment comes later in the part, open on a short glimpse of it, then let the story rewind to its natural order.
 - Part 1 opens with the stakes; the last part holds the emotional resolution and the haunting last line. The one uncommon word appears exactly once in the WHOLE story. Characters, setting and objects stay consistent across parts.
@@ -402,13 +402,15 @@ PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "thumbnail_hoo
               "'action' one of stand, talk, hop, flap, point, shrug, cheer, facepalm, think, laugh, tremble, offer, hold, clasp, wrap, place, reach, beckon, hugself, wipe, cower, wave, hips: choose the one that matches what that person is DOING at that moment in the narration (holds something out = offer, wraps a towel round someone = wrap, sets something down = place, cold or wet = hugself ...); give listeners a calm action such as clasp or hips ('go' optional: a ground spot to walk to).")
 
 
+COLD_START = re.compile(r"^\W*(he|she|they|it|then|but|and|so|still|meanwhile|now|that|this|his|her|their)\b", re.I)
 WEAK_OPENER = re.compile(r"^(it was|there was|there were|once|one day|one morning|in a |on a |every |long ago|the sun|morning)", re.I)
 
 
 def _part_rules(k, n, word, uw_part, bible=None):
     role = ("It opens on the hook at once." if k == 1 else
-            f"It carries on from the exact moment part {k - 1} stopped: no recap, no re-introduction of the characters or the setting, no announcement that a new part has started. "
-            f"A viewer must not be able to tell where part {k - 1} ended.")
+            f"It carries on from the exact moment part {k - 1} stopped: no recap, no 'previously', no announcement that a new part has started. "
+            f"But the first sentence must work for a viewer who never saw part {k - 1}: name the main person by role ('the baker', never 'he', 'she' or 'they') and say what is wrong or at stake right now, "
+            f"inside the action (for example: 'The baker cannot find the last roll, and the boss waits.'). At most 12 words.")
     role += (f" THE ENDING OF THIS PART IS A CLIFFHANGER: the last two scenes must ESCALATE, so the viewer is dying to know what happens next. "
              f"End at the instant of a reveal, a reversal, a new danger or a surprising arrival, with the consequence still unseen and the main question still open. "
              f"The last scene needs a strong mood (never neutral) or a popup, and its narration is one short, sharp line that stops BEFORE the answer. "
@@ -632,6 +634,14 @@ def _part_problems(part, cast, k, word, uw_part, n=None):
             bad.append(f"part {k}, scene 1: nobody walks in during the opening: place everyone where they start, and move them in a later scene.")
         n1 = str(first.get("narration", "")).strip()
         sent1 = re.split(r"(?<=[.!?])\s", n1)[0] if n1 else ""
+        if k > 1 and n1:                       # a viewer who lands on this part first must know who the story is about and what is wrong
+            fwords = {w for w in re.findall(r"[a-z]+", sent1.lower())}
+            roles = set()
+            for ck, cv in (cast or {}).items():
+                for src in (ck, cv.get("role") if isinstance(cv, dict) else ""):
+                    roles |= {w for w in re.findall(r"[a-z]+", str(src or "").lower().replace("_", " ")) if len(w) > 3}
+            if COLD_START.match(n1) or (roles and not roles & fwords):
+                bad.append(f"part {k}, scene 1: the first sentence must work for a viewer who never saw the earlier parts: name the main person by role ({', '.join(sorted(roles)[:6])}), not 'he', 'she', 'they', 'then' or 'but', and say what is wrong or at stake right now, in at most 12 words, with no recap or 'previously'.")
         if len(sent1.split()) > 12 or WEAK_OPENER.match(n1):
             bad.append(f"part {k}, scene 1: the first sentence must be at most 12 words and start on the action or the problem, not scene-setting (no 'It was ...', 'There was ...', 'Once ...', 'One day ...'): say who and what is wrong at once.")
         if k == 1 and tones[0] == "calm":
