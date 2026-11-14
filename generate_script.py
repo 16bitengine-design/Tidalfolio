@@ -462,24 +462,70 @@ def validate(d, mirror=True):
     return errs
 
 
+GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/openai"
+
+
+def llm_provider():
+    """Which text model writes the stories. A free Gemini key (GEMINI_API_KEY, from aistudio.google.com, no card) wins when present;
+    otherwise OpenAI (OPENAI_API_KEY). Both speak the same chat-completions format."""
+    if os.environ.get("GEMINI_API_KEY"):
+        return dict(name="Gemini", base=GEMINI_BASE, key=os.environ["GEMINI_API_KEY"],
+                    model=os.environ.get("LLM_MODEL") or "gemini-flash-latest")
+    if os.environ.get("OPENAI_API_KEY"):
+        return dict(name="OpenAI", base="https://api.openai.com/v1", key=os.environ["OPENAI_API_KEY"],
+                    model=os.environ.get("OPENAI_TEXT_MODEL") or "gpt-4o-mini")
+    sys.exit("No text-model key is set: add GEMINI_API_KEY (free, aistudio.google.com) or OPENAI_API_KEY as a GitHub secret (see README).")
+
+
+def _json_only(text):
+    """Free models sometimes wrap the JSON in ```json fences or add a sentence around it: keep just the object."""
+    t = (text or "").strip()
+    if t.startswith("```"):
+        t = re.sub(r"^```[a-zA-Z]*\s*|\s*```$", "", t).strip()
+    i, j = t.find("{"), t.rfind("}")
+    return t[i:j + 1] if 0 <= i < j else t
+
+
+def _pick_gemini_model(prov):
+    """The model alias was refused (names change): ask the API which models this key has and use the best flash model."""
+    try:
+        r = requests.get(prov["base"] + "/models", headers={"Authorization": f"Bearer {prov['key']}"}, timeout=60)
+        ids = [m.get("id", "").replace("models/", "") for m in r.json().get("data", [])] if r.ok else []
+    except Exception:
+        ids = []
+    ok = [i for i in ids if "flash" in i and not re.search(r"image|tts|audio|live|embed|thinking|vision|lite", i)] or [i for i in ids if "flash" in i and "lite" in i]
+    return sorted(ok)[-1] if ok else None
+
+
 def call_openai(messages, temperature=1.0):
-    key = os.environ.get("OPENAI_API_KEY")
-    if not key:
-        sys.exit("OPENAI_API_KEY is not set. Add it as a GitHub secret (see README).")
-    model = os.environ.get("OPENAI_TEXT_MODEL") or "gpt-4o-mini"
-    last = None
-    for attempt in range(4):
-        r = requests.post("https://api.openai.com/v1/chat/completions", timeout=180,
-                          headers={"Authorization": f"Bearer {key}"},
-                          json={"model": model, "messages": messages, "temperature": temperature,
-                                "response_format": {"type": "json_object"}})
+    """One chat-completion call that returns a JSON string. (The name is historical: it serves Gemini or OpenAI.)"""
+    prov = llm_provider()
+    last, use_json_mode = None, True
+    for attempt in range(7):
+        body = {"model": prov["model"], "messages": messages, "temperature": temperature}
+        if use_json_mode:
+            body["response_format"] = {"type": "json_object"}
+        r = requests.post(prov["base"] + "/chat/completions", timeout=240, headers={"Authorization": f"Bearer {prov['key']}"}, json=body)
         if r.ok:
-            return r.json()["choices"][0]["message"]["content"]
+            content = (r.json()["choices"][0]["message"].get("content") or "")
+            return _json_only(content) if prov["name"] != "OpenAI" else content
         last = f"{r.status_code} {r.text[:300]}"
-        if r.status_code in (400, 401, 403, 404):   # won't fix itself by retrying
+        if r.status_code == 400 and use_json_mode and "response_format" in r.text:
+            use_json_mode = False                                        # this model has no JSON mode: the prompt already asks for JSON only
+            continue
+        if r.status_code == 404 and prov["name"] == "Gemini" and not os.environ.get("LLM_MODEL"):
+            picked = _pick_gemini_model(prov)
+            if picked and picked != prov["model"]:
+                print(f"[llm] model {prov['model']} not found; using {picked}", flush=True)
+                prov["model"] = picked
+                os.environ["LLM_MODEL"] = picked
+                continue
+        if r.status_code == 429 and re.search(r"per ?day|daily|RequestsPerDay|exhausted|credit|insufficient", r.text, re.I):
+            break                                                        # the day's free quota (or the credit) is used up: waiting will not help
+        if r.status_code in (400, 401, 403, 404):                        # won't fix itself by retrying
             break
-        time.sleep(5 * (attempt + 1))
-    sys.exit(f"OpenAI request failed: {last}")
+        time.sleep(min(60, 8 * (attempt + 1)) if r.status_code == 429 else 5 * (attempt + 1))   # free tiers allow only a few requests a minute
+    sys.exit(f"{prov['name']} request failed: {last}")
 
 
 PUNCH_UP_PROMPT = """You are a ruthless script editor for a deadpan animal-comedy channel. Below is a valid draft script (JSON).

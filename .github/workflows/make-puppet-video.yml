@@ -66,11 +66,13 @@ jobs:
       - name: Write a new story if the queue is empty (AI writes it, code checks it)
         if: ${{ inputs.script == '' }}
         env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_TEXT_MODEL: ${{ vars.OPENAI_TEXT_MODEL }}
         run: |
-          if [ -z "$OPENAI_API_KEY" ]; then
-            echo "OPENAI_API_KEY is not set: no new story will be written (the queue is used as it is)."
+          if [ -z "$GEMINI_API_KEY" ] && [ -z "$OPENAI_API_KEY" ]; then
+            echo "Neither GEMINI_API_KEY (free) nor OPENAI_API_KEY is set: no new story will be written (the queue is used as it is)."
           else
             python puppet_story.py --ensure 1
           fi

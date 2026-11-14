@@ -3,7 +3,7 @@
 A second way to make a tidalfolio video. Instead of generating images, everything is **drawn by code**: inked eagles,
 squirrels, fish and rabbits with feathers and blinking eyes, painted parallax hills and cliffs, paper grain, parchment
 pop-ups, word-by-word captions, a synthesized music bed, and a **free offline storyteller voice** (Kokoro).
-Cost per video: **nothing**. No fal.ai, no OpenAI.
+Cost per video: **nothing**. No fal.ai, no OpenAI. The story text can be written for free too: add a `GEMINI_API_KEY` secret (free key from aistudio.google.com, no card; optional repository variable `LLM_MODEL` to pick the model). When it is set it is used instead of OpenAI.
 
 It lives next to the image pipeline and does not touch it. The image pipeline (`pipeline.py`) is unchanged.
 

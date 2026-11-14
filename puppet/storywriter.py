@@ -718,15 +718,17 @@ def write_story(idea=None, series=None, parts=None, log=print):
     sys.path.insert(0, str(ROOT))
     import generate_script as G
     SCRIPTS.mkdir(exist_ok=True)
-    if not os.environ.get("OPENAI_TEXT_MODEL"):
+    on_openai = G.llm_provider()["name"] == "OpenAI"     # a free Gemini key (GEMINI_API_KEY) is used when present
+    if on_openai and not os.environ.get("OPENAI_TEXT_MODEL"):
         os.environ["OPENAI_TEXT_MODEL"] = "gpt-4o"     # a stronger writer than the cheap default; set the repo variable OPENAI_TEXT_MODEL to choose another
+    log(f"Writing with {G.llm_provider()['name']} ({G.llm_provider()['model']}).")
     real_call = G.call_openai
 
     def call_with_fallback(msgs, temperature=1.0):
         try:
             return real_call(msgs, temperature)
         except SystemExit as e:                         # the account may not have this model: fall back to the cheap one instead of failing
-            if os.environ.get("OPENAI_TEXT_MODEL") != "gpt-4o-mini" and re.search(r"model|404|403", str(e.code), re.I):
+            if on_openai and os.environ.get("OPENAI_TEXT_MODEL") != "gpt-4o-mini" and re.search(r"model|404|403", str(e.code), re.I):
                 log(f"The model {os.environ['OPENAI_TEXT_MODEL']} was refused ({str(e.code)[:120]}); using gpt-4o-mini instead.")
                 os.environ["OPENAI_TEXT_MODEL"] = "gpt-4o-mini"
                 return real_call(msgs, temperature)
