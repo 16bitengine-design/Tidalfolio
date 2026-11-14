@@ -8,3 +8,4 @@
 008-the-missing-roll-part-3.json
 009-wishful-sweeping-part-1.json
 009-wishful-sweeping-part-2.json
+009-wishful-sweeping-part-3.json
