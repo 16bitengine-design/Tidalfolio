@@ -112,6 +112,7 @@ def frame(gt, with_text=True):
     i = scenes.index(sc)
     prev = scenes[i - 1].get("tone", "calm") if i else tone
     img = E.tone_grade(img, E.grade_params(prev, tone, u / 0.8), gt, E.TONE_SHAKE.get(tone, 0.0))
+    img = E.lift(img)                               # brighter shadows and mid-tones for phone screens
     if with_text and gt < 2.5:                      # the opening: a hook ribbon (and a part badge) in the first seconds
         from . import opening
         img = opening.overlay(img, gt, _JOB["ctx"].script)
