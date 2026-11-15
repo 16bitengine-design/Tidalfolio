@@ -128,13 +128,14 @@ def hand_target(pose, sx, ax, ay, t, seed, near, head_y, gait, walk, sw):
     """where the hand wants to be for a pose, in character units; the elbow follows by itself (two_bone)"""
     if pose == "stand":
         asw = math.sin(gait + (math.pi if sx > 0 else 0.0)) * walk
-        return (ax + sx * 26 + asw * 20, ay + 128 + sw * 4 * sx - abs(asw) * 6)
+        wsx = math.tanh(2.2 * math.sin(t * 1.0 + seed * 2.3)) * (1.0 - 0.7 * walk)
+        return (ax + sx * 26 + asw * 20 + wsx * 13 + math.sin(t * 1.9 + sx + seed) * 4, ay + 128 + sw * 6 * sx - abs(asw) * 6 - abs(wsx) * 5 * (1 if sx > 0 else -0.4))
     if pose == "limp":
         return (ax + sx * 10, ay + 138)
     if pose == "talk":
-        ph = t * 0.62 + seed * 0.37
+        ph = t * 0.95 + seed * 0.37
         k0 = math.floor(ph)
-        w = ease((ph - k0) / 0.22)
+        w = ease((ph - k0) / 0.28)
         a = _talk_target(int(k0 - 1) % 4, sx, ax, ay, t, seed, near)
         b = _talk_target(int(k0) % 4, sx, ax, ay, t, seed, near)
         return (lerp(a[0], b[0], w), lerp(a[1], b[1], w))
@@ -261,18 +262,19 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     lean = -sway * 0.22 + math.sin(t * 3.0 + seed * 2) * 0.8 * talking + {"sad": 2.2, "scared": -1.5, "smug": -1.8, "happy": -0.8}.get(mood, 0)
     # weight transfer: every few seconds the person shifts onto the other leg (dwell, then a quick smooth move), the hips slide over, the shoulders tip the other way,
     # and the head, which lags behind the body, finishes the move a moment later (overlapping action) instead of everything moving as one rigid piece
-    wsh = lambda tt: math.tanh(2.6 * math.sin(tt * 0.62 + seed * 2.3)) * (1.0 - 0.7 * walk)
+    wsh = lambda tt: math.tanh(2.2 * math.sin(tt * 1.0 + seed * 2.3)) * (1.0 - 0.7 * walk)
     ws, ws_late = wsh(t), wsh(t - 0.22)
-    sway += ws * 8.0
-    lean += -ws * 2.6
+    sway += ws * 22.0
+    lean += -ws * 5.5
+    bounce += (1.0 - abs(ws)) * 7.0 * (1.0 - walk)       # passing through the middle of a weight shift the body dips, then rises onto the new leg
     # a new gesture is prepared and followed through with the whole body: a small rock back, then forward past the mark, settling (the arms alone used to do it)
     if blend < 1.0 and prev_action != action:
-        lean += -3.2 * math.sin(blend * math.pi * 2.0) * (1.0 - blend)
+        lean += -6.5 * math.sin(blend * math.pi * 2.0) * (1.0 - blend)
     beat = max(0.0, math.sin(t * 2.6 + seed * 1.3)) ** 8
     bounce = bounce - abs(math.sin(gait)) * 9 * walk + breath * 1.4
     nod = listening * (max(0.0, math.sin(t * 1.9 + seed * 2.1)) ** 6 * 6) + beat * 5 * talking + math.sin(t * 7.3 + seed) * 1.8 * talking + {"sad": 11, "scared": 4, "shocked": -5, "smug": -4, "happy": -2}.get(mood, 0)
     tilt = nz(t * 0.6, seed + 4) * 2.2 + math.sin(t * 3.0 + seed) * 1.6 * talking + {"sad": -5, "smug": 4, "scared": 3, "happy": 2, "angry": -2}.get(mood, 0)
-    tilt += (ws_late - ws) * 3.4 + ws_late * 1.6        # the head trails the body's weight shift, then rests tipped a little toward the new side
+    tilt += (ws_late - ws) * 8.0 + ws_late * 3.2        # the head trails the body's weight shift, then rests tipped a little toward the new side
     turn = min(1.0, walk * 1.6)
     cv.save()
     cv.translate(x, y + bounce)
