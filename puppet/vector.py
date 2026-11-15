@@ -209,6 +209,8 @@ def sky(T, t):
             tw = 0.5 + 0.5 * math.sin(t * (1.2 + r.random() * 2) + i)
             c = r.choice([(255, 255, 255), (255, 232, 170), (190, 210, 255), (255, 190, 230)])
             oval(x, y, 2.2 + tw * 2.2, 2.2 + tw * 2.2, paint(c, 150 + 100 * tw))
+    if T.get("moon"):
+        clouds(T, t)                             # the moon is drawn in front of the clouds, so a drifting cloud can never hide it from the viewer
     if T.get("sun"):
         sx, sy, sr, sc = T["sun"]
         glow(sx, sy, sr * 3.4, sc, 120)
@@ -217,7 +219,8 @@ def sky(T, t):
         if T.get("moon"):
             for (dx, dy, rr) in ((-22, -12, 18), (18, 22, 13), (26, -22, 9)):
                 oval(sx + dx, sy + dy, rr, rr, paint(dark(sc, 0.18), 120))
-    clouds(T, t)
+    if not T.get("moon"):
+        clouds(T, t)
     if T["sky"] and not T.get("stars") and not T.get("rain") and T is not TIMES["day"] or T is TIMES["day"]:
         r = random.Random(9)
         for i in range(5):                       # little birds
