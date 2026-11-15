@@ -16,6 +16,19 @@ IRIS = [(96, 62, 38), (60, 120, 180), (70, 150, 104), (130, 100, 44), (88, 80, 1
 INKC = (52, 30, 56)                      # the dark of lines and pupils: a deep plum, never pure black
 
 
+LOOKS = {
+    "classic": dict(head=1.0, eye=1.0, arm=1.0, leg=1.0, hem=0, hand=1.0),
+    # refined: a smaller head and smaller, calmer eyes, slimmer tapered arms, slim legs showing below a shorter hem, proper hands
+    "refined": dict(head=0.88, eye=0.8, arm=0.74, leg=0.8, hem=24, hand=0.92),
+}
+CFG = dict(LOOKS["classic"])
+
+
+def set_character_look(name):
+    CFG.clear()
+    CFG.update(LOOKS.get(name, LOOKS["classic"]))
+
+
 class _F:
     """facing sign for light: light always comes from the upper left of the SCREEN, whichever way the person faces"""
     f = 1
@@ -277,9 +290,9 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     leg_col = skin_c if dress else bottom
     for sx in (-1, 1):
         foot = (sx * 25, -14)
-        V.cv.drawLine(sx * 22 + hipx, hip_y, foot[0], foot[1], paint(dark(leg_col, 0.24), stroke=36))
-        V.cv.drawLine(sx * 22 + hipx - f * 2, hip_y, foot[0] - f * 2, foot[1], paint(leg_col, stroke=30))
-        V.cv.drawLine(sx * 22 + hipx - f * 7, hip_y, foot[0] - f * 7, foot[1], paint(lite(leg_col, 0.3), 140, stroke=8))
+        V.cv.drawLine(sx * 22 + hipx, hip_y, foot[0], foot[1], paint(dark(leg_col, 0.24), stroke=36 * CFG["leg"]))
+        V.cv.drawLine(sx * 22 + hipx - f * 2, hip_y, foot[0] - f * 2, foot[1], paint(leg_col, stroke=30 * CFG["leg"]))
+        V.cv.drawLine(sx * 22 + hipx - f * 7, hip_y, foot[0] - f * 7, foot[1], paint(lite(leg_col, 0.3), 140, stroke=8 * CFG["leg"]))
         ball(sx * 30, -9, 31, 15, shoe, f)
         V.oval(sx * 30, -2, 29, 6, paint(dark(shoe, 0.4), 150))
 
@@ -296,8 +309,9 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
         fill_grad([(-tw - 6, -290), (tw + 6, -290), (tw + 50 + math.sin(t * 1.4 + seed) * 5, -52), (-tw - 50 - math.sin(t * 1.4 + seed) * 5, -52)], cp, f, tw + 40)
     if dress:
         skirt = torso_col if not spec.get("cardigan") else top
-        fill_grad([(-tw + 6, -156), (tw - 6, -156), (tw + 32, -70), (0, -60), (-tw - 32, -70)], skirt, f, tw + 30)
-        V.poly([(-tw - 32, -70), (-tw - 22, -58), (-8, -50), (8, -50), (tw + 22, -58), (tw + 32, -70)], paint(dark(skirt, 0.28), 160))
+        hm = CFG["hem"]
+        fill_grad([(-tw + 6, -156), (tw - 6, -156), (tw + 32, -70 - hm), (0, -60 - hm), (-tw - 32, -70 - hm)], skirt, f, tw + 30)
+        V.poly([(-tw - 32, -70 - hm), (-tw - 22, -58 - hm), (-8, -50 - hm), (8, -50 - hm), (tw + 22, -58 - hm), (tw + 32, -70 - hm)], paint(dark(skirt, 0.28), 160))
     if spec.get("coat") and role in ("doctor", "scientist", "judge", "firefighter", "stranger"):
         fill_grad([(-tw, -156), (tw, -156), (tw + 12, -56), (0, -48), (-tw - 12, -56)], spec["coat"], f, tw + 10)
     torso = [(-tw * 0.6, -292), (tw * 0.6, -292), (tw * 1.02, -272), (tw * 0.94, -206), (tw * 0.9, -146), (-tw * 0.9, -146), (-tw * 0.94, -206), (-tw * 1.02, -272)]
@@ -364,8 +378,8 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
             V.line(14, -272 + k_ * 22, 36, -270 + k_ * 22, lite(sc_, 0.5), 4, 150)
 
     # ---------------- neck and head
-    hy = (-350 if not kid else -318) + nod
-    hrx, hry = 62 * HS, 66 * HS
+    hrx, hry = 62 * HS * CFG["head"], 66 * HS * CFG["head"]
+    hy = (-350 if not kid else -318) + nod + (66 * HS - hry) * 0.9      # a smaller head still sits on the shoulders
     neck_c = dark(skin_c, 0.12)
     rrect(-17, -296, 17, hy + 44, 9, paint(neck_c))
     V.oval(0, hy + 52, 26, 12, paint(dark(skin_c, 0.34), 130, blur=5))
@@ -399,7 +413,7 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     shx = 15 * turn
     ey, ex = hy - 6 * HS, 27 * HS
     CL = V.STYLE == "classic"
-    er = (15 * 1.14 if CL else 15) * HS
+    er = (15 * 1.14 if CL else 15) * HS * CFG["eye"]
     bk = (blink_amount(t + 0.7) if E.blink.__name__ == "blink" else 0.0) if CL else 0.0
     wide = eye in ("wide", "spiral")
     iris = IRIS[0] if skin in ("brown", "dark") else IRIS[1] if hair in ("blonde", "red") else IRIS[(seed * 7 + 2) % len(IRIS)]
@@ -559,11 +573,13 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
         hand = (wr[0] + ddx / dn * 12, wr[1] + ddy / dn * 12)
         hands[sx] = hand
         sleeve = spec.get("coat") or top
-        limb((ax, ay), el, 33, sleeve, f)
-        limb(el, wr, 29, sleeve, f)
-        limb((wr[0] - ddx / dn * 14, wr[1] - ddy / dn * 14), wr, 31, lite(sleeve, 0.35), f)
-        ball(hand[0], hand[1], 16, 16, skin_c, f)
-        ball(hand[0] + f * 9, hand[1] - 6, 6.5, 9, skin_c, f)
+        aw = CFG["arm"]
+        limb((ax, ay), el, 33 * aw, sleeve, f)
+        limb(el, wr, 29 * aw * (0.92 if aw < 1 else 1.0), sleeve, f)
+        limb((wr[0] - ddx / dn * 14, wr[1] - ddy / dn * 14), wr, 31 * aw, lite(sleeve, 0.35), f)
+        hk = CFG["hand"]
+        ball(hand[0], hand[1], 16 * hk, 16 * hk, skin_c, f)
+        ball(hand[0] + f * 9 * hk, hand[1] - 6 * hk, 6.5 * hk, 9 * hk, skin_c, f)
     item = None if carry == "none" else (carry or spec.get("tool"))
     if item:
         _item(item, hands[near][0], hands[near][1], f)
