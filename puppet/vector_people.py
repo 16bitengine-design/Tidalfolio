@@ -259,10 +259,20 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     breath = math.sin(t * 1.7 + seed)
     sway = nz(t * 0.35, seed) * 6.0 + math.sin(t * 2.1 + seed) * 2.2 * talking + math.sin(gait) * 5 * walk
     lean = -sway * 0.22 + math.sin(t * 3.0 + seed * 2) * 0.8 * talking + {"sad": 2.2, "scared": -1.5, "smug": -1.8, "happy": -0.8}.get(mood, 0)
+    # weight transfer: every few seconds the person shifts onto the other leg (dwell, then a quick smooth move), the hips slide over, the shoulders tip the other way,
+    # and the head, which lags behind the body, finishes the move a moment later (overlapping action) instead of everything moving as one rigid piece
+    wsh = lambda tt: math.tanh(2.6 * math.sin(tt * 0.62 + seed * 2.3)) * (1.0 - 0.7 * walk)
+    ws, ws_late = wsh(t), wsh(t - 0.22)
+    sway += ws * 8.0
+    lean += -ws * 2.6
+    # a new gesture is prepared and followed through with the whole body: a small rock back, then forward past the mark, settling (the arms alone used to do it)
+    if blend < 1.0 and prev_action != action:
+        lean += -3.2 * math.sin(blend * math.pi * 2.0) * (1.0 - blend)
     beat = max(0.0, math.sin(t * 2.6 + seed * 1.3)) ** 8
     bounce = bounce - abs(math.sin(gait)) * 9 * walk + breath * 1.4
     nod = listening * (max(0.0, math.sin(t * 1.9 + seed * 2.1)) ** 6 * 6) + beat * 5 * talking + math.sin(t * 7.3 + seed) * 1.8 * talking + {"sad": 11, "scared": 4, "shocked": -5, "smug": -4, "happy": -2}.get(mood, 0)
     tilt = nz(t * 0.6, seed + 4) * 2.2 + math.sin(t * 3.0 + seed) * 1.6 * talking + {"sad": -5, "smug": 4, "scared": 3, "happy": 2, "angry": -2}.get(mood, 0)
+    tilt += (ws_late - ws) * 3.4 + ws_late * 1.6        # the head trails the body's weight shift, then rests tipped a little toward the new side
     turn = min(1.0, walk * 1.6)
     cv.save()
     cv.translate(x, y + bounce)
@@ -287,7 +297,7 @@ def _front(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_
     cv.save()
     cv.translate(hipx, -146)
     cv.rotate(lean)
-    cv.scale(1.0, 1.0 + breath * 0.008)
+    cv.scale(1.0, 1.0 + breath * 0.016)
     cv.translate(0, 146)
     tw = (58 if not fem else 52) * (1 - 0.2 * turn) * DZ.BUILDS.get(dz_.get("build"), 1.0)
     torso_col = spec.get("coat") or top
