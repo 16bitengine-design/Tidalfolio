@@ -16,7 +16,7 @@ Storyboard JSON:
            "moss":  {"species": "rabbit", "coat": "grey|white|brown"}},
   "scenes": [ {
      "narration": "...", "world": "dawn|day|dusk|storm|night|sunset", "stage": "cliff|nest|tree",
-     "camera": "hold|push_in|pull_back|pan_right|pan_left", "tone": "playful|tense|sad|joyful|eerie|tender|calm", "silence_before": "words",
+     "camera": "hold|push_in|pull_back|pan_right|pan_left", "sky": "true when the narration names the moon (world must be night)", "tone": "playful|tense|sad|joyful|eerie|tender|calm", "silence_before": "words",
      "actors": [ {"who": "orrin", "at": "ground_mid", "face": "left|right", "mood": "...", "action": "stand|talk|point|offer|hold|clasp|wrap|place|reach|beckon|hugself|wipe|cower|wave|hips|shrug|think|facepalm|cheer|laugh|tremble",
                   "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish", "carry_from": "words", "carry_to": "words", "drape": {"at": "words", "item": "towel|blanket"},
                   "beats": [{"at": "words", "mood": "...", "action": "...", "look": "at|away|down|up"}], "speaks": true} ],
@@ -221,6 +221,43 @@ def tidy_lists(sc):
     return sc
 
 
+SKY_WORDS = re.compile(r"\b(moon|moonlight|moonlit)\b", re.I)
+# objects and creatures that a viewer expects to SEE the moment the narrator says them (the moon is handled by the sky camera)
+MUST_SHOW = ("egg", "chicken", "hen", "rooster", "rose", "flower", "vinyl", "record", "lantern", "lamp", "streetlight", "key", "ring", "necklace", "pearl", "treasure", "chest",
+             "clock", "bell", "kite", "guitar", "trumpet", "violin", "piano", "radio", "balloon", "candle", "mirror", "crown", "map", "bicycle", "car", "bus", "boat", "dog", "bird",
+             "sheep", "horse", "duck", "pie", "pizza", "sandwich", "fridge", "coffee", "trophy", "medal", "ladder", "broom", "bucket")
+
+
+def _unseen(sc, where):
+    """Everything the narrator names must be on screen: a thing named but never drawn is the worst slip a viewer can see."""
+    bad = []
+    narr = str(sc.get("narration", ""))
+    if SKY_WORDS.search(narr):
+        if sc.get("world") != "night":
+            bad.append(f"{where}: the narration names the moon, but the moon is only drawn when the world is 'night'. Make the scene a night scene or take the moon out of the line.")
+        elif not sc.get("sky"):
+            bad.append(f"{where}: the narration names the moon, so the viewer must SEE it: add \"sky\": true to this scene (the camera pulls back to show the moon and the people together).")
+    drawn = set()
+    for pr in sc.get("props") or []:
+        if isinstance(pr, dict) and pr.get("item"):
+            drawn.add(str(pr["item"]).lower())
+    for a in sc.get("actors") or []:
+        if isinstance(a, dict) and a.get("carry"):
+            drawn.add(str(a["carry"]).lower())
+    named = {w for w in re.findall(r"[a-z]+", narr.lower())}
+    def _is_drawn(noun):
+        return any(noun == d or noun in re.split(r"[_\W]+", d) or d.endswith(noun) for d in drawn)
+    for noun in MUST_SHOW:
+        if (noun in named or noun + "s" in named or noun + "es" in named) and not _is_drawn(noun):
+            bad.append(f"{where}: the narration names a {noun!r} but it is never drawn. Design it in the top-level \"props\" (a few shapes; a glowing thing gets a \"glow\" shape) and show it in THIS scene: put it in the scene's \"props\" "
+                       f"(a set piece on the ground) or give an actor \"carry\". If it should not be seen, take it out of the narration.")
+    for name in _PROP_NAMES:                                           # an object the writer designed must show in every scene that names it
+        stem = [w for w in re.split(r"[_\W]+", name.lower()) if w][-1]
+        if (stem in named or stem + "s" in named) and name.lower() not in drawn:
+            bad.append(f"{where}: the narration names the {name!r} you designed, so it must be on screen in this scene: add it to the scene's \"props\" or give an actor \"carry\".")
+    return bad
+
+
 def _check_scenes(scenes, cast, pre=""):
     bad = []
     if not isinstance(scenes, list) or not 4 <= len(scenes) <= 10:
@@ -232,6 +269,7 @@ def _check_scenes(scenes, cast, pre=""):
             bad.append(f"{where}: every scene must be a JSON object.")
             continue
         tidy_lists(sc)
+        bad.extend(_unseen(sc, where))
         sig = (sc.get("world"), sc.get("stage"), sc.get("camera"),
                tuple((a.get("who"), a.get("at"), a.get("mood"), a.get("action")) for a in sc.get("actors") or []))
         if sig == prev_sig:
@@ -601,9 +639,11 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
     return things
 
 
-def _camera(mode, stage):
+def _camera(mode, stage, sky=False):
     bx, by = CAM_BASE[stage]
     z0 = ZOOM_H if stage in HUMAN_STAGES else 1.0
+    if sky and stage in HUMAN_STAGES:            # the sky is in frame: the moon sits at world (800, 400), the people at y about 1240 (a 1080x1920 frame at zoom 1.0 spans 1920 world units)
+        return {"x": 540, "y": 900, "z": {"kf": [[0, 1.0], ["@end", 1.06]]}}
     if mode == "push_in":
         return {"x": bx, "y": by, "z": {"kf": [[0, z0], ["@end", z0 * 1.2]]}}
     if mode == "pull_back":
@@ -685,7 +725,7 @@ def _compile_scenes(scene_list, cast):
         if sc.get("silence_before"):
             music["silence_before"] = sc["silence_before"]
         scene = {"narration": sc["narration"].strip(), "world": "toon_" + sc["world"] + ("_" + stage if is_h else ""),
-                 "camera": _camera(sc.get("camera") if sc.get("camera") not in (None, "hold") else TONE_CAMERA.get(tone, "hold"), stage),
+                 "camera": _camera(sc.get("camera") if sc.get("camera") not in (None, "hold") else TONE_CAMERA.get(tone, "hold"), stage, bool(sc.get("sky"))),
                  "things": things, "popups": pops, "music": music, "tone": tone}
         if sc.get("silence_before"):
             scene["freeze"] = f"@{sc['silence_before']}-0.3"
