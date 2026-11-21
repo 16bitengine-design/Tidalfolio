@@ -171,6 +171,16 @@ def sanitize_props(props):
     return out
 
 
+def with_builtins(props):
+    """the built-in props (map, notebook page, whistle, flag, folding chair, train, doors, crowd ...) plus the story's own designs; the story's win on a clash"""
+    from . import builtin_props as B
+    out = {}
+    for name, shapes in B.RAW.items():
+        out.update(sanitize_props({name: shapes}))
+    out.update(sanitize_props(props))
+    return out
+
+
 def draw_recipe(shapes, ox, oy, size=1.0, flip=1, t=0.0):
     """draw a recipe with its origin at (ox, oy) in the current canvas units; flip mirrors it for people facing left"""
     from . import vector as V

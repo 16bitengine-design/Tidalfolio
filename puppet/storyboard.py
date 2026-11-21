@@ -29,6 +29,7 @@ import zlib
 
 from . import people as PE
 from . import design as DZ
+from . import builtin_props as BP
 from . import towns as TW
 
 SPECIES = ("human", "eagle", "squirrel", "rabbit", "cat", "fox")     # new stories use people only; the animals stay for stories already made
@@ -222,10 +223,37 @@ def tidy_lists(sc):
 
 
 SKY_WORDS = re.compile(r"\b(moon|moonlight|moonlit)\b", re.I)
-# objects and creatures that a viewer expects to SEE the moment the narrator says them (the moon is handled by the sky camera)
-MUST_SHOW = ("egg", "chicken", "hen", "rooster", "rose", "flower", "vinyl", "record", "lantern", "lamp", "streetlight", "key", "ring", "necklace", "pearl", "treasure", "chest",
-             "clock", "bell", "kite", "guitar", "trumpet", "violin", "piano", "radio", "balloon", "candle", "mirror", "crown", "map", "bicycle", "car", "bus", "boat", "dog", "bird",
-             "sheep", "horse", "duck", "pie", "pizza", "sandwich", "fridge", "coffee", "trophy", "medal", "ladder", "broom", "bucket")
+DARK_WORDS = re.compile(r"\b(darkness|nightfall|midnight|after dark|by dark|in the dark|at night|that night|one night|the night|night)\b", re.I)
+# objects and creatures that a viewer expects to SEE the moment the narrator says them (the moon is handled by the sky camera).
+# The director's rule: everything the script names that has a physical form is on screen. A word here that is not drawn in the scene rejects the story.
+MUST_SHOW = (
+    # light, sound, signals
+    "lantern", "lamp", "streetlight", "candle", "torch", "flashlight", "bell", "whistle", "trumpet", "drum", "flute", "harp", "violin", "guitar", "piano", "radio", "megaphone",
+    "flag", "banner", "poster", "sign", "signpost", "ticket", "badge", "medal", "trophy", "crown", "ribbon",
+    # paper, writing, maps
+    "map", "notebook", "page", "pages", "newspaper", "magazine", "envelope", "parcel", "package", "pencil", "pen", "chalk", "diary", "scroll", "note", "postcard", "painting", "mirror",
+    # furniture and kit
+    "chair", "stool", "table", "ladder", "broom", "bucket", "shovel", "spade", "rake", "hose", "rope", "umbrella", "tent", "blanket", "pillow", "basket", "box", "suitcase", "luggage",
+    "bottle", "jar", "bowl", "plate", "spoon", "fork", "knife", "kettle", "teapot", "trolley", "cart", "wheelbarrow", "wagon", "barrel", "chest", "treasure",
+    # transport and buildings that have to be seen
+    "train", "tram", "bus", "car", "taxi", "truck", "bicycle", "bike", "scooter", "skateboard", "boat", "ship", "plane", "balloon", "kite", "rocket",
+    "door", "doors", "gate", "fence", "bridge", "fountain", "statue", "tower",
+    # food
+    "egg", "bread", "pie", "pizza", "sandwich", "soup", "cookie", "cookies", "apple", "banana", "orange", "carrot", "tomato", "lemon", "coffee", "fridge",
+    # small treasures and things that glow
+    "key", "ring", "necklace", "pearl", "vinyl", "record", "clock", "watch", "rose", "flower", "ball", "football", "crowd",
+    # creatures
+    "chicken", "hen", "rooster", "dog", "bird", "pigeon", "sheep", "horse", "duck", "parrot", "snake", "frog", "mouse", "spider")
+# what each setting already paints (so naming it needs no extra prop): street, park, kitchen, shop, office, classroom, home
+STAGE_HAS = {     # only what the painted setting really draws (vector.py, vector_props.py): bunting is not "a flag", a pot is not "soup"
+    "street": {"lamp", "streetlight", "bench", "car", "taxi", "bird", "banner"},
+    "park": {"bench", "bird", "flower"},
+    "kitchen": {"clock", "bowl", "lamp", "apple", "banana", "orange", "lemon"},
+    "shop": {"clock", "basket", "bread", "sign", "lamp"},
+    "office": {"clock", "lamp", "page", "pages", "note"},
+    "classroom": {"clock", "pencil", "painting"},
+    "home": {"clock"},
+}
 
 
 def _unseen(sc, where):
@@ -237,6 +265,9 @@ def _unseen(sc, where):
             bad.append(f"{where}: the narration names the moon, but the moon is only drawn when the world is 'night'. Make the scene a night scene or take the moon out of the line.")
         elif not sc.get("sky"):
             bad.append(f"{where}: the narration names the moon, so the viewer must SEE it: add \"sky\": true to this scene (the camera pulls back to show the moon and the people together).")
+    md = DARK_WORDS.search(narr)
+    if md and sc.get("world") != "night":
+        bad.append(f"{where}: the narration says {md.group(0)!r}, so the viewer must SEE the dark: make this scene's \"world\" \"night\" (or take the dark out of the line).")
     drawn = set()
     for pr in sc.get("props") or []:
         if isinstance(pr, dict) and pr.get("item"):
@@ -245,12 +276,20 @@ def _unseen(sc, where):
         if isinstance(a, dict) and a.get("carry"):
             drawn.add(str(a["carry"]).lower())
     named = {w for w in re.findall(r"[a-z]+", narr.lower())}
+    stage_has = STAGE_HAS.get(sc.get("stage", "cliff"), set())
     def _is_drawn(noun):
+        if noun in stage_has:
+            return True
+        if noun in BP.ALIASES:                                           # built-in props answer to the words they show (a train carries its whistle; a map may be a notebook page)
+            return any(d in drawn for d in BP.ALIASES[noun]) or any(noun == d or d.endswith("_" + noun) for d in drawn)
         return any(noun == d or noun in re.split(r"[_\W]+", d) or d.endswith(noun) for d in drawn)
     for noun in MUST_SHOW:
         if (noun in named or noun + "s" in named or noun + "es" in named) and not _is_drawn(noun):
-            bad.append(f"{where}: the narration names a {noun!r} but it is never drawn. Design it in the top-level \"props\" (a few shapes; a glowing thing gets a \"glow\" shape) and show it in THIS scene: put it in the scene's \"props\" "
-                       f"(a set piece on the ground) or give an actor \"carry\". If it should not be seen, take it out of the narration.")
+            built = [n for n in BP.NAMES if noun in n.split("_")] or list(BP.ALIASES.get(noun, ()))
+            how = (f"A built-in prop already exists for it: {', '.join(built)} (use it as a scene prop or a carry). " if built else
+                   "Design it in the top-level \"props\" (a few shapes; a glowing thing gets a \"glow\" shape) and then ")
+            bad.append(f"{where}: the narration names a {noun!r} but it is never drawn. {how}show it in THIS scene: put it in the scene's \"props\" "
+                       f"(a set piece on the ground; \"from\"/\"to\" words make it appear and vanish on the narrator's words) or give an actor \"carry\". If it should not be seen, take it out of the narration.")
     for name in _PROP_NAMES:                                           # an object the writer designed must show in every scene that names it
         stem = [w for w in re.split(r"[_\W]+", name.lower()) if w][-1]
         if (stem in named or stem + "s" in named) and name.lower() not in drawn:
@@ -270,6 +309,15 @@ def _check_scenes(scenes, cast, pre=""):
             continue
         tidy_lists(sc)
         bad.extend(_unseen(sc, where))
+        for pr in sc.get("props") or []:
+            if not isinstance(pr, dict) or pr.get("item") not in _ALL_PROPS:
+                bad.append(f"{where}: a scene prop needs an \"item\" that is a built-in prop ({', '.join(BP.NAMES)}) or one you designed in the top-level \"props\".")
+                continue
+            if pr.get("at", "ground_mid") not in HSLOTS:
+                bad.append(f"{where}: prop {pr['item']!r} 'at' must be one of {sorted(HSLOTS)}.")
+            for key in ("from", "to"):
+                if pr.get(key) and not phrase_ok(sc.get("narration", ""), pr[key]):
+                    bad.append(f"{where}: prop {pr['item']!r} '{key}' words {pr[key]!r} are not in the narration (copy them exactly).")
         sig = (sc.get("world"), sc.get("stage"), sc.get("camera"),
                tuple((a.get("who"), a.get("at"), a.get("mood"), a.get("action")) for a in sc.get("actors") or []))
         if sig == prev_sig:
@@ -353,7 +401,7 @@ def _check_scenes(scenes, cast, pre=""):
                 if a.get(key) and not phrase_ok(nar, a[key]):
                     bad.append(f"{where}: {who} '{key}' words {a[key]!r} are not in the narration (copy them exactly).")
             if a.get("carry") and sp == "human":
-                if a["carry"] not in ITEMS and a["carry"] not in _PROP_NAMES:
+                if a["carry"] not in ITEMS and a["carry"] not in _ALL_PROPS:
                     bad.append(f"{where}: 'carry' must be one of {ITEMS} or an object you designed in 'props'.")
             elif a.get("carry") and (a["carry"] != "fish" or sp != "eagle"):
                 bad.append(f"{where}: only eagles can carry, and only a 'fish'.")
@@ -373,12 +421,14 @@ def _check_scenes(scenes, cast, pre=""):
 
 
 # ------------------------------------------------------------------------------------- checks
-_PROP_NAMES = set()      # the objects the story's writer designed (so "carry" and scene props may use them)
+_PROP_NAMES = set()      # the objects the story's writer designed (each must show in every scene that names it)
+_ALL_PROPS = set(DZ.with_builtins(None))      # ...plus the built-in props (map, whistle, flag, folding chair, train, doors ...): all may be carried or set in a scene
 
 
 def check_storyboard(sb):
-    global _PROP_NAMES
+    global _PROP_NAMES, _ALL_PROPS
     _PROP_NAMES = set(DZ.sanitize_props(sb.get("props") if isinstance(sb, dict) else None))
+    _ALL_PROPS = set(DZ.with_builtins(sb.get("props") if isinstance(sb, dict) else None))
     """Return a list of plain-language problems (empty = fine). A story is 2 to 4 PARTS, each a 45-90 s video."""
     bad = []
     if not isinstance(sb, dict):
@@ -508,7 +558,7 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
                   eye=CRITTER_EYE_MOOD[mood], brow=brow, mood=mood, action=action, seed=zlib.crc32(who.encode()) % 50)
         if c.get("design"):
             th["design"] = c["design"]
-        if a.get("carry") in ITEMS or a.get("carry") in _PROP_NAMES:
+        if a.get("carry") in ITEMS or a.get("carry") in _ALL_PROPS:
             th["carry"] = a["carry"]
             if a.get("carry_from"):                                       # carried only for a while: from these words until carry_to (then the usual tool again)
                 th["carry"] = {"step": [[0, None], ["@" + a["carry_from"], a["carry"]], ["@" + a["carry_to"], None] if a.get("carry_to") else [999, None]]}
@@ -680,9 +730,12 @@ def _compile_scenes(scene_list, cast):
         crowd = (len(actors) if is_h else sum(1 for a in actors if a.get("at", "ground_mid") in GROUND and cast[a["who"]]["species"] == "eagle"))
         things = _stage_things(stage)
         for k_, pr in enumerate(sc.get("props") or []):                   # set pieces the writer designed, drawn behind the people
-            if isinstance(pr, dict) and pr.get("item") in _PROP_NAMES:
-                things.append({"type": "prop", "id": f"prop{k_}", "item": pr["item"], "x": float(HSLOTS.get(pr.get("at", "ground_mid"), 300.0)), "y": 1240.0,
-                               "scale": max(0.4, min(2.5, float(pr.get("size", 1.0) or 1.0))), "face": 1})
+            if isinstance(pr, dict) and pr.get("item") in _ALL_PROPS:
+                th_ = {"type": "prop", "id": f"prop{k_}", "item": pr["item"], "x": float(HSLOTS.get(pr.get("at", "ground_mid"), 300.0)), "y": 1240.0,
+                       "scale": max(0.4, min(2.5, float(pr.get("size", 1.0) or 1.0))), "face": -1 if pr.get("face") == "left" else 1}
+                if pr.get("from") or pr.get("to"):                            # on screen only between these words of the narration (doors closing, a chair jammed in them ...)
+                    th_["show"] = [f"@{pr['from']}" if pr.get("from") else -0.1] + ([f"@{pr['to']}"] if pr.get("to") else [])
+                things.append(th_)
         pos = {}
         for a in sorted(actors, key=lambda q: 0 if cast[q["who"]]["species"] != "eagle" else 1):   # everyone else stands behind the eagles
             for th in _actor_things(a, cast, sc, crowd, centre_x, None):
@@ -738,8 +791,9 @@ def _compile_scenes(scene_list, cast):
 
 def compile_storyboard(sb, number=None):
     """Return a LIST of puppet scripts, one per part (Part 1 .. Part n). Call check_storyboard() first."""
-    global _PROP_NAMES
+    global _PROP_NAMES, _ALL_PROPS
     _PROP_NAMES = set(DZ.sanitize_props(sb.get("props")))
+    _ALL_PROPS = set(DZ.with_builtins(sb.get("props")))
     cast = fix_cast(sb["cast"])
     title = sb.get("title", "Untitled").strip()
     word = sb.get("uncommon_word") or {}
