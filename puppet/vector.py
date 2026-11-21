@@ -51,6 +51,12 @@ def cam(depth=1.0):
     cv.translate(W / 2, H / 2)
     cv.scale(z, z)
     cv.translate(-cx, -cy)
+    if _BG:
+        cv.translate(0, -FLOOR_RAISE)
+
+
+FLOOR_RAISE = 95     # world units: the background (wall base, kerb, horizon) is drawn this much higher than the line the people's feet stand on,
+_BG = False          # so they stand IN the floor with the floor visible behind them, instead of hovering on the line where wall meets floor
 
 
 def mixc(a, b, k):
@@ -609,14 +615,19 @@ def stage_world(name, t):
     global KIND
     KIND = st
     from . import vector_props as VPR
-    if st in INDOOR:
-        indoor(st, T, t)
-        cam(1.0)
-        VPR.DRESS[st](T, t, SEED)
-    else:
-        sky(T, t)
-        (park if st == "park" else street)(T, t)
-        VPR.outdoor_dressing(T, t, SEED, st == "park")
+    global _BG
+    _BG = True
+    try:
+        if st in INDOOR:
+            indoor(st, T, t)
+            cam(1.0)
+            VPR.DRESS[st](T, t, SEED)
+        else:
+            sky(T, t)
+            (park if st == "park" else street)(T, t)
+            VPR.outdoor_dressing(T, t, SEED, st == "park")
+    finally:
+        _BG = False
     return T
 
 
@@ -642,8 +653,10 @@ def finish_world(T, t):
 
 
 def ground_shadow(x, y, s):
-    """soft violet shadow under a character's feet (world coordinates)"""
-    soft_shadow(x, y + 6 * s, 96 * s, 17 * s, (40, 18, 96), 120, 9 * s)
+    """the shadow that plants a character on the floor (world coordinates): a wide soft one, a tighter one, and a dark contact line right under the shoes"""
+    soft_shadow(x, y + 8 * s, 120 * s, 22 * s, (40, 18, 96), 90, 14 * s)
+    soft_shadow(x, y + 5 * s, 78 * s, 13 * s, (34, 14, 84), 150, 6 * s)
+    soft_shadow(x, y + 2 * s, 54 * s, 6 * s, (26, 10, 70), 190, 2.5 * s)
 
 
 def painterly(T, t):
