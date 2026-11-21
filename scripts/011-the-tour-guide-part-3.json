@@ -54,6 +54,24 @@
    },
    "things": [
     {
+     "type": "prop",
+     "id": "p_crowd_998",
+     "item": "crowd",
+     "x": 190.0,
+     "y": 1196.0,
+     "scale": 1.5,
+     "face": 1
+    },
+    {
+     "type": "prop",
+     "id": "p_train_713",
+     "item": "train",
+     "x": 450.0,
+     "y": 1205.0,
+     "scale": 0.62,
+     "face": 1
+    },
+    {
      "type": "human",
      "id": "tourist",
      "scale": 1.0,
@@ -184,6 +202,18 @@
      },
      "y": 1240.0,
      "x": 470.0
+    },
+    {
+     "type": "puff",
+     "x": 586.4,
+     "y": 982.56,
+     "scale": 1.3,
+     "show": [
+      "@The whistle blew twice",
+      "@The whistle blew twice+1.6"
+     ],
+     "dx": -1,
+     "n": 7
     }
    ],
    "popups": [
@@ -334,7 +364,8 @@
       ]
      },
      "y": 1240.0,
-     "x": 470.0
+     "x": 470.0,
+     "carry": "notebook"
     },
     {
      "type": "human",
@@ -395,7 +426,23 @@
       ]
      },
      "y": 1240.0,
-     "x": 130.0
+     "x": 130.0,
+     "carry": {
+      "step": [
+       [
+        0,
+        null
+       ],
+       [
+        "@pressed a page",
+        "notebook_page"
+       ],
+       [
+        "@It was a map",
+        "map"
+       ]
+      ]
+     }
     }
    ],
    "popups": [
@@ -541,7 +588,8 @@
       ]
      },
      "y": 1240.0,
-     "x": 130.0
+     "x": 130.0,
+     "carry": "map"
     },
     {
      "type": "human",
@@ -738,7 +786,8 @@
       ]
      },
      "y": 1240.0,
-     "x": 470.0
+     "x": 470.0,
+     "carry": "notebook"
     },
     {
      "type": "human",
@@ -799,7 +848,8 @@
       ]
      },
      "y": 1240.0,
-     "x": 130.0
+     "x": 130.0,
+     "carry": "map"
     }
    ],
    "popups": [
@@ -888,6 +938,15 @@
     }
    },
    "things": [
+    {
+     "type": "prop",
+     "id": "p_marching_crowd_595",
+     "item": "marching_crowd",
+     "x": 320.0,
+     "y": 1215.0,
+     "scale": 1.45,
+     "face": 1
+    },
     {
      "type": "human",
      "id": "tourist",
@@ -1116,6 +1175,40 @@
    },
    "things": [
     {
+     "type": "prop",
+     "id": "p_train_747",
+     "item": "train",
+     "x": 300.0,
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": 1
+    },
+    {
+     "type": "prop",
+     "id": "p_train_doors_closing_549",
+     "item": "train_doors_closing",
+     "x": 470.0,
+     "y": 1240.0,
+     "scale": 1.1,
+     "face": 1,
+     "show": [
+      -0.1,
+      "@jammed"
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "p_train_doors_jammed_973",
+     "item": "train_doors_jammed",
+     "x": 470.0,
+     "y": 1240.0,
+     "scale": 1.1,
+     "face": 1,
+     "show": [
+      "@jammed"
+     ]
+    },
+    {
      "type": "human",
      "id": "boy",
      "scale": 1.0,
@@ -1172,7 +1265,23 @@
       ]
      },
      "y": 1240.0,
-     "x": 300.0
+     "x": 250.0,
+     "carry": {
+      "step": [
+       [
+        0,
+        null
+       ],
+       [
+        "@The boy",
+        "folding_chair"
+       ],
+       [
+        "@jammed",
+        "none"
+       ]
+      ]
+     }
     },
     {
      "type": "human",
@@ -1307,7 +1416,7 @@
   },
   {
    "narration": "The tourist missed that train. By dark he was lost again, and this time he asked.",
-   "world": "toon_dusk_street",
+   "world": "toon_night_street",
    "camera": {
     "x": 300,
     "y": 1100,
@@ -1325,6 +1434,30 @@
     }
    },
    "things": [
+    {
+     "type": "prop",
+     "id": "p_train_747",
+     "item": "train",
+     "x": {
+      "kf": [
+       [
+        "@missed that train",
+        330.0
+       ],
+       [
+        "@By dark",
+        1150.0
+       ]
+      ]
+     },
+     "y": 1215.0,
+     "scale": 0.9,
+     "face": 1,
+     "show": [
+      -0.1,
+      "@By dark"
+     ]
+    },
     {
      "type": "human",
      "id": "tourist",

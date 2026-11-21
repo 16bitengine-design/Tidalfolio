@@ -95,3 +95,14 @@ Settings (`puppet/towns.py`): street, park, kitchen, shop, office, classroom, ho
 - `vector.py`: canvas helpers, skies, hills, streets, parks, and the five interiors (kitchen, shop, office, classroom, home)
 - `vector_people.py`: the people (front and walking views), hats, held items, puffs and sparkles
 - world names stay the same (`toon_dawn_shop` = dawn, shop interior); pop-ups, captions and the end card are restyled for this look in `engine.py`
+
+## The director's rule: nothing goes off script
+
+Whatever the narrator names that has a physical form must be on screen, in the scene where he names it, doing what the line says.
+
+- **Built-in props** (`puppet/builtin_props.py`, always available by name, no design needed): `map`, `notebook`, `notebook_page`, `whistle`, `flag`, `folding_chair`, `train` (with its steam whistle), `train_doors_open|closing|closed|jammed`, `door`, `door_open`, `station_clock`, `bridge`, `soup`, `pigeon`, `crowd`, `marching_crowd` (a flag and a folding chair held high). Use one as a scene prop or an actor's `carry`; built-ins are drawn larger in the hand. A story's own `props` designs still work and win on a name clash.
+- **On the narrator's words.** A scene prop takes `"from"` and/or `"to"` (words copied from the narration): it is on screen only between them. Doors are three props swapped on words: `train_doors_closing` until `"jammed"`, then `train_doors_jammed` (the folding chair wedged in the gap). A carry can change too: `"carry": {"step": [[0, null], ["@a folding chair", "folding_chair"], ["@a flag", "flag"]]}` (`"none"` empties the hands).
+- **The dark.** Words that mean darkness (`dark`, `night`, `midnight`, `nightfall` ...) need `"world": "night"`.
+- **The check** (`storyboard._unseen`) runs on every storyboard the writer produces: each word in `MUST_SHOW` (about 150 nameable objects and creatures) must be a scene prop, a carried item, a built-in that answers to that word (`ALIASES`: a map may be a notebook page, a train carries its whistle) or something the setting really paints (`STAGE_HAS`). Otherwise the writer is told, in plain words, which built-in to use, and the story goes back for a rewrite.
+- **The audit** runs the same rule over finished scripts: `python -m puppet.audit [scripts/...json]` (no argument = every script). `puppet_render.py` runs it before every render: a script that fails is not rendered; with `--next` it is logged in `blocked-puppet.txt` and the next clean script in the queue is rendered instead. `--allow-off-script` skips the gate.
+- **Tests:** `python tests/test_director.py`.

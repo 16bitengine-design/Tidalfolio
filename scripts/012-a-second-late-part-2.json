@@ -741,6 +741,31 @@
    },
    "things": [
     {
+     "type": "prop",
+     "id": "p_door_open_560",
+     "item": "door_open",
+     "x": 560.0,
+     "y": 1240.0,
+     "scale": 1.2,
+     "face": 1,
+     "show": [
+      -0.1,
+      "@shut the door"
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "p_door_560",
+     "item": "door",
+     "x": 560.0,
+     "y": 1240.0,
+     "scale": 1.2,
+     "face": 1,
+     "show": [
+      "@shut the door"
+     ]
+    },
+    {
      "type": "human",
      "id": "inspector",
      "scale": 0.92,
@@ -1367,6 +1392,31 @@
     }
    },
    "things": [
+    {
+     "type": "prop",
+     "id": "p_door_560",
+     "item": "door",
+     "x": 560.0,
+     "y": 1240.0,
+     "scale": 1.2,
+     "face": 1,
+     "show": [
+      -0.1,
+      "@opened"
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "p_door_open_560",
+     "item": "door_open",
+     "x": 560.0,
+     "y": 1240.0,
+     "scale": 1.2,
+     "face": 1,
+     "show": [
+      "@opened"
+     ]
+    },
     {
      "type": "human",
      "id": "inspector",

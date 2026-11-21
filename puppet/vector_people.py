@@ -9,6 +9,7 @@ from . import engine as E
 from . import vector as V
 from .people import HAIR, ROLES, SKIN
 from . import design as DZ
+from . import builtin_props as BP
 from .vector import dark, lite, mixc, oval, paint, poly, rad, lin, rrect, smooth, curve
 
 SHOES = [(236, 90, 110), (70, 80, 150), (58, 54, 74), (244, 190, 80), (80, 176, 154), (186, 110, 220)]
@@ -771,7 +772,7 @@ def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c
 def _item(item, hx, hy, f):
     cv = V.cv
     if item in DZ.PROPS:                                   # an object the story's writer designed
-        DZ.draw_recipe(DZ.PROPS[item], hx + 6 * f, hy - 4, 1.0, f)
+        DZ.draw_recipe(DZ.PROPS[item], hx + 6 * f, hy - 4, 1.45 if item in BP.NAMES else 1.0, f)       # the built-in props are drawn a little bigger in the hand so they read at a glance
         return
 
     def box(x0, y0, x1, y1, c, r=5):
