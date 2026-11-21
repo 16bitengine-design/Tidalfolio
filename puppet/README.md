@@ -106,3 +106,7 @@ Whatever the narrator names that has a physical form must be on screen, in the s
 - **The check** (`storyboard._unseen`) runs on every storyboard the writer produces: each word in `MUST_SHOW` (about 150 nameable objects and creatures) must be a scene prop, a carried item, a built-in that answers to that word (`ALIASES`: a map may be a notebook page, a train carries its whistle) or something the setting really paints (`STAGE_HAS`). Otherwise the writer is told, in plain words, which built-in to use, and the story goes back for a rewrite.
 - **The audit** runs the same rule over finished scripts: `python -m puppet.audit [scripts/...json]` (no argument = every script). `puppet_render.py` runs it before every render: a script that fails is not rendered; with `--next` it is logged in `blocked-puppet.txt` and the next clean script in the queue is rendered instead. `--allow-off-script` skips the gate.
 - **Tests:** `python tests/test_director.py`.
+
+## Standing on the floor
+
+People are drawn on the line y = 1240; the background (wall base, kerb, horizon, dressing) is drawn `vector.FLOOR_RAISE` (95) world units higher, so the floor shows behind their feet and they no longer look pasted on the back wall. Only the background moves (`vector._BG`, set inside `stage_world`); people, props, pop-ups and effects keep their coordinates, so no script needs changing. Each character also has a three-layer shadow (wide soft, tighter, and a dark contact line under the shoes: `vector.ground_shadow`). Tests: `python tests/test_grounding.py`.
