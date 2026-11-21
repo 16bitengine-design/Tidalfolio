@@ -17,3 +17,4 @@
 011-the-tour-guide-part-3.json
 012-a-second-late-part-1.json
 012-a-second-late-part-2.json
+012-a-second-late-part-3.json
