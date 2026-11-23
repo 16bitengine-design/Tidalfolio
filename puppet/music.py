@@ -38,6 +38,7 @@ TIDAL_HUSH = [("Dm", [(62, 3), (65, 1), (69, 2)]),      # A  (the question)
 NURSERY_CHORDS = {"Dm": ([50, 57, 62, 65], 38), "G": ([55, 59, 62, 69], 43), "Am": ([57, 60, 64, 71], 45),
                   "F": ([53, 57, 60, 64], 41), "C": ([55, 60, 64, 67], 48)}   # (soft pad notes, bass note)
 NURSERY_HOME = [50, 57, 62, 65]
+NURSERY_LEVEL = {"tender": 0.9, "sad": 0.8, "joyful": 0.75, "playful": 0.6, "calm": 0.55, "eerie": 0.32, "tense": 0.28}   # pad level per tone (the music director's rule)
 
 
 def lullaby_events(total, start=0.4):
@@ -149,11 +150,13 @@ def synth(scenes, starts, durs, total, nt, out_wav, seed=7, outro=4.5, theme="fu
         m = sc.get("music", {})
         clk = Clock(lambda ph, i=sc["_i"]: nt(i, ph), D)
         lv = m.get("pad", 0.5)
+        if nursery:                                    # the lullaby follows the scene's feeling: it swells on tender and sad moments, thins under tension and dread
+            lv = NURSERY_LEVEL.get(sc.get("tone", "calm"), lv)
         pl = m.get("pluck")
         a1 = a0 + D
         last = a1 >= total - 0.01           # the closing scene keeps its level until the outro takes over
         pts_pad += [(a0 + 1.0, lv)] + ([] if last else [(a1 - 0.6, lv)])
-        plv = (max(0.55, min(1.0, lv / 0.6)) if nursery else (1.0 if pl else 0.0))   # the lullaby follows each scene's emotion level
+        plv = (max(0.3, min(1.0, lv / 0.6)) if nursery else (1.0 if pl else 0.0))   # the lullaby follows each scene's emotion level
         pts_pl += [(a0 + 0.8, plv)] + ([] if last else [(a1 - 0.6, plv)])
         if pl and not nursery:
             k, tm = 0, a0 + 0.3
