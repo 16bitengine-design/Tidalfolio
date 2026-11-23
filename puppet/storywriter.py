@@ -21,6 +21,7 @@ from pathlib import Path
 from . import people as PE
 from .storyboard import ITEMS as SB_ITEMS
 from . import builtin_props as BP
+from . import film_team as FT
 
 BP_NAMES = ", ".join(BP.NAMES)
 
@@ -182,6 +183,7 @@ CREATIVE DIRECTION (the Tidal Folio master brief; follow it, within the channel 
 - Silence before revelations and punchlines (use "silence_before").
 - Before you answer, silently check: does the opening create curiosity? is the conflict easy to understand? does every scene give a reason to keep watching? does tension rise rather than stay flat? is there at least one unexpected development? is the comedy situation-driven? are the characters believable? is the climax satisfying and memorable? does the story keep its deeper meaning without explaining it? If any answer is no, rewrite that part first. Story quality beats spectacle, comedy beats noise, essence beats a shocking twist.
 
+{FT.BRIEF}
 STORY IN PARTS: every story is told as {parts_text} consecutive videos (Part 1, Part 2 ...), published one after another. Write ALL parts now, in "parts": [{{"scenes": [...]}}, ...].
 - The parts play one right after another, so the viewer should barely notice where one ends and the next begins. Part 1 opens with the hook. Every later part carries on from the exact moment the previous part stopped: NO recap, NO "previously" and NO announcement that a new part has started. BUT many viewers land on a later part first (the feed shows parts one at a time), so the FIRST SENTENCE of every later part must make sense to someone who never saw the earlier parts: name the main person by role ("the baker", never just "he", "she" or "they") and say in plain words what is wrong or at stake right now, inside the action itself. Each part still has its own small reversal so it never drags.
 - Every part EXCEPT the last ends mid-story on a line that pulls straight into the next scene (a reveal, a worse problem, a question), told like any other line of the story: never "to be continued", never "in the next part", never an instruction.
@@ -230,11 +232,12 @@ q13 EMOTIONAL TOUCH: is there at least one moment that would genuinely move a vi
 q14 SET-UP AND PAYOFF: are at least two early details paid off late in a way that recasts them, with the protagonist's own choices driving the plot? Score 1 or 2 if events are just coincidences.
 q15 SHAREABILITY: would a viewer send this to a friend or retell it at dinner? Is there one line, image or twist people would quote? Score 1 or 2 if it is pleasant but forgettable.
 q16 HOOK: would a stranger scrolling past stop in the first 3 seconds of part 1? Score 1 or 2 if the opening is set-up, weather or introductions.
+""" + FT.EDITOR_QUESTIONS + """
 Reply with ONE JSON object: {"scores": {"q1": 4, ...}, "problems": ["specific, actionable fixes naming the part and scene, only for scores of 1 or 2, max 5"]}"""
 
 
 MIN_AVG = float(os.environ.get("STORY_MIN_SCORE", "3.9"))      # the pass mark: the editor's average over all questions must reach this
-STRICT = ("q10", "q11", "q12", "q13", "q15", "q16")            # endings, originality, voice, heart, shareability, hook: a 3 on any of these is a rewrite
+STRICT = ("q10", "q11", "q12", "q13", "q15", "q16", "q17", "q18", "q19")            # endings, originality, voice, heart, shareability, hook: a 3 on any of these is a rewrite
 
 
 FLOOR_AVG = float(os.environ.get("STORY_FLOOR_SCORE", "2.5"))   # the fallback: if no story reaches the pass mark, the best valid one is still posted when it averages at least this
@@ -662,6 +665,7 @@ def _part_problems(part, cast, k, word, uw_part, n=None):
             mm = META_ENDING.search(str(last.get("narration", "")))
             if mm:
                 bad.append(f"part {k}, last scene: do not announce the next part ('{mm.group(0)}'). Stop on the escalating moment itself and let the curiosity do the work.")
+    bad += FT.direction_problems(part, k)           # the film team: shot rhythm, a quiet held moment, no big gestures on heart scenes, a short line to land
     text = " ".join(str(x.get("narration", "")) for x in (scenes if isinstance(scenes, list) else []))
     runs = {}
     for sc_ in scenes if isinstance(scenes, list) else []:

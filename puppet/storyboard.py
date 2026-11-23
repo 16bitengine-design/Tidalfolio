@@ -24,6 +24,7 @@ Storyboard JSON:
      "fx": [ {"kind": "puff|sparkle|speed", "at": "words", "near": "orrin"} ] } ],
   "youtube": {...}, "tiktok": {...} }
 """
+import os
 import re
 import zlib
 
@@ -32,6 +33,7 @@ from . import design as DZ
 from . import builtin_props as BP
 from . import towns as TW
 
+CHANNEL_THEME = os.environ.get("CHANNEL_THEME", "nursery")      # the channel's music: "nursery" (the lullaby Tidal Hush) or "fusion"
 SPECIES = ("human", "eagle", "squirrel", "rabbit", "cat", "fox")     # new stories use people only; the animals stay for stories already made
 LOOKS = ("orrin", "dad", "mom")
 WORLDS = ("dawn", "day", "dusk", "storm", "night", "sunset")
@@ -815,7 +817,7 @@ def compile_storyboard(sb, number=None):
             "series_part": {"story": title, "part": pi, "of": n},
             "thumbnail_scene": max(1, min(len(scenes), int(part.get("thumbnail_scene", 2)))),
             "thumbnail_hook": str(part.get("thumbnail_hook") or "").strip().upper()[:22],
-            "voice": {"kokoro": "tidal"},
+            "voice": {"kokoro": "tidal"}, "theme": CHANNEL_THEME,
             "story": {"lesson": sb["lesson"].strip(), "cause": sb["cause"]},
             "uncommon_word": {"word": word.get("word", ""), "meaning": word.get("meaning", "")} if pi == 1 else {},
             "props": DZ.sanitize_props(sb.get("props")), "scenes": scenes, "youtube": yt, "tiktok": tt})
