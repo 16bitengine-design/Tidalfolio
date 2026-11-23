@@ -505,7 +505,14 @@ def call_openai(messages, temperature=1.0):
         body = {"model": prov["model"], "messages": messages, "temperature": temperature}
         if use_json_mode:
             body["response_format"] = {"type": "json_object"}
-        r = requests.post(prov["base"] + "/chat/completions", timeout=240, headers={"Authorization": f"Bearer {prov['key']}"}, json=body)
+        try:
+            r = requests.post(prov["base"] + "/chat/completions", timeout=(15, 150), headers={"Authorization": f"Bearer {prov['key']}"}, json=body)
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+            # the provider hung or dropped the connection (a Gemini read timeout failed the 2026-11-22 run): wait and try again
+            last = f"{type(e).__name__}: {str(e)[:200]}"
+            print(f"[llm] {prov['name']} did not answer ({last}); retry {attempt + 1}/7", flush=True)
+            time.sleep(min(60, 10 * (attempt + 1)))
+            continue
         if r.ok:
             content = (r.json()["choices"][0]["message"].get("content") or "")
             return _json_only(content) if prov["name"] != "OpenAI" else content
