@@ -518,11 +518,32 @@ def _pick_gemini_model(prov):
     return sorted(ok)[-1] if ok else None
 
 
+GROQ_PREFER = ("llama-3.3-70b", "gpt-oss-120b", "llama-3.1-70b", "qwen", "llama-4", "gpt-oss-20b", "llama-3.1-8b")
+
+
+def _pick_groq_model(prov):
+    """The Groq model name was refused: ask the API which models this key can use and take the best chat model."""
+    try:
+        r = requests.get(prov["base"] + "/models", headers={"Authorization": f"Bearer {prov['key']}"}, timeout=60)
+        ids = [m.get("id", "") for m in r.json().get("data", []) if m.get("active", True)] if r.ok else []
+    except Exception:
+        ids = []
+    print(f"[llm] Groq models available: {', '.join(ids) or 'none listed'}", flush=True)
+    ids = [i for i in ids if not re.search(r"whisper|tts|guard|embed|orpheus|playai|distil", i, re.I)]
+    for want in GROQ_PREFER:
+        for i in ids:
+            if want in i.lower():
+                return i
+    return ids[0] if ids else None
+
+
 def _call_provider(prov, messages, temperature, attempts):
     """Try one provider up to `attempts` times. Returns (text, None) on success or (None, why) when it is down or out of quota."""
     last, use_json_mode = None, True
     for attempt in range(attempts):
         body = {"model": prov["model"], "messages": messages, "temperature": temperature}
+        if prov["name"] == "Cloudflare":
+            body["max_tokens"] = 7000                                    # Workers AI cuts replies off at a small default, which breaks the JSON
         if use_json_mode:
             body["response_format"] = {"type": "json_object"}
         try:
@@ -539,7 +560,15 @@ def _call_provider(prov, messages, temperature, attempts):
             except (ValueError, KeyError, IndexError, TypeError):
                 last = f"unreadable reply: {r.text[:200]}"
                 continue
-            return (_json_only(content) if prov["name"] != "OpenAI" else content), None
+            if isinstance(content, (dict, list)):                        # some providers return JSON mode output already parsed
+                content = json.dumps(content, ensure_ascii=False)
+            text = _json_only(content) if prov["name"] != "OpenAI" else content
+            try:
+                json.loads(text)
+            except ValueError:
+                print(f"[llm] {prov['name']} reply is not valid JSON (finish_reason={r.json()['choices'][0].get('finish_reason')}, "
+                      f"{len(content)} chars). Start: {content[:150]!r} End: {content[-100:]!r}", flush=True)
+            return text, None
         last = f"{r.status_code} {r.text[:300]}"
         if r.status_code == 400 and use_json_mode and "response_format" in r.text:
             use_json_mode = False                                        # this model has no JSON mode: the prompt already asks for JSON only
@@ -550,6 +579,13 @@ def _call_provider(prov, messages, temperature, attempts):
                 print(f"[llm] model {prov['model']} not found; using {picked}", flush=True)
                 prov["model"] = picked
                 os.environ["LLM_MODEL"] = picked
+                continue
+        if r.status_code == 404 and prov["name"] == "Groq" and not os.environ.get("GROQ_MODEL") and not prov.get("picked"):
+            picked = _pick_groq_model(prov)
+            prov["picked"] = True
+            if picked and picked != prov["model"]:
+                print(f"[llm] Groq model {prov['model']} not available; using {picked}", flush=True)
+                prov["model"] = picked
                 continue
         if r.status_code == 429 and re.search(r"per ?day|daily|RequestsPerDay|exhausted|exceeded your current quota|credit|insufficient", r.text, re.I):
             break                                                        # the day's free quota (or the credit) is used up: waiting will not help
