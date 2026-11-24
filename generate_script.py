@@ -539,7 +539,7 @@ def _pick_groq_model(prov):
 
 def _call_provider(prov, messages, temperature, attempts):
     """Try one provider up to `attempts` times. Returns (text, None) on success or (None, why) when it is down or out of quota."""
-    last, use_json_mode = None, True
+    last, use_json_mode, timeouts = None, True, 0
     for attempt in range(attempts):
         body = {"model": prov["model"], "messages": messages, "temperature": temperature}
         if prov["name"] == "Cloudflare":
@@ -552,6 +552,9 @@ def _call_provider(prov, messages, temperature, attempts):
             # the provider hung or dropped the connection (a Gemini read timeout failed the 2026-11-22 run): wait and try again
             last = f"{type(e).__name__}: {str(e)[:200]}"
             print(f"[llm] {prov['name']} did not answer ({last}); try {attempt + 1}/{attempts}", flush=True)
+            timeouts += 1
+            if timeouts >= 2:
+                break                                                    # two hung requests (150 s each): let the next provider try
             time.sleep(min(60, 10 * (attempt + 1)))
             continue
         if r.ok:
@@ -602,23 +605,34 @@ def _call_provider(prov, messages, temperature, attempts):
     return None, last
 
 
+TEMPORARY = re.compile(r"Timeout|ConnectionError|\b50[0-4]\b|UNAVAILABLE|overloaded|high demand|PerMinute|per minute|rate limit", re.I)
+
+
 def call_openai(messages, temperature=1.0):
     """One chat-completion call that returns a JSON string. (The name is historical: it serves Gemini, Groq, Cloudflare or OpenAI.)
-    If the preferred provider is down or out of quota, the next one that is set up answers instead, and stays preferred for the rest of the run."""
-    ps = providers()
-    if not ps:
+    If the preferred provider is down or out of quota, the next one that is set up answers instead, and stays preferred for the rest of the run.
+    If every provider failed and at least one failure looks temporary (overloaded, timed out, per-minute limit), wait and go round once more."""
+    if not providers():
         llm_provider()                                                   # exits with the "no key" message
     failures = []
-    for k, prov in enumerate(list(ps)):
-        text, why = _call_provider(prov, messages, temperature, 7 if k == len(ps) - 1 else 4)
-        if text is not None:
-            if failures:
-                print(f"[llm] answered by {prov['name']} after: " + " | ".join(failures), flush=True)
-                _prefer(prov["name"])
-            return text
-        failures.append(f"{prov['name']}: {why}")
-        if k < len(ps) - 1:
-            print(f"[llm] {prov['name']} failed ({why}); switching to {ps[k + 1]['name']}", flush=True)
+    for rnd in range(2):
+        ps = providers()
+        failures = []
+        for k, prov in enumerate(ps):
+            text, why = _call_provider(prov, messages, temperature, 7 if k == len(ps) - 1 else 4)
+            if text is not None:
+                if failures or rnd:
+                    print(f"[llm] answered by {prov['name']} after: " + (" | ".join(failures) or "an earlier round of failures"), flush=True)
+                    _prefer(prov["name"])
+                return text
+            failures.append(f"{prov['name']}: {why}")
+            if k < len(ps) - 1:
+                print(f"[llm] {prov['name']} failed ({str(why)[:120]}); switching to {ps[k + 1]['name']}", flush=True)
+        if rnd == 0 and any(TEMPORARY.search(f) for f in failures):
+            print("[llm] every provider failed, some only for now (busy or timed out): waiting 90 s and trying them all once more", flush=True)
+            time.sleep(90)
+            continue
+        break
     sys.exit("All text models failed: " + " | ".join(failures))
 
 
