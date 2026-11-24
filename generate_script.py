@@ -465,16 +465,37 @@ def validate(d, mirror=True):
 GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/openai"
 
 
-def llm_provider():
-    """Which text model writes the stories. A free Gemini key (GEMINI_API_KEY, from aistudio.google.com, no card) wins when present;
-    otherwise OpenAI (OPENAI_API_KEY). Both speak the same chat-completions format."""
+GROQ_BASE = "https://api.groq.com/openai/v1"
+
+
+def providers():
+    """Every text model that is set up, in the order they are tried: free Gemini first, then Groq, then Cloudflare Workers AI,
+    then OpenAI. When one is down, rate-limited or out of daily quota, the next one writes the story. All speak the chat-completions format.
+    Keys: GEMINI_API_KEY, GROQ_API_KEY, CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID, OPENAI_API_KEY."""
+    out = []
     if os.environ.get("GEMINI_API_KEY"):
-        return dict(name="Gemini", base=GEMINI_BASE, key=os.environ["GEMINI_API_KEY"],
-                    model=os.environ.get("LLM_MODEL") or "gemini-flash-latest")
+        out.append(dict(name="Gemini", base=GEMINI_BASE, key=os.environ["GEMINI_API_KEY"],
+                        model=os.environ.get("LLM_MODEL") or "gemini-flash-latest"))
+    if os.environ.get("GROQ_API_KEY"):
+        out.append(dict(name="Groq", base=GROQ_BASE, key=os.environ["GROQ_API_KEY"],
+                        model=os.environ.get("GROQ_MODEL") or "llama-3.3-70b-versatile"))
+    if os.environ.get("CLOUDFLARE_API_TOKEN") and os.environ.get("CLOUDFLARE_ACCOUNT_ID"):
+        out.append(dict(name="Cloudflare", key=os.environ["CLOUDFLARE_API_TOKEN"],
+                        base=f"https://api.cloudflare.com/client/v4/accounts/{os.environ['CLOUDFLARE_ACCOUNT_ID']}/ai/v1",
+                        model=os.environ.get("CLOUDFLARE_MODEL") or "@cf/meta/llama-3.3-70b-instruct-fp8-fast"))
     if os.environ.get("OPENAI_API_KEY"):
-        return dict(name="OpenAI", base="https://api.openai.com/v1", key=os.environ["OPENAI_API_KEY"],
-                    model=os.environ.get("OPENAI_TEXT_MODEL") or "gpt-4o-mini")
-    sys.exit("No text-model key is set: add GEMINI_API_KEY (free, aistudio.google.com) or OPENAI_API_KEY as a GitHub secret (see README).")
+        out.append(dict(name="OpenAI", base="https://api.openai.com/v1", key=os.environ["OPENAI_API_KEY"],
+                        model=os.environ.get("OPENAI_TEXT_MODEL") or "gpt-4o-mini"))
+    out.sort(key=lambda p: p["name"] not in _PREFERRED)                  # stable: the provider that last worked goes first
+    return out
+
+
+def llm_provider():
+    """The first (preferred) text model that is set up."""
+    ps = providers()
+    if not ps:
+        sys.exit("No text-model key is set: add GEMINI_API_KEY (free, aistudio.google.com), GROQ_API_KEY, CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID or OPENAI_API_KEY as a GitHub secret (see README).")
+    return ps[0]
 
 
 def _json_only(text):
@@ -497,11 +518,10 @@ def _pick_gemini_model(prov):
     return sorted(ok)[-1] if ok else None
 
 
-def call_openai(messages, temperature=1.0):
-    """One chat-completion call that returns a JSON string. (The name is historical: it serves Gemini or OpenAI.)"""
-    prov = llm_provider()
+def _call_provider(prov, messages, temperature, attempts):
+    """Try one provider up to `attempts` times. Returns (text, None) on success or (None, why) when it is down or out of quota."""
     last, use_json_mode = None, True
-    for attempt in range(7):
+    for attempt in range(attempts):
         body = {"model": prov["model"], "messages": messages, "temperature": temperature}
         if use_json_mode:
             body["response_format"] = {"type": "json_object"}
@@ -510,12 +530,16 @@ def call_openai(messages, temperature=1.0):
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
             # the provider hung or dropped the connection (a Gemini read timeout failed the 2026-11-22 run): wait and try again
             last = f"{type(e).__name__}: {str(e)[:200]}"
-            print(f"[llm] {prov['name']} did not answer ({last}); retry {attempt + 1}/7", flush=True)
+            print(f"[llm] {prov['name']} did not answer ({last}); try {attempt + 1}/{attempts}", flush=True)
             time.sleep(min(60, 10 * (attempt + 1)))
             continue
         if r.ok:
-            content = (r.json()["choices"][0]["message"].get("content") or "")
-            return _json_only(content) if prov["name"] != "OpenAI" else content
+            try:
+                content = (r.json()["choices"][0]["message"].get("content") or "")
+            except (ValueError, KeyError, IndexError, TypeError):
+                last = f"unreadable reply: {r.text[:200]}"
+                continue
+            return (_json_only(content) if prov["name"] != "OpenAI" else content), None
         last = f"{r.status_code} {r.text[:300]}"
         if r.status_code == 400 and use_json_mode and "response_format" in r.text:
             use_json_mode = False                                        # this model has no JSON mode: the prompt already asks for JSON only
@@ -527,12 +551,40 @@ def call_openai(messages, temperature=1.0):
                 prov["model"] = picked
                 os.environ["LLM_MODEL"] = picked
                 continue
-        if r.status_code == 429 and re.search(r"per ?day|daily|RequestsPerDay|exhausted|credit|insufficient", r.text, re.I):
+        if r.status_code == 429 and re.search(r"per ?day|daily|RequestsPerDay|exhausted|exceeded your current quota|credit|insufficient", r.text, re.I):
             break                                                        # the day's free quota (or the credit) is used up: waiting will not help
-        if r.status_code in (400, 401, 403, 404):                        # won't fix itself by retrying
+        if r.status_code in (400, 401, 403, 404, 413):                   # won't fix itself by retrying
             break
         time.sleep(min(60, 8 * (attempt + 1)) if r.status_code == 429 else 5 * (attempt + 1))   # free tiers allow only a few requests a minute
-    sys.exit(f"{prov['name']} request failed: {last}")
+    return None, last
+
+
+def call_openai(messages, temperature=1.0):
+    """One chat-completion call that returns a JSON string. (The name is historical: it serves Gemini, Groq, Cloudflare or OpenAI.)
+    If the preferred provider is down or out of quota, the next one that is set up answers instead, and stays preferred for the rest of the run."""
+    ps = providers()
+    if not ps:
+        llm_provider()                                                   # exits with the "no key" message
+    failures = []
+    for k, prov in enumerate(list(ps)):
+        text, why = _call_provider(prov, messages, temperature, 7 if k == len(ps) - 1 else 4)
+        if text is not None:
+            if failures:
+                print(f"[llm] answered by {prov['name']} after: " + " | ".join(failures), flush=True)
+                _prefer(prov["name"])
+            return text
+        failures.append(f"{prov['name']}: {why}")
+        if k < len(ps) - 1:
+            print(f"[llm] {prov['name']} failed ({why}); switching to {ps[k + 1]['name']}", flush=True)
+    sys.exit("All text models failed: " + " | ".join(failures))
+
+
+_PREFERRED = []
+
+
+def _prefer(name):
+    """Remember which provider last worked, so the rest of the run does not keep retrying one that is out of quota."""
+    _PREFERRED[:] = [name]
 
 
 PUNCH_UP_PROMPT = """You are a ruthless script editor for a deadpan animal-comedy channel. Below is a valid draft script (JSON).
