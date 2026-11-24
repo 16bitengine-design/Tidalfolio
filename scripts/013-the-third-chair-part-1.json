@@ -1,0 +1,1720 @@
+{
+ "engine": "puppet",
+ "look": "vector",
+ "cast_species": [
+  "human"
+ ],
+ "cast_roles": [
+  "referee",
+  "neighbour",
+  "boy"
+ ],
+ "cast_lead": {
+  "role": "referee",
+  "gender": "male"
+ },
+ "slug": "013-the-third-chair-part-1",
+ "title": "Funny People #13: The Third Chair (Part 1/3)",
+ "short_title": "The Third Chair",
+ "series_part": {
+  "story": "Funny People #13: The Third Chair",
+  "part": 1,
+  "of": 3
+ },
+ "thumbnail_scene": 7,
+ "thumbnail_hook": "SHE DIDN'T KNOCK",
+ "voice": {
+  "kokoro": "tidal"
+ },
+ "theme": "nursery",
+ "story": {
+  "lesson": "A fair rule can still be unkind, so ask who it silences before you enforce it.",
+  "cause": "believed"
+ },
+ "uncommon_word": {
+  "word": "impartial",
+  "meaning": "fair to both sides"
+ },
+ "props": {},
+ "scenes": [
+  {
+   "narration": "The referee blew his whistle, and two neighbours froze mid-shout.",
+   "world": "toon_dusk_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "referee",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "referee",
+     "gender": "male",
+     "age": "elder",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "hips",
+     "seed": 4,
+     "design": {
+      "build": "broad",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       36,
+       34,
+       44
+      ],
+      "bottom": [
+       36,
+       34,
+       44
+      ],
+      "accent": [
+       250,
+       210,
+       70
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "none",
+      "hair_style": "bald",
+      "hair": "white",
+      "skin": "brown",
+      "accessories": [
+       "mustache"
+      ]
+     },
+     "carry": "whistle",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "neighbour",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "neighbour",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "grey",
+     "extras": [
+      "glasses",
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      -8,
+      10
+     ],
+     "mood": "angry",
+     "action": "point",
+     "seed": 17,
+     "bounce": {
+      "sin": {
+       "amp": 2.5,
+       "rate": 22,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 0.0,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      -8,
+      10
+     ],
+     "mood": "angry",
+     "action": "flap",
+     "seed": 38,
+     "bounce": {
+      "sin": {
+       "amp": 2.5,
+       "rate": 22,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "FREEZE!",
+     "at": "@blew his whistle",
+     "dur": 2.2,
+     "x": 340,
+     "y": 796,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "She said the boy stomped. He said she banged the ceiling. Both were right.",
+   "world": "toon_day_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "neighbour",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "neighbour",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "grey",
+     "extras": [
+      "glasses",
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      -8,
+      10
+     ],
+     "mood": "angry",
+     "action": "talk",
+     "seed": 17,
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": 0.6,
+       "to": "@end-1.0"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 2.5,
+       "rate": 22,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 0.0,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "referee",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "referee",
+     "gender": "male",
+     "age": "elder",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "think",
+     "seed": 4,
+     "design": {
+      "build": "broad",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       36,
+       34,
+       44
+      ],
+      "bottom": [
+       36,
+       34,
+       44
+      ],
+      "accent": [
+       250,
+       210,
+       70
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "none",
+      "hair_style": "bald",
+      "hair": "white",
+      "skin": "brown",
+      "accessories": [
+       "mustache"
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "shrug",
+     "seed": 38,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "BANG!",
+     "at": "@banged the ceiling",
+     "dur": 2.2,
+     "x": 170,
+     "y": 796,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "So he set out three chairs, though he had never once sat in one.",
+   "world": "toon_day_home",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "prop",
+     "id": "prop0",
+     "item": "folding_chair",
+     "x": 300.0,
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": 1
+    },
+    {
+     "type": "prop",
+     "id": "prop1",
+     "item": "folding_chair",
+     "x": 470.0,
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": 1
+    },
+    {
+     "type": "human",
+     "id": "referee",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "referee",
+     "gender": "male",
+     "age": "elder",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "place",
+     "seed": 4,
+     "design": {
+      "build": "broad",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       36,
+       34,
+       44
+      ],
+      "bottom": [
+       36,
+       34,
+       44
+      ],
+      "accent": [
+       250,
+       210,
+       70
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "none",
+      "hair_style": "bald",
+      "hair": "white",
+      "skin": "brown",
+      "accessories": [
+       "mustache"
+      ]
+     },
+     "carry": "folding_chair",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "Nobody had asked him for a ruling in years. Every night, he polished the whistle anyway.",
+   "world": "toon_night_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "referee",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "referee",
+     "gender": "male",
+     "age": "elder",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "hold",
+     "seed": 4,
+     "design": {
+      "build": "broad",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       36,
+       34,
+       44
+      ],
+      "bottom": [
+       36,
+       34,
+       44
+      ],
+      "accent": [
+       250,
+       210,
+       70
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "none",
+      "hair_style": "bald",
+      "hair": "white",
+      "skin": "brown",
+      "accessories": [
+       "mustache"
+      ]
+     },
+     "carry": "whistle",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      41,
+      48,
+      53,
+      57
+     ],
+     [
+      43,
+      50,
+      55,
+      58
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ]
+    ],
+    "pluck": {
+     "step": 2.3,
+     "notes": [
+      4,
+      3,
+      2,
+      1,
+      0,
+      0
+     ],
+     "vol": 0.55,
+     "scale": [
+      57,
+      60,
+      62,
+      64,
+      67,
+      69
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "sad"
+  },
+  {
+   "narration": "He was impartial, so both of them hated him equally. Nothing after nine, he ruled.",
+   "world": "toon_day_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "referee",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "referee",
+     "gender": "male",
+     "age": "elder",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "point",
+     "seed": 4,
+     "design": {
+      "build": "broad",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       36,
+       34,
+       44
+      ],
+      "bottom": [
+       36,
+       34,
+       44
+      ],
+      "accent": [
+       250,
+       210,
+       70
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "none",
+      "hair_style": "bald",
+      "hair": "white",
+      "skin": "brown",
+      "accessories": [
+       "mustache"
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "neighbour",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "neighbour",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "grey",
+     "extras": [
+      "glasses",
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      -8,
+      10
+     ],
+     "mood": "angry",
+     "action": "facepalm",
+     "seed": 17,
+     "bounce": {
+      "sin": {
+       "amp": 2.5,
+       "rate": 22,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 0.0,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "cower",
+     "seed": 38,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "NINE?!",
+     "at": "@Nothing after nine",
+     "dur": 2.2,
+     "x": 470,
+     "y": 912,
+     "size": 52,
+     "shape": "bubble"
+    }
+   ],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "The whole building obeyed, and he slept well.",
+   "world": "toon_night_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "referee",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "referee",
+     "gender": "male",
+     "age": "elder",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "closed",
+     "brow": [
+      8,
+      6
+     ],
+     "mood": "sleepy",
+     "action": "stand",
+     "seed": 4,
+     "design": {
+      "build": "broad",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       36,
+       34,
+       44
+      ],
+      "bottom": [
+       36,
+       34,
+       44
+      ],
+      "accent": [
+       250,
+       210,
+       70
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "none",
+      "hair_style": "bald",
+      "hair": "white",
+      "skin": "brown",
+      "accessories": [
+       "mustache"
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.45,
+    "pluck": {
+     "step": 1.6,
+     "notes": [
+      0,
+      3,
+      2,
+      4
+     ],
+     "vol": 0.5
+    }
+   },
+   "tone": "calm"
+  },
+  {
+   "narration": "At ten past nine, the boy knocked on his door and whispered, \"She didn't knock back.\"",
+   "world": "toon_night_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "prop",
+     "id": "prop0",
+     "item": "door",
+     "x": 300.0,
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": 1
+    },
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "tan",
+     "hair": "black",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "mood": "scared",
+     "action": "clasp",
+     "seed": 38,
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 30,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "referee",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "referee",
+     "gender": "male",
+     "age": "elder",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "stand",
+     "seed": 4,
+     "design": {
+      "build": "broad",
+      "height": 1.05,
+      "top_style": "shirt",
+      "top": [
+       36,
+       34,
+       44
+      ],
+      "bottom": [
+       36,
+       34,
+       44
+      ],
+      "accent": [
+       250,
+       210,
+       70
+      ],
+      "shoes": [
+       36,
+       34,
+       44
+      ],
+      "hat": "none",
+      "hair_style": "bald",
+      "hair": "white",
+      "skin": "brown",
+      "accessories": [
+       "mustache"
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "NO KNOCK?",
+     "at": "@didn't knock back",
+     "dur": 2.2,
+     "x": 170,
+     "y": 886,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      41,
+      47,
+      53,
+      59
+     ],
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      39,
+      46,
+      51,
+      58
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.3
+    },
+    "pluck": {
+     "step": 2.0,
+     "notes": [
+      0,
+      5,
+      2,
+      6,
+      1
+     ],
+     "vol": 0.55,
+     "scale": [
+      76,
+      77,
+      82,
+      83,
+      88,
+      89,
+      94
+     ],
+     "len": 2.6
+    }
+   },
+   "tone": "eerie"
+  }
+ ],
+ "youtube": {
+  "description": "A retired referee settles a feud between an old woman and the boy upstairs with one fair ruling, and the building goes quiet. Too quiet. A story about the noise nobody should have banned.\n\nPart 1 of 3. Part 2 is next.",
+  "tags": [
+   "short story",
+   "funny stories",
+   "everyday life",
+   "neighbours",
+   "animated story",
+   "storytelling",
+   "comedy",
+   "heartwarming",
+   "referee",
+   "cartoon story"
+  ],
+  "pinned_comment": "Has a rule ever made someone around you quieter than you meant?",
+  "title": "Funny People #13: The Third Chair (Part 1/3)"
+ },
+ "tiktok": {
+  "caption": "Part 1/3: He ruled the noise out. Nobody told him it was a goodnight.",
+  "hashtags": [
+   "#storytime",
+   "#funnystories",
+   "#neighbours",
+   "#heartwarming",
+   "#animatedstory"
+  ]
+ }
+}
