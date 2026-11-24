@@ -544,8 +544,8 @@ def _sanitize(part, cast=None):
                 at = a.get("at") if a.get("at") in free else (free[1] if free[1:] and "ground_mid" in free else free[0])
                 free.remove(at)
                 a["at"] = at
-                if a.get("carry") and a["carry"] not in SB.ITEMS:
-                    a.pop("carry")
+                if a.get("carry") and a["carry"] not in SB.ITEMS and a["carry"] not in SB.DZ.with_builtins(None):
+                    a.pop("carry")                      # built-in props (whistle, map, notebook_page ...) may be carried too; only unknown things are dropped
             if isinstance(sc.get("actors"), list):
                 sc["actors"] = acts
         sc["tone"] = SB.tone_of(sc)                   # synonyms ("funny", "scary") are mapped; an old "music" key still works

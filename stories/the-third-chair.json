@@ -1,0 +1,687 @@
+{
+ "title": "The Third Chair",
+ "lesson": "A fair rule can still be unkind, so ask who it silences before you enforce it.",
+ "cause": "believed",
+ "uncommon_word": {
+  "word": "impartial",
+  "meaning": "fair to both sides"
+ },
+ "cast": {
+  "referee": {
+   "role": "referee",
+   "gender": "male",
+   "age": "elder",
+   "design": {
+    "build": "broad",
+    "height": 1.05,
+    "hair_style": "bald",
+    "hair": "white",
+    "skin": "brown",
+    "top_style": "shirt",
+    "top": "black",
+    "bottom": "black",
+    "accent": "yellow",
+    "shoes": "black",
+    "hat": "none",
+    "accessories": [
+     "mustache"
+    ]
+   }
+  },
+  "neighbour": {
+   "role": "neighbour",
+   "gender": "female",
+   "age": "elder",
+   "skin": "light",
+   "hair": "grey",
+   "extras": [
+    "glasses",
+    "bun"
+   ]
+  },
+  "boy": {
+   "role": "boy",
+   "gender": "male",
+   "age": "child",
+   "skin": "tan",
+   "hair": "black"
+  }
+ },
+ "tone": "dry comedy that turns tender at the end",
+ "tone_arc": [
+  "tense, playful, sad, playful, calm, eerie",
+  "sad, tender, tense, tense, playful, sad, tense",
+  "tense, tense, tender, tender, playful, playful, tender"
+ ],
+ "planted_detail": "The referee sets out three chairs for every hearing, though he has never once sat in one.",
+ "twist": "The nightly bangs and stomps were never a feud but a goodnight, and the only person who never got an answer was the referee himself.",
+ "outline": [
+  "A retired referee settles a feud between an old woman who bangs her ceiling and the boy upstairs who stomps. He rules: nothing after nine. ENDS ON: the boy knocks at his door at ten past nine, whispering that she did not knock back.",
+  "The old woman sits in silence: the bangs and stomps were their goodnight. The building backs the ruling and the referee cannot say sorry. ENDS ON: the old woman announces she is moving out tomorrow.",
+  "He overrules himself, sits in the third chair for the first time and restores the goodnight. That night the whole building knocks back to him."
+ ],
+ "parts": [
+  {
+   "thumbnail_scene": 7,
+   "thumbnail_hook": "SHE DIDN'T KNOCK",
+   "scenes": [
+    {
+     "narration": "The referee blew his whistle, and two neighbours froze mid-shout.",
+     "world": "day",
+     "stage": "home",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "smug",
+       "action": "hips",
+       "carry": "whistle"
+      },
+      {
+       "who": "neighbour",
+       "at": "ground_left",
+       "mood": "angry",
+       "action": "point"
+      },
+      {
+       "who": "boy",
+       "at": "ground_right",
+       "mood": "angry",
+       "action": "flap"
+      }
+     ],
+     "popups": [
+      {
+       "text": "FREEZE!",
+       "kind": "burst",
+       "at": "blew his whistle",
+       "near": "referee"
+      }
+     ]
+    },
+    {
+     "narration": "She said the boy stomped. He said she banged the ceiling. Both were right.",
+     "world": "day",
+     "stage": "home",
+     "camera": "hold",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "neighbour",
+       "at": "ground_left",
+       "mood": "angry",
+       "action": "talk"
+      },
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "neutral",
+       "action": "think"
+      },
+      {
+       "who": "boy",
+       "at": "ground_right",
+       "mood": "smug",
+       "action": "shrug"
+      }
+     ],
+     "popups": [
+      {
+       "text": "BANG!",
+       "kind": "burst",
+       "at": "banged the ceiling",
+       "near": "neighbour"
+      }
+     ]
+    },
+    {
+     "narration": "So he set out three chairs, though he had never once sat in one.",
+     "world": "day",
+     "stage": "home",
+     "camera": "pan_right",
+     "tone": "playful",
+     "props": [
+      {
+       "item": "folding_chair",
+       "at": "ground_mid",
+       "size": 1.0
+      },
+      {
+       "item": "folding_chair",
+       "at": "ground_right",
+       "size": 1.0
+      }
+     ],
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_left",
+       "mood": "smug",
+       "action": "place",
+       "carry": "folding_chair"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "Nobody had asked him for a ruling in years. Every night, he polished the whistle anyway.",
+     "world": "night",
+     "stage": "home",
+     "camera": "pull_back",
+     "tone": "sad",
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "hold",
+       "carry": "whistle"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "He was impartial, so both of them hated him equally. Nothing after nine, he ruled.",
+     "world": "day",
+     "stage": "home",
+     "camera": "push_in",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "smug",
+       "action": "point"
+      },
+      {
+       "who": "neighbour",
+       "at": "ground_left",
+       "mood": "angry",
+       "action": "facepalm"
+      },
+      {
+       "who": "boy",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "cower"
+      }
+     ],
+     "popups": [
+      {
+       "text": "NINE?!",
+       "kind": "bubble",
+       "at": "Nothing after nine",
+       "near": "boy"
+      }
+     ]
+    },
+    {
+     "narration": "The whole building obeyed, and he slept well.",
+     "world": "night",
+     "stage": "home",
+     "camera": "hold",
+     "tone": "calm",
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "sleepy",
+       "action": "stand"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "At ten past nine, the boy knocked on his door and whispered, \"She didn't knock back.\"",
+     "world": "night",
+     "stage": "home",
+     "camera": "push_in",
+     "tone": "eerie",
+     "props": [
+      {
+       "item": "door",
+       "at": "ground_mid",
+       "size": 1.0
+      }
+     ],
+     "actors": [
+      {
+       "who": "boy",
+       "at": "ground_left",
+       "mood": "scared",
+       "action": "clasp"
+      },
+      {
+       "who": "referee",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "stand"
+      }
+     ],
+     "popups": [
+      {
+       "text": "NO KNOCK?",
+       "kind": "burst",
+       "at": "didn't knock back",
+       "near": "boy"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "thumbnail_scene": 7,
+   "thumbnail_hook": "I MOVE TOMORROW",
+   "scenes": [
+    {
+     "narration": "The old woman sat alone in the dark, obeying the referee's ruling.",
+     "world": "night",
+     "stage": "home",
+     "camera": "push_in",
+     "tone": "sad",
+     "actors": [
+      {
+       "who": "neighbour",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "hugself"
+      }
+     ],
+     "popups": [
+      {
+       "text": "SILENCE.",
+       "kind": "burst",
+       "at": "sat in the dark",
+       "near": "neighbour"
+      }
+     ]
+    },
+    {
+     "narration": "Three bangs from her. Three stomps from him. Goodnight, every night, since he was four.",
+     "world": "night",
+     "stage": "home",
+     "camera": "hold",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "neighbour",
+       "at": "ground_left",
+       "mood": "happy",
+       "action": "clasp"
+      },
+      {
+       "who": "boy",
+       "at": "ground_right",
+       "mood": "happy",
+       "action": "clasp"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "Nobody had told him it was a language.",
+     "world": "night",
+     "stage": "home",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "shocked",
+       "action": "think"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "But a ruling is a ruling, and the whole building had come to hear it.",
+     "world": "night",
+     "stage": "home",
+     "camera": "pull_back",
+     "tone": "tense",
+     "props": [
+      {
+       "item": "crowd",
+       "at": "ground_mid",
+       "size": 1.0
+      }
+     ],
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "scared",
+       "action": "hold",
+       "carry": "whistle"
+      },
+      {
+       "who": "neighbour",
+       "at": "ground_left",
+       "mood": "sad",
+       "action": "stand"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The crowd liked the quiet. \"Rules are rules,\" they said. \"You made it.\"",
+     "world": "night",
+     "stage": "home",
+     "camera": "hold",
+     "tone": "playful",
+     "props": [
+      {
+       "item": "crowd",
+       "at": "ground_mid",
+       "size": 1.0
+      }
+     ],
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "scared",
+       "action": "shrug"
+      },
+      {
+       "who": "neighbour",
+       "at": "ground_left",
+       "mood": "sad",
+       "action": "wipe"
+      }
+     ],
+     "popups": [
+      {
+       "text": "RULES ARE RULES",
+       "kind": "bubble",
+       "at": "Rules are rules",
+       "near": "referee"
+      }
+     ]
+    },
+    {
+     "narration": "He had blown the whistle on three hundred games and never once said sorry.",
+     "world": "night",
+     "stage": "home",
+     "camera": "push_in",
+     "tone": "sad",
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "hold",
+       "carry": "whistle"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "Then the old woman spoke: \"My daughter has a quiet flat. I move tomorrow.\"",
+     "world": "night",
+     "stage": "home",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "neighbour",
+       "at": "ground_left",
+       "mood": "sad",
+       "action": "talk"
+      },
+      {
+       "who": "referee",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "stand"
+      }
+     ],
+     "popups": [
+      {
+       "text": "TOMORROW?!",
+       "kind": "burst",
+       "at": "I move tomorrow",
+       "near": "referee"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "thumbnail_scene": 4,
+   "thumbnail_hook": "THE THIRD CHAIR",
+   "scenes": [
+    {
+     "narration": "The referee had one night to overrule himself.",
+     "world": "night",
+     "stage": "home",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "scared",
+       "action": "think"
+      }
+     ],
+     "popups": [
+      {
+       "text": "ONE NIGHT.",
+       "kind": "burst",
+       "at": "one night",
+       "near": "referee"
+      }
+     ]
+    },
+    {
+     "narration": "At dawn he set out the three chairs on the landing, wiped each one, and waited.",
+     "world": "dawn",
+     "stage": "home",
+     "camera": "pan_left",
+     "tone": "tense",
+     "props": [
+      {
+       "item": "folding_chair",
+       "at": "ground_mid",
+       "size": 1.0
+      },
+      {
+       "item": "folding_chair",
+       "at": "ground_right",
+       "size": 1.0
+      }
+     ],
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_left",
+       "mood": "neutral",
+       "action": "place",
+       "carry": "folding_chair"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The boy came first. Then the old woman.",
+     "world": "dawn",
+     "stage": "home",
+     "camera": "hold",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "boy",
+       "at": "ground_left",
+       "mood": "scared",
+       "action": "clasp"
+      },
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "neutral",
+       "action": "stand"
+      },
+      {
+       "who": "neighbour",
+       "at": "ground_right",
+       "mood": "sad",
+       "action": "hugself"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "For the first time in thirty years, the referee sat down in the third chair, between them.",
+     "world": "dawn",
+     "stage": "home",
+     "camera": "pull_back",
+     "tone": "tender",
+     "silence_before": "the third chair",
+     "props": [
+      {
+       "item": "folding_chair",
+       "at": "ground_left",
+       "size": 1.5
+      },
+      {
+       "item": "folding_chair",
+       "at": "ground_mid",
+       "size": 1.5
+      },
+      {
+       "item": "folding_chair",
+       "at": "ground_right",
+       "size": 1.5
+      }
+     ],
+     "actors": [
+      {
+       "who": "boy",
+       "at": "ground_left",
+       "mood": "sad",
+       "action": "stand"
+      },
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "clasp"
+      },
+      {
+       "who": "neighbour",
+       "at": "ground_right",
+       "mood": "sad",
+       "action": "stand"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "\"New ruling,\" he said. \"Three bangs, three stomps, every evening after nine, as always.\"",
+     "world": "day",
+     "stage": "home",
+     "camera": "push_in",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "talk"
+      },
+      {
+       "who": "neighbour",
+       "at": "ground_left",
+       "mood": "happy",
+       "action": "clasp"
+      },
+      {
+       "who": "boy",
+       "at": "ground_right",
+       "mood": "happy",
+       "action": "wipe"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The crowd groaned. He blew the whistle once, and they all went home.",
+     "world": "day",
+     "stage": "home",
+     "camera": "hold",
+     "tone": "playful",
+     "props": [
+      {
+       "item": "crowd",
+       "at": "ground_mid",
+       "size": 1.0
+      }
+     ],
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "smug",
+       "action": "point",
+       "carry": "whistle"
+      }
+     ],
+     "popups": [
+      {
+       "text": "OH, COME ON.",
+       "kind": "bubble",
+       "at": "The crowd groaned",
+       "near": "referee"
+      }
+     ]
+    },
+    {
+     "narration": "That night he knocked three times on his wall, and the whole building knocked back.",
+     "world": "night",
+     "stage": "home",
+     "camera": "pull_back",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "referee",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "reach"
+      }
+     ],
+     "popups": []
+    }
+   ]
+  }
+ ],
+ "youtube": {
+  "description": "A retired referee settles a feud between an old woman and the boy upstairs with one fair ruling, and the building goes quiet. Too quiet. A story about the noise nobody should have banned.",
+  "tags": [
+   "short story",
+   "funny stories",
+   "everyday life",
+   "neighbours",
+   "animated story",
+   "storytelling",
+   "comedy",
+   "heartwarming",
+   "referee",
+   "cartoon story"
+  ],
+  "pinned_comment": "Has a rule ever made someone around you quieter than you meant?"
+ },
+ "tiktok": {
+  "caption": "He ruled the noise out. Nobody told him it was a goodnight.",
+  "hashtags": [
+   "#storytime",
+   "#funnystories",
+   "#neighbours",
+   "#heartwarming",
+   "#animatedstory"
+  ]
+ }
+}
