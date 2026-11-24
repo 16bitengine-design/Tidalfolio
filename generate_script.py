@@ -566,6 +566,13 @@ def _call_provider(prov, messages, temperature, attempts):
             try:
                 json.loads(text)
             except ValueError:
+                fixed = text.replace('\\"', '"')                          # weaker models sometimes backslash-escape quotes in part of the JSON
+                try:
+                    json.loads(fixed)
+                    print(f"[llm] {prov['name']} reply had escaped quotes: repaired", flush=True)
+                    return fixed, None
+                except ValueError:
+                    pass
                 print(f"[llm] {prov['name']} reply is not valid JSON (finish_reason={r.json()['choices'][0].get('finish_reason')}, "
                       f"{len(content)} chars). Start: {content[:150]!r} End: {content[-100:]!r}", flush=True)
             return text, None
