@@ -476,6 +476,9 @@ def providers():
     if os.environ.get("GEMINI_API_KEY"):
         out.append(dict(name="Gemini", base=GEMINI_BASE, key=os.environ["GEMINI_API_KEY"],
                         model=os.environ.get("LLM_MODEL") or "gemini-flash-latest"))
+    if os.environ.get("GEMINI_API_KEY"):                                 # Gemini's free quota is counted per model: the lite model has its own, larger one
+        out.append(dict(name="Gemini Lite", base=GEMINI_BASE, key=os.environ["GEMINI_API_KEY"],
+                        model=os.environ.get("GEMINI_LITE_MODEL") or "gemini-flash-lite-latest"))
     if os.environ.get("GROQ_API_KEY"):
         out.append(dict(name="Groq", base=GROQ_BASE, key=os.environ["GROQ_API_KEY"],
                         model=os.environ.get("GROQ_MODEL") or "llama-3.3-70b-versatile"))
@@ -505,6 +508,17 @@ def _json_only(text):
         t = re.sub(r"^```[a-zA-Z]*\s*|\s*```$", "", t).strip()
     i, j = t.find("{"), t.rfind("}")
     return t[i:j + 1] if 0 <= i < j else t
+
+
+def _pick_gemini_lite_model(prov):
+    """The lite model alias was refused: ask the API which models this key has and use the newest flash-lite model."""
+    try:
+        r = requests.get(prov["base"] + "/models", headers={"Authorization": f"Bearer {prov['key']}"}, timeout=60)
+        ids = [m.get("id", "").replace("models/", "") for m in r.json().get("data", [])] if r.ok else []
+    except Exception:
+        ids = []
+    ok = [i for i in ids if "flash" in i and "lite" in i and not re.search(r"image|tts|audio|live|embed|thinking|vision", i)]
+    return sorted(ok)[-1] if ok else None
 
 
 def _pick_gemini_model(prov):
@@ -595,6 +609,13 @@ def _call_provider(prov, messages, temperature, attempts):
             prov["picked"] = True
             if picked and picked != prov["model"]:
                 print(f"[llm] Groq model {prov['model']} not available; using {picked}", flush=True)
+                prov["model"] = picked
+                continue
+        if r.status_code == 404 and prov["name"] == "Gemini Lite" and not os.environ.get("GEMINI_LITE_MODEL") and not prov.get("picked"):
+            prov["picked"] = True
+            picked = _pick_gemini_lite_model(prov)
+            if picked and picked != prov["model"]:
+                print(f"[llm] model {prov['model']} not found; using {picked}", flush=True)
                 prov["model"] = picked
                 continue
         if r.status_code == 429 and re.search(r"per ?day|daily|RequestsPerDay|exhausted|exceeded your current quota|credit|insufficient", r.text, re.I):

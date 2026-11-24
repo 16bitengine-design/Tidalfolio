@@ -55,7 +55,7 @@ def main():
                 f.write(f"{q}  # off script: {len(problems)} scene problem(s), run: python -m puppet.audit scripts/{q}\n")
         if not name:
             print("queue-puppet.txt has nothing left to render.")
-            return
+            return 4                       # not a success: no video will go out today (the workflow then raises its failure issue)
         render_script(ROOT / "scripts" / name, a.dry_run, a.workers)
         if not a.dry_run:
             with open(ROOT / "done-puppet.txt", "a") as f:
