@@ -35,20 +35,19 @@ def main():
         bad.append(f"a story is told in 1 to 4 parts (this one has {n}).")
     else:
         if n == 1:                      # a "why" video: the title is the question, no plan/outline needed
-            used = {w.lower() for w in G.used_words()}
-            uw = sb.get("uncommon_word") or {}
-            if not str(sb.get("title", "")).strip().lower().startswith("why"):
-                bad.append("the title of a why video must start with 'Why'.")
-            t = str(sb.get("title", "")).strip()
-            yt = sb.get("youtube") or {}
-            if not 30 <= len(t) <= 70:
-                bad.append(f"SEO: the title is {len(t)} characters; make it 30 to 70, the exact phrase people type into search first, then a hook in brackets, e.g. 'Why Do Cats Sleep So Much? (The Real Reason)'.")
-            if len(yt.get("tags") or []) < 8 or not str(yt.get("description", "")).lower().startswith(t.split("?")[0].lower()[:25]):
-                bad.append("SEO: the description must start with the search phrase from the title, and there must be at least 8 tags that are real search phrases (the title phrase first).")
-            if not (uw.get("word") and uw.get("meaning")):
-                bad.append("'uncommon_word' needs a word and a meaning.")
-            elif str(uw["word"]).lower() in used:
-                bad.append(f"the uncommon word {uw['word']!r} was already used.")
+            from puppet import whywriter as Y
+            number = G.next_number()
+            bad, scripts = Y.why_problems(sb, G, number)
+            if bad:
+                print("NOT READY:")
+                for b_ in bad:
+                    print(" -", b_)
+                return 1
+            if a.check:
+                print("OK: the why video passes every check (nothing written).")
+                return 0
+            print("Queued in order: " + ", ".join(W._save_story({k: v for k, v in sb.items() if k != "outline"}, scripts, "Funny People", number, 1)))
+            return 0
         else:
             bad += W._bible_problems(sb, n, G.used_words())
         word = str(sb["uncommon_word"]["word"]).strip()
