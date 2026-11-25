@@ -31,10 +31,20 @@ def main():
     parts = sb.get("parts") or []
     n = len(parts)
     bad = []
-    if not 2 <= n <= 4:
-        bad.append(f"a story is told in 2 to 4 parts (this one has {n}).")
+    if not 1 <= n <= 4:
+        bad.append(f"a story is told in 1 to 4 parts (this one has {n}).")
     else:
-        bad += W._bible_problems(sb, n, G.used_words())
+        if n == 1:                      # a "why" video: the title is the question, no plan/outline needed
+            used = {w.lower() for w in G.used_words()}
+            uw = sb.get("uncommon_word") or {}
+            if not str(sb.get("title", "")).strip().lower().startswith("why"):
+                bad.append("the title of a why video must start with 'Why'.")
+            if not (uw.get("word") and uw.get("meaning")):
+                bad.append("'uncommon_word' needs a word and a meaning.")
+            elif str(uw["word"]).lower() in used:
+                bad.append(f"the uncommon word {uw['word']!r} was already used.")
+        else:
+            bad += W._bible_problems(sb, n, G.used_words())
         word = str(sb["uncommon_word"]["word"]).strip()
         uw_part = next((k for k, p in enumerate(parts, 1) if re.search(rf"\b{re.escape(word)}\b", " ".join(str(s.get("narration", "")) for s in p.get("scenes", [])), re.I)), 1)
         for k, p in enumerate(parts, 1):
