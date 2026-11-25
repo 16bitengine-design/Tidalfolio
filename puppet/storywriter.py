@@ -34,9 +34,9 @@ CHECK_ROUNDS = 5       # check-and-rewrite rounds before a story is dropped (3 w
 AIM = "aim for 50 to 57 seconds"
 WORDS_LO, WORDS_HI = 90, 102      # narration words per part that land on 50 to 57 s with the real narrator (measured on published videos: 94 to 99 words ran 50.7 to 57 s)
 WORDS_MIN, WORDS_MAX = 86, 106
-WHY_MIN_LEN, WHY_MAX_LEN = 35.0, 45.0     # a single-part "why" video: the question, then the answer revealed little by little
-WHY_WORDS_LO, WHY_WORDS_HI = 66, 76
-WHY_WORDS_MIN, WHY_WORDS_MAX = 60, 82
+WHY_MIN_LEN, WHY_MAX_LEN = 20.0, 70.0     # a single-part "why" video: its length is the topic's own; these are only safety rails (too thin / too long for a short)
+WHY_WORDS_LO, WHY_WORDS_HI = 40, 130
+WHY_WORDS_MIN, WHY_WORDS_MAX = 36, 150
 WHY_OPEN = re.compile(r"^\W*why\b[^.!?]*\?", re.I)    # outside this a part is sent back at once, before the slow real-voice measurement
 SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.55, 0.3, 3.5     # measured on the real narrator; used only when the voice model is absent
 
@@ -637,7 +637,7 @@ def _part_problems(part, cast, k, word, uw_part, n=None):
         if len(set(tones)) < 2 or sum(t != "calm" for t in tones) < 3:
             bad.append(f"part {k}: the tone must be clear and must change as the story turns: use at least two different tones, and at most two calm scenes (tones now: {', '.join(tones)}).")
         nwords = sum(len(re.findall(r"[A-Za-z0-9']+", str(x.get("narration", "")))) for x in scenes)
-        wl, wh, wmin, wmax, secs = ((WHY_WORDS_LO, WHY_WORDS_HI, WHY_WORDS_MIN, WHY_WORDS_MAX, "35 to 45") if n == 1 else (WORDS_LO, WORDS_HI, WORDS_MIN, WORDS_MAX, "50 to 57"))
+        wl, wh, wmin, wmax, secs = ((WHY_WORDS_LO, WHY_WORDS_HI, WHY_WORDS_MIN, WHY_WORDS_MAX, "20 to 70") if n == 1 else (WORDS_LO, WORDS_HI, WORDS_MIN, WORDS_MAX, "50 to 57"))
         if not wmin <= nwords <= wmax:
             bad.append(f"part {k}: the narration has {nwords} words; every part needs {wl} to {wh} words in total to run {secs} seconds. "
                        f"{'Add' if nwords < wmin else 'Cut'} about {abs(int((wl + wh) / 2) - nwords)} words (longer or sharper lines, not filler scenes).")
