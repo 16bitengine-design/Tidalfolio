@@ -23,6 +23,7 @@ from . import dsl, engine as E, music, tts, worlds
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT_W, OUT_H = 720, 1280
+WHY_MIN_LEN, WHY_MAX_LEN = 20.0, 70.0       # single-part why videos: only safety rails
 MIN_LEN, MAX_LEN = 45.0, 60.0        # the channel rule: every video (every part) runs 45 to 60 seconds
 LEAD, TAIL, END_CARD = 0.5, 1.0, dsl.END_SEC  # silence before the line, after it, and the closing title card
 
@@ -256,8 +257,9 @@ def render_script(script_path, dry=False, workers=None):
     make_narration(script, scenes, out_root / "narration", dry)
     total = plan_timing(scenes)
     print(f"      total runtime: {total:.1f}s", flush=True)
-    if not dry and not (MIN_LEN <= total <= MAX_LEN):
-        sys.exit(f"Video would be {total:.1f}s but every video must run {MIN_LEN:.0f} to {MAX_LEN:.0f} s. "
+    lo, hi = (WHY_MIN_LEN, WHY_MAX_LEN) if sp and sp.get("of") == 1 else (MIN_LEN, MAX_LEN)     # a single "why" video runs as long as its topic needs
+    if not dry and not (lo <= total <= hi):
+        sys.exit(f"Video would be {total:.1f}s but this video must run {lo:.0f} to {hi:.0f} s. "
                  "Nothing was rendered. Shorten or lengthen the narration (or split a very long story into parts).")
 
     nt = narration_time(scenes)
