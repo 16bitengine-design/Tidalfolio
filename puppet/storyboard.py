@@ -34,7 +34,7 @@ from . import builtin_props as BP
 from . import towns as TW
 
 CHANNEL_THEME = os.environ.get("CHANNEL_THEME", "nursery")      # the channel's music: "nursery" (the lullaby Tidal Hush) or "fusion"
-SPECIES = ("human", "eagle", "squirrel", "rabbit", "cat", "fox")     # new stories use people only; the animals stay for stories already made
+SPECIES = ("human", "creature", "eagle", "squirrel", "rabbit", "cat", "fox")     # new stories use people only; the animals stay for stories already made
 LOOKS = ("orrin", "dad", "mom")
 WORLDS = ("dawn", "day", "dusk", "storm", "night", "sunset")
 ANIMAL_STAGES = ("cliff", "nest", "tree")
@@ -139,7 +139,11 @@ def fix_cast(cast):
     """Fill in a person's defaults (species "human", gender, age, skin, hair) and fix near-miss values, in place."""
     if not isinstance(cast, dict):
         return cast
+    from . import vector_creatures as VC
     for i, (key, c) in enumerate(cast.items()):
+        if isinstance(c, dict) and not c.get("role") and str(c.get("kind", "")).lower() in VC.KINDS:
+            c["species"], c["kind"] = "creature", str(c["kind"]).lower()          # a star of the "why" videos: a cat, a dog, a cow, a chicken, the sun, the moon
+            continue
         if not isinstance(c, dict) or not (c.get("role") or c.get("species") == "human"):
             continue
         role = PE.norm_role(c.get("role") or key)
@@ -361,12 +365,12 @@ def _check_scenes(scenes, cast, pre=""):
         if not actors:
             bad.append(f"{where}: needs at least one actor.")
         stage = sc.get("stage", "cliff")
-        humans = [a for a in actors if isinstance(a, dict) and cast.get(a.get("who"), {}).get("species") == "human"]
+        humans = [a for a in actors if isinstance(a, dict) and cast.get(a.get("who"), {}).get("species") in ("human", "creature")]
         if humans and stage not in HUMAN_STAGES:
-            bad.append(f"{where}: people live in these settings: {HUMAN_STAGES} (stage {stage!r} is not one of them).")
+            bad.append(f"{where}: people and creatures live in these settings: {HUMAN_STAGES} (stage {stage!r} is not one of them).")
         if len({a.get("at", "ground_mid") for a in humans}) < len(humans):
             bad.append(f"{where}: two people cannot stand in the same spot: give each a different 'at' (ground_left|ground_mid|ground_right).")
-        if humans:
+        if any(cast.get(a.get("who"), {}).get("species") == "human" for a in humans):
             for nm in personal_names(nar):
                 bad.append(f"{where}: '{nm}' looks like a personal name. Nobody has a name on this channel: refer to people by role, gender or profession ('the baker', 'the old woman', 'her boss'). If it is a sign, shelf label, subject or place and not a person, write it in lowercase.")
                 break
@@ -377,7 +381,7 @@ def _check_scenes(scenes, cast, pre=""):
                 continue
             sp = cast[who].get("species")
             at = a.get("at", "ground_mid")
-            if sp == "human":
+            if sp in ("human", "creature"):
                 if at not in HSLOTS:
                     bad.append(f"{where}: {who} 'at' must be one of {sorted(HSLOTS)}.")
             elif at not in SLOTS:
@@ -444,14 +448,18 @@ def check_storyboard(sb):
         if isinstance(c, dict) and c.get("species") == "human":
             if not PE.norm_role(c.get("role")) and not c.get("design"):
                 bad.append(f"cast '{k}': a role outside {PE.ROLES_LIST} needs a design.")
+        elif isinstance(c, dict) and c.get("species") == "creature":
+            from . import vector_creatures as VC
+            if c.get("kind") not in VC.KINDS:
+                bad.append(f"cast '{k}': a creature's \"kind\" must be one of {VC.KINDS}.")
         elif not isinstance(c, dict) or c.get("species") not in SPECIES:
             bad.append(f"cast '{k}': needs a role (one of {PE.ROLES_LIST}).")
         elif c["species"] == "eagle" and c.get("look", "orrin") not in LOOKS:
             bad.append(f"cast '{k}': an eagle's look must be one of {LOOKS}.")
     parts = sb.get("parts")
-    if not isinstance(parts, list) or not 2 <= len(parts) <= 4:
+    if not isinstance(parts, list) or not 1 <= len(parts) <= 4:
         found = ("missing" if parts is None else f"a list of {len(parts)}" if isinstance(parts, list) else type(parts).__name__)
-        bad.append("'parts' must be a list of 2 to 4 parts (one story told as Part 1, Part 2 ...), each with its own 'scenes'. "
+        bad.append("'parts' must be a list of 1 to 4 parts (a \"why\" video is ONE part; a story told as Part 1, Part 2 ... told as Part 1, Part 2 ...), each with its own 'scenes'. "
                    f"In your reply 'parts' was {found}; your top-level keys were: {', '.join(list(sb)[:10])}.")
         return bad
     scenes = []
@@ -465,10 +473,11 @@ def check_storyboard(sb):
         bad.append("'uncommon_word' ({word, meaning}) is missing.")
     elif len(re.findall(rf"\b{re.escape(uw)}\b", alltext, re.I)) != 1:
         bad.append(f"the uncommon word {uw!r} must appear exactly once in the narration.")
-    if not (sb.get("lesson") or "").strip():
-        bad.append("'lesson' (one plain sentence) is missing.")
-    if sb.get("cause") not in ("forgot", "believed", "no_options"):
-        bad.append("'cause' must be forgot, believed or no_options.")
+    if len(parts) > 1:
+        if not (sb.get("lesson") or "").strip():
+            bad.append("'lesson' (one plain sentence) is missing.")
+        if sb.get("cause") not in ("forgot", "believed", "no_options"):
+            bad.append("'cause' must be forgot, believed or no_options.")
     if not isinstance(sb.get("youtube"), dict) or not sb["youtube"].get("description"):
         bad.append("'youtube' needs description, tags and pinned_comment.")
     if not isinstance(sb.get("tiktok"), dict) or not sb["tiktok"].get("caption"):
@@ -483,7 +492,7 @@ def _screen(wx, wy, cam, z=1.0):
 
 
 def _slot_xy(at, species, scale):
-    if species == "human":
+    if species in ("human", "creature"):
         return HSLOTS.get(at, 300.0), 1240.0
     x, y = SLOTS[at]
     if y is None:
@@ -499,6 +508,8 @@ def _off(x, human=False):
 
 
 def _scale(species, at, crowd):
+    if species == "creature":
+        return 1.2 if crowd <= 1 else 1.0
     if species == "human":
         return 1.0 if crowd <= 2 else 0.92
     if species == "eagle":
@@ -553,18 +564,22 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
     show = [t_in if t_in else -0.1, (f"@{a['exit']}+1.5") if t_out else None]
     th = {"type": sp, "id": who, "scale": s, "face": face, "show": show}
     in_air = at.startswith("air")
-    human = sp == "human"
+    human = sp in ("human", "creature")              # creatures stand, move and speak like people (the same spots, moods, beats and timings)
     if human:
         _, brow, tear = EAGLE_MOOD[mood]
-        th.update(type="human", role=c["role"], gender=c["gender"], age=c["age"], skin=c["skin"], hair=c["hair"], extras=c.get("extras", []),
-                  eye=CRITTER_EYE_MOOD[mood], brow=brow, mood=mood, action=action, seed=zlib.crc32(who.encode()) % 50)
-        if c.get("design"):
+        if sp == "creature":
+            th.update(type="creature", kind=c["kind"], color=c.get("color"), stripes=bool(c.get("stripes")), patch=bool(c.get("patch")),
+                      eye=CRITTER_EYE_MOOD[mood], brow=brow, mood=mood, action=action, seed=zlib.crc32(who.encode()) % 50)
+        else:
+            th.update(type="human", role=c["role"], gender=c["gender"], age=c["age"], skin=c["skin"], hair=c["hair"], extras=c.get("extras", []),
+                      eye=CRITTER_EYE_MOOD[mood], brow=brow, mood=mood, action=action, seed=zlib.crc32(who.encode()) % 50)
+        if c.get("design") and sp == "human":
             th["design"] = c["design"]
-        if a.get("carry") in ITEMS or a.get("carry") in _ALL_PROPS:
+        if sp == "human" and (a.get("carry") in ITEMS or a.get("carry") in _ALL_PROPS):
             th["carry"] = a["carry"]
             if a.get("carry_from"):                                       # carried only for a while: from these words until carry_to (then the usual tool again)
                 th["carry"] = {"step": [[0, None], ["@" + a["carry_from"], a["carry"]], ["@" + a["carry_to"], None] if a.get("carry_to") else [999, None]]}
-        if isinstance(a.get("drape"), dict) and a["drape"].get("item") in ("towel", "blanket") and a["drape"].get("at"):
+        if sp == "human" and isinstance(a.get("drape"), dict) and a["drape"].get("item") in ("towel", "blanket") and a["drape"].get("at"):
             th["draped"] = {"step": [[0, "none"], ["@" + a["drape"]["at"], a["drape"]["item"]]]}     # something put round this person's shoulders from these words on
         if tear:
             th["tear"] = {"kf": [[0, 0], [2.0, tear]]}
@@ -750,7 +765,8 @@ def _compile_scenes(scene_list, cast):
         for p in sc.get("popups") or []:
             who = p.get("near") or (actors[0]["who"] if actors else None)
             (wx, wy), s, sp = pos.get(who, ((330, 1000), 1.0, "eagle"))
-            above = {"eagle": 300, "squirrel": 190, "rabbit": 250, "cat": 220, "fox": 240, "human": 450}[sp] * s
+            above = {"eagle": 300, "squirrel": 190, "rabbit": 250, "cat": 220, "fox": 240, "human": 450,
+                     "creature": 640 if cast.get(who, {}).get("kind") in ("sun", "moon") else 420}[sp] * s
             if sp == "human":
                 above *= 0.72 if cast[who]["age"] == "child" else 1.0
                 above += 70 * s if PE.ROLES.get(cast[who]["role"], {}).get("hat") == "chef" else 0
@@ -806,19 +822,24 @@ def compile_storyboard(sb, number=None):
         if pi < n:     # a part followed by another one ends plainly; only the last part gets the simple end screen
             scenes[-1].pop("end_card", None)
         yt = dict(sb.get("youtube") or {})
-        yt["title"] = f"{title} (Part {pi}/{n})"
-        yt["description"] = (yt.get("description", "") + f"\n\nPart {pi} of {n}." + (f" Part {pi + 1} is next." if pi < n else " The end.")).strip()
         tt = dict(sb.get("tiktok") or {})
-        tt["caption"] = f"Part {pi}/{n}: " + tt.get("caption", "")
-        slug = f"{number:03d}-{_slug(title)}-part-{pi}" if number else f"{_slug(title)}-part-{pi}"
+        if n == 1:
+            ptitle = title
+            slug = f"{number:03d}-{_slug(title)}" if number else _slug(title)
+        else:
+            ptitle = f"{title} (Part {pi}/{n})"
+            yt["description"] = (yt.get("description", "") + f"\n\nPart {pi} of {n}." + (f" Part {pi + 1} is next." if pi < n else " The end.")).strip()
+            tt["caption"] = f"Part {pi}/{n}: " + tt.get("caption", "")
+            slug = f"{number:03d}-{_slug(title)}-part-{pi}" if number else f"{_slug(title)}-part-{pi}"
+        yt["title"] = ptitle
         out.append({
             "engine": "puppet", "look": "vector", "cast_species": sorted({c["species"] for c in sb["cast"].values()}),
-            "cast_roles": [c.get("role") for c in sb["cast"].values() if c.get("role")], "cast_lead": {k: sb["cast"][next(iter(sb["cast"]))].get(k) for k in ("role", "gender")}, "slug": slug, "title": f"{title} (Part {pi}/{n})", "short_title": title,
+            "cast_roles": [c.get("role") for c in sb["cast"].values() if c.get("role")], "cast_lead": {k: sb["cast"][next(iter(sb["cast"]))].get(k) for k in ("role", "gender")}, "slug": slug, "title": ptitle, "short_title": title,
             "series_part": {"story": title, "part": pi, "of": n},
             "thumbnail_scene": max(1, min(len(scenes), int(part.get("thumbnail_scene", 2)))),
             "thumbnail_hook": str(part.get("thumbnail_hook") or "").strip().upper()[:22],
             "voice": {"kokoro": "tidal"}, "theme": CHANNEL_THEME,
-            "story": {"lesson": sb["lesson"].strip(), "cause": sb["cause"]},
+            "story": {"lesson": (sb.get("lesson") or "").strip(), "cause": sb.get("cause") or ""},
             "uncommon_word": {"word": word.get("word", ""), "meaning": word.get("meaning", "")} if pi == 1 else {},
             "props": DZ.sanitize_props(sb.get("props")), "scenes": scenes, "youtube": yt, "tiktok": tt})
     return out
