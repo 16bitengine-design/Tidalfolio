@@ -28,6 +28,13 @@ THE FORMAT
 - NARRATION: ordinary easy words, short to medium sentences, numbers written as words (no digits, symbols or abbreviations), no personal names. The narrator never says "I", "we", "my" or "our". He tells it from outside, never gives orders or a moral lecture. Exactly ONE uncommon English word (a real word, with a one-line meaning) appears exactly once in the narration, used naturally.
 - Do not write a sign-off, "follow", "subscribe" or "part two": the system adds the end screen.
 
+THE TIDALFOLIO SIGNATURE (our brand must be unmistakable and must never sound like any other "why" channel)
+- NEVER give the textbook answer in the textbook way; every other channel does that. Tell the answer as a tiny FOLIO TALE: a deadpan, warm, slightly mythic account of "how it really came to be", as if an old storyteller is revealing a family secret, a long-ago deal, a rule the creature made, an ancient misunderstanding, a tiny conspiracy or a promise the world made to it. The charm is the invented legend wrapped around something that feels true. (Facts may hide inside it; none are needed.)
+- Vary the shape from video to video (a secret deal, a rumour that got out of hand, a rule written long ago, a complaint filed with the moon, a family tradition, a misunderstanding that stuck), never the same device twice in a row.
+- The narrator is always the same gentle, dry, knowing storyteller. The star is treated with affection and gets a tiny personality (proud, shy, dramatic, sleepy), shown only through what it does.
+- INVENT YOUR OWN TOPICS. Do not just take the most common question. Go for the question people have wondered about but never typed (why do cats knead blankets, why do we yawn when somebody else does, why does the moon follow the car, why do dogs tilt their heads), then keep the exact search phrase as the title so people can still find it. Mix the whole world of everyday curiosities: creatures, the sky, the body, habits, people through history.
+- Your story must be unlike anything already on the channel: different device, different opening, different ending shape, and not a copy of what any other channel says.
+
 THE CRAFT TEAM (a story writer, a director, an animator, a sound and music director and a thumbnail designer read every video before it exists; all mandatory)
 1. THE WRITER (bond). Find the ONE relatable, specific truth behind the question that makes a viewer say "that is so my cat / so me" (a habit, a look, a small silly thing everybody has seen). Build the answer as a LADDER: each scene reveals something new that re-frames the one before it; never repeat a point and never explain twice. Mix the funny and the true: the funniest or most surprising reveal comes second to last, and the LAST line is warm or a wink the viewer wants to share. Write like a person who has watched this creature for years: concrete, odd, specific details, uneven rhythm, no tidy triads, no stock phrases, no filler like "in fact", "it turns out", "did you know".
 2. THE DIRECTOR (staging). Every scene has ONE thing the star DOES, matched to the words: sleepy for a nap line, tremble for fear, hop for a pounce, hold for a quiet truth. Change the camera and mood so the picture tells the answer: push_in on the key reveal, pull_back on a lonely or tender note, hold on a stare. Never three scenes in a row with the same camera and the same number of actors. Put "silence_before" (a few words copied from the narration) on the biggest reveal so the music drops and the picture freezes for a beat.
@@ -55,7 +62,7 @@ Reply with ONE JSON object:
 CRITIC = """You are a ruthless editor for "tidalfolio", an entertainment channel of short "Why ...?" videos whose goal is to bond with viewers. You get the title and the narration of every scene. Score each 1 to 5, honestly (3 is acceptable, 1 or 2 means rewrite):
 q1 HOOK: would a stranger scrolling stop in the first three seconds? q2 LADDER: does every scene reveal something NEW that re-frames the last, with the answer unfolding (not repeated points, not a list of facts)?
 q3 BOND: is there a relatable, specific truth that makes the viewer say "that is so me / my pet", and does the last line feel warm or give a wink they would share? q4 FUNNY: is it genuinely amusing, in a dry, human way, not childish?
-q5 SURPRISE: does the final reveal land as a satisfying answer to the question? q6 HUMAN VOICE: specific, odd, uneven rhythm, a point of view, or smooth machine prose with stock phrases ("it turns out", "in fact", tidy triads)? q7 SHAREABILITY: one line or idea people would quote or send to a friend.
+q5 SURPRISE: does the final reveal land as a satisfying answer to the question? q6 HUMAN VOICE: specific, odd, uneven rhythm, a point of view, or smooth machine prose with stock phrases ("it turns out", "in fact", tidy triads)? q7 SHAREABILITY: one line or idea people would quote or send to a friend. q8 ORIGINAL: is the answer told as a fresh, unmistakable folio tale (an invented legend, deal, rule or secret with a personality) rather than the textbook explanation any other channel would give? Score 1 or 2 if it sounds like every other why video.
 Reply with ONE JSON object: {"scores": {"q1": 4, ...}, "problems": ["specific, actionable fixes naming the scene, only for scores of 1 or 2, max 4"]}"""
 MIN_AVG = float(os.environ.get("WHY_MIN_SCORE", "3.6"))
 
@@ -119,8 +126,8 @@ def write_why(idea=None, log=print):
     number = G.next_number()
     titles, _ = G.existing()
     log(f"Writing a why video with {G.llm_provider()['name']} ({G.llm_provider()['model']}).")
-    user = ((f"Topic to use: {idea}. " if idea else "Choose the topic yourself (a why question many people search for). ")
-            + (f"Topics already made (choose something different): {'; '.join(titles[-40:])}. " if titles else "")
+    user = ((f"Topic to use: {idea}. " if idea else "Invent the topic yourself: a why question people wonder about and search for, from an angle no other channel takes. ")
+            + (f"Topics already made (choose a different topic AND a different storytelling device): {'; '.join(titles[-40:])}. " if titles else "")
             + "Write the video now.")
     msgs = [{"role": "system", "content": system_prompt()}, {"role": "user", "content": user}]
     last, fallback = [], None
