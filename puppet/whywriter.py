@@ -28,6 +28,14 @@ THE FORMAT
 - NARRATION: ordinary easy words, short to medium sentences, numbers written as words (no digits, symbols or abbreviations), no personal names. The narrator never says "I", "we", "my" or "our". He tells it from outside, never gives orders or a moral lecture. Exactly ONE uncommon English word (a real word, with a one-line meaning) appears exactly once in the narration, used naturally.
 - Do not write a sign-off, "follow", "subscribe" or "part two": the system adds the end screen.
 
+THE CRAFT TEAM (a story writer, a director, an animator, a sound and music director and a thumbnail designer read every video before it exists; all mandatory)
+1. THE WRITER (bond). Find the ONE relatable, specific truth behind the question that makes a viewer say "that is so my cat / so me" (a habit, a look, a small silly thing everybody has seen). Build the answer as a LADDER: each scene reveals something new that re-frames the one before it; never repeat a point and never explain twice. Mix the funny and the true: the funniest or most surprising reveal comes second to last, and the LAST line is warm or a wink the viewer wants to share. Write like a person who has watched this creature for years: concrete, odd, specific details, uneven rhythm, no tidy triads, no stock phrases, no filler like "in fact", "it turns out", "did you know".
+2. THE DIRECTOR (staging). Every scene has ONE thing the star DOES, matched to the words: sleepy for a nap line, tremble for fear, hop for a pounce, hold for a quiet truth. Change the camera and mood so the picture tells the answer: push_in on the key reveal, pull_back on a lonely or tender note, hold on a stare. Never three scenes in a row with the same camera and the same number of actors. Put "silence_before" (a few words copied from the narration) on the biggest reveal so the music drops and the picture freezes for a beat.
+3. THE ANIMATOR. The small true movement beats the big one: use hop, flap and cheer only for true peaks; in the last third use one quiet gesture (hugself, clasp, hold) and let it HOLD. Never the same action in two scenes in a row.
+4. THE SOUND AND MUSIC DIRECTOR. The tone IS the score: the music swells on tender moments, thins under tension and drops out before the biggest line. Follow a long sentence with a short one (five words or fewer). Write each scene's "tone" so the music can follow.
+5. THE THUMBNAIL DESIGNER. "thumbnail_hook" is a 1 to 3 word tease in capitals that makes a stranger curious without giving the answer away; "thumbnail_scene" is the scene whose picture shows the star at its most expressive.
+TABLE READ before you answer: Would a stranger stop in the first three seconds? Does every scene add a NEW piece of the answer? Is there one line people would quote? Does the last line make the viewer feel close to the star, or to someone they love? If a scene fails, rewrite it first.
+
 THE STAR (this is all the system can draw)
 - The video's star is the SUBJECT ITSELF drawn as a character, alone or with up to 3 others. Cast entries for creatures: {"kind": "cat|dog|cow|chicken|sun|moon", "color": optional (orange|ginger|grey|black|white|cream|brown|yellow|pink|red|blue|green|gold|tan), "stripes": optional true (cat), "patch": optional true (cow/dog)}. Pick topics whose star is one of those six creatures, or people (humans, early people, a baby, a grandmother, a sleepy worker): a person is {"role": "...", "gender": "male|female", "age": "child|adult|elder", "skin": "light|fair|tan|brown|dark", "hair": "black|brown|blonde|red|grey|white", "extras": ["glasses","beard","mustache","bun","bald"]} (a built-in role such as %s, or any role you invent with a "design"; people are never given names). The sun and moon are cast as creatures (kind "sun" or "moon") and have a face.
 - Each scene: "world" (dawn|day|dusk|storm|night|sunset; words like night, dark, midnight need "night"; the moon needs "sky": true; a bright tone like joyful cannot be night), "stage" (street|park|kitchen|shop|office|classroom|home), "camera" (hold|push_in|pull_back|pan_right|pan_left), "tone" (playful|joyful|tense|sad|eerie|tender|calm: use at least two different tones, at most two calm scenes, never calm in scene 1; tense/sad/eerie belong to dusk, joyful to day/dawn/sunset), optional "silence_before" (a few words copied from the narration, at most two scenes).
@@ -42,6 +50,32 @@ Reply with ONE JSON object:
  "parts": [{"thumbnail_scene": 1, "thumbnail_hook": "1 to 3 words in capitals, a tease", "scenes": [{"narration": "...", "world": "day", "stage": "home", "camera": "push_in", "tone": "playful", "actors": [{"who": "cat", "at": "ground_mid", "mood": "smug", "action": "talk"}], "popups": [{"text": "WHY?", "kind": "burst", "at": "Why do cats", "near": "cat"}]}]}],
  "youtube": {"description": "...", "tags": ["..."], "pinned_comment": "a question for the comments"},
  "tiktok": {"caption": "...", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}"""
+
+
+CRITIC = """You are a ruthless editor for "tidalfolio", an entertainment channel of short "Why ...?" videos whose goal is to bond with viewers. You get the title and the narration of every scene. Score each 1 to 5, honestly (3 is acceptable, 1 or 2 means rewrite):
+q1 HOOK: would a stranger scrolling stop in the first three seconds? q2 LADDER: does every scene reveal something NEW that re-frames the last, with the answer unfolding (not repeated points, not a list of facts)?
+q3 BOND: is there a relatable, specific truth that makes the viewer say "that is so me / my pet", and does the last line feel warm or give a wink they would share? q4 FUNNY: is it genuinely amusing, in a dry, human way, not childish?
+q5 SURPRISE: does the final reveal land as a satisfying answer to the question? q6 HUMAN VOICE: specific, odd, uneven rhythm, a point of view, or smooth machine prose with stock phrases ("it turns out", "in fact", tidy triads)? q7 SHAREABILITY: one line or idea people would quote or send to a friend.
+Reply with ONE JSON object: {"scores": {"q1": 4, ...}, "problems": ["specific, actionable fixes naming the scene, only for scores of 1 or 2, max 4"]}"""
+MIN_AVG = float(os.environ.get("WHY_MIN_SCORE", "3.6"))
+
+
+def critique(G, sb):
+    """Second pass: an editor scores the draft. Returns a list of problems (empty = approved or the editor did not answer: it is a bonus, never a blocker)."""
+    text = "\n".join(f"  {n}. {sc['narration']}" for n, sc in enumerate(sb["parts"][0]["scenes"], 1))
+    try:
+        r = json.loads(G.call_openai([{"role": "system", "content": CRITIC}, {"role": "user", "content": f"Title: {sb.get('title')}\n{text}"}], 0.3))
+    except (ValueError, SystemExit, TypeError):
+        return []
+    scores = {k: v for k, v in (r.get("scores") or {}).items() if isinstance(v, (int, float))}
+    if not scores:
+        return []
+    avg = sum(scores.values()) / len(scores)
+    low = [k for k, v in scores.items() if v <= 2]
+    if low or avg < MIN_AVG:
+        why = r.get("problems") or ["make it more surprising, warmer and funnier"]
+        return [f"the editor scored it {avg:.1f} (weak: {', '.join(sorted(low)) or 'overall'}): " + "; ".join(str(w) for w in why[:4])]
+    return []
 
 
 def system_prompt():
@@ -89,7 +123,7 @@ def write_why(idea=None, log=print):
             + (f"Topics already made (choose something different): {'; '.join(titles[-40:])}. " if titles else "")
             + "Write the video now.")
     msgs = [{"role": "system", "content": system_prompt()}, {"role": "user", "content": user}]
-    last = []
+    last, fallback = [], None
     for attempt in range(1 + REPAIRS):
         raw = G.call_openai(msgs, 0.9 if attempt == 0 else 0.5)
         try:
@@ -99,6 +133,12 @@ def write_why(idea=None, log=print):
             msgs += [{"role": "assistant", "content": str(raw)[:6000]}, {"role": "user", "content": "Reply again with ONE valid JSON object. " + last[0]}]
             continue
         bad, scripts = why_problems(sb, G, number)
+        if not bad and attempt < REPAIRS:          # the editor reads a valid draft; if it is weak it goes back for a rewrite (the last round always keeps a valid draft)
+            bad = critique(G, sb)
+            if bad:
+                fallback = (sb, scripts)
+                scripts = None
+                log("Editor: " + bad[0][:200])
         if not bad:
             names = W._save_story({k: v for k, v in sb.items() if k != "outline"}, scripts, "Funny People", number, 1)
             log("Queued: " + ", ".join(names))
@@ -107,4 +147,8 @@ def write_why(idea=None, log=print):
         log(f"Why video attempt {attempt + 1} needs fixes: " + " | ".join(b[:160] for b in bad[:4]))
         msgs += [{"role": "assistant", "content": json.dumps(sb)[:7000]},
                  {"role": "user", "content": "Fix ALL of these problems and reply with the complete corrected JSON object:\n- " + "\n- ".join(bad)}]
+    if fallback:                                  # never let the channel go silent: a valid draft the editor found weak still beats nothing
+        names = W._save_story({k: v for k, v in fallback[0].items() if k != "outline"}, fallback[1], "Funny People", number, 1)
+        log("Queued the best valid draft (the editor wanted more): " + ", ".join(names))
+        return names
     raise SystemExit("The why video could not be made valid: " + "; ".join(last)[:600])
