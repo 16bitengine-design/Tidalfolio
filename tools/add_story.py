@@ -39,6 +39,12 @@ def main():
             uw = sb.get("uncommon_word") or {}
             if not str(sb.get("title", "")).strip().lower().startswith("why"):
                 bad.append("the title of a why video must start with 'Why'.")
+            t = str(sb.get("title", "")).strip()
+            yt = sb.get("youtube") or {}
+            if not 30 <= len(t) <= 70:
+                bad.append(f"SEO: the title is {len(t)} characters; make it 30 to 70, the exact phrase people type into search first, then a hook in brackets, e.g. 'Why Do Cats Sleep So Much? (The Real Reason)'.")
+            if len(yt.get("tags") or []) < 8 or not str(yt.get("description", "")).lower().startswith(t.split("?")[0].lower()[:25]):
+                bad.append("SEO: the description must start with the search phrase from the title, and there must be at least 8 tags that are real search phrases (the title phrase first).")
             if not (uw.get("word") and uw.get("meaning")):
                 bad.append("'uncommon_word' needs a word and a meaning.")
             elif str(uw["word"]).lower() in used:
