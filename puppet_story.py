@@ -44,18 +44,14 @@ def main():
         return
     count = a.count
     if a.ensure is not None:
-        count = max(0, a.ensure - len(W.unrendered())) if not a.parts else (1 if len(W.unrendered()) < a.ensure else 0)    # a why video is ONE queued video
+        count = 1 if len(W.unrendered()) < a.ensure else 0     # one story = 2 to 4 queued videos
         if count <= 0:
             print(f"Queue already has {len(W.unrendered())} unrendered story(ies): nothing to write.")
             return
     for _ in range(max(1, count)):
         idea = a.idea or W.take_idea()          # a human idea from ideas.txt always beats the model's own
         try:
-            if a.parts:                          # the old multi-part stories only when asked for explicitly
-                W.write_story(idea, a.series, a.parts)
-            else:
-                from puppet import whywriter as Y
-                Y.write_why(idea)
+            W.write_story(idea, a.series, a.parts)
         except BaseException:
             if idea and not a.idea:
                 W.give_back_idea(idea)

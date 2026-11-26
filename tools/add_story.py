@@ -31,25 +31,10 @@ def main():
     parts = sb.get("parts") or []
     n = len(parts)
     bad = []
-    if not 1 <= n <= 4:
-        bad.append(f"a story is told in 1 to 4 parts (this one has {n}).")
+    if not 2 <= n <= 4:
+        bad.append(f"a story is told in 2 to 4 parts (this one has {n}).")
     else:
-        if n == 1:                      # a "why" video: the title is the question, no plan/outline needed
-            from puppet import whywriter as Y
-            number = G.next_number()
-            bad, scripts = Y.why_problems(sb, G, number)
-            if bad:
-                print("NOT READY:")
-                for b_ in bad:
-                    print(" -", b_)
-                return 1
-            if a.check:
-                print("OK: the why video passes every check (nothing written).")
-                return 0
-            print("Queued in order: " + ", ".join(W._save_story({k: v for k, v in sb.items() if k != "outline"}, scripts, "Funny People", number, 1)))
-            return 0
-        else:
-            bad += W._bible_problems(sb, n, G.used_words())
+        bad += W._bible_problems(sb, n, G.used_words())
         word = str(sb["uncommon_word"]["word"]).strip()
         uw_part = next((k for k, p in enumerate(parts, 1) if re.search(rf"\b{re.escape(word)}\b", " ".join(str(s.get("narration", "")) for s in p.get("scenes", [])), re.I)), 1)
         for k, p in enumerate(parts, 1):

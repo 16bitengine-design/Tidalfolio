@@ -279,11 +279,6 @@ def _vthing(th, u, clk, pos):
                   tear=g("tear", 0.0), look=tuple(g("look", [0, 0])), action=act, mood=mood, listening=listening,
                   bounce=g("bounce", 0.0), design=th.get("design"), carry=(g("carry", None) if isinstance(th.get("carry"), dict) else th.get("carry")), draped=g("draped", "none"), seed=th.get("seed", 0), walk=walk, gait=gait,
                   prev_action=prev_a, prev_mood=prev_m, blend=blend, wblend=wblend)
-    elif typ == "creature":                                # the star of a "why" video: a cat, a dog, a cow, a chicken, the sun, the moon
-        from . import vector_creatures as VC
-        VC.creature(x, y, s, face, t, kind=th.get("kind", "cat"), color=th.get("color"), mood=g("mood", "neutral"), eye=g("eye", "open"),
-                    look=tuple(g("look", [0, 0])), talk=g("talk", 0.0), action=g("action", "stand"), bounce=g("bounce", 0.0), seed=th.get("seed", 0),
-                    tear=g("tear", 0.0), stripes=bool(th.get("stripes")), patch=bool(th.get("patch")))
     elif typ == "prop":                                    # a set piece the story's writer designed: a campfire, a cart, a lantern on a post
         from . import design as DZ
         rec = DZ.PROPS.get(th.get("item"))
