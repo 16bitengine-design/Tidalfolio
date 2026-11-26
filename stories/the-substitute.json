@@ -1,0 +1,611 @@
+{
+ "title": "The Substitute",
+ "lesson": "Silence is a gift when it leaves room for the quiet person to speak.",
+ "cause": "believed",
+ "uncommon_word": {
+  "word": "reticent",
+  "meaning": "quiet and slow to speak"
+ },
+ "cast": {
+  "teacher": {
+   "role": "teacher",
+   "gender": "male",
+   "age": "elder",
+   "skin": "brown",
+   "hair": "grey",
+   "extras": [
+    "glasses"
+   ]
+  },
+  "girl": {
+   "role": "girl",
+   "gender": "female",
+   "age": "child",
+   "skin": "light",
+   "hair": "brown"
+  },
+  "boy": {
+   "role": "boy",
+   "gender": "male",
+   "age": "child",
+   "skin": "tan",
+   "hair": "black"
+  },
+  "principal": {
+   "role": "boss",
+   "gender": "female",
+   "age": "adult",
+   "skin": "tan",
+   "hair": "black",
+   "extras": [
+    "bun",
+    "glasses"
+   ]
+  }
+ },
+ "tone": "playful comedy that turns tender",
+ "tone_arc": [
+  "playful, tense, playful, sad, tense",
+  "tense, playful, playful, sad, tense, eerie",
+  "tense, tense, tender, tender, sad, tender"
+ ],
+ "planted_detail": "Every lesson, the substitute stops talking for one whole minute and never says why.",
+ "twist": "The minute of silence was never a punishment for the class; it was room for the quietest girl to finally speak.",
+ "outline": [
+  "A substitute teacher faces a heckling boy and goes silent for a minute; ENDS ON: the quietest girl raises her hand.",
+  "She asks for a longer minute; the boy mocks her, then fails his own minute; ENDS ON: the principal orders the teacher to pack up.",
+  "He begs one last minute, the girl speaks and the principal softens; the twist: the minute was for her."
+ ],
+ "youtube": {
+  "description": "A substitute teacher walks into the loudest class in school and does something no teacher has tried: he stops talking. A funny, tender story about the one minute that changed a classroom.",
+  "tags": [
+   "short story",
+   "funny stories",
+   "school story",
+   "teacher",
+   "everyday life",
+   "animated story",
+   "storytelling",
+   "heartwarming",
+   "classroom",
+   "cartoon story"
+  ],
+  "pinned_comment": "Who in your life needed someone to wait for them to speak?"
+ },
+ "tiktok": {
+  "caption": "He stopped talking for one minute. Someone finally spoke.",
+  "hashtags": [
+   "#storytime",
+   "#funnystories",
+   "#teacher",
+   "#heartwarming",
+   "#animatedstory"
+  ]
+ },
+ "parts": [
+  {
+   "thumbnail_scene": 7,
+   "thumbnail_hook": "HER HAND?!",
+   "scenes": [
+    {
+     "narration": "The substitute teacher stood on his desk, and the class froze. Last week's substitute had lasted one lesson.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "push_in",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "teacher",
+       "at": "ground_mid",
+       "mood": "smug",
+       "action": "hips"
+      },
+      {
+       "who": "boy",
+       "at": "ground_left",
+       "mood": "shocked",
+       "action": "cower"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "scared",
+       "action": "hugself"
+      }
+     ],
+     "popups": [
+      {
+       "text": "ON THE DESK?!",
+       "kind": "burst",
+       "at": "stood on his desk",
+       "near": "boy"
+      }
+     ]
+    },
+    {
+     "narration": "\"Sir, we eat substitutes for breakfast,\" the loudest boy announced. \"Then I will bring jam,\" said the teacher.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "hold",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "boy",
+       "at": "ground_left",
+       "mood": "smug",
+       "action": "point"
+      },
+      {
+       "who": "teacher",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "talk"
+      }
+     ],
+     "popups": [
+      {
+       "text": "JAM?!",
+       "kind": "bubble",
+       "at": "bring jam",
+       "near": "boy"
+      }
+     ]
+    },
+    {
+     "narration": "He did not shout. He simply stopped talking, for one whole minute.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "pan_right",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "teacher",
+       "at": "ground_mid",
+       "mood": "neutral",
+       "action": "stand"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The class squirmed. Whispers fizzled out, then giggles, then even the boy's drumming fingers.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "boy",
+       "at": "ground_left",
+       "mood": "scared",
+       "action": "tremble"
+      },
+      {
+       "who": "girl",
+       "at": "ground_mid",
+       "mood": "neutral",
+       "action": "stand"
+      },
+      {
+       "who": "teacher",
+       "at": "ground_right",
+       "mood": "neutral",
+       "action": "hips"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "\"Nobody gets her to talk,\" the boy muttered. \"She is reticent. Teachers have tried everything.\"",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "hold",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "boy",
+       "at": "ground_left",
+       "mood": "smug",
+       "action": "shrug"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "sad",
+       "action": "hugself"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The girl only stared at her hands. Nobody noticed her fingers counting the minute.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "pull_back",
+     "tone": "sad",
+     "actors": [
+      {
+       "who": "girl",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "clasp"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The minute ended. One small hand went up.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "girl",
+       "at": "ground_left",
+       "mood": "scared",
+       "action": "point"
+      },
+      {
+       "who": "teacher",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "stand"
+      }
+     ],
+     "popups": [
+      {
+       "text": "HER HAND?!",
+       "kind": "burst",
+       "at": "One small hand",
+       "near": "girl"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "thumbnail_scene": 7,
+   "thumbnail_hook": "ONE MORE MINUTE",
+   "scenes": [
+    {
+     "narration": "The quiet girl kept her hand raised. \"Please,\" she whispered, \"could the minute be longer?\" Her voice shook, but it carried.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "girl",
+       "at": "ground_mid",
+       "mood": "scared",
+       "action": "talk"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The boy snorted. \"She talks! Somebody call the news!\" The class giggled with him.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "hold",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "boy",
+       "at": "ground_mid",
+       "mood": "smug",
+       "action": "laugh"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The teacher smiled. \"Lovely idea. You go first. One minute, no talking.\"",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "pan_right",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "teacher",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "talk"
+      },
+      {
+       "who": "boy",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "stand"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The boy lasted four seconds, then hummed, coughed, and drummed the desk.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "push_in",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "boy",
+       "at": "ground_mid",
+       "mood": "dizzy",
+       "action": "tremble"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "Across the room, the girl looked at her own hands. Nobody had ever waited for her before.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "hold",
+     "tone": "sad",
+     "actors": [
+      {
+       "who": "girl",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "clasp"
+      },
+      {
+       "who": "teacher",
+       "at": "ground_left",
+       "mood": "neutral",
+       "action": "stand"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "Then the principal stepped in and frowned at the silence.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "pull_back",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "principal",
+       "at": "ground_left",
+       "mood": "angry",
+       "action": "hips"
+      },
+      {
+       "who": "teacher",
+       "at": "ground_mid",
+       "mood": "neutral",
+       "action": "stand"
+      },
+      {
+       "who": "boy",
+       "at": "ground_right",
+       "mood": "scared",
+       "action": "cower"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "\"Silent lessons are no lessons,\" she said. \"Go.\"",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "push_in",
+     "tone": "eerie",
+     "actors": [
+      {
+       "who": "principal",
+       "at": "ground_left",
+       "mood": "angry",
+       "action": "point"
+      },
+      {
+       "who": "teacher",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "stand"
+      }
+     ],
+     "popups": [
+      {
+       "text": "GO?!",
+       "kind": "burst",
+       "at": "Go",
+       "near": "teacher"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "thumbnail_scene": 7,
+   "thumbnail_hook": "HER VOICE",
+   "scenes": [
+    {
+     "narration": "The substitute teacher asked the principal for one final minute. \"Granted,\" she said.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "teacher",
+       "at": "ground_left",
+       "mood": "neutral",
+       "action": "talk"
+      },
+      {
+       "who": "principal",
+       "at": "ground_right",
+       "mood": "angry",
+       "action": "hips"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "Thirty children sat still, and the minute began.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "pull_back",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "boy",
+       "at": "ground_left",
+       "mood": "scared",
+       "action": "cower"
+      },
+      {
+       "who": "girl",
+       "at": "ground_mid",
+       "mood": "scared",
+       "action": "clasp"
+      },
+      {
+       "who": "teacher",
+       "at": "ground_right",
+       "mood": "neutral",
+       "action": "stand"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The girl stood up. Her knees shook, but she spoke.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "girl",
+       "at": "ground_mid",
+       "mood": "scared",
+       "action": "talk"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "She said the boy shared his lunch with the lonely new kid every Tuesday. He had told nobody.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "hold",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "girl",
+       "at": "ground_left",
+       "mood": "sad",
+       "action": "offer"
+      },
+      {
+       "who": "boy",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "clasp"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "She knew who hummed when afraid. She had been listening all year.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "pull_back",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "girl",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "talk"
+      },
+      {
+       "who": "boy",
+       "at": "ground_left",
+       "mood": "sad",
+       "action": "hugself"
+      },
+      {
+       "who": "principal",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "stand"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The principal said nothing, and wiped her eye.",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "hold",
+     "tone": "sad",
+     "actors": [
+      {
+       "who": "principal",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "wipe"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "\"The minute was never for them,\" the teacher said gently. \"It was for you.\"",
+     "world": "day",
+     "stage": "classroom",
+     "camera": "push_in",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "teacher",
+       "at": "ground_left",
+       "mood": "happy",
+       "action": "offer"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "happy",
+       "action": "clasp"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "He still stops talking for one minute every lesson. The whole class leans in.",
+     "world": "sunset",
+     "stage": "classroom",
+     "camera": "pull_back",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "teacher",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "stand"
+      },
+      {
+       "who": "girl",
+       "at": "ground_left",
+       "mood": "happy",
+       "action": "clasp"
+      },
+      {
+       "who": "boy",
+       "at": "ground_right",
+       "mood": "happy",
+       "action": "clasp"
+      }
+     ],
+     "popups": []
+    }
+   ]
+  }
+ ]
+}

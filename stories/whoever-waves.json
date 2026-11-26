@@ -1,0 +1,601 @@
+{
+ "title": "Whoever Waves",
+ "lesson": "A small kindness can wait years to be understood, so keep offering it.",
+ "cause": "forgot",
+ "uncommon_word": {
+  "word": "forlorn",
+  "meaning": "sad and lonely"
+ },
+ "cast": {
+  "carrier": {
+   "role": "mail carrier",
+   "gender": "female",
+   "age": "adult",
+   "skin": "brown",
+   "hair": "black"
+  },
+  "grandfather": {
+   "role": "grandfather",
+   "gender": "male",
+   "age": "elder",
+   "skin": "light",
+   "hair": "white",
+   "extras": [
+    "mustache"
+   ]
+  },
+  "girl": {
+   "role": "girl",
+   "gender": "female",
+   "age": "child",
+   "skin": "tan",
+   "hair": "brown"
+  },
+  "shopkeeper": {
+   "role": "shopkeeper",
+   "gender": "male",
+   "age": "adult",
+   "skin": "tan",
+   "hair": "black",
+   "extras": [
+    "glasses"
+   ]
+  }
+ },
+ "tone": "warm street comedy that turns tender",
+ "tone_arc": [
+  "playful, playful, playful, eerie, sad, tense",
+  "tense, playful, playful, sad, tender, tense, eerie",
+  "tender, tender, sad, tender, joyful, playful, joyful, tender"
+ ],
+ "planted_detail": "The carrier waves at the shopkeeper's window every morning, though he never looks up.",
+ "twist": "The thirty-year-old letter was written by the shopkeeper as a lonely ten-year-old, and the carrier had been waving back at him all along.",
+ "outline": [
+  "A mail carrier finds a letter addressed to whoever waves back and the whole street claims it; ENDS ON: the postmark is thirty years old.",
+  "The street tries to work out who waved back then; ENDS ON: the shopkeeper recognises his own handwriting.",
+  "He reads his lonely childhood letter and learns the carrier waved every day; the street waves back at last."
+ ],
+ "youtube": {
+  "description": "A mail carrier finds a thirty-year-old letter addressed to whoever waves back, and a whole street fights to claim it. A funny, warm story about the kindness nobody noticed.",
+  "tags": [
+   "short story",
+   "funny stories",
+   "everyday life",
+   "mail carrier",
+   "neighbours",
+   "animated story",
+   "storytelling",
+   "heartwarming",
+   "cartoon story",
+   "street"
+  ],
+  "pinned_comment": "Who waves at you every day without you noticing?"
+ },
+ "tiktok": {
+  "caption": "She waved every day. He never looked up. Then the letter arrived.",
+  "hashtags": [
+   "#storytime",
+   "#funnystories",
+   "#heartwarming",
+   "#neighbours",
+   "#animatedstory"
+  ]
+ },
+ "parts": [
+  {
+   "thumbnail_scene": 7,
+   "thumbnail_hook": "WHOEVER WAVES?",
+   "scenes": [
+    {
+     "narration": "The mail carrier held a letter addressed: To whoever waves back.",
+     "world": "day",
+     "stage": "street",
+     "camera": "push_in",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "carrier",
+       "at": "ground_mid",
+       "mood": "shocked",
+       "action": "hold",
+       "carry": "letter"
+      },
+      {
+       "who": "grandfather",
+       "at": "ground_left",
+       "mood": "smug",
+       "action": "wave"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "happy",
+       "action": "wave"
+      }
+     ],
+     "popups": [
+      {
+       "text": "WHOEVER?!",
+       "kind": "burst",
+       "at": "waves back",
+       "near": "carrier"
+      }
+     ]
+    },
+    {
+     "narration": "The grandfather waved so hard his hat nearly flew. \"I have waved at this street for years,\" he said. \"That is obviously mine.\"",
+     "world": "day",
+     "stage": "street",
+     "camera": "hold",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "grandfather",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "talk"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The girl waved with both arms. The shopkeeper waved politely, three seconds too long, then looked away.",
+     "world": "day",
+     "stage": "street",
+     "camera": "pan_right",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "girl",
+       "at": "ground_left",
+       "mood": "happy",
+       "action": "cheer"
+      },
+      {
+       "who": "shopkeeper",
+       "at": "ground_right",
+       "mood": "smug",
+       "action": "wave"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "\"I am strict about rules,\" said the carrier. \"It goes only to the true recipient.\"",
+     "world": "day",
+     "stage": "street",
+     "camera": "push_in",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "carrier",
+       "at": "ground_mid",
+       "mood": "smug",
+       "action": "hips",
+       "carry": "letter"
+      },
+      {
+       "who": "grandfather",
+       "at": "ground_left",
+       "mood": "angry",
+       "action": "point"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "She turned it over. The postmark was thirty years old.",
+     "world": "day",
+     "stage": "street",
+     "camera": "hold",
+     "tone": "eerie",
+     "actors": [
+      {
+       "who": "carrier",
+       "at": "ground_mid",
+       "mood": "shocked",
+       "action": "think",
+       "carry": "letter"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The letter had spent three decades behind a sorting machine, waiting.",
+     "world": "dusk",
+     "stage": "street",
+     "camera": "pull_back",
+     "tone": "sad",
+     "actors": [
+      {
+       "who": "carrier",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "hold",
+       "carry": "letter"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "sad",
+       "action": "clasp"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "Everyone stopped waving, and the street went quiet.",
+     "world": "dusk",
+     "stage": "street",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "grandfather",
+       "at": "ground_left",
+       "mood": "shocked",
+       "action": "stand"
+      },
+      {
+       "who": "shopkeeper",
+       "at": "ground_mid",
+       "mood": "scared",
+       "action": "stand"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "cower"
+      }
+     ],
+     "popups": [
+      {
+       "text": "30 YEARS?!",
+       "kind": "burst",
+       "at": "the street went quiet",
+       "near": "shopkeeper"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "thumbnail_scene": 7,
+   "thumbnail_hook": "WHO WROTE IT?",
+   "scenes": [
+    {
+     "narration": "The mail carrier asked who had waved at someone thirty years ago.",
+     "world": "day",
+     "stage": "street",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "carrier",
+       "at": "ground_mid",
+       "mood": "neutral",
+       "action": "talk",
+       "carry": "letter"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "\"Me,\" said the grandfather. \"I waved at everyone.\" The girl giggled. \"I was not born,\" she said, \"but I would have waved.\"",
+     "world": "day",
+     "stage": "street",
+     "camera": "hold",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "grandfather",
+       "at": "ground_left",
+       "mood": "smug",
+       "action": "talk"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "happy",
+       "action": "laugh"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "Then the grandfather admitted he had only ever scowled, but nicely.",
+     "world": "day",
+     "stage": "street",
+     "camera": "pan_left",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "grandfather",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "shrug"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The shopkeeper stayed oddly quiet, staring at the letter.",
+     "world": "day",
+     "stage": "street",
+     "camera": "push_in",
+     "tone": "sad",
+     "actors": [
+      {
+       "who": "shopkeeper",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "hugself"
+      },
+      {
+       "who": "carrier",
+       "at": "ground_right",
+       "mood": "neutral",
+       "action": "offer",
+       "carry": "letter"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The carrier read the first line aloud. \"Dear whoever waves, I just moved here.\"",
+     "world": "dusk",
+     "stage": "street",
+     "camera": "hold",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "carrier",
+       "at": "ground_mid",
+       "mood": "neutral",
+       "action": "talk",
+       "carry": "letter"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "sad",
+       "action": "clasp"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The shopkeeper's hands began to shake. \"I know that handwriting,\" he whispered.",
+     "world": "dusk",
+     "stage": "street",
+     "camera": "push_in",
+     "tone": "tense",
+     "actors": [
+      {
+       "who": "shopkeeper",
+       "at": "ground_mid",
+       "mood": "scared",
+       "action": "tremble"
+      },
+      {
+       "who": "grandfather",
+       "at": "ground_left",
+       "mood": "shocked",
+       "action": "stand"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "\"I wrote it,\" he said. \"I was ten.\"",
+     "world": "dusk",
+     "stage": "street",
+     "camera": "pull_back",
+     "tone": "eerie",
+     "actors": [
+      {
+       "who": "shopkeeper",
+       "at": "ground_left",
+       "mood": "shocked",
+       "action": "stand"
+      },
+      {
+       "who": "carrier",
+       "at": "ground_mid",
+       "mood": "shocked",
+       "action": "stand",
+       "carry": "letter"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "cower"
+      }
+     ],
+     "popups": [
+      {
+       "text": "YOU?!",
+       "kind": "burst",
+       "at": "I wrote it",
+       "near": "shopkeeper"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "thumbnail_scene": 7,
+   "thumbnail_hook": "YOU NEVER LOOKED UP",
+   "scenes": [
+    {
+     "narration": "The shopkeeper took the letter and read it aloud from the start.",
+     "world": "dusk",
+     "stage": "street",
+     "camera": "push_in",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "shopkeeper",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "hold",
+       "carry": "letter"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "\"Dear whoever waves, I just moved here and nobody knows me. Will you be my friend?\"",
+     "world": "dusk",
+     "stage": "street",
+     "camera": "hold",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "shopkeeper",
+       "at": "ground_left",
+       "mood": "sad",
+       "action": "talk",
+       "carry": "letter"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "sad",
+       "action": "clasp"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "He had waited, forlorn, by his window for a whole year. Nobody ever waved.",
+     "world": "night",
+     "stage": "street",
+     "camera": "pull_back",
+     "tone": "sad",
+     "actors": [
+      {
+       "who": "shopkeeper",
+       "at": "ground_mid",
+       "mood": "sad",
+       "action": "hugself"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The carrier smiled gently. \"I waved every single day,\" she said. \"You never looked up.\"",
+     "world": "dusk",
+     "stage": "street",
+     "camera": "push_in",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "carrier",
+       "at": "ground_left",
+       "mood": "happy",
+       "action": "talk"
+      },
+      {
+       "who": "shopkeeper",
+       "at": "ground_right",
+       "mood": "shocked",
+       "action": "stand"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The shopkeeper laughed, then cried, then did both at once.",
+     "world": "dusk",
+     "stage": "street",
+     "camera": "hold",
+     "tone": "joyful",
+     "actors": [
+      {
+       "who": "shopkeeper",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "wipe"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "\"I scowled,\" the grandfather offered, \"but always in your direction.\"",
+     "world": "dusk",
+     "stage": "street",
+     "camera": "pan_right",
+     "tone": "playful",
+     "actors": [
+      {
+       "who": "grandfather",
+       "at": "ground_left",
+       "mood": "smug",
+       "action": "talk"
+      },
+      {
+       "who": "shopkeeper",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "laugh"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "happy",
+       "action": "hop"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "So the shopkeeper waved. The whole street waved back, all at once.",
+     "world": "sunset",
+     "stage": "street",
+     "camera": "pull_back",
+     "tone": "joyful",
+     "actors": [
+      {
+       "who": "shopkeeper",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "wave"
+      },
+      {
+       "who": "grandfather",
+       "at": "ground_left",
+       "mood": "happy",
+       "action": "wave"
+      },
+      {
+       "who": "girl",
+       "at": "ground_right",
+       "mood": "happy",
+       "action": "cheer"
+      }
+     ],
+     "popups": []
+    },
+    {
+     "narration": "The carrier waved first, as she always had.",
+     "world": "sunset",
+     "stage": "street",
+     "camera": "push_in",
+     "tone": "tender",
+     "actors": [
+      {
+       "who": "carrier",
+       "at": "ground_mid",
+       "mood": "happy",
+       "action": "wave"
+      }
+     ],
+     "popups": []
+    }
+   ]
+  }
+ ]
+}
