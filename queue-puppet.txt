@@ -20,3 +20,9 @@
 013-the-third-chair-part-1.json
 013-the-third-chair-part-2.json
 013-the-third-chair-part-3.json
+014-the-substitute-part-1.json
+014-the-substitute-part-2.json
+014-the-substitute-part-3.json
+015-whoever-waves-part-1.json
+015-whoever-waves-part-2.json
+015-whoever-waves-part-3.json
