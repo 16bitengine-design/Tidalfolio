@@ -33,11 +33,7 @@ MIN_LEN, MAX_LEN = 45.0, 60.0
 CHECK_ROUNDS = 5       # check-and-rewrite rounds before a story is dropped (3 was too few when a rewrite fixed the editor notes but broke the length)
 AIM = "aim for 50 to 57 seconds"
 WORDS_LO, WORDS_HI = 90, 102      # narration words per part that land on 50 to 57 s with the real narrator (measured on published videos: 94 to 99 words ran 50.7 to 57 s)
-WORDS_MIN, WORDS_MAX = 86, 106
-WHY_MIN_LEN, WHY_MAX_LEN = 20.0, 70.0     # a single-part "why" video: its length is the topic's own; these are only safety rails (too thin / too long for a short)
-WHY_WORDS_LO, WHY_WORDS_HI = 40, 130
-WHY_WORDS_MIN, WHY_WORDS_MAX = 36, 150
-WHY_OPEN = re.compile(r"^\W*why\b[^.!?]*\?", re.I)    # outside this a part is sent back at once, before the slow real-voice measurement
+WORDS_MIN, WORDS_MAX = 86, 106    # outside this a part is sent back at once, before the slow real-voice measurement
 SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.55, 0.3, 3.5     # measured on the real narrator; used only when the voice model is absent
 
 SERIES = {"Funny People": "ordinary people in extraordinary little crises: a baker, a boss, a mechanic, a grandmother, a teacher ... pride, rivalry, secrets, misunderstandings"}
@@ -349,7 +345,7 @@ def _smoke(script):
     p = tmp / "s.json"
     p.write_text(json.dumps(script))
     try:
-        render.render_stills(p, [1.0], tmp / "out", paint=False)
+        render.render_stills(p, [1.0], tmp / "out")
         return ""
     except SystemExit as e:
         return str(e)
@@ -389,12 +385,10 @@ def problems(sb, number):
             bad.append(f"part {pi}: drawing the storyboard failed: {err[:300]}")
             continue
         total, how = _measure(sc)
-        why = sc["series_part"]["of"] == 1
-        lo, hi = (WHY_MIN_LEN, WHY_MAX_LEN) if why else (MIN_LEN, MAX_LEN)
-        if not lo <= total <= hi:
+        if not MIN_LEN <= total <= MAX_LEN:
             words = sum(len(re.findall(r"[A-Za-z0-9']+", x["narration"])) for x in sc["scenes"])
-            delta = int(((lo + hi) / 2 - total) / SEC_PER_WORD)
-            bad.append(f"part {pi} would run {total:.0f} s ({how}); every part must run {lo:.0f} to {hi:.0f} s. "
+            delta = int((54.0 - total) / SEC_PER_WORD)
+            bad.append(f"part {pi} would run {total:.0f} s ({how}); every part must run {MIN_LEN:.0f} to {MAX_LEN:.0f} s ({AIM}). "
                        f"It has {words} narration words in {len(sc['scenes'])} scenes. {'Add' if delta > 0 else 'Cut'} about {abs(delta)} words (or scenes) in part {pi}.")
     return bad, (None if bad else scripts)
 
@@ -637,12 +631,9 @@ def _part_problems(part, cast, k, word, uw_part, n=None):
         if len(set(tones)) < 2 or sum(t != "calm" for t in tones) < 3:
             bad.append(f"part {k}: the tone must be clear and must change as the story turns: use at least two different tones, and at most two calm scenes (tones now: {', '.join(tones)}).")
         nwords = sum(len(re.findall(r"[A-Za-z0-9']+", str(x.get("narration", "")))) for x in scenes)
-        wl, wh, wmin, wmax, secs = ((WHY_WORDS_LO, WHY_WORDS_HI, WHY_WORDS_MIN, WHY_WORDS_MAX, "20 to 70") if n == 1 else (WORDS_LO, WORDS_HI, WORDS_MIN, WORDS_MAX, "50 to 57"))
-        if not wmin <= nwords <= wmax:
-            bad.append(f"part {k}: the narration has {nwords} words; every part needs {wl} to {wh} words in total to run {secs} seconds. "
-                       f"{'Add' if nwords < wmin else 'Cut'} about {abs(int((wl + wh) / 2) - nwords)} words (longer or sharper lines, not filler scenes).")
-        if n == 1 and k == 1 and not WHY_OPEN.match(str(scenes[0].get("narration", "")).strip()):
-            bad.append("scene 1: a why video opens on its question: the first sentence of the narration must be a question that starts with 'Why' and ends with '?'.")
+        if not WORDS_MIN <= nwords <= WORDS_MAX:
+            bad.append(f"part {k}: the narration has {nwords} words; every part needs {WORDS_LO} to {WORDS_HI} words in total to run 50 to 57 seconds. "
+                       f"{'Add' if nwords < WORDS_MIN else 'Cut'} about {abs(int((WORDS_LO + WORDS_HI) / 2) - nwords)} words (longer or sharper lines, not filler scenes).")
         first = scenes[0]
         _open_hook(first)                      # a missing opening mood or popup is a mechanical slip: add it rather than loop on it
         fa = [a for a in first.get("actors") or [] if isinstance(a, dict)]
@@ -660,7 +651,7 @@ def _part_problems(part, cast, k, word, uw_part, n=None):
                     roles |= {w for w in re.findall(r"[a-z]+", str(src or "").lower().replace("_", " ")) if len(w) > 3}
             if COLD_START.match(n1) or (roles and not roles & fwords):
                 bad.append(f"part {k}, scene 1: the first sentence must work for a viewer who never saw the earlier parts: name the main person by role ({', '.join(sorted(roles)[:6])}), not 'he', 'she', 'they', 'then' or 'but', and say what is wrong or at stake right now, in at most 12 words, with no recap or 'previously'.")
-        if (len(sent1.split()) > 12 and n != 1) or WEAK_OPENER.match(n1):
+        if len(sent1.split()) > 12 or WEAK_OPENER.match(n1):
             bad.append(f"part {k}, scene 1: the first sentence must be at most 12 words and start on the action or the problem, not scene-setting (no 'It was ...', 'There was ...', 'Once ...', 'One day ...'): say who and what is wrong at once.")
         if k == 1 and tones[0] == "calm":
             bad.append("part 1, scene 1: the opening scene must show a clear tone (playful, tense, eerie ...), never calm.")
@@ -787,15 +778,6 @@ def _save_story(sb, scripts, series, number, n_parts):
     t = re.sub(rf"^{re.escape(series)}\s*(#\d+)?\s*[:\-]\s*", "", sb["title"].strip(), flags=re.I) or sb["title"].strip()
     names = []
     for sc in scripts:
-        if n_parts == 1:                      # a single "why" video is simply titled by its question
-            sc["short_title"] = t
-            sc["series_part"]["story"] = t
-            sc["title"] = t
-            sc["youtube"]["title"] = t[:100]
-            path = SCRIPTS / f"{sc['slug']}.json"
-            path.write_text(json.dumps(sc, indent=1))
-            names.append(path.name)
-            continue
         sc["short_title"] = t
         sc["series_part"]["story"] = f"{series} #{number}: {t}"
         sc["title"] = f"{series} #{number}: {t} (Part {sc['series_part']['part']}/{n_parts})"
