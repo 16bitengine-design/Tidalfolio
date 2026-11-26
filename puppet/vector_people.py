@@ -25,7 +25,12 @@ LOOKS = {
 CFG = dict(LOOKS["classic"])
 
 
+LOOK_NAME = "classic"
+
+
 def set_character_look(name):
+    global LOOK_NAME
+    LOOK_NAME = name
     CFG.clear()
     CFG.update(LOOKS.get(name, LOOKS["classic"]))
 
@@ -220,6 +225,9 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
         c["skin_c"] = dz["skin_rgb"]
     if dz.get("hair_rgb"):
         c["hair_c"] = dz["hair_rgb"]
+    if LOOK_NAME == "blob":                                 # the simple round-headed character, dressed by the same outfit design
+        from . import vector_blob as VB
+        return VB.blob(x, y, s, f, t, c)
     V.ground_shadow(x, y, s)
     if wblend is None:
         wblend = 1.0 if walk > 0.3 else 0.0

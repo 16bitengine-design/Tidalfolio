@@ -841,5 +841,6 @@ def compile_storyboard(sb, number=None):
             "voice": {"kokoro": "tidal"}, "theme": CHANNEL_THEME,
             "story": {"lesson": (sb.get("lesson") or "").strip(), "cause": sb.get("cause") or ""},
             "uncommon_word": {"word": word.get("word", ""), "meaning": word.get("meaning", "")} if pi == 1 else {},
-            "props": DZ.sanitize_props(sb.get("props")), "scenes": scenes, "youtube": yt, "tiktok": tt})
+            "props": DZ.sanitize_props(sb.get("props")), "scenes": scenes, "youtube": yt, "tiktok": tt,
+            "character_look": sb.get("character_look") or "classic"})
     return out

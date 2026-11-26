@@ -232,7 +232,7 @@ def write_metadata(script, out_root, total, slug, scenes):
 
 
 # ------------------------------------------------------------------ preview stills
-def render_stills(script_path, times, outdir):
+def render_stills(script_path, times, outdir, paint=True):
     """Quick look: PNGs at the given seconds of each scene (no video, silent narration)."""
     script = json.loads(Path(script_path).read_text())
     scenes = script["scenes"]
