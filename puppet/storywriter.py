@@ -349,7 +349,7 @@ def _smoke(script):
     p = tmp / "s.json"
     p.write_text(json.dumps(script))
     try:
-        render.render_stills(p, [1.0], tmp / "out")
+        render.render_stills(p, [1.0], tmp / "out", paint=False)
         return ""
     except SystemExit as e:
         return str(e)

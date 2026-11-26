@@ -121,9 +121,15 @@ def frame(gt, with_text=True):
     E.C.tick = int(gt * E.FPS) // 2                 # hand-drawn ink "boil" on twos
     E.C.cx, E.C.cy, E.C.z = E.W / 2, E.H / 2, 1.0
     from PIL import Image
-    img = Image.new("RGB", (E.W, E.H), (0, 0, 0))
-    dsl.draw_scene(img, sc, u, D, ctx)
-    img = E.finish(img)                            # paper grain + vignette
+    if sc.get("_art") and ctx.script.get("art") == "anime":                              # the anime look: the generated picture, moving; pop-ups on top
+        from . import anime
+        img = anime.kenburns(sc, u, D)
+        for k_, p_ in enumerate(sc.get("popups", [])):
+            dsl._popup(img, dict(p_, x=380 + 320 * (k_ % 2), y=760), u, dsl.Clock(lambda ph: ctx.nt(sc["_i"], ph), D))
+    else:
+        img = Image.new("RGB", (E.W, E.H), (0, 0, 0))
+        dsl.draw_scene(img, sc, u, D, ctx)
+        img = E.finish(img)                        # paper grain + vignette
     tone = sc.get("tone", "calm")                  # colour, light, mist and tremble that carry the scene's tone (captions stay clean)
     i = scenes.index(sc)
     prev = scenes[i - 1].get("tone", "calm") if i else tone
@@ -232,7 +238,7 @@ def write_metadata(script, out_root, total, slug, scenes):
 
 
 # ------------------------------------------------------------------ preview stills
-def render_stills(script_path, times, outdir):
+def render_stills(script_path, times, outdir, paint=True):
     """Quick look: PNGs at the given seconds of each scene (no video, silent narration)."""
     script = json.loads(Path(script_path).read_text())
     scenes = script["scenes"]
@@ -247,6 +253,9 @@ def render_stills(script_path, times, outdir):
     ctx = type("Ctx", (), {})()
     ctx.worlds, ctx.nt, ctx.script = ({} if script.get("look") == "vector" else worlds.bake_for(script)), narration_time(scenes), script
     _JOB.update(scenes=scenes, ctx=ctx)
+    if script.get("art") in ("anime", "backdrop") and paint:
+        from . import anime
+        anime.prepare(script, scenes, outdir / "art", script.get("art"))
     for i, sc in enumerate(scenes):
         for t in times:
             frame(sc["_start"] + min(t, sc["_D"] - 0.05)).save(outdir / f"s{i + 1:02}_{t:04.1f}.png")
@@ -285,6 +294,10 @@ def render_script(script_path, dry=False, workers=None):
     ctx = type("Ctx", (), {})()
     ctx.worlds, ctx.nt, ctx.script = ({} if script.get("look") == "vector" else worlds.bake_for(script)), nt, script
     _JOB.update(scenes=scenes, ctx=ctx, total=total)
+    if script.get("art") in ("anime", "backdrop") and not dry:
+        from . import anime
+        print("      painting the pictures", flush=True)
+        anime.prepare(script, scenes, work / "art", script.get("art"))
 
     print("[3/5] music", flush=True)
     music.synth(scenes, [s["_start"] for s in scenes], [s["_D"] for s in scenes], total, nt, work / "music.wav",

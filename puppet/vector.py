@@ -42,6 +42,12 @@ def to_pil():
     return Image.fromarray(np.ascontiguousarray(a[:, :, :3]))
 
 
+def draw_backdrop(pil):
+    """paint a ready-made picture as the whole background (it already fills the frame; the camera moves inside it elsewhere)"""
+    a = np.ascontiguousarray(np.array(pil.convert("RGBA")))
+    cv.drawImageRect(skia.Image.fromarray(a, colorType=skia.kRGBA_8888_ColorType), skia.Rect.MakeWH(pil.width, pil.height), skia.Rect.MakeWH(W, H))
+
+
 def cam(depth=1.0):
     """Camera for a layer at this depth (1 = the stage where people stand; smaller = further away, moves less)."""
     z = 1 + (E.C.z - 1) * depth
