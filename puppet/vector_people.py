@@ -211,10 +211,6 @@ def hand_target(pose, sx, ax, ay, t, seed, near, head_y, gait, walk, sw):
 def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult", skin="fair", hair="brown", extras=(), talk=0.0,
            eye="open", brow=(0, 0), tear=0.0, look=(0, 0), action="stand", mood="neutral", bounce=0.0, carry=None, seed=0, walk=0.0, gait=0.0,
            prev_action=None, prev_mood=None, blend=1.0, wblend=None, listening=0.0, draped="none", design=None):
-    if LOOK_NAME == "blob":                                 # the simple round-headed character over painted backdrops
-        from . import vector_blob as VB
-        return VB.blob(x, y, s, f, t, role=role, extras=extras, talk=talk, eye=eye, brow=brow, look=look, action=action, mood=mood, bounce=bounce, seed=seed,
-                       tear=tear, design=DZ.sanitize_design(design), age=age)
     cv = V.cv
     dz = DZ.sanitize_design(design)                         # always cleaned, whatever sent it
     spec = DZ.build_spec(ROLES.get(role, ROLES["stranger"]), dz)
@@ -229,6 +225,9 @@ def person(x, y, s=1.0, f=1, t=0.0, role="stranger", gender="male", age="adult",
         c["skin_c"] = dz["skin_rgb"]
     if dz.get("hair_rgb"):
         c["hair_c"] = dz["hair_rgb"]
+    if LOOK_NAME == "blob":                                 # the simple round-headed character, dressed by the same outfit design
+        from . import vector_blob as VB
+        return VB.blob(x, y, s, f, t, c)
     V.ground_shadow(x, y, s)
     if wblend is None:
         wblend = 1.0 if walk > 0.3 else 0.0

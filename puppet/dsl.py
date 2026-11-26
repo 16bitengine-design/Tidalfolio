@@ -187,17 +187,10 @@ def _draw_vector(img, sc, u, D, ctx, clk):
     tw = sc.get("_start", 0.0) + uu
     import zlib
     V.SEED = zlib.crc32(str((ctx.script or {}).get("short_title", "story")).encode()) % 1000
-    art = sc.get("_art") if (ctx.script or {}).get("art") == "backdrop" else None
-    if art:                                              # a painted backdrop (generated picture) replaces the code-drawn world; the characters are still drawn by code
-        from . import anime
-        V.cv.resetMatrix()
-        V.draw_backdrop(anime.backdrop(art, sc, u, D))
-        T = {"tint": (0, 0, 0, 0), "rain": False}
-    else:
-        T = V.stage_world(sc["world"], tw)
-        V.tint_world(T)
-        if V.STYLE == "classic":
-            V.painterly(T, tw)
+    T = V.stage_world(sc["world"], tw)
+    V.tint_world(T)
+    if V.STYLE == "classic":
+        V.painterly(T, tw)
     V.cam(1.0)
     pos = {}
     global _CAST
@@ -205,8 +198,7 @@ def _draw_vector(img, sc, u, D, ctx, clk):
              if th.get("type") == "human" and _shown(th, uu, clk)]
     for th in sc.get("things", []):
         _vthing(th, uu, clk, pos)
-    if not art:
-        V.finish_world(T, tw)
+    V.finish_world(T, tw)
     img.paste(V.to_pil(), (0, 0))
     for p in ([] if THUMB else sc.get("popups", [])):
         _popup(img, p, u, clk)

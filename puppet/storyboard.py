@@ -283,9 +283,8 @@ def _unseen(sc, where):
             drawn.add(str(a["carry"]).lower())
     named = {w for w in re.findall(r"[a-z]+", narr.lower())}
     stage_has = STAGE_HAS.get(sc.get("stage", "cliff"), set())
-    painted = str(sc.get("visual", "")).lower()                            # a painted backdrop shows whatever its description names
     def _is_drawn(noun):
-        if noun in stage_has or (len(painted.split()) >= 10 and re.search(rf"\b{noun}(s|es)?\b", painted)):
+        if noun in stage_has:
             return True
         if noun in BP.ALIASES:                                           # built-in props answer to the words they show (a train carries its whistle; a map may be a notebook page)
             return any(d in drawn for d in BP.ALIASES[noun]) or any(noun == d or d.endswith("_" + noun) for d in drawn)
@@ -799,8 +798,6 @@ def _compile_scenes(scene_list, cast):
         scene = {"narration": sc["narration"].strip(), "world": "toon_" + sc["world"] + ("_" + stage if is_h else ""),
                  "camera": _camera(sc.get("camera") if sc.get("camera") not in (None, "hold") else TONE_CAMERA.get(tone, "hold"), stage, bool(sc.get("sky"))),
                  "things": things, "popups": pops, "music": music, "tone": tone}
-        scene["_src"] = {"actors": [{k: a.get(k) for k in ("who", "mood", "action")} for a in actors], "stage": stage, "world": sc["world"],
-                         "camera": sc.get("camera") or "hold", "visual": str(sc.get("visual") or "").strip()}      # what the anime look paints from
         if sc.get("silence_before"):
             scene["freeze"] = f"@{sc['silence_before']}-0.3"
         if si == n_scenes - 1:
@@ -845,5 +842,5 @@ def compile_storyboard(sb, number=None):
             "story": {"lesson": (sb.get("lesson") or "").strip(), "cause": sb.get("cause") or ""},
             "uncommon_word": {"word": word.get("word", ""), "meaning": word.get("meaning", "")} if pi == 1 else {},
             "props": DZ.sanitize_props(sb.get("props")), "scenes": scenes, "youtube": yt, "tiktok": tt,
-            "art": sb.get("art") or "vector", "character_look": sb.get("character_look") or "classic", "cast_src": sb["cast"]})
+            "character_look": sb.get("character_look") or "classic"})
     return out

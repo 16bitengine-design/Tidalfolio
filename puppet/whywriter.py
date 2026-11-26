@@ -44,8 +44,7 @@ THE CRAFT TEAM (a story writer, a director, an animator, a sound and music direc
 TABLE READ before you answer: Would a stranger stop in the first three seconds? Does every scene add a NEW piece of the answer? Is there one line people would quote? Does the last line make the viewer feel close to the star, or to someone they love? If a scene fails, rewrite it first.
 
 THE STAR (this is all the system can draw)
-- The video's star is the SUBJECT ITSELF drawn as a character, alone or with up to 3 others. Cast entries for creatures: {"kind": "cat|dog|cow|chicken|sun|moon", "color": optional (orange|ginger|grey|black|white|cream|brown|yellow|pink|red|blue|green|gold|tan), "stripes": optional true (cat), "patch": optional true (cow/dog)}. Pick topics whose star is one of those six creatures, or people (humans, early people, a baby, a grandmother, a sleepy worker): a person is {"role": "...", "gender": "male|female", "age": "child|adult|elder", "skin": "light|fair|tan|brown|dark", "hair": "black|brown|blonde|red|grey|white", "extras": ["glasses","beard","mustache","bun","bald"]} (a built-in role such as %s, or any role you invent with a "design"; people are never given names). The sun and moon are cast as creatures (kind "sun" or "moon") and have a face.
-- EVERY scene also has a "visual": ONE concrete sentence (12 to 30 words) describing the PAINTED BACKGROUND an illustrator would paint for that moment: the place, its details, the light and mood, and EVERY object the narration names (a pile of money, a bed, a window, a clock, a staircase). The background has NO people or animals in it: the star is drawn on top by the system. No text, no artist or franchise names. Make each place rich and cinematic and different from the last scene where the story allows. Example: "A dim bedroom at night, a bed buried under stacks of cash, pink window blinds glowing from a streetlight, a warm lamp and a duffel bag on the floor."
+- The video's star is the SUBJECT ITSELF drawn as a character, alone or with up to 3 others. Cast entries for creatures: {"kind": "cat|dog|cow|chicken|sun|moon", "color": optional (orange|ginger|grey|black|white|cream|brown|yellow|pink|red|blue|green|gold|tan), "stripes": optional true (cat), "patch": optional true (cow/dog)}. Pick topics whose star is one of those six creatures, or people (humans, early people, a baby, a grandmother, a sleepy worker): a person is {"role": "...", "gender": "male|female", "age": "child|adult|elder", "skin": "light|fair|tan|brown|dark", "hair": "black|brown|blonde|red|grey|white", "design": {"top_style": "shirt|coat|apron|vest|dress|overalls|robe", "top": colour, "bottom": colour, "accent": colour, "hat": "none|cap|flatcap|beanie|tophat|beret|hard|straw|sun|bucket|chef|fire|police|nurse|headscarf|helmet|crown", "hat_color": colour, "shoes": colour, "skin": "light|fair|tan|brown|dark or any colour such as #7fd1b9 (a character can be any colour: blue, green, orange...)", "accessories": ["glasses","scarf","bowtie","tie","badge","backpack","cape","beard","mustache"]}} (a built-in role such as %s, or any role you invent; ALWAYS dress each person for the topic with a design: a farmer in overalls and a straw hat, a sleepy worker in a tie and a rumpled shirt, an early person in a rough tunic; never default clothes, never the same outfit twice; people are never given names). The sun and moon are cast as creatures (kind "sun" or "moon") and have a face.
 - Each scene: "world" (dawn|day|dusk|storm|night|sunset; words like night, dark, midnight need "night"; the moon needs "sky": true; a bright tone like joyful cannot be night), "stage" (street|park|kitchen|shop|office|classroom|home), "camera" (hold|push_in|pull_back|pan_right|pan_left), "tone" (playful|joyful|tense|sad|eerie|tender|calm: use at least two different tones, at most two calm scenes, never calm in scene 1; tense/sad/eerie belong to dusk, joyful to day/dawn/sunset), optional "silence_before" (a few words copied from the narration, at most two scenes).
 - "actors": 1 to 3 on screen, each {"who": cast key, "at": ground_left|ground_mid|ground_right (a different spot each), "mood": neutral|sleepy|happy|angry|scared|shocked|smug|sad|dizzy, "action": stand|talk|hop|flap|point|shrug|cheer|facepalm|think|laugh|tremble|offer|hold|clasp|wrap|place|reach|beckon|hugself|wipe|cower|wave}. A creature with mood "sleepy" is drawn asleep. Match mood and action to what the narration says at that moment. The second half needs one quiet small gesture (clasp, hold, place, hugself, wrap, wipe, offer) and tender scenes use no big gestures.
 - Scene 1 opens on a strong moment: an actor with a non-neutral mood and a popup. Use "popups" (comic bubble or burst words, 1 to 4 words, {"text": "ZZZ", "kind": "bubble|burst", "at": "words copied exactly from that scene's narration", "near": cast key}) in most scenes.
@@ -55,7 +54,7 @@ THE STAR (this is all the system can draw)
 Reply with ONE JSON object:
 {"title": "...", "uncommon_word": {"word": "...", "meaning": "..."},
  "cast": {"cat": {"kind": "cat", "color": "orange"}},
- "parts": [{"thumbnail_scene": 1, "thumbnail_hook": "1 to 3 words in capitals, a tease", "scenes": [{"narration": "...", "visual": "...", "world": "day", "stage": "home", "camera": "push_in", "tone": "playful", "actors": [{"who": "cat", "at": "ground_mid", "mood": "smug", "action": "talk"}], "popups": [{"text": "WHY?", "kind": "burst", "at": "Why do cats", "near": "cat"}]}]}],
+ "parts": [{"thumbnail_scene": 1, "thumbnail_hook": "1 to 3 words in capitals, a tease", "scenes": [{"narration": "...", "world": "day", "stage": "home", "camera": "push_in", "tone": "playful", "actors": [{"who": "cat", "at": "ground_mid", "mood": "smug", "action": "talk"}], "popups": [{"text": "WHY?", "kind": "burst", "at": "Why do cats", "near": "cat"}]}]}],
  "youtube": {"description": "...", "tags": ["..."], "pinned_comment": "a question for the comments"},
  "tiktok": {"caption": "...", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}"""
 
@@ -112,9 +111,6 @@ def why_problems(sb, G, number):
         return bad, None
     if str(uw["word"]).lower() in {w.lower() for w in G.used_words()}:
         bad.append(f"the uncommon word {uw['word']!r} was already used; choose another.")
-    for k, sc in enumerate(parts[0].get("scenes", []), 1):
-        if len(str(sc.get("visual", "")).split()) < 10:
-            bad.append(f"scene {k}: 'visual' must be one concrete sentence of at least 10 words describing the picture (pose, expression, setting, light, every named object).")
     word = str(uw["word"]).strip()
     bad += W._part_problems(parts[0], sb.get("cast") or {}, 1, word, 1, 1)
     if bad:
@@ -143,7 +139,7 @@ def write_why(idea=None, log=print):
             last = [f"the reply was not valid JSON ({e})."]
             msgs += [{"role": "assistant", "content": str(raw)[:6000]}, {"role": "user", "content": "Reply again with ONE valid JSON object. " + last[0]}]
             continue
-        sb["art"], sb["character_look"] = "backdrop", "blob"
+        sb["character_look"] = "blob"
         bad, scripts = why_problems(sb, G, number)
         if not bad and attempt < REPAIRS:          # the editor reads a valid draft; if it is weak it goes back for a rewrite (the last round always keeps a valid draft)
             bad = critique(G, sb)
