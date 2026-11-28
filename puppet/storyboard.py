@@ -850,6 +850,18 @@ def _compile_scenes(scene_list, cast):
                        "scale": max(0.4, min(2.5, float(pr.get("size", 1.0) or 1.0))), "face": -1 if pr.get("face") == "left" else 1}
                 if pr.get("from") or pr.get("to"):                            # on screen only between these words of the narration (doors closing, a chair jammed in them ...)
                     th_["show"] = [f"@{pr['from']}" if pr.get("from") else -0.1] + ([f"@{pr['to']}"] if pr.get("to") else [])
+                if pr.get("go"):                                              # a prop that MOVES with the story: a bird that flies off with a letter, lands on a sill ...
+                    offs = {"off_left": -150.0, "off_right": 780.0}
+                    x0 = offs.get(pr.get("start"), HSLOTS.get(pr.get("start"), th_["x"]))
+                    x1 = offs.get(pr["go"], HSLOTS.get(pr["go"], x0))
+                    t0 = f"@{pr['from']}" if pr.get("from") else 0.6
+                    t1 = f"@{pr['go_to']}" if pr.get("go_to") else "@end-0.6"
+                    th_["x"] = {"kf": [[t0, float(x0)], [t1, float(x1)]]}
+                    th_["face"] = 1 if x1 >= x0 else -1
+                    hh = pr.get("height")
+                    if isinstance(hh, (list, tuple)) and len(hh) == 2:             # [height at the start, height at the end] in pixels above the ground (flying, landing)
+                        th_["float"] = {"kf": [[t0, float(hh[0])], [t1, max(0.0, float(hh[1])) + 0.01]]}
+                        th_["bob"] = [8, 11.0]
                 things.append(th_)
         pos = {}
         for a in sorted(actors, key=lambda q: 0 if cast[q["who"]]["species"] != "eagle" else 1):   # everyone else stands behind the eagles

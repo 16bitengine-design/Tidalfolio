@@ -29,3 +29,10 @@ def test_background_scenery():
     assert SB._background_scenery({"narration": "Hi."}, 1, "street")
     assert SB._background_scenery({"narration": "Hi."}, 0, "home") == []
     assert SB._background_scenery({"narration": "Hi.", "scenery": False}, 0, "park") == []
+
+
+def test_moving_prop_keyframes():
+    import json, sys
+    sc = json.load(open("scripts/024-the-pigeon-that-delivered.json"))["scenes"][0]
+    fly = [t for t in sc["things"] if t.get("item") == "pigeon_fly_letter"][0]
+    assert fly["x"]["kf"][0][1] > fly["x"]["kf"][1][1] and fly["float"]["kf"][1][1] > fly["float"]["kf"][0][1]

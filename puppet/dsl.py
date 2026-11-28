@@ -283,7 +283,7 @@ def _vthing(th, u, clk, pos):
         from . import design as DZ
         rec = DZ.PROPS.get(th.get("item"))
         if rec:
-            fl = float(th.get("float") or 0.0)
+            fl = float(g("float", 0.0) or 0.0)
             bob = th.get("bob")
             if bob:                                            # a hop or flutter: [amplitude in px, rate]
                 y = y - abs(math.sin(t * float(bob[1]))) * float(bob[0]) * s
