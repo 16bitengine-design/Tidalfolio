@@ -58,6 +58,196 @@
    "things": [
     {
      "type": "prop",
+     "id": "bgs0_0",
+     "item": "bg_lamp",
+     "x": 330.0,
+     "y": 1150.0,
+     "scale": 0.765,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs0_1",
+     "item": "bg_tree",
+     "x": 560.0,
+     "y": 1168.0,
+     "scale": 0.68,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs0_2",
+     "item": "bg_flowers",
+     "x": 120.0,
+     "y": 1195.0,
+     "scale": 0.765,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "human",
+     "id": "bg0_0",
+     "scale": 0.52,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "office worker",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 5,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.85,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        1.8,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        3.3000000000000003,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        20.0
+       ],
+       [
+        "@end",
+        130.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "human",
+     "id": "bg0_1",
+     "scale": 0.52,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "girl",
+     "gender": "female",
+     "age": "child",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 27,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.5
+      }
+     },
+     "t_offset": 3.7,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.1000000000000005,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": 600.0
+    },
+    {
+     "type": "prop",
+     "id": "bgthing0",
+     "item": "bg_bus",
+     "face": 1,
+     "show": [
+      -0.1
+     ],
+     "scale": 0.62,
+     "y": 1140.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        -260.0
+       ],
+       [
+        "@end",
+        920.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "prop",
      "id": "prop0",
      "item": "pigeon",
      "x": 470.0,
@@ -65,7 +255,47 @@
      "scale": 1.0,
      "face": 1,
      "show": [
+      -0.1,
       "@snatched"
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "prop1",
+     "item": "pigeon_fly_letter",
+     "x": {
+      "kf": [
+       [
+        "@snatched",
+        470.0
+       ],
+       [
+        "@straight over the street",
+        -150.0
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      "@snatched"
+     ],
+     "float": {
+      "kf": [
+       [
+        "@snatched",
+        40.0
+       ],
+       [
+        "@straight over the street",
+        520.01
+       ]
+      ]
+     },
+     "bob": [
+      8,
+      11.0
      ]
     },
     {
@@ -91,7 +321,22 @@
      "mood": "shocked",
      "action": "reach",
      "seed": 38,
-     "carry": "letter",
+     "carry": {
+      "step": [
+       [
+        0,
+        null
+       ],
+       [
+        "@A pigeon",
+        "letter"
+       ],
+       [
+        "@snatched",
+        null
+       ]
+      ]
+     },
      "bounce": {
       "sin": {
        "amp": 3,
@@ -218,6 +463,196 @@
     }
    },
    "things": [
+    {
+     "type": "prop",
+     "id": "bgs1_0",
+     "item": "bg_lamp",
+     "x": 70.0,
+     "y": 1150.0,
+     "scale": 0.85,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs1_1",
+     "item": "bg_tree_gold",
+     "x": 590.0,
+     "y": 1168.0,
+     "scale": 0.68,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs1_2",
+     "item": "bg_bush",
+     "x": 330.0,
+     "y": 1195.0,
+     "scale": 0.6375,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "human",
+     "id": "bg1_0",
+     "scale": 0.52,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandfather",
+     "gender": "female",
+     "age": "elder",
+     "skin": "brown",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 10,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 3.7,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        1.8,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.0,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        600.0
+       ],
+       [
+        "@end",
+        490.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "human",
+     "id": "bg1_1",
+     "scale": 0.52,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "light",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 44,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 3.7,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        6.1,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": 110.0
+    },
+    {
+     "type": "prop",
+     "id": "bgthing1",
+     "item": "bg_car_red",
+     "face": -1,
+     "show": [
+      -0.1
+     ],
+     "scale": 0.62,
+     "y": 1140.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        920.0
+       ],
+       [
+        "@end",
+        -260.0
+       ]
+      ]
+     }
+    },
     {
      "type": "human",
      "id": "boy",
@@ -364,6 +799,240 @@
     }
    },
    "things": [
+    {
+     "type": "prop",
+     "id": "bgs2_0",
+     "item": "bg_lamp",
+     "x": 560.0,
+     "y": 1150.0,
+     "scale": 0.85,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs2_1",
+     "item": "bg_pine_dark",
+     "x": 30.0,
+     "y": 1168.0,
+     "scale": 0.68,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs2_2",
+     "item": "bg_bush",
+     "x": 330.0,
+     "y": 1195.0,
+     "scale": 0.6375,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "human",
+     "id": "bg2_0",
+     "scale": 0.52,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "office worker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 47,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 4.81,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        600.0
+       ],
+       [
+        "@end",
+        490.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "human",
+     "id": "bg2_1",
+     "scale": 0.52,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "neighbour",
+     "gender": "male",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 47,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 4.81,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": 300.0
+    },
+    {
+     "type": "prop",
+     "id": "bgthing2",
+     "item": "bg_bird",
+     "face": 1,
+     "show": [
+      -0.1
+     ],
+     "scale": 1.15,
+     "y": 1240.0,
+     "float": 700.0,
+     "bob": [
+      7,
+      10.0
+     ],
+     "x": {
+      "kf": [
+       [
+        0,
+        -80.0
+       ],
+       [
+        "@end",
+        700.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "prop",
+     "id": "prop0",
+     "item": "pigeon_fly_letter",
+     "x": {
+      "kf": [
+       [
+        "@He chased it",
+        -150.0
+       ],
+       [
+        "@end-0.6",
+        780.0
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      "@He chased it"
+     ],
+     "float": {
+      "kf": [
+       [
+        "@He chased it",
+        360.0
+       ],
+       [
+        "@end-0.6",
+        300.01
+       ]
+      ]
+     },
+     "bob": [
+      8,
+      11.0
+     ]
+    },
     {
      "type": "human",
      "id": "boy",
@@ -528,14 +1197,260 @@
    "things": [
     {
      "type": "prop",
-     "id": "prop0",
-     "item": "pigeon",
-     "x": 130.0,
-     "y": 1240.0,
-     "scale": 1.0,
+     "id": "bgs3_0",
+     "item": "bg_pine_dark",
+     "x": 40.0,
+     "y": 1150.0,
+     "scale": 0.8075,
      "face": 1,
      "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs3_1",
+     "item": "bg_bush",
+     "x": 200.0,
+     "y": 1195.0,
+     "scale": 0.765,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs3_2",
+     "item": "bg_pine",
+     "x": 600.0,
+     "y": 1186.0,
+     "scale": 0.85,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs3_3",
+     "item": "bg_flowers",
+     "x": 470.0,
+     "y": 1195.0,
+     "scale": 0.85,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs3_4",
+     "item": "bg_fence",
+     "x": 340.0,
+     "y": 1195.0,
+     "scale": 0.765,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "human",
+     "id": "bg3_0",
+     "scale": 0.52,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "father",
+     "gender": "male",
+     "age": "adult",
+     "skin": "light",
+     "hair": "black",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 36,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 3.0
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        110.0
+       ],
+       [
+        "@end",
+        220.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "human",
+     "id": "bg3_1",
+     "scale": 0.52,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "girl",
+     "gender": "male",
+     "age": "child",
+     "skin": "dark",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 4,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.8,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": 300.0
+    },
+    {
+     "type": "prop",
+     "id": "bgthing3",
+     "item": "bg_bird",
+     "face": -1,
+     "show": [
+      -0.1
+     ],
+     "scale": 1.15,
+     "y": 1240.0,
+     "float": 560.0,
+     "bob": [
+      7,
+      10.0
+     ],
+     "x": {
+      "kf": [
+       [
+        0,
+        700.0
+       ],
+       [
+        "@end",
+        -80.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "prop",
+     "id": "prop0",
+     "item": "pigeon_fly_letter",
+     "x": {
+      "kf": [
+       [
+        "@swooped",
+        780.0
+       ],
+       [
+        "@end-0.6",
+        -150.0
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": -1,
+     "show": [
       "@swooped"
+     ],
+     "float": {
+      "kf": [
+       [
+        "@swooped",
+        520.0
+       ],
+       [
+        "@end-0.6",
+        120.01
+       ]
+      ]
+     },
+     "bob": [
+      8,
+      11.0
      ]
     },
     {
@@ -691,11 +1606,53 @@
     {
      "type": "prop",
      "id": "prop0",
+     "item": "pigeon_fly_letter",
+     "x": {
+      "kf": [
+       [
+        "@At last",
+        780.0
+       ],
+       [
+        "@landed",
+        470.0
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      "@At last"
+     ],
+     "float": {
+      "kf": [
+       [
+        "@At last",
+        380.0
+       ],
+       [
+        "@landed",
+        0.01
+       ]
+      ]
+     },
+     "bob": [
+      8,
+      11.0
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "prop1",
      "item": "pigeon",
      "x": 470.0,
      "y": 1240.0,
      "scale": 1.0,
-     "face": 1
+     "face": 1,
+     "show": [
+      "@landed"
+     ]
     },
     {
      "type": "human",
@@ -834,6 +1791,15 @@
     }
    },
    "things": [
+    {
+     "type": "prop",
+     "id": "prop0",
+     "item": "pigeon",
+     "x": 470.0,
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": 1
+    },
     {
      "type": "human",
      "id": "grandmother",
@@ -980,6 +1946,15 @@
     }
    },
    "things": [
+    {
+     "type": "prop",
+     "id": "prop0",
+     "item": "pigeon",
+     "x": 470.0,
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": 1
+    },
     {
      "type": "human",
      "id": "grandmother",
@@ -1271,6 +2246,42 @@
    },
    "things": [
     {
+     "type": "prop",
+     "id": "bgs8_0",
+     "item": "bg_lamp",
+     "x": 560.0,
+     "y": 1150.0,
+     "scale": 0.85,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs8_1",
+     "item": "bg_pine",
+     "x": 30.0,
+     "y": 1168.0,
+     "scale": 0.68,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs8_2",
+     "item": "bg_bush",
+     "x": 330.0,
+     "y": 1195.0,
+     "scale": 0.6375,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
      "type": "human",
      "id": "grandmother",
      "scale": 1.0,
@@ -1419,6 +2430,196 @@
    },
    "things": [
     {
+     "type": "prop",
+     "id": "bgs9_0",
+     "item": "bg_lamp",
+     "x": 330.0,
+     "y": 1150.0,
+     "scale": 0.765,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs9_1",
+     "item": "bg_tree",
+     "x": 560.0,
+     "y": 1168.0,
+     "scale": 0.68,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs9_2",
+     "item": "bg_flowers",
+     "x": 120.0,
+     "y": 1195.0,
+     "scale": 0.765,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "human",
+     "id": "bg9_0",
+     "scale": 0.52,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "light",
+     "hair": "black",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 42,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 2.96,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.1000000000000005,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        110.0
+       ],
+       [
+        "@end",
+        220.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "human",
+     "id": "bg9_1",
+     "scale": 0.52,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mail carrier",
+     "gender": "male",
+     "age": "adult",
+     "skin": "dark",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 46,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 4.4399999999999995,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.6999999999999997,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": 300.0
+    },
+    {
+     "type": "prop",
+     "id": "bgthing9",
+     "item": "bg_car_yellow",
+     "face": -1,
+     "show": [
+      -0.1
+     ],
+     "scale": 0.62,
+     "y": 1140.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        920.0
+       ],
+       [
+        "@end",
+        -260.0
+       ]
+      ]
+     }
+    },
+    {
      "type": "human",
      "id": "boy",
      "scale": 1.0,
@@ -1565,6 +2766,140 @@
     }
    },
    "things": [
+    {
+     "type": "prop",
+     "id": "bgs10_0",
+     "item": "bg_lamp",
+     "x": 560.0,
+     "y": 1150.0,
+     "scale": 0.85,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs10_1",
+     "item": "bg_pine_dark",
+     "x": 30.0,
+     "y": 1168.0,
+     "scale": 0.68,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs10_2",
+     "item": "bg_bush",
+     "x": 330.0,
+     "y": 1195.0,
+     "scale": 0.6375,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "human",
+     "id": "bg10_0",
+     "scale": 0.52,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "neighbour",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 16,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 5.92,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.6999999999999997,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        20.0
+       ],
+       [
+        "@end",
+        130.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "prop",
+     "id": "bgthing10",
+     "item": "bg_dog",
+     "face": 1,
+     "show": [
+      -0.1
+     ],
+     "scale": 0.62,
+     "y": 1190.0,
+     "bob": [
+      3,
+      7.0
+     ],
+     "x": {
+      "kf": [
+       [
+        0,
+        40.0
+       ],
+       [
+        "@end",
+        230.0
+       ]
+      ]
+     }
+    },
     {
      "type": "prop",
      "id": "prop0",
@@ -1773,12 +3108,185 @@
    "things": [
     {
      "type": "prop",
+     "id": "bgs11_0",
+     "item": "bg_lamp",
+     "x": 70.0,
+     "y": 1150.0,
+     "scale": 0.85,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs11_1",
+     "item": "bg_tree",
+     "x": 590.0,
+     "y": 1168.0,
+     "scale": 0.68,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "bgs11_2",
+     "item": "bg_bush",
+     "x": 330.0,
+     "y": 1195.0,
+     "scale": 0.6375,
+     "face": 1,
+     "show": [
+      -0.1
+     ]
+    },
+    {
+     "type": "human",
+     "id": "bg11_0",
+     "scale": 0.52,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "student",
+     "gender": "male",
+     "age": "child",
+     "skin": "dark",
+     "hair": "black",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 27,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 3.7,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.1000000000000005,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1170.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        300.0
+       ],
+       [
+        "@end",
+        190.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "prop",
+     "id": "bgthing11",
+     "item": "bg_car_blue",
+     "face": -1,
+     "show": [
+      -0.1
+     ],
+     "scale": 0.62,
+     "y": 1140.0,
+     "x": {
+      "kf": [
+       [
+        0,
+        920.0
+       ],
+       [
+        "@end",
+        -260.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "prop",
      "id": "prop0",
      "item": "pigeon",
      "x": 300.0,
      "y": 1240.0,
      "scale": 1.0,
-     "face": 1
+     "face": 1,
+     "show": [
+      -0.1,
+      "@left with"
+     ]
+    },
+    {
+     "type": "prop",
+     "id": "prop1",
+     "item": "pigeon_fly_letter",
+     "x": {
+      "kf": [
+       [
+        "@left with",
+        300.0
+       ],
+       [
+        "@end-0.6",
+        780.0
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      "@left with"
+     ],
+     "float": {
+      "kf": [
+       [
+        "@left with",
+        30.0
+       ],
+       [
+        "@end-0.6",
+        480.01
+       ]
+      ]
+     },
+     "bob": [
+      8,
+      11.0
+     ]
     },
     {
      "type": "human",

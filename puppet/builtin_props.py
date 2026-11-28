@@ -143,6 +143,24 @@ def _fence():
     return out
 
 
+def _pigeon_fly(letter=False):
+    out = _bird("#8a90a8")
+    out[4]["c"] = "#6e7490"
+    if letter:                                       # carrying the letter in its feet
+        out += [{"k": "rrect", "x0": 6, "y0": 8, "x1": 34, "y1": 24, "r": 2, "c": "#fbf4e2"}, {"k": "line", "x0": 8, "y0": 14, "x1": 32, "y1": 14, "w": 2, "c": "#d9c9a0"}]
+    k = 2.3                                          # a story pigeon is the star of its scene: big enough to read next to a person
+    big = []
+    for sh in out:
+        sh = dict(sh)
+        for key in ("x", "y", "rx", "ry", "x0", "y0", "x1", "y1", "w", "r"):
+            if key in sh:
+                sh[key] = sh[key] * k
+        if "pts" in sh:
+            sh["pts"] = [[p[0] * k, p[1] * k] for p in sh["pts"]]
+        big.append(sh)
+    return big
+
+
 BG_SCENERY = {"bg_tree": _tree("#6cc17a", "#58ac68"), "bg_tree_gold": _tree("#f2a64a", "#e08a3a"), "bg_pine": _pine("#3f8f66", "#4aa074"), "bg_pine_dark": _pine("#2f7a58", "#3b8a66"),
               "bg_bush": _bush("#4f9a5a"), "bg_flowers": _flowers(), "bg_lamp": _lamp(), "bg_fence": _fence()}
 
@@ -324,10 +342,12 @@ ALIASES = {
     "train": ("train",), "trains": ("train",),
     "door": ("door", "door_open", "train_doors_open", "train_doors_closing", "train_doors_closed", "train_doors_jammed"),
     "doors": ("door", "door_open", "train_doors_open", "train_doors_closing", "train_doors_closed", "train_doors_jammed"),
-    "crowd": ("crowd", "marching_crowd"), "crowds": ("crowd", "marching_crowd"), "pigeon": ("pigeon",), "pigeons": ("pigeon",),
+    "crowd": ("crowd", "marching_crowd"), "crowds": ("crowd", "marching_crowd"), "pigeon": ("pigeon", "pigeon_fly", "pigeon_fly_letter"), "pigeons": ("pigeon", "pigeon_fly", "pigeon_fly_letter"),
     "clock": ("station_clock",), "bridge": ("bridge",), "soup": ("soup",),
     "bread": ("baguette",), "note": ("notebook", "notebook_page"), "notes": ("notebook", "notebook_page"),
 }
 RAW.update(BG_THINGS)
+RAW["pigeon_fly"] = _pigeon_fly()
+RAW["pigeon_fly_letter"] = _pigeon_fly(True)
 RAW.update(BG_SCENERY)
 NAMES = tuple(RAW)
