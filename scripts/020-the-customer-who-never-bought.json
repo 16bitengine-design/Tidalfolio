@@ -20,7 +20,7 @@
   "part": 1,
   "of": 1
  },
- "thumbnail_scene": 2,
+ "thumbnail_scene": 4,
  "thumbnail_hook": "WHO IS HE?",
  "voice": {
   "kokoro": "tidal"
@@ -37,7 +37,7 @@
  "props": {},
  "scenes": [
   {
-   "narration": "An old man stood at the window daily and bought nothing.",
+   "narration": "An old man stood at the shop window daily. He never bought a single thing.",
    "world": "toon_dusk_shop",
    "camera": {
     "x": 300,
@@ -73,18 +73,19 @@
      "extras": [
       "mustache"
      ],
-     "eye": "open",
+     "eye": "wide",
      "brow": [
       -8,
-      10
+      -8
      ],
-     "mood": "angry",
+     "mood": "shocked",
      "action": "point",
      "seed": 2,
+     "carry": "none",
      "bounce": {
       "sin": {
-       "amp": 2.5,
-       "rate": 22,
+       "amp": 3,
+       "rate": 26,
        "phase": 0.0
       }
      },
@@ -140,6 +141,7 @@
      "mood": "neutral",
      "action": "stand",
      "seed": 37,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 1.5,
@@ -179,10 +181,10 @@
    ],
    "popups": [
     {
-     "text": "AGAIN?!",
-     "at": "@bought nothing",
+     "text": "WHO?",
+     "at": "@stood at the shop window",
      "dur": 2.2,
-     "x": 170,
+     "x": 480,
      "y": 760,
      "size": 64,
      "shape": "burst",
@@ -247,7 +249,7 @@
    "tone": "tense"
   },
   {
-   "narration": "The shopkeeper counted forty-one mornings, and tried a sale and a smile.",
+   "narration": "The shopkeeper counted forty-one mornings. He tried a sale, then a smile, then a free sample, and nothing worked.",
    "world": "toon_day_shop",
    "camera": {
     "x": 300,
@@ -283,18 +285,19 @@
      "extras": [
       "mustache"
      ],
-     "eye": "half",
+     "eye": "open",
      "brow": [
-      4,
-      6
+      -8,
+      10
      ],
-     "mood": "smug",
+     "mood": "angry",
      "action": "hips",
      "seed": 2,
+     "carry": "none",
      "bounce": {
       "sin": {
-       "amp": 1.5,
-       "rate": 2.5,
+       "amp": 2.5,
+       "rate": 22,
        "phase": 0.0
       }
      },
@@ -385,7 +388,115 @@
    "tone": "playful"
   },
   {
-   "narration": "On the forty-second morning he marched out and said, \"Sir, this is a shop, not a museum.\"",
+   "narration": "Each dawn the old man shuffled down the street, hat in hand, to the very same window.",
+   "world": "toon_dawn_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "grandfather",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandfather",
+     "gender": "male",
+     "age": "elder",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 37,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.1099999999999999,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        0.6,
+        130.0
+       ],
+       [
+        "@end-1.0",
+        470.0
+       ]
+      ]
+     }
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.45,
+    "pluck": {
+     "step": 1.6,
+     "notes": [
+      0,
+      3,
+      2,
+      4
+     ],
+     "vol": 0.5
+    }
+   },
+   "tone": "calm"
+  },
+  {
+   "narration": "On the forty-second morning the shopkeeper marched out and said, \"Sir, this is a shop, not a museum.\"",
    "world": "toon_dusk_shop",
    "camera": {
     "x": {
@@ -429,6 +540,7 @@
      "mood": "angry",
      "action": "talk",
      "seed": 2,
+     "carry": "none",
      "talk": {
       "sin": {
        "base": 0.5,
@@ -501,6 +613,7 @@
      "mood": "scared",
      "action": "cower",
      "seed": 37,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 3,
@@ -597,7 +710,7 @@
    "tone": "tense"
   },
   {
-   "narration": "The old man looked at his shoes. \"I only come to read your sign,\" he said.",
+   "narration": "The old man looked at his shoes. \"I only come to read your sign,\" he said softly.",
    "world": "toon_dusk_shop",
    "camera": {
     "x": 300,
@@ -620,7 +733,7 @@
      "type": "human",
      "id": "grandfather",
      "scale": 1.0,
-     "face": -1,
+     "face": 1,
      "show": [
       -0.1,
       null
@@ -639,6 +752,7 @@
      "mood": "sad",
      "action": "hugself",
      "seed": 37,
+     "carry": "none",
      "tear": {
       "kf": [
        [
@@ -743,7 +857,7 @@
   },
   {
    "narration": "Seventy years, and nobody had ever taught him how. A letter from his granddaughter waited in his coat.",
-   "world": "toon_dusk_shop",
+   "world": "toon_dusk_street",
    "camera": {
     "x": 300,
     "y": 1100,
@@ -858,6 +972,7 @@
      "mood": "shocked",
      "action": "stand",
      "seed": 2,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 3,
@@ -949,7 +1064,7 @@
    "tone": "sad"
   },
   {
-   "narration": "Slowly, the shopkeeper read it out loud, twice.",
+   "narration": "Slowly, the shopkeeper took the letter and read it out loud, twice.",
    "world": "toon_dusk_shop",
    "camera": {
     "x": 300,
@@ -962,7 +1077,7 @@
       ],
       [
        "@end",
-       1.5675
+       1.7999999999999998
       ]
      ]
     }
@@ -1093,14 +1208,883 @@
       81
      ],
      "len": 3.0
-    },
-    "silence_before": "Slowly"
+    }
    },
-   "tone": "tender",
-   "freeze": "@Slowly-0.3"
+   "tone": "tender"
   },
   {
-   "narration": "Every morning after that, a diligent student arrived at the shop, and the old man bought something.",
+   "narration": "She missed him, and she wanted him home.",
+   "world": "toon_dusk_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "grandfather",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandfather",
+     "gender": "male",
+     "age": "elder",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "wipe",
+     "seed": 37,
+     "carry": "none",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.1099999999999999,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "That night the shopkeeper could not stop thinking about it, and sat in his kitchen turning an alphabet book over in his hands.",
+   "world": "toon_night_kitchen",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "shopkeeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "shopkeeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "think",
+     "seed": 2,
+     "carry": "book",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      41,
+      48,
+      53,
+      57
+     ],
+     [
+      43,
+      50,
+      55,
+      58
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ]
+    ],
+    "pluck": {
+     "step": 2.3,
+     "notes": [
+      4,
+      3,
+      2,
+      1,
+      0,
+      0
+     ],
+     "vol": 0.55,
+     "scale": [
+      57,
+      60,
+      62,
+      64,
+      67,
+      69
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "sad"
+  },
+  {
+   "narration": "Before sunrise he ran through the sleeping streets to the old man's home, holding the book high.",
+   "world": "toon_dawn_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "shopkeeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "shopkeeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 2,
+     "carry": "book",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        "@he ran",
+        -300.0
+       ],
+       [
+        "@end-1.0",
+        900.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "speed",
+     "x": 130.0,
+     "y": 1120.0,
+     "scale": 1.1,
+     "show": [
+      "@he ran",
+      "@he ran+1.3"
+     ],
+     "dx": -1,
+     "n": 6
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "He knocked, the old man opened the door in his slippers, and the shopkeeper held out the book.",
+   "world": "toon_day_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "prop",
+     "id": "prop0",
+     "item": "door_open",
+     "x": 470.0,
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": 1
+    },
+    {
+     "type": "human",
+     "id": "shopkeeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "shopkeeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "offer",
+     "seed": 2,
+     "carry": "book",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "grandfather",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandfather",
+     "gender": "male",
+     "age": "elder",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "stand",
+     "seed": 37,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.1099999999999999,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "They sat together every morning. The old man learned A, then B, then his own name, one slow letter at a time.",
+   "world": "toon_day_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "shopkeeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "shopkeeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "talk",
+     "seed": 2,
+     "carry": "none",
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": 0.6,
+       "to": "@end-1.0"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "grandfather",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandfather",
+     "gender": "male",
+     "age": "elder",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "think",
+     "seed": 37,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.1099999999999999,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "A month later he walked into the shop, pointed at the sign, and read it out loud, every single word.",
    "world": "toon_day_shop",
    "camera": {
     "x": {
@@ -1117,6 +2101,205 @@
     },
     "y": 1100,
     "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "grandfather",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandfather",
+     "gender": "male",
+     "age": "elder",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 37,
+     "carry": "book",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.1099999999999999,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    },
+    {
+     "type": "human",
+     "id": "shopkeeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "shopkeeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "offer",
+     "seed": 2,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "Every morning after that, a diligent student arrived at the shop, and the old man bought something.",
+   "world": "toon_sunset_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
    },
    "things": [
     {
@@ -1140,9 +2323,9 @@
       -4
      ],
      "mood": "happy",
-     "action": "stand",
+     "action": "wave",
      "seed": 37,
-     "carry": "book",
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
@@ -1202,8 +2385,9 @@
       -4
      ],
      "mood": "happy",
-     "action": "offer",
+     "action": "cheer",
      "seed": 2,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
