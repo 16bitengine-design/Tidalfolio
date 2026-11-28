@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Post the last rendered vertical video to TikTok through Buffer.
 
-Buffer cannot take file uploads, only a public https URL, so the video is first uploaded to Cloudinary
-(free tier) and that URL is handed to Buffer's createPost.
+Buffer cannot take file uploads, only a public https URL, so the video is first hosted as a GitHub release asset of this
+public repo (any length; Cloudinary refuses videos over 60 s) and that URL is handed to Buffer's createPost.
 
-Secrets needed: BUFFER_API_KEY, CLOUDINARY_CLOUD_NAME, plus EITHER the variable CLOUDINARY_UPLOAD_PRESET (unsigned preset)
-OR the secrets CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.
+Needs only BUFFER_API_KEY (GITHUB_TOKEN and GITHUB_REPOSITORY come with every Actions run). To use Cloudinary instead, set
+VIDEO_HOST=cloudinary plus CLOUDINARY_CLOUD_NAME and either CLOUDINARY_UPLOAD_PRESET or CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET.
 Optional: BUFFER_CHANNEL_ID (otherwise the first TikTok channel in your Buffer account is used).
 
   python post_tiktok.py            # post the video named in output/LAST_SLUG
@@ -58,7 +58,47 @@ def find_tiktok_channel(key):
     return find_channel(key, "tiktok", os.environ.get("BUFFER_CHANNEL_ID", "").strip())
 
 
+def host_video_github(path, slug):
+    """Host the video as a GitHub release asset of this (public) repo and return its public https URL.
+    Needs no extra account: the workflow's own GITHUB_TOKEN (contents: write) and GITHUB_REPOSITORY are enough.
+    One release per video (tag video-<slug>); re-running replaces the asset. Works for any length and any size up to 2 GB."""
+    token = os.environ.get("GITHUB_TOKEN", "").strip() or os.environ.get("GH_TOKEN", "").strip()
+    repo = os.environ.get("GITHUB_REPOSITORY", "").strip()
+    if not token or not repo:
+        sys.exit("GitHub hosting needs GITHUB_TOKEN and GITHUB_REPOSITORY (both exist inside a GitHub Actions run).")
+    api = "https://api.github.com"
+    h = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}
+    tag = f"video-{slug}"
+    r = requests.get(f"{api}/repos/{repo}/releases/tags/{tag}", headers=h, timeout=60)
+    if r.status_code == 404:
+        r = requests.post(f"{api}/repos/{repo}/releases", headers=h, timeout=60,
+                          json={"tag_name": tag, "name": slug, "body": "Rendered video (hosted here so Buffer can fetch it).",
+                                "draft": False, "prerelease": False, "make_latest": "false"})
+    if not r.ok:
+        sys.exit(f"GitHub release failed ({r.status_code}): {r.text[:400]}")
+    rel = r.json()
+    name = "video.mp4"
+    for asset in rel.get("assets", []):
+        if asset["name"] == name:
+            requests.delete(f"{api}/repos/{repo}/releases/assets/{asset['id']}", headers=h, timeout=60)
+    up = rel["upload_url"].split("{")[0]
+    with open(path, "rb") as f:
+        r = requests.post(up, params={"name": name}, timeout=1800, data=f,
+                          headers={**h, "Content-Type": "video/mp4"})
+    if not r.ok:
+        sys.exit(f"GitHub upload failed ({r.status_code}): {r.text[:400]}")
+    return r.json()["browser_download_url"]
+
+
 def host_video(path, public_id):
+    """Host the video and return a public https URL. GitHub release by default (Cloudinary refuses videos over 60 s);
+    set VIDEO_HOST=cloudinary to use Cloudinary instead."""
+    if os.environ.get("VIDEO_HOST", "github").strip().lower() != "cloudinary":
+        return host_video_github(path, public_id.split("/")[-1])
+    return _host_video_cloudinary(path, public_id)
+
+
+def _host_video_cloudinary(path, public_id):
     """Upload to Cloudinary. Preferred: an UNSIGNED upload preset (CLOUDINARY_UPLOAD_PRESET), which needs no API
     key. Otherwise a signed upload with CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET (the key must be allowed to upload)."""
     cloud = os.environ.get("CLOUDINARY_CLOUD_NAME", "").strip()
