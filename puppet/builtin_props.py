@@ -56,6 +56,13 @@ def _doors_state(open_px):
 
 
 RAW = {
+    # --- an open umbrella that floats by itself (origin = the bottom of the handle) ---
+    "umbrella_float": [
+        {"k": "line", "x0": 0, "y0": 0, "x1": 0, "y1": -150, "w": 8, "c": "#50506e"},
+        {"k": "poly", "pts": [[-95, -140], [95, -140], [62, -208], [0, -230], [-62, -208]], "c": "#f4883c"},
+        {"k": "poly", "pts": [[-32, -140], [32, -140], [22, -216], [0, -230], [-14, -214]], "c": "#ffd25a"},
+        {"k": "oval", "x": 0, "y": -234, "rx": 7, "ry": 7, "c": "#50506e"},
+    ],
     # --- a folded paper map: route, a river, an X ---
     "map": [
         {"k": "rrect", "x0": -34, "y0": -50, "x1": 34, "y1": 4, "r": 4, "c": PAPER},

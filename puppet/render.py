@@ -23,7 +23,7 @@ from . import dsl, engine as E, music, tts, worlds
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT_W, OUT_H = 720, 1280
-MIN_LEN, MAX_LEN = 45.0, 60.0        # the channel rule: every video (every part) runs 45 to 60 seconds
+MIN_LEN, MAX_LEN = 90.0, 210.0       # the channel rule: every video runs 90 to 210 seconds (like the reference stories)
 LEAD, TAIL, END_CARD = 0.5, 1.0, dsl.END_SEC  # silence before the line, after it, and the closing title card
 
 FADE_OUT = 0.7  # seconds of fade to black at the very end

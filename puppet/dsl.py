@@ -283,8 +283,17 @@ def _vthing(th, u, clk, pos):
         from . import design as DZ
         rec = DZ.PROPS.get(th.get("item"))
         if rec:
-            V.ground_shadow(x, y, s * 0.8)
-            DZ.draw_recipe(rec, x, y, s, th.get("face", 1), t)
+            fl = float(th.get("float") or 0.0)
+            if fl:                                             # hovering: a small shadow on the ground, the object bobbing and tilting gently in the air
+                V.ground_shadow(x, y, s * 0.45)
+                V.cv.save()
+                V.cv.translate(x, y - fl * s + math.sin(t * 3.0) * 10 * s)
+                V.cv.rotate(math.sin(t * 2.2) * 5)
+                DZ.draw_recipe(rec, 0, 0, s, th.get("face", 1), t)
+                V.cv.restore()
+            else:
+                V.ground_shadow(x, y, s * 0.8)
+                DZ.draw_recipe(rec, x, y, s, th.get("face", 1), t)
     elif typ == "puff":
         VP.puff(x, y, s, t, rgb(th.get("color"), (255, 226, 240)), th.get("seed", 1))
     elif typ == "sparkle":

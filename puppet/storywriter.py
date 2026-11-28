@@ -4,7 +4,7 @@ The model only writes a *storyboard* (see storyboard.py): narration plus who is 
 This module then
   1. checks it against the channel rules (words, narrator rules, one uncommon word, cast, timing phrases ...),
   2. compiles it to a puppet script and draws one test frame per scene so a broken script never reaches the render,
-  3. measures the real narration length (45 to 60 s), and sends any problem back to the model to fix (up to 4 tries),
+  3. measures the real narration length (90 to 210 s), and sends any problem back to the model to fix (up to 4 tries),
   4. saves scripts/NNN-title.json and adds it to queue-puppet.txt.
 Needs OPENAI_API_KEY (text only: a few cents per story). Model: OPENAI_TEXT_MODEL (default gpt-4o-mini; a stronger one writes better stories).
 """
@@ -29,11 +29,11 @@ ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
 QUEUE = ROOT / "queue-puppet.txt"
 DONE = ROOT / "done-puppet.txt"
-MIN_LEN, MAX_LEN = 45.0, 60.0
+MIN_LEN, MAX_LEN = 90.0, 210.0
 CHECK_ROUNDS = 5       # check-and-rewrite rounds before a story is dropped (3 was too few when a rewrite fixed the editor notes but broke the length)
-AIM = "aim for 50 to 57 seconds"
-WORDS_LO, WORDS_HI = 90, 102      # narration words per part that land on 50 to 57 s with the real narrator (measured on published videos: 94 to 99 words ran 50.7 to 57 s)
-WORDS_MIN, WORDS_MAX = 86, 106    # outside this a part is sent back at once, before the slow real-voice measurement
+AIM = "aim for 120 to 170 seconds"
+WORDS_LO, WORDS_HI = 220, 300      # narration words per part that land on 50 to 57 s with the real narrator (measured on published videos: 94 to 99 words ran 50.7 to 57 s)
+WORDS_MIN, WORDS_MAX = 170, 360    # outside this a part is sent back at once, before the slow real-voice measurement
 SEC_PER_WORD, SCENE_OVERHEAD, END_CARD = 0.55, 0.3, 3.5     # measured on the real narrator; used only when the voice model is absent
 
 SERIES = {"Funny People": "ordinary people in extraordinary little crises: a baker, a boss, a mechanic, a grandmother, a teacher ... pride, rivalry, secrets, misunderstandings"}
@@ -209,7 +209,7 @@ STORY IN PARTS: every story is told as {parts_text} consecutive videos (Part 1, 
 - COLD OPEN: scene 1 of every part opens on the most striking moment of that part, already happening: the problem, the accusation, the spill, the gasp. Never a quiet scene-setting line ("It was a sunny morning", "There was a baker ...", "Once ..."); say who and what is wrong in the first sentence, in at most 12 words. The characters are already in place (nobody walks in during the first seconds), at least one has a strong mood (never neutral) and a gesture that matches the words, and there is a popup within the first two seconds. If the most striking moment comes later in the part, open on a short glimpse of it, then let the story rewind to its natural order.
 - Part 1 opens with the stakes; the last part holds the emotional resolution and the haunting last line. The one uncommon word appears exactly once in the WHOLE story. Characters, setting and objects stay consistent across parts.
 
-LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly and steadily (about 0.55 s per word, never rushed; the pauses between scenes are already included), so write {n_lo} to {n_hi} scenes of 11 to 16 words each per part, {WORDS_LO} to {WORDS_HI} words per part in total (measured on the real narrator: 70 words run only about 40 s, 95 words about 53 s). Count the words before you answer. Open on the hook at once. No filler scene. Spend the few words on specific, surprising details and on what the characters say, never on scenery.
+LENGTH: EACH PART (not the whole story) must run {MIN_LEN:.0f} to {MAX_LEN:.0f} seconds, {AIM}. The storyteller speaks slowly and steadily (about 0.55 s per word, never rushed; the pauses between scenes are already included), so write {n_lo} to {n_hi} scenes of 14 to 26 words each per part, {WORDS_LO} to {WORDS_HI} words per part in total (measured on the real narrator: 100 words run only about 55 s, 250 words about 145 s). Count the words before you answer. Open on the hook at once. No filler scene. Spend the few words on specific, surprising details and on what the characters say, never on scenery.
 - NARRATION MUST BE EASY TO SPEAK: a voice reads it aloud. Use only ordinary words that are easy to pronounce (the one uncommon word aside), no personal names at all (people are known by role), numbers written as words ("forty-two"), no digits, no abbreviations, no symbols, no all-capital words in the narration, no invented words or unusual spellings. Keep sentences short to medium (at most about 16 words); put a comma at each natural pause.
 
 TONE (the viewer must FEEL the tone of every scene within one second, with the sound on or off): give EVERY scene a "tone". playful = jokes, mischief, scheming (bouncy music, bright colours). joyful = triumph, celebration, a win (golden light, rising music, the narrator lifts). tense = danger, a plan going wrong, an argument, a chase (dark cold colours, low ticking music, a shaky camera). sad = loss, shame, being left out, a broken promise (grey-blue colours, slow falling notes, the narrator softer and lower). eerie = mystery, dread, something not right (green-teal mist, a low hum, sparse notes). tender = love, forgiveness, loyalty, a kind surprise (warm glow, soft music). calm = rest, quiet, scene-setting (use for at most two scenes in a part). The system turns the tone into colour, light, music, camera and the narrator's voice, so the tone must match the narration words and the faces: tense = scared, angry or shocked actors; sad = sad actors; playful and joyful = happy or smug actors. Change the tone at least twice in every part, as the story turns, and make the tone obvious in the words themselves (short, clipped sentences for tense; long, slow ones for sad; bouncy, surprising ones for playful). Dark tones (tense, sad, eerie) belong to world dusk (use night or storm only when the story itself takes place at night or in a storm, and then at most one scene in a part; viewers watch on bright phone screens and dark frames lose them); joyful belongs to day, dawn or sunset. The FIRST scene of the story must already show a clear tone, never calm.
@@ -308,7 +308,7 @@ def pick_premise(G, n_parts, brief_hint, log=print):
     if n < 2:
         return None
     try:
-        cands = json.loads(G.call_openai([{"role": "system", "content": PREMISE_PROMPT % (n, "single-video story (it must finish inside one 45 to 60 second video)" if n_parts == 1 else f"{n_parts}-part story")},
+        cands = json.loads(G.call_openai([{"role": "system", "content": PREMISE_PROMPT % (n, "single-video story (it must finish inside one 90 to 210 second video)" if n_parts == 1 else f"{n_parts}-part story")},
                                           {"role": "user", "content": brief_hint}], 1.0)).get("premises") or []
         cands = [c for c in cands if isinstance(c, dict) and c.get("logline")]
         if len(cands) < 2:
@@ -406,7 +406,7 @@ def problems(sb, number):
         total, how = _measure(sc)
         if not MIN_LEN <= total <= MAX_LEN:
             words = sum(len(re.findall(r"[A-Za-z0-9']+", x["narration"])) for x in sc["scenes"])
-            delta = int((54.0 - total) / SEC_PER_WORD)
+            delta = int((145.0 - total) / SEC_PER_WORD)
             bad.append(f"part {pi} would run {total:.0f} s ({how}); every part must run {MIN_LEN:.0f} to {MAX_LEN:.0f} s ({AIM}). "
                        f"It has {words} narration words in {len(sc['scenes'])} scenes. {'Add' if delta > 0 else 'Cut'} about {abs(delta)} words (or scenes) in part {pi}.")
     return bad, (None if bad else scripts)
@@ -424,7 +424,7 @@ Reply with ONE JSON object with exactly these keys:
  "youtube": {"description": "2-4 sentences: a teaser for the whole story (no moral, no part numbers)", "tags": ["8-12 tags"], "pinned_comment": "a question that makes viewers think of their own life"},
  "tiktok": {"caption": "<=140 chars hook", "hashtags": ["#a", "#b", "#c", "#d", "#e"]}}"""
 
-PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "thumbnail_hook": "a 1 to 3 word tease in capitals for the thumbnail, a question or a gasp, never a spoiler", "scenes": [ 6 to 8 scenes, each in exactly the scene format given in the instructions ]}. '
+PART_SHAPE = ('Reply with ONE JSON object: {"thumbnail_scene": 2, "thumbnail_hook": "a 1 to 3 word tease in capitals for the thumbnail, a question or a gasp, never a spoiler", "scenes": [ 12 to 18 scenes, each in exactly the scene format given in the instructions ]}. '
               "Use the cast keys exactly as planned. The timing phrases ('from', 'to', 'enter', 'exit', 'at', 'silence_before') must be copied EXACTLY from the NARRATOR's words in that same scene, "
               "never from what a character says in a speech bubble; if you are not sure, leave them out. 'mood' must be one of neutral, sleepy, happy, angry, scared, sad, shocked, smug, dizzy; "
               "'action' one of stand, talk, hop, flap, point, shrug, cheer, facepalm, think, laugh, tremble, offer, hold, clasp, wrap, place, reach, beckon, hugself, wipe, cower, wave, hips: choose the one that matches what that person is DOING at that moment in the narration (holds something out = offer, wraps a towel round someone = wrap, sets something down = place, cold or wet = hugself ...); give listeners a calm action such as clasp or hips ('go' optional: a ground spot to walk to).")
@@ -651,7 +651,7 @@ def _part_problems(part, cast, k, word, uw_part, n=None):
             bad.append(f"part {k}: the tone must be clear and must change as the story turns: use at least two different tones, and at most two calm scenes (tones now: {', '.join(tones)}).")
         nwords = sum(len(re.findall(r"[A-Za-z0-9']+", str(x.get("narration", "")))) for x in scenes)
         if not WORDS_MIN <= nwords <= WORDS_MAX:
-            bad.append(f"part {k}: the narration has {nwords} words; every part needs {WORDS_LO} to {WORDS_HI} words in total to run 50 to 57 seconds. "
+            bad.append(f"part {k}: the narration has {nwords} words; every part needs {WORDS_LO} to {WORDS_HI} words in total to run 120 to 170 seconds. "
                        f"{'Add' if nwords < WORDS_MIN else 'Cut'} about {abs(int((WORDS_LO + WORDS_HI) / 2) - nwords)} words (longer or sharper lines, not filler scenes).")
         first = scenes[0]
         _open_hook(first)                      # a missing opening mood or popup is a mechanical slip: add it rather than loop on it
@@ -820,7 +820,7 @@ def _write_story(G, idea, series, parts, log):
     n_parts = parts or choose_parts(log)
     cause = random.choice(["forgot", "believed", "no_options"])
     lessons, words = G.used_lessons(), G.used_words()
-    system = system_prompt(6, 8, n_parts)
+    system = system_prompt(12, 18, n_parts)
     if not idea:                                                              # ---- 0. pitch several premises, keep only the strongest
         hint = (f"Series: {series} ({SERIES[series]}). " + (f"The protagonist is a {lead_gender} character, a fresh kind of person (not: {', '.join(last_roles)}). " if not idea else "")
                 + (f"Titles already used (be different): {'; '.join(titles[-15:])}. " if titles else ""))
