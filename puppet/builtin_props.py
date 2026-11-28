@@ -55,6 +55,62 @@ def _doors_state(open_px):
     return shapes
 
 
+def _car(c, dark):
+    """a small cartoon car, facing right, origin = middle of the ground line under it"""
+    return [
+        {"k": "poly", "pts": [[-58, -50], [-36, -86], [42, -86], [68, -50]], "c": c},
+        {"k": "rrect", "x0": -102, "y0": -52, "x1": 102, "y1": -14, "r": 14, "c": c},
+        {"k": "poly", "pts": [[-48, -54], [-32, -80], [-5, -80], [-5, -54]], "c": "#bfe4f5"},
+        {"k": "poly", "pts": [[5, -54], [5, -80], [38, -80], [55, -54]], "c": "#bfe4f5"},
+        {"k": "rrect", "x0": -102, "y0": -30, "x1": 102, "y1": -22, "r": 3, "c": dark},
+        {"k": "oval", "x": -58, "y": -14, "rx": 21, "ry": 21, "c": "#2f2f44"}, {"k": "oval", "x": 58, "y": -14, "rx": 21, "ry": 21, "c": "#2f2f44"},
+        {"k": "oval", "x": -58, "y": -14, "rx": 8, "ry": 8, "c": "#c9cbd8"}, {"k": "oval", "x": 58, "y": -14, "rx": 8, "ry": 8, "c": "#c9cbd8"},
+        {"k": "oval", "x": 98, "y": -38, "rx": 6, "ry": 7, "c": "#fff3a0"},
+    ]
+
+
+def _bus(c):
+    out = [{"k": "rrect", "x0": -150, "y0": -118, "x1": 150, "y1": -14, "r": 16, "c": c},
+           {"k": "rrect", "x0": -150, "y0": -48, "x1": 150, "y1": -38, "r": 2, "c": "#fbf4e2"}]
+    for i in range(5):
+        out.append({"k": "rrect", "x0": -128 + i * 52, "y0": -104, "x1": -92 + i * 52, "y1": -64, "r": 6, "c": "#bfe4f5"})
+    out += [{"k": "oval", "x": -90, "y": -14, "rx": 22, "ry": 22, "c": "#2f2f44"}, {"k": "oval", "x": 90, "y": -14, "rx": 22, "ry": 22, "c": "#2f2f44"},
+            {"k": "oval", "x": -90, "y": -14, "rx": 9, "ry": 9, "c": "#c9cbd8"}, {"k": "oval", "x": 90, "y": -14, "rx": 9, "ry": 9, "c": "#c9cbd8"}]
+    return out
+
+
+def _pet(c, ear, cat=False):
+    """a dog or a cat standing side-on, facing right, origin = on the ground under the middle"""
+    out = [{"k": "line", "x0": -34, "y0": -46, "x1": -54, "y1": -76 if not cat else -92, "w": 8, "c": c}]
+    for x in (-24, -8, 16, 30):
+        out.append({"k": "line", "x0": x, "y0": -28, "x1": x, "y1": 0, "w": 8, "c": c})
+    out += [{"k": "oval", "x": 0, "y": -42, "rx": 38, "ry": 20, "c": c},
+            {"k": "oval", "x": 42, "y": -64, "rx": 19, "ry": 17, "c": c},
+            {"k": "poly", "pts": [[30, -76], [36, -100 if cat else -90], [46, -78]], "c": ear},
+            {"k": "poly", "pts": [[44, -78], [54, -100 if cat else -88], [58, -72]], "c": ear},
+            {"k": "oval", "x": 56, "y": -58, "rx": 8, "ry": 6, "c": "#f6efdc"},
+            {"k": "oval", "x": 62, "y": -60, "rx": 3, "ry": 3, "c": "#3a2f4a"},
+            {"k": "oval", "x": 46, "y": -68, "rx": 3, "ry": 3, "c": "#3a2f4a"}]
+    return out
+
+
+def _bird(c):
+    """a small bird in flight, facing right, origin = its middle"""
+    return [{"k": "poly", "pts": [[-6, -4], [-30, -34], [-12, -10]], "c": c},
+            {"k": "poly", "pts": [[2, -4], [-8, -40], [14, -8]], "c": c},
+            {"k": "poly", "pts": [[-24, 0], [-40, 6], [-22, 8]], "c": c},
+            {"k": "oval", "x": 0, "y": 0, "rx": 20, "ry": 11, "c": c},
+            {"k": "oval", "x": 18, "y": -6, "rx": 9, "ry": 8, "c": c},
+            {"k": "poly", "pts": [[25, -7], [38, -3], [25, -1]], "c": "#f4b13c"},
+            {"k": "oval", "x": 21, "y": -9, "rx": 2, "ry": 2, "c": "#2a2438"}]
+
+
+BG_THINGS = {            # scenery life that is never named: cars, a bus, a dog, a cat, birds (used behind the main characters)
+    "bg_car_red": _car("#e24a5a", "#b8323f"), "bg_car_blue": _car("#4a7ae2", "#3358b0"), "bg_car_yellow": _car("#f4c23c", "#c99a1f"),
+    "bg_bus": _bus("#f08a3c"), "bg_dog": _pet("#c98f5a", "#8a5a35"), "bg_cat": _pet("#9a9fb4", "#6e7390", cat=True),
+    "bg_bird": _bird("#5a6ee0"), "bg_bird2": _bird("#e0795a"),
+}
+
 RAW = {
     # --- an open umbrella that floats by itself (origin = the bottom of the handle) ---
     "umbrella_float": [
@@ -231,4 +287,5 @@ ALIASES = {
     "clock": ("station_clock",), "bridge": ("bridge",), "soup": ("soup",),
     "bread": ("baguette",), "note": ("notebook", "notebook_page"), "notes": ("notebook", "notebook_page"),
 }
+RAW.update(BG_THINGS)
 NAMES = tuple(RAW)
