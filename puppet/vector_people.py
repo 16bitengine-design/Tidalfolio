@@ -668,7 +668,7 @@ def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c
     cv = V.cv
     top, bottom = spec["top"], spec["bottom"]
     HS = 1.22 if kid else 1.0
-    run = 1.25 if walk > 0.9 else 1.0
+    run = 1.0 + 0.75 * max(0.0, min(1.0, (walk - 0.7) / 0.25))      # fast ground speed turns the walk into a run: longer strides, high knees, pumping arms, a clear forward lean
     bob = -abs(math.sin(gait)) * 11 * walk * run + math.sin(t * 1.7 + seed) * 1.2
     lean = (2.5 + 3.0 * (run - 1.0) * 4) * walk                       # leans into the walk, more when running
     cv.save()
@@ -706,7 +706,7 @@ def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c
         a = math.sin(gait + ph) * walk
         sh = (0, -266 if not kid else -238)
         hd = (a * 60 * run, sh[1] + 118 - abs(a) * 22 * run)
-        if run > 1.0:
+        if run > 1.3:
             hd = (a * 70 + 28, sh[1] + 56 - abs(a) * 8)
         el, hd = two_bone(sh, hd, 64, 66, -1, 0.35)
         c = dark(torso_col, 0.2) if behind else torso_col
@@ -769,7 +769,23 @@ def _side(x, y, s, f, t, spec, role, kid, elder, fem, skin, hair, skin_c, hair_c
 
 
 # ------------------------------------------------------------------ held things
+ITEM_SCALE = 1.7       # a held thing is drawn this much bigger than its base drawing, so it reads at its real size next to a person
+
+
 def _item(item, hx, hy, f):
+    """draw a held thing at ITEM_SCALE, growing out of the hand"""
+    cv = V.cv
+    cv.save()
+    cv.translate(hx, hy)
+    cv.scale(ITEM_SCALE, ITEM_SCALE)
+    cv.translate(-hx, -hy)
+    try:
+        _item_base(item, hx, hy, f)
+    finally:
+        cv.restore()
+
+
+def _item_base(item, hx, hy, f):
     cv = V.cv
     if item in DZ.PROPS:                                   # an object the story's writer designed
         DZ.draw_recipe(DZ.PROPS[item], hx + 6 * f, hy - 4, 1.45 if item in BP.NAMES else 1.0, f)       # the built-in props are drawn a little bigger in the hand so they read at a glance

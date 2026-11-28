@@ -18,7 +18,7 @@ Storyboard JSON:
      "narration": "...", "world": "dawn|day|dusk|storm|night|sunset", "stage": "cliff|nest|tree",
      "camera": "hold|push_in|pull_back|pan_right|pan_left", "sky": "true when the narration names the moon (world must be night)", "tone": "playful|tense|sad|joyful|eerie|tender|calm", "silence_before": "words",
      "actors": [ {"who": "orrin", "at": "ground_mid", "face": "left|right", "mood": "...", "action": "stand|talk|point|offer|hold|clasp|wrap|place|reach|beckon|hugself|wipe|cower|wave|hips|shrug|think|facepalm|cheer|laugh|tremble",
-                  "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish", "carry_from": "words", "carry_to": "words", "drape": {"at": "words", "item": "towel|blanket"},
+                  "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish", "run": "true to run across the whole frame", "carry_from": "words", "carry_to": "words", "drape": {"at": "words", "item": "towel|blanket"},
                   "beats": [{"at": "words", "mood": "...", "action": "...", "look": "at|away|down|up"}], "speaks": true} ],
      "popups": [ {"text": "CRASH", "kind": "burst|bubble", "at": "words", "near": "orrin"} ],
      "fx": [ {"kind": "puff|sparkle|speed", "at": "words", "near": "orrin"} ] } ],
@@ -301,8 +301,8 @@ def _unseen(sc, where):
 
 def _check_scenes(scenes, cast, pre=""):
     bad = []
-    if not isinstance(scenes, list) or not 4 <= len(scenes) <= 10:
-        return [f"{pre}'scenes' must be a list of 4 to 10 scenes."]
+    if not isinstance(scenes, list) or not 4 <= len(scenes) <= 24:
+        return [f"{pre}'scenes' must be a list of 4 to 24 scenes."]
     prev_sig = None
     for n, sc in enumerate(scenes, 1):
         where = f"{pre}scene {n}"
@@ -681,7 +681,11 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
     go = a.get("go") if human else None
     if go in HSLOTS and not t_in and not t_out:                # walk from "at" to "go" while the narrator speaks
         x2 = _slot_xy(go, sp, s)[0]
-        th["x"] = {"kf": [[t_from, x], [t_to, x2]]}
+        if a.get("run"):                                       # a runner crosses the whole frame fast (well over 100 px per second), so the legs, lean and arms read as running
+            right = x2 >= x
+            th["x"] = {"kf": [[t_from, -300.0 if right else 900.0], [t_to, 900.0 if right else -300.0]]}
+        else:
+            th["x"] = {"kf": [[t_from, x], [t_to, x2]]}
         th["face"] = 1 if x2 >= x else -1
     elif t_out:
         xs = _off(x, human)
