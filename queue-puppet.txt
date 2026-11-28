@@ -30,3 +30,11 @@
 017-the-midnight-bakery.json
 018-the-letter-dated-tomorrow.json
 019-the-man-who-counted-every-step.json
+020-the-customer-who-never-bought.json
+021-the-cake-for-nobody.json
+022-the-map-to-the-bench.json
+023-soup-for-the-whole-street.json
+024-the-pigeon-that-delivered.json
+025-the-whistle-at-dusk.json
+026-the-boss-who-said-yes.json
+027-the-fisherman-who-never-caught-anything.json
