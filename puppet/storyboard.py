@@ -709,6 +709,46 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
     return things
 
 
+BG_ROLES = {"street": ("office worker", "mail carrier", "girl", "grandfather", "mother", "boy", "neighbour", "student"),
+            "park": ("gardener", "girl", "boy", "grandmother", "father", "student", "neighbour"),
+            "shop": ("girl", "grandfather", "mother", "boy", "student", "neighbour", "office worker"),
+            "office": ("office worker", "neighbour", "boss", "student"),
+            "classroom": ("student", "girl", "boy", "student")}
+BG_QUIET = re.compile(r"\b(empty|alone|nobody|no one|sleeping|silent|silence|deserted|lonely|midnight|by himself|by herself|by itself|dark house)\b", re.I)
+BG_XS = (20.0, 600.0, 110.0, 520.0, 300.0, 215.0, 395.0)
+
+
+def _background_people(sc, si, stage, actors, cast):
+    """a few small people standing or strolling well behind the main characters (never at night or when the line is about being alone).
+    A scene can set "extras": false for none. They are smaller, further back and never named."""
+    if sc.get("extras") is False or stage not in BG_ROLES or sc.get("world") == "night" or BG_QUIET.search(sc.get("narration", "")):
+        return []
+    n = 3 if len(actors) <= 1 else 2 if len(actors) == 2 else 1
+    mains = [HSLOTS.get(a.get("at", "ground_mid"), 300.0) for a in actors]
+    roles, out, used, taken = BG_ROLES[stage], [], 0, []
+    for k, x in enumerate(BG_XS[(si % 2)::1] + BG_XS[:(si % 2)]):
+        if used >= n:
+            break
+        if any(abs(x - m) < 140 for m in mains) or any(abs(x - u) < 130 for u in taken):
+            continue
+        taken.append(x)
+        role = roles[(si * 3 + k * 2) % len(roles)]
+        skin, hair = PE.default_look(role, si * 5 + k + 11)
+        who = f"bg{si}_{used}"
+        c2 = {who: {"role": role, "species": "human", "gender": "female" if (si + k) % 2 else "male", "age": PE.default_age(role),
+                    "skin": skin, "hair": hair, "extras": []}}
+        walk = (used % 2 == 0)
+        face = 1 if x < 300 else -1
+        th = _actor_things({"who": who, "at": "ground_mid", "face": "right" if face > 0 else "left", "mood": "happy" if used % 2 else "neutral",
+                            "action": "stand", "carry": "none"}, c2, {"narration": ""}, 1, 300.0, None)[0]
+        th["scale"] = 0.52
+        th["y"] = 1170.0
+        th["x"] = {"kf": [[0, x], ["@end", x + face * 110.0]]} if walk else x
+        out.append(th)
+        used += 1
+    return out
+
+
 def _camera(mode, stage, sky=False):
     bx, by = CAM_BASE[stage]
     z0 = ZOOM_H if stage in HUMAN_STAGES else 1.0
@@ -749,6 +789,7 @@ def _compile_scenes(scene_list, cast):
         centre_x = sum(slots) / len(slots) if slots else 330
         crowd = (len(actors) if is_h else sum(1 for a in actors if a.get("at", "ground_mid") in GROUND and cast[a["who"]]["species"] == "eagle"))
         things = _stage_things(stage)
+        things += _background_people(sc, si, stage, actors, cast)      # passers-by behind the main characters, so the world feels lived in
         for k_, pr in enumerate(sc.get("props") or []):                   # set pieces the writer designed, drawn behind the people
             if isinstance(pr, dict) and pr.get("item") in _ALL_PROPS:
                 th_ = {"type": "prop", "id": f"prop{k_}", "item": pr["item"], "x": float(HSLOTS.get(pr.get("at", "ground_mid"), 300.0)), "y": 1240.0,
