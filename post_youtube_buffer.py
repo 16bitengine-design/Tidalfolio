@@ -4,7 +4,7 @@
 Why: Buffer holds the YouTube sign-in, so this repo needs no YT_* secrets and no Google OAuth refresh token
 (which expires every 7 days while a Google Cloud OAuth app is in Testing mode).
 
-Secrets/variables: BUFFER_API_KEY and the same CLOUDINARY_* values as post_tiktok.py (the video is hosted on Cloudinary,
+Secrets/variables: BUFFER_API_KEY (the video is hosted as a GitHub release asset, see post_tiktok.py,
 or the URL saved by post_tiktok.py is reused). Optional: BUFFER_YOUTUBE_CHANNEL_ID, UPLOAD_PRIVACY (private, unlisted or
 public; default private so you can review first), YT_AI_DISCLOSURE (1 to tick Buffer's "AI-generated" box).
 
