@@ -105,6 +105,47 @@ def _bird(c):
             {"k": "oval", "x": 21, "y": -9, "rx": 2, "ry": 2, "c": "#2a2438"}]
 
 
+def _tree(crown, crown2):
+    return [{"k": "rrect", "x0": -10, "y0": -100, "x1": 10, "y1": 0, "r": 4, "c": "#8a5a3a"},
+            {"k": "oval", "x": -36, "y": -108, "rx": 38, "ry": 34, "c": crown2}, {"k": "oval", "x": 36, "y": -108, "rx": 38, "ry": 34, "c": crown2},
+            {"k": "oval", "x": 0, "y": -140, "rx": 58, "ry": 52, "c": crown}, {"k": "oval", "x": -18, "y": -152, "rx": 18, "ry": 14, "c": "#ffffff", "a": 0.15}]
+
+
+def _pine(c, c2):
+    return [{"k": "rrect", "x0": -8, "y0": -50, "x1": 8, "y1": 0, "r": 3, "c": "#7a4e30"},
+            {"k": "poly", "pts": [[-56, -38], [0, -118], [56, -38]], "c": c}, {"k": "poly", "pts": [[-46, -88], [0, -164], [46, -88]], "c": c2},
+            {"k": "poly", "pts": [[-34, -134], [0, -206], [34, -134]], "c": c}]
+
+
+def _bush(c):
+    return [{"k": "oval", "x": -28, "y": -20, "rx": 30, "ry": 22, "c": c}, {"k": "oval", "x": 28, "y": -20, "rx": 30, "ry": 22, "c": c},
+            {"k": "oval", "x": 0, "y": -32, "rx": 34, "ry": 28, "c": "#5aa86a"}]
+
+
+def _flowers():
+    out = []
+    for i, c in enumerate(("#e24a5a", "#ffd25a", "#ff8fc0", "#fff3f0", "#a77ae8")):
+        x = -40 + i * 20
+        out.append({"k": "line", "x0": x, "y0": 0, "x1": x, "y1": -22 - (i % 2) * 8, "w": 3, "c": "#4f9a5a"})
+        out.append({"k": "oval", "x": x, "y": -26 - (i % 2) * 8, "rx": 8, "ry": 8, "c": c})
+    return out
+
+
+def _lamp():
+    return [{"k": "line", "x0": 0, "y0": 0, "x1": 0, "y1": -170, "w": 8, "c": "#4a4a66"}, {"k": "line", "x0": 0, "y0": -170, "x1": 22, "y1": -176, "w": 6, "c": "#4a4a66"},
+            {"k": "oval", "x": 26, "y": -170, "rx": 15, "ry": 12, "c": "#ffe9a0"}, {"k": "rrect", "x0": -14, "y0": -8, "x1": 14, "y1": 0, "r": 3, "c": "#4a4a66"}]
+
+
+def _fence():
+    out = [{"k": "line", "x0": -70, "y0": -42, "x1": 70, "y1": -42, "w": 6, "c": "#c9b08a"}, {"k": "line", "x0": -70, "y0": -22, "x1": 70, "y1": -22, "w": 6, "c": "#c9b08a"}]
+    for i in range(6):
+        out.append({"k": "rrect", "x0": -72 + i * 28, "y0": -56, "x1": -60 + i * 28, "y1": 0, "r": 3, "c": "#d8bf94"})
+    return out
+
+
+BG_SCENERY = {"bg_tree": _tree("#6cc17a", "#58ac68"), "bg_tree_gold": _tree("#f2a64a", "#e08a3a"), "bg_pine": _pine("#3f8f66", "#4aa074"), "bg_pine_dark": _pine("#2f7a58", "#3b8a66"),
+              "bg_bush": _bush("#4f9a5a"), "bg_flowers": _flowers(), "bg_lamp": _lamp(), "bg_fence": _fence()}
+
 BG_THINGS = {            # scenery life that is never named: cars, a bus, a dog, a cat, birds (used behind the main characters)
     "bg_car_red": _car("#e24a5a", "#b8323f"), "bg_car_blue": _car("#4a7ae2", "#3358b0"), "bg_car_yellow": _car("#f4c23c", "#c99a1f"),
     "bg_bus": _bus("#f08a3c"), "bg_dog": _pet("#c98f5a", "#8a5a35"), "bg_cat": _pet("#9a9fb4", "#6e7390", cat=True),
@@ -288,4 +329,5 @@ ALIASES = {
     "bread": ("baguette",), "note": ("notebook", "notebook_page"), "notes": ("notebook", "notebook_page"),
 }
 RAW.update(BG_THINGS)
+RAW.update(BG_SCENERY)
 NAMES = tuple(RAW)
