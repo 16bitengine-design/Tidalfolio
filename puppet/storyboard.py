@@ -18,7 +18,7 @@ Storyboard JSON:
      "narration": "...", "world": "dawn|day|dusk|storm|night|sunset", "stage": "cliff|nest|tree",
      "camera": "hold|push_in|pull_back|pan_right|pan_left", "sky": "true when the narration names the moon (world must be night)", "tone": "playful|tense|sad|joyful|eerie|tender|calm", "silence_before": "words",
      "actors": [ {"who": "orrin", "at": "ground_mid", "face": "left|right", "mood": "...", "action": "stand|talk|point|offer|hold|clasp|wrap|place|reach|beckon|hugself|wipe|cower|wave|hips|shrug|think|facepalm|cheer|laugh|tremble",
-                  "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish", "run": "true to run across the whole frame", "carry_from": "words", "carry_to": "words", "drape": {"at": "words", "item": "towel|blanket"},
+                  "from": "words", "to": "words", "enter": "words", "exit": "words", "carry": "fish", "run": "true to run across the whole frame", "float": "umbrella_float (a free-floating object that follows this person, not held)", "float_pos": "behind|above|beside", "carry_from": "words", "carry_to": "words", "drape": {"at": "words", "item": "towel|blanket"},
                   "beats": [{"at": "words", "mood": "...", "action": "...", "look": "at|away|down|up"}], "speaks": true} ],
      "popups": [ {"text": "CRASH", "kind": "burst|bubble", "at": "words", "near": "orrin"} ],
      "fx": [ {"kind": "puff|sparkle|speed", "at": "words", "near": "orrin"} ] } ],
@@ -277,6 +277,8 @@ def _unseen(sc, where):
     for a in sc.get("actors") or []:
         if isinstance(a, dict) and a.get("carry"):
             drawn.add(str(a["carry"]).lower())
+        if isinstance(a, dict) and a.get("float"):
+            drawn.add(str(a["float"]).lower())
     named = {w for w in re.findall(r"[a-z]+", narr.lower())}
     stage_has = STAGE_HAS.get(sc.get("stage", "cliff"), set())
     def _is_drawn(noun):
@@ -399,6 +401,8 @@ def _check_scenes(scenes, cast, pre=""):
                     bad.append(f"{where}: {who} beat needs mood in {MOODS}, action in {ACTIONS}, look in {tuple(LOOKS)}.")
             if a.get("go") is not None and a["go"] not in HSLOTS:
                 bad.append(f"{where}: 'go' must be one of {tuple(HSLOTS)} (the spot this person walks to).")
+            if a.get("float") and a["float"] not in _ALL_PROPS:
+                bad.append(f"{where}: 'float' must be a built-in or designed prop name.")
             for key in ("from", "to", "enter", "exit"):
                 if a.get(key) and not phrase_ok(nar, a[key]):
                     bad.append(f"{where}: {who} '{key}' words {a[key]!r} are not in the narration (copy them exactly).")
@@ -692,6 +696,16 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
         th["x"] = {"kf": ([[t_in, _off(x, human)], [f"@{a['enter']}+1.4", x]] if t_in else []) + [[t_out, x], [f"{t_out}+1.4", xs]]}
         th["y"] = {"base": y, "sin": {"amp": walk, "rate": 10, "from": t_out}}
     things.append(th)
+    if a.get("float") and human and a["float"] in _ALL_PROPS:     # a free object that tags along with this person: it hovers, bobs and trails behind, never held
+        pos = a.get("float_pos") or "behind"
+        dx = 0.0 if pos == "above" else ((130.0 if face > 0 else -130.0) if pos == "beside" else (-150.0 if face > 0 else 150.0))
+        hgt = 560.0 if pos == "above" else 330.0
+        def _sh(xv):
+            if isinstance(xv, dict) and "kf" in xv:
+                return {"kf": [[k[0], k[1] + dx] for k in xv["kf"]]}
+            return (xv + dx) if isinstance(xv, (int, float)) else xv
+        things.append({"type": "prop", "id": "float_" + str(who), "item": a["float"], "x": _sh(th["x"]), "y": 1240.0, "scale": 0.95,
+                       "face": face, "float": hgt})
     return things
 
 
