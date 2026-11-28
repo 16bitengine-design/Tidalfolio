@@ -201,7 +201,7 @@ def write_metadata(script, out_root, total, slug, scenes):
     m = metadata.build(script, total)                  # descriptions, tags and #hashtags for every platform, always filled in
     yt, tt, ig, fb = m["youtube"], m["tiktok"], m["instagram"], m["facebook"]
     sp = script.get("series_part")
-    part_line = f"Part {sp['part']} of {sp['of']} of \"{sp['story']}\"" if sp else "Single video"
+    part_line = f"Part {sp['part']} of {sp['of']} of \"{sp['story']}\"" if sp and sp.get("of", 1) > 1 else "Single video"
     md = [f"# {script.get('title', slug)}", f"Runtime: {total:.1f}s", part_line, f"Thumbnail hook: {m['thumbnail_hook']}", "",
           "## YouTube (youtube/video.mp4)", f"**Title:** {yt.get('title', '')}", "", "**Description:**", yt.get("description", ""), "",
           f"**Tags:** {', '.join(yt.get('tags', []))}", "", f"**Pinned comment:** {yt.get('pinned_comment', '')}", "",

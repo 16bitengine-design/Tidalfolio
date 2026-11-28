@@ -1,0 +1,1403 @@
+{
+ "engine": "puppet",
+ "look": "vector",
+ "cast_species": [
+  "human"
+ ],
+ "cast_roles": [
+  "baker",
+  "doctor",
+  "teacher"
+ ],
+ "cast_lead": {
+  "role": "baker",
+  "gender": "female"
+ },
+ "slug": "017-the-midnight-bakery",
+ "title": "The Midnight Bakery",
+ "short_title": "The Midnight Bakery",
+ "series_part": {
+  "story": "The Midnight Bakery",
+  "part": 1,
+  "of": 1
+ },
+ "thumbnail_scene": 2,
+ "thumbnail_hook": "OPEN AT MIDNIGHT",
+ "voice": {
+  "kokoro": "tidal"
+ },
+ "theme": "nursery",
+ "story": {
+  "lesson": "The people who look after everyone need someone to look after them.",
+  "cause": "forgot"
+ },
+ "uncommon_word": {
+  "word": "companionable",
+  "meaning": "friendly and at ease together"
+ },
+ "props": {},
+ "scenes": [
+  {
+   "narration": "At midnight, one bakery on a quiet corner turned on its lights.",
+   "world": "toon_night_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.45,
+    "pluck": {
+     "step": 1.6,
+     "notes": [
+      0,
+      3,
+      2,
+      4
+     ],
+     "vol": 0.5
+    }
+   },
+   "tone": "calm"
+  },
+  {
+   "narration": "A sign said, \"Open for those who cannot sleep.\"",
+   "world": "toon_night_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "point",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "A tired doctor came first, then a teacher with a stack of papers.",
+   "world": "toon_night_shop",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "closed",
+     "brow": [
+      8,
+      6
+     ],
+     "mood": "sleepy",
+     "action": "stand",
+     "seed": 22,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.85,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "teacher",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "teacher",
+     "gender": "female",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "hold",
+     "seed": 31,
+     "carry": "paper",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        3.6999999999999997,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.45,
+    "pluck": {
+     "step": 1.6,
+     "notes": [
+      0,
+      3,
+      2,
+      4
+     ],
+     "vol": 0.5
+    }
+   },
+   "tone": "calm"
+  },
+  {
+   "narration": "They shared warm bread and cups, and talked like old friends.",
+   "world": "toon_night_shop",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "laugh",
+     "seed": 22,
+     "carry": "cup",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.85,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "teacher",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "teacher",
+     "gender": "female",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "talk",
+     "seed": 31,
+     "carry": "cup",
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": 0.6,
+       "to": "@end-1.0"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        3.6999999999999997,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "offer",
+     "seed": 9,
+     "carry": "tray",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "One night the baker could not sleep either, and sat alone.",
+   "world": "toon_night_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "hugself",
+     "seed": 9,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      41,
+      48,
+      53,
+      57
+     ],
+     [
+      43,
+      50,
+      55,
+      58
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ]
+    ],
+    "pluck": {
+     "step": 2.3,
+     "notes": [
+      4,
+      3,
+      2,
+      1,
+      0,
+      0
+     ],
+     "vol": 0.55,
+     "scale": [
+      57,
+      60,
+      62,
+      64,
+      67,
+      69
+     ],
+     "len": 3.0
+    },
+    "silence_before": "sat alone"
+   },
+   "tone": "sad",
+   "freeze": "@sat alone-0.3"
+  },
+  {
+   "narration": "The doctor poured her a cup, and the teacher sat beside her.",
+   "world": "toon_night_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "wipe",
+     "seed": 9,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "offer",
+     "seed": 22,
+     "carry": "cup",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.85,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "teacher",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "teacher",
+     "gender": "female",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "wrap",
+     "seed": 31,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        3.6999999999999997,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "By dawn the whole room felt companionable, and nobody wanted to leave.",
+   "world": "toon_dawn_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 22,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.85,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 9,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "teacher",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "teacher",
+     "gender": "female",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 31,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        3.6999999999999997,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender",
+   "end_card": true
+  }
+ ],
+ "youtube": {
+  "description": "A bakery opens at midnight for people who cannot sleep, and one night it is the baker who needs company. A cozy, warm story.",
+  "tags": [
+   "short story",
+   "cozy stories",
+   "everyday life",
+   "bakery",
+   "animated story",
+   "storytelling",
+   "heartwarming",
+   "cartoon story"
+  ],
+  "pinned_comment": "Who would you invite to a midnight bakery?",
+  "title": "The Midnight Bakery"
+ },
+ "tiktok": {
+  "caption": "A bakery that opens only for people who cannot sleep. Then the baker cannot sleep either.",
+  "hashtags": [
+   "#storytime",
+   "#cozy",
+   "#heartwarming",
+   "#animatedstory",
+   "#tidalfolio"
+  ]
+ }
+}

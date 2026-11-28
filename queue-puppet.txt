@@ -26,3 +26,7 @@
 015-whoever-waves-part-1.json
 015-whoever-waves-part-2.json
 015-whoever-waves-part-3.json
+016-the-umbrella-that-followed.json
+017-the-midnight-bakery.json
+018-the-letter-dated-tomorrow.json
+019-the-man-who-counted-every-step.json

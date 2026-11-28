@@ -780,7 +780,7 @@ def _save_story(sb, scripts, series, number, n_parts):
     for sc in scripts:
         sc["short_title"] = t
         sc["series_part"]["story"] = f"{series} #{number}: {t}"
-        sc["title"] = f"{series} #{number}: {t} (Part {sc['series_part']['part']}/{n_parts})"
+        sc["title"] = f"{series} #{number}: {t}" + ("" if n_parts == 1 else f" (Part {sc['series_part']['part']}/{n_parts})")
         sc["youtube"]["title"] = sc["title"][:100]
         path = SCRIPTS / f"{sc['slug']}.json"
         path.write_text(json.dumps(sc, indent=1))

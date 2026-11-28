@@ -1,0 +1,1273 @@
+{
+ "engine": "puppet",
+ "look": "vector",
+ "cast_species": [
+  "human"
+ ],
+ "cast_roles": [
+  "mail carrier",
+  "shopkeeper",
+  "girl"
+ ],
+ "cast_lead": {
+  "role": "mail carrier",
+  "gender": "female"
+ },
+ "slug": "018-the-letter-dated-tomorrow",
+ "title": "The Letter Dated Tomorrow",
+ "short_title": "The Letter Dated Tomorrow",
+ "series_part": {
+  "story": "The Letter Dated Tomorrow",
+  "part": 1,
+  "of": 1
+ },
+ "thumbnail_scene": 1,
+ "thumbnail_hook": "DATED TOMORROW",
+ "voice": {
+  "kokoro": "tidal"
+ },
+ "theme": "nursery",
+ "story": {
+  "lesson": "Small kindnesses come back around to the one who keeps showing up.",
+  "cause": "believed"
+ },
+ "uncommon_word": {
+  "word": "jaunty",
+  "meaning": "cheerful and lively"
+ },
+ "props": {},
+ "scenes": [
+  {
+   "narration": "A mail carrier found a letter dated tomorrow.",
+   "world": "toon_day_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "carrier",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mail carrier",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "think",
+     "seed": 12,
+     "carry": "letter",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 0.5
+      }
+     },
+     "t_offset": 4.4399999999999995,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.1000000000000005,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [
+    {
+     "text": "TOMORROW?",
+     "at": "@dated tomorrow",
+     "dur": 2.2,
+     "x": 340,
+     "y": 760,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      41,
+      47,
+      53,
+      59
+     ],
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      39,
+      46,
+      51,
+      58
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.3
+    },
+    "pluck": {
+     "step": 2.0,
+     "notes": [
+      0,
+      5,
+      2,
+      6,
+      1
+     ],
+     "vol": 0.55,
+     "scale": [
+      76,
+      77,
+      82,
+      83,
+      88,
+      89,
+      94
+     ],
+     "len": 2.6
+    }
+   },
+   "tone": "eerie"
+  },
+  {
+   "narration": "The shopkeeper read it aloud. \"Tomorrow, a stranger will need your help.\"",
+   "world": "toon_day_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "carrier",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mail carrier",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 12,
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.5
+      }
+     },
+     "t_offset": 4.4399999999999995,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.1000000000000005,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "shopkeeper",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "shopkeeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "think",
+     "seed": 2,
+     "carry": "letter",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      41,
+      47,
+      53,
+      59
+     ],
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      39,
+      46,
+      51,
+      58
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.3
+    },
+    "pluck": {
+     "step": 2.0,
+     "notes": [
+      0,
+      5,
+      2,
+      6,
+      1
+     ],
+     "vol": 0.55,
+     "scale": [
+      76,
+      77,
+      82,
+      83,
+      88,
+      89,
+      94
+     ],
+     "len": 2.6
+    }
+   },
+   "tone": "eerie"
+  },
+  {
+   "narration": "The next day, a lost girl arrived crying, and he walked her all the way home.",
+   "world": "toon_day_street",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "shopkeeper",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "shopkeeper",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "beckon",
+     "seed": 2,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.7,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        0.6,
+        130.0
+       ],
+       [
+        "@end-1.0",
+        300.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "human",
+     "id": "girl",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "girl",
+     "gender": "female",
+     "age": "child",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "wipe",
+     "seed": 36,
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "More letters came, each one a small kindness, and the whole street began to wait for her.",
+   "world": "toon_sunset_street",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "carrier",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mail carrier",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "wave",
+     "seed": 12,
+     "carry": "letter",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.5
+      }
+     },
+     "t_offset": 4.4399999999999995,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.1000000000000005,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "girl",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "girl",
+     "gender": "female",
+     "age": "child",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 36,
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "Then one day her bag held a letter with her own name.",
+   "world": "toon_dusk_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "carrier",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mail carrier",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "hold",
+     "seed": 12,
+     "carry": "letter",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 0.5
+      }
+     },
+     "t_offset": 4.4399999999999995,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.1000000000000005,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    },
+    "silence_before": "her own name"
+   },
+   "tone": "tender",
+   "freeze": "@her own name-0.3"
+  },
+  {
+   "narration": "It said, \"Thank you for staying. You were the best part of tomorrow.\"",
+   "world": "toon_dusk_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "carrier",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mail carrier",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "clasp",
+     "seed": 12,
+     "carry": "letter",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.5
+      }
+     },
+     "t_offset": 4.4399999999999995,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.1000000000000005,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "She read it twice, and walked on with a jaunty step.",
+   "world": "toon_sunset_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "carrier",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "mail carrier",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 12,
+     "carry": "bag",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.5
+      }
+     },
+     "t_offset": 4.4399999999999995,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.1000000000000005,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        0.6,
+        130.0
+       ],
+       [
+        "@end-1.0",
+        470.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "sparkle",
+     "x": 130.0,
+     "y": 1120.0,
+     "scale": 1.1,
+     "show": [
+      "@jaunty step",
+      "@jaunty step+1.3"
+     ],
+     "dx": -1,
+     "n": 6
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful",
+   "end_card": true
+  }
+ ],
+ "youtube": {
+  "description": "A mail carrier finds a letter dated tomorrow, and it keeps coming true. A mystery that turns into a love letter to everyday kindness.",
+  "tags": [
+   "short story",
+   "mystery",
+   "everyday life",
+   "mail carrier",
+   "animated story",
+   "storytelling",
+   "heartwarming",
+   "cartoon story"
+  ],
+  "pinned_comment": "What would you want a letter from tomorrow to say?",
+  "title": "The Letter Dated Tomorrow"
+ },
+ "tiktok": {
+  "caption": "She found a letter dated tomorrow. The last one had her name on it.",
+  "hashtags": [
+   "#storytime",
+   "#mystery",
+   "#heartwarming",
+   "#animatedstory",
+   "#tidalfolio"
+  ]
+ }
+}
