@@ -449,9 +449,9 @@ def check_storyboard(sb):
         elif c["species"] == "eagle" and c.get("look", "orrin") not in LOOKS:
             bad.append(f"cast '{k}': an eagle's look must be one of {LOOKS}.")
     parts = sb.get("parts")
-    if not isinstance(parts, list) or not 2 <= len(parts) <= 4:
+    if not isinstance(parts, list) or not 1 <= len(parts) <= 4:
         found = ("missing" if parts is None else f"a list of {len(parts)}" if isinstance(parts, list) else type(parts).__name__)
-        bad.append("'parts' must be a list of 2 to 4 parts (one story told as Part 1, Part 2 ...), each with its own 'scenes'. "
+        bad.append("'parts' must be a list of 1 to 4 parts (a one-part story is a list with one part), each with its own 'scenes'. "
                    f"In your reply 'parts' was {found}; your top-level keys were: {', '.join(list(sb)[:10])}.")
         return bad
     scenes = []
@@ -806,14 +806,15 @@ def compile_storyboard(sb, number=None):
         if pi < n:     # a part followed by another one ends plainly; only the last part gets the simple end screen
             scenes[-1].pop("end_card", None)
         yt = dict(sb.get("youtube") or {})
-        yt["title"] = f"{title} (Part {pi}/{n})"
-        yt["description"] = (yt.get("description", "") + f"\n\nPart {pi} of {n}." + (f" Part {pi + 1} is next." if pi < n else " The end.")).strip()
+        tag = "" if n == 1 else f" (Part {pi}/{n})"        # a one-part story carries no part label anywhere
+        yt["title"] = f"{title}{tag}"
+        yt["description"] = (yt.get("description", "") + ("" if n == 1 else f"\n\nPart {pi} of {n}." + (f" Part {pi + 1} is next." if pi < n else " The end."))).strip()
         tt = dict(sb.get("tiktok") or {})
-        tt["caption"] = f"Part {pi}/{n}: " + tt.get("caption", "")
-        slug = f"{number:03d}-{_slug(title)}-part-{pi}" if number else f"{_slug(title)}-part-{pi}"
+        tt["caption"] = ("" if n == 1 else f"Part {pi}/{n}: ") + tt.get("caption", "")
+        slug = (f"{number:03d}-" if number else "") + _slug(title) + ("" if n == 1 else f"-part-{pi}")
         out.append({
             "engine": "puppet", "look": "vector", "cast_species": sorted({c["species"] for c in sb["cast"].values()}),
-            "cast_roles": [c.get("role") for c in sb["cast"].values() if c.get("role")], "cast_lead": {k: sb["cast"][next(iter(sb["cast"]))].get(k) for k in ("role", "gender")}, "slug": slug, "title": f"{title} (Part {pi}/{n})", "short_title": title,
+            "cast_roles": [c.get("role") for c in sb["cast"].values() if c.get("role")], "cast_lead": {k: sb["cast"][next(iter(sb["cast"]))].get(k) for k in ("role", "gender")}, "slug": slug, "title": f"{title}{tag}", "short_title": title,
             "series_part": {"story": title, "part": pi, "of": n},
             "thumbnail_scene": max(1, min(len(scenes), int(part.get("thumbnail_scene", 2)))),
             "thumbnail_hook": str(part.get("thumbnail_hook") or "").strip().upper()[:22],
