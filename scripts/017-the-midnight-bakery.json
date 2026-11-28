@@ -21,7 +21,7 @@
   "part": 1,
   "of": 1
  },
- "thumbnail_scene": 2,
+ "thumbnail_scene": 4,
  "thumbnail_hook": "OPEN AT MIDNIGHT",
  "voice": {
   "kokoro": "tidal"
@@ -74,18 +74,19 @@
      "extras": [
       "bun"
      ],
-     "eye": "happy",
+     "eye": "wide",
      "brow": [
-      -6,
-      -4
+      -8,
+      -8
      ],
-     "mood": "happy",
+     "mood": "shocked",
      "action": "stand",
      "seed": 9,
+     "carry": "none",
      "bounce": {
       "sin": {
-       "amp": 4,
-       "rate": 5,
+       "amp": 3,
+       "rate": 26,
        "phase": 2.0
       }
      },
@@ -119,24 +120,76 @@
      "x": 300.0
     }
    ],
-   "popups": [],
+   "popups": [
+    {
+     "text": "OPEN!",
+     "at": "@turned on its lights",
+     "dur": 2.2,
+     "x": 340,
+     "y": 690,
+     "size": 64,
+     "shape": "burst",
+     "shake": 6
+    }
+   ],
    "music": {
-    "pad": 0.45,
+    "pad": 0.6,
+    "prog": [
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      41,
+      47,
+      53,
+      59
+     ],
+     [
+      40,
+      46,
+      52,
+      58
+     ],
+     [
+      39,
+      46,
+      51,
+      58
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.3
+    },
     "pluck": {
-     "step": 1.6,
+     "step": 2.0,
      "notes": [
       0,
-      3,
+      5,
       2,
-      4
+      6,
+      1
      ],
-     "vol": 0.5
+     "vol": 0.55,
+     "scale": [
+      76,
+      77,
+      82,
+      83,
+      88,
+      89,
+      94
+     ],
+     "len": 2.6
     }
    },
-   "tone": "calm"
+   "tone": "eerie"
   },
   {
-   "narration": "A sign said, \"Open for those who cannot sleep.\"",
+   "narration": "A sign in the window said, \"Open for those who cannot sleep,\" and the baker waited beside her warm oven.",
    "world": "toon_night_shop",
    "camera": {
     "x": 300,
@@ -180,6 +233,7 @@
      "mood": "happy",
      "action": "point",
      "seed": 9,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
@@ -272,23 +326,23 @@
    "tone": "tender"
   },
   {
-   "narration": "A tired doctor came first, then a teacher with a stack of papers.",
-   "world": "toon_night_shop",
+   "narration": "A tired doctor walked down the empty street, yawning, following a warm, sweet smell.",
+   "world": "toon_night_street",
    "camera": {
-    "x": {
-     "lin": [
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
       [
        0,
-       250
+       1.7399999999999998
       ],
       [
        "@end",
-       350
+       1.44
       ]
      ]
-    },
-    "y": 1100,
-    "z": 1.5
+    }
    },
    "things": [
     {
@@ -306,14 +360,27 @@
      "skin": "brown",
      "hair": "black",
      "extras": [],
-     "eye": "closed",
+     "eye": "open",
      "brow": [
-      8,
-      6
+      10,
+      -6
      ],
-     "mood": "sleepy",
+     "mood": "sad",
      "action": "stand",
      "seed": 22,
+     "carry": "none",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
      "bounce": {
       "sin": {
        "amp": 1.5,
@@ -348,8 +415,93 @@
       ]
      },
      "y": 1240.0,
-     "x": 130.0
-    },
+     "x": {
+      "kf": [
+       [
+        0.6,
+        130.0
+       ],
+       [
+        "@end-1.0",
+        470.0
+       ]
+      ]
+     }
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      41,
+      48,
+      53,
+      57
+     ],
+     [
+      43,
+      50,
+      55,
+      58
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ]
+    ],
+    "pluck": {
+     "step": 2.3,
+     "notes": [
+      4,
+      3,
+      2,
+      1,
+      0,
+      0
+     ],
+     "vol": 0.55,
+     "scale": [
+      57,
+      60,
+      62,
+      64,
+      67,
+      69
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "sad"
+  },
+  {
+   "narration": "Behind him came a teacher, hugging a tall stack of papers she had been marking since dinner.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
     {
      "type": "human",
      "id": "teacher",
@@ -373,7 +525,7 @@
       0
      ],
      "mood": "neutral",
-     "action": "hold",
+     "action": "stand",
      "seed": 31,
      "carry": "paper",
      "bounce": {
@@ -410,43 +562,94 @@
       ]
      },
      "y": 1240.0,
-     "x": 300.0
+     "x": {
+      "kf": [
+       [
+        0.6,
+        130.0
+       ],
+       [
+        "@end-1.0",
+        470.0
+       ]
+      ]
+     }
     }
    ],
    "popups": [],
    "music": {
-    "pad": 0.45,
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
     "pluck": {
-     "step": 1.6,
+     "step": 0.45,
      "notes": [
       0,
+      2,
+      1,
       3,
       2,
-      4
+      4,
+      3,
+      1
      ],
-     "vol": 0.5
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
     }
    },
-   "tone": "calm"
+   "tone": "playful"
   },
   {
-   "narration": "They shared warm bread and cups, and talked like old friends.",
+   "narration": "Inside, they shared warm bread and hot cups of tea, and talked like old friends.",
    "world": "toon_night_shop",
    "camera": {
-    "x": {
-     "lin": [
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
       [
        0,
-       250
+       1.5
       ],
       [
        "@end",
-       350
+       1.7999999999999998
       ]
      ]
-    },
-    "y": 1100,
-    "z": 1.5
+    }
    },
    "things": [
     {
@@ -513,7 +716,7 @@
      "type": "human",
      "id": "teacher",
      "scale": 0.92,
-     "face": -1,
+     "face": 1,
      "show": [
       -0.1,
       null
@@ -700,7 +903,215 @@
    "tone": "joyful"
   },
   {
-   "narration": "One night the baker could not sleep either, and sat alone.",
+   "narration": "The doctor told a story about a patient who sneezed so hard his hat flew off. The teacher laughed until she cried.",
+   "world": "toon_night_shop",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "talk",
+     "seed": 22,
+     "carry": "none",
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": 0.6,
+       "to": "@end-1.0"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.85,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "teacher",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "teacher",
+     "gender": "female",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "laugh",
+     "seed": 31,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        3.6999999999999997,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "Again and again they came back, and the little bakery filled with chatter, steam and the smell of cinnamon.",
    "world": "toon_night_shop",
    "camera": {
     "x": 300,
@@ -714,6 +1125,276 @@
       [
        "@end",
        1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 22,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.85,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "wave",
+     "seed": 9,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "teacher",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "teacher",
+     "gender": "female",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "talk",
+     "seed": 31,
+     "carry": "none",
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "from": 0.6,
+       "to": "@end-1.0"
+      }
+     },
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        3.6999999999999997,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "Then one night the baker could not sleep either. She sat alone at home with the lights off.",
+   "world": "toon_night_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
       ]
      ]
     }
@@ -744,6 +1425,7 @@
      "mood": "sad",
      "action": "hugself",
      "seed": 9,
+     "carry": "none",
      "tear": {
       "kf": [
        [
@@ -842,15 +1524,830 @@
       69
      ],
      "len": 3.0
-    },
-    "silence_before": "sat alone"
+    }
    },
-   "tone": "sad",
-   "freeze": "@sat alone-0.3"
+   "tone": "sad"
   },
   {
-   "narration": "The doctor poured her a cup, and the teacher sat beside her.",
-   "world": "toon_night_shop",
+   "narration": "She had fed everyone else's loneliness for months, and never once noticed her own.",
+   "world": "toon_night_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "wipe",
+     "seed": 9,
+     "carry": "none",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      41,
+      48,
+      53,
+      57
+     ],
+     [
+      43,
+      50,
+      55,
+      58
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ]
+    ],
+    "pluck": {
+     "step": 2.3,
+     "notes": [
+      4,
+      3,
+      2,
+      1,
+      0,
+      0
+     ],
+     "vol": 0.55,
+     "scale": [
+      57,
+      60,
+      62,
+      64,
+      67,
+      69
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "sad"
+  },
+  {
+   "narration": "Across town, the doctor looked out and saw that the bakery window was dark.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "stand",
+     "seed": 22,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.85,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "He grabbed the teacher, and together they ran through the empty streets, all the way to her house.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "mood": "scared",
+     "action": "stand",
+     "seed": 22,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 30,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.85,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        "@they ran",
+        -300.0
+       ],
+       [
+        "@end-1.0",
+        900.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "human",
+     "id": "teacher",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "teacher",
+     "gender": "female",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "mood": "scared",
+     "action": "stand",
+     "seed": 31,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 30,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        3.6999999999999997,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        "@they ran",
+        -300.0
+       ],
+       [
+        "@end-1.0",
+        900.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "speed",
+     "x": 130.0,
+     "y": 1120.0,
+     "scale": 1.1,
+     "show": [
+      "@they ran",
+      "@they ran+1.3"
+     ],
+     "dx": -1,
+     "n": 6
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "They stood there, and she let them in.",
+   "world": "toon_night_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "clasp",
+     "seed": 9,
+     "carry": "none",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "doctor",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "doctor",
+     "gender": "male",
+     "age": "adult",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "stand",
+     "seed": 22,
+     "carry": "none",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.0
+      }
+     },
+     "t_offset": 1.85,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.2,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "teacher",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "teacher",
+     "gender": "female",
+     "age": "adult",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [
+      "glasses"
+     ],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "stand",
+     "seed": 31,
+     "carry": "none",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 5.18,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        3.6999999999999997,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "The doctor poured her a cup, the teacher sat beside her, and the baker wept and then began to laugh.",
+   "world": "toon_night_home",
    "camera": {
     "x": 300,
     "y": 1100,
@@ -872,7 +2369,7 @@
      "type": "human",
      "id": "baker",
      "scale": 0.92,
-     "face": -1,
+     "face": 1,
      "show": [
       -0.1,
       null
@@ -885,30 +2382,19 @@
      "extras": [
       "bun"
      ],
-     "eye": "open",
+     "eye": "happy",
      "brow": [
-      10,
-      -6
+      -6,
+      -4
      ],
-     "mood": "sad",
+     "mood": "happy",
      "action": "wipe",
      "seed": 9,
-     "tear": {
-      "kf": [
-       [
-        0,
-        0
-       ],
-       [
-        2.0,
-        0.55
-       ]
-      ]
-     },
+     "carry": "none",
      "bounce": {
       "sin": {
-       "amp": 1.5,
-       "rate": 2.5,
+       "amp": 4,
+       "rate": 5,
        "phase": 2.0
       }
      },
@@ -1026,6 +2512,7 @@
      "mood": "happy",
      "action": "wrap",
      "seed": 31,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
@@ -1118,7 +2605,7 @@
    "tone": "tender"
   },
   {
-   "narration": "By dawn the whole room felt companionable, and nobody wanted to leave.",
+   "narration": "By dawn the whole room felt companionable, and the oven hummed softly for no one at all, just for them.",
    "world": "toon_dawn_shop",
    "camera": {
     "x": 300,
@@ -1160,6 +2647,7 @@
      "mood": "happy",
      "action": "stand",
      "seed": 22,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
@@ -1219,8 +2707,9 @@
       -4
      ],
      "mood": "happy",
-     "action": "stand",
+     "action": "cheer",
      "seed": 9,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
@@ -1282,6 +2771,7 @@
      "mood": "happy",
      "action": "stand",
      "seed": 31,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
@@ -1321,7 +2811,7 @@
    ],
    "popups": [],
    "music": {
-    "pad": 0.55,
+    "pad": 0.85,
     "prog": [
      [
       48,
@@ -1333,7 +2823,7 @@
       45,
       52,
       57,
-      64
+      60
      ],
      [
       53,
@@ -1342,36 +2832,38 @@
       65
      ],
      [
-      48,
       55,
-      60,
+      59,
+      62,
       67
      ]
     ],
     "pluck": {
-     "step": 1.9,
+     "step": 0.5,
      "notes": [
       0,
       2,
-      4,
       3,
-      1,
-      2
+      4,
+      5,
+      6,
+      5,
+      4
      ],
-     "vol": 0.6,
+     "vol": 1.0,
      "scale": [
-      67,
-      69,
       72,
       74,
       76,
       79,
-      81
+      81,
+      84,
+      88
      ],
-     "len": 3.0
+     "len": 1.2
     }
    },
-   "tone": "tender",
+   "tone": "joyful",
    "end_card": true
   }
  ],

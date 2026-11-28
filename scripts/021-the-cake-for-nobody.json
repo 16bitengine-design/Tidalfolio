@@ -21,7 +21,7 @@
   "part": 1,
   "of": 1
  },
- "thumbnail_scene": 2,
+ "thumbnail_scene": 4,
  "thumbnail_hook": "A CAKE FOR WHO?",
  "voice": {
   "kokoro": "tidal"
@@ -38,7 +38,7 @@
  "props": {},
  "scenes": [
   {
-   "narration": "The baker baked a cake each evening for nobody.",
+   "narration": "The baker baked a cake every evening for nobody. Forty cakes so far, and not one had ever been sold.",
    "world": "toon_dusk_kitchen",
    "camera": {
     "x": 300,
@@ -189,7 +189,146 @@
    "tone": "eerie"
   },
   {
-   "narration": "The neighbors whispered. Forty cakes, and not one customer, not one crumb sold.",
+   "narration": "She decorated each one with great care, then wrapped it up in paper and tied it with a perfect bow, as if a king were coming to dinner.",
+   "world": "toon_dusk_kitchen",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "place",
+     "seed": 9,
+     "carry": "cake",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "The neighbors whispered about it. Forty cakes, and not one customer, not one crumb sold.",
    "world": "toon_dusk_street",
    "camera": {
     "x": {
@@ -231,6 +370,7 @@
      "mood": "shocked",
      "action": "point",
      "seed": 11,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 3,
@@ -290,6 +430,7 @@
      "mood": "happy",
      "action": "shrug",
      "seed": 38,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
@@ -384,7 +525,367 @@
    "tone": "playful"
   },
   {
-   "narration": "One night a boy followed her to catch her out, and she stopped at a dark window.",
+   "narration": "A curious boy decided to find out. He would follow her that very evening, wherever she went, however far.",
+   "world": "toon_dusk_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "half",
+     "brow": [
+      4,
+      6
+     ],
+     "mood": "smug",
+     "action": "think",
+     "seed": 38,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "That night she slipped out with the cake, and he crept after her, one careful step behind.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "open",
+     "brow": [
+      0,
+      0
+     ],
+     "mood": "neutral",
+     "action": "stand",
+     "seed": 9,
+     "carry": "cake",
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        0.6,
+        300.0
+       ],
+       [
+        "@end-1.0",
+        470.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "mood": "scared",
+     "action": "stand",
+     "seed": 38,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 30,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        0.6,
+        130.0
+       ],
+       [
+        "@end-1.0",
+        300.0
+       ]
+      ]
+     }
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "She stopped at a dark house. The boy froze behind a lamp post, hardly breathing.",
    "world": "toon_night_street",
    "camera": {
     "x": 300,
@@ -488,6 +989,7 @@
      "mood": "scared",
      "action": "cower",
      "seed": 38,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 3,
@@ -584,7 +1086,7 @@
    "tone": "tense"
   },
   {
-   "narration": "She set the cake on a doorstep, knocked twice, and slipped behind the corner.",
+   "narration": "She set the cake on the doorstep, knocked twice, and slipped away round the corner.",
    "world": "toon_night_street",
    "camera": {
     "x": 300,
@@ -593,11 +1095,11 @@
      "kf": [
       [
        0,
-       1.5
+       1.7399999999999998
       ],
       [
        "@end",
-       1.5675
+       1.44
       ]
      ]
     }
@@ -721,7 +1223,7 @@
    "tone": "tender"
   },
   {
-   "narration": "Inside, an old woman who lived alone opened the door and stared.",
+   "narration": "Inside, an old woman who lived alone opened the door and stared at the cake.",
    "world": "toon_night_home",
    "camera": {
     "x": 300,
@@ -730,11 +1232,11 @@
      "kf": [
       [
        0,
-       1.7399999999999998
+       1.5
       ],
       [
        "@end",
-       1.44
+       1.5675
       ]
      ]
     }
@@ -772,6 +1274,7 @@
      "mood": "shocked",
      "action": "hold",
      "seed": 11,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 3,
@@ -807,6 +1310,309 @@
      },
      "y": 1240.0,
      "x": 130.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "She whispered thank you to the empty street.",
+   "world": "toon_night_home",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "prop",
+     "id": "prop0",
+     "item": "door_open",
+     "x": 470.0,
+     "y": 1240.0,
+     "scale": 1.0,
+     "face": 1
+    },
+    {
+     "type": "human",
+     "id": "grandmother",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "grandmother",
+     "gender": "female",
+     "age": "elder",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "wipe",
+     "seed": 11,
+     "carry": "none",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 2.5
+      }
+     },
+     "t_offset": 4.07,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        4.0,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      48,
+      55,
+      60,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 1.9,
+     "notes": [
+      0,
+      2,
+      4,
+      3,
+      1,
+      2
+     ],
+     "vol": 0.6,
+     "scale": [
+      67,
+      69,
+      72,
+      74,
+      76,
+      79,
+      81
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "tender"
+  },
+  {
+   "narration": "The boy had seen everything. All those cakes had gone to people that nobody else remembered.",
+   "world": "toon_night_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "clasp",
+     "seed": 38,
+     "carry": "none",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
     }
    ],
    "popups": [],
@@ -863,8 +1669,156 @@
    "tone": "sad"
   },
   {
-   "narration": "She whispered thank you to the empty street.",
-   "world": "toon_night_street",
+   "narration": "At dawn the boy ran through the streets to her kitchen, out of breath and full of questions.",
+   "world": "toon_dawn_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.5675
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -8,
+      -8
+     ],
+     "mood": "shocked",
+     "action": "stand",
+     "seed": 38,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 26,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        0.6,
+        -300.0
+       ],
+       [
+        "@end-1.0",
+        900.0
+       ]
+      ]
+     }
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "She only shrugged and smiled, and handed him an apron that was far too big.",
+   "world": "toon_day_kitchen",
    "camera": {
     "x": 300,
     "y": 1100,
@@ -884,47 +1838,38 @@
    "things": [
     {
      "type": "human",
-     "id": "grandmother",
+     "id": "baker",
      "scale": 1.0,
      "face": 1,
      "show": [
       -0.1,
       null
      ],
-     "role": "grandmother",
+     "role": "baker",
      "gender": "female",
-     "age": "elder",
-     "skin": "light",
+     "age": "adult",
+     "skin": "fair",
      "hair": "brown",
-     "extras": [],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
+     "extras": [
+      "bun"
      ],
-     "mood": "sad",
-     "action": "wipe",
-     "seed": 11,
-     "tear": {
-      "kf": [
-       [
-        0,
-        0
-       ],
-       [
-        2.0,
-        0.55
-       ]
-      ]
-     },
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "offer",
+     "seed": 9,
+     "carry": "none",
      "bounce": {
       "sin": {
-       "amp": 1.5,
-       "rate": 2.5,
-       "phase": 2.5
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.0
       }
      },
-     "t_offset": 4.07,
+     "t_offset": 3.33,
      "look": {
       "step": [
        [
@@ -935,14 +1880,14 @@
         ]
        ],
        [
-        2.5,
+        4.6,
         [
          -0.5,
          0.25
         ]
        ],
        [
-        4.0,
+        5.5,
         [
          0.6,
          0.0
@@ -968,30 +1913,19 @@
      "skin": "brown",
      "hair": "black",
      "extras": [],
-     "eye": "open",
+     "eye": "wide",
      "brow": [
-      10,
-      -6
+      -8,
+      -8
      ],
-     "mood": "sad",
-     "action": "clasp",
+     "mood": "shocked",
+     "action": "reach",
      "seed": 38,
-     "tear": {
-      "kf": [
-       [
-        0,
-        0
-       ],
-       [
-        2.0,
-        0.55
-       ]
-      ]
-     },
+     "carry": "none",
      "bounce": {
       "sin": {
-       "amp": 1.5,
-       "rate": 2.5,
+       "amp": 3,
+       "rate": 26,
        "phase": 0.0
       }
      },
@@ -1124,6 +2058,7 @@
      "mood": "happy",
      "action": "wave",
      "seed": 9,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
@@ -1219,6 +2154,239 @@
      },
      "y": 1240.0,
      "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "Now whole streets wake up to a cake on the doorstep, and nobody ever finds out who left it.",
+   "world": "toon_sunset_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "baker",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "baker",
+     "gender": "female",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "bun"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 9,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 2.0
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        4.6,
+        [
+         -0.5,
+         0.25
+        ]
+       ],
+       [
+        5.5,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        0.6,
+        130.0
+       ],
+       [
+        "@end-1.0",
+        470.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 38,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        0.6,
+        300.0
+       ],
+       [
+        "@end-1.0",
+        470.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "sparkle",
+     "x": 300.0,
+     "y": 1120.0,
+     "scale": 1.1,
+     "show": [
+      "@cake on the doorstep",
+      "@cake on the doorstep+1.3"
+     ],
+     "dx": -1,
+     "n": 6
     }
    ],
    "popups": [],

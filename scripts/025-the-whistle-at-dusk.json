@@ -21,7 +21,7 @@
   "part": 1,
   "of": 1
  },
- "thumbnail_scene": 2,
+ "thumbnail_scene": 5,
  "thumbnail_hook": "TIME TO GO!",
  "voice": {
   "kokoro": "tidal"
@@ -142,6 +142,7 @@
      "mood": "angry",
      "action": "cower",
      "seed": 38,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 2.5,
@@ -247,7 +248,7 @@
    "tone": "playful"
   },
   {
-   "narration": "He had blown it at dusk for thirty years, and nobody had ever thanked him.",
+   "narration": "He had blown it at dusk for thirty years, and nobody had ever once thanked him for it.",
    "world": "toon_dusk_park",
    "camera": {
     "x": 300,
@@ -270,7 +271,7 @@
      "type": "human",
      "id": "gardener",
      "scale": 1.0,
-     "face": -1,
+     "face": 1,
      "show": [
       -0.1,
       null
@@ -386,23 +387,402 @@
    "tone": "playful"
   },
   {
-   "narration": "One evening, the whistle stayed silent. The gardener was in bed with a cold.",
-   "world": "toon_dusk_park",
+   "narration": "The children fled from him every evening, shrieking and laughing and hiding anywhere they could find.",
+   "world": "toon_dusk_street",
    "camera": {
-    "x": {
-     "lin": [
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
       [
        0,
-       250
+       1.5
       ],
       [
        "@end",
-       350
+       1.5675
       ]
      ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 38,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        "@The children fled",
+        -300.0
+       ],
+       [
+        "@end-1.0",
+        900.0
+       ]
+      ]
+     }
     },
+    {
+     "type": "human",
+     "id": "girl",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "girl",
+     "gender": "female",
+     "age": "child",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 36,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        "@The children fled",
+        900.0
+       ],
+       [
+        "@end-1.0",
+        -300.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "speed",
+     "x": 130.0,
+     "y": 1120.0,
+     "scale": 1.1,
+     "show": [
+      "@fled from him",
+      "@fled from him+1.3"
+     ],
+     "dx": -1,
+     "n": 6
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "One evening the gardener lay in bed, sneezing, far too sick to walk all the way to the park.",
+   "world": "toon_dusk_home",
+   "camera": {
+    "x": 300,
     "y": 1100,
-    "z": 1.5
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "gardener",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "gardener",
+     "gender": "male",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "open",
+     "brow": [
+      10,
+      -6
+     ],
+     "mood": "sad",
+     "action": "hugself",
+     "seed": 26,
+     "carry": "none",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "bounce": {
+      "sin": {
+       "amp": 1.5,
+       "rate": 2.5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.0,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.6,
+    "prog": [
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      41,
+      48,
+      53,
+      57
+     ],
+     [
+      43,
+      50,
+      55,
+      58
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ]
+    ],
+    "pluck": {
+     "step": 2.3,
+     "notes": [
+      4,
+      3,
+      2,
+      1,
+      0,
+      0
+     ],
+     "vol": 0.55,
+     "scale": [
+      57,
+      60,
+      62,
+      64,
+      67,
+      69
+     ],
+     "len": 3.0
+    }
+   },
+   "tone": "sad"
+  },
+  {
+   "narration": "At the park the whistle lay silent on the ground, and the children cheered, because nobody could send them home.",
+   "world": "toon_dusk_park",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
    },
    "things": [
     {
@@ -429,6 +809,606 @@
      "skin": "brown",
      "hair": "black",
      "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 38,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "girl",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "girl",
+     "gender": "female",
+     "age": "child",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 36,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "They played tag and hopscotch and silly games with no rules at all, until the sky turned dark.",
+   "world": "toon_night_park",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "hop",
+     "seed": 38,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": {
+      "base": 1240.0,
+      "sin": {
+       "amp": -50,
+       "rate": 9,
+       "fn": "sin"
+      }
+     },
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "girl",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "girl",
+     "gender": "female",
+     "age": "child",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "laugh",
+     "seed": 36,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.55,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ],
+     [
+      48,
+      55,
+      60,
+      64
+     ]
+    ],
+    "pluck": {
+     "step": 0.45,
+     "notes": [
+      0,
+      2,
+      1,
+      3,
+      2,
+      4,
+      3,
+      1
+     ],
+     "vol": 0.85,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      86
+     ],
+     "len": 0.9
+    }
+   },
+   "tone": "playful"
+  },
+  {
+   "narration": "Then the wind grew sharp, the park grew cold, and one by one the laughing slowly stopped.",
+   "world": "toon_night_park",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "mood": "scared",
+     "action": "cower",
+     "seed": 38,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 30,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "girl",
+     "scale": 1.0,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "girl",
+     "gender": "female",
+     "age": "child",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "wide",
+     "brow": [
+      -4,
+      -4
+     ],
+     "mood": "scared",
+     "action": "hugself",
+     "seed": 36,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 3,
+       "rate": 30,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.75,
+    "prog": [
+     [
+      38,
+      45,
+      50,
+      53
+     ],
+     [
+      38,
+      45,
+      50,
+      52
+     ],
+     [
+      37,
+      44,
+      49,
+      52
+     ],
+     [
+      38,
+      45,
+      50,
+      53
+     ]
+    ],
+    "drone": {
+     "from": 0.5,
+     "peak": 0.34
+    },
+    "pluck": {
+     "step": 0.42,
+     "notes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     "vol": 0.8,
+     "scale": [
+      45,
+      46,
+      48,
+      51,
+      52
+     ],
+     "len": 0.7
+    }
+   },
+   "tone": "tense"
+  },
+  {
+   "narration": "A shadow slid across the path. Somebody whispered, \"What if we never find our way home?\"",
+   "world": "toon_night_park",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
      "eye": "wide",
      "brow": [
       -8,
@@ -437,6 +1417,7 @@
      "mood": "shocked",
      "action": "stand",
      "seed": 38,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 3,
@@ -490,16 +1471,30 @@
      "extras": [],
      "eye": "wide",
      "brow": [
-      -8,
-      -8
+      -4,
+      -4
      ],
-     "mood": "shocked",
-     "action": "stand",
+     "mood": "scared",
+     "action": "talk",
      "seed": 36,
+     "carry": "none",
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "gate": [
+        [
+         "@What",
+         "@end-1.0"
+        ]
+       ]
+      }
+     },
      "bounce": {
       "sin": {
        "amp": 3,
-       "rate": 26,
+       "rate": 30,
        "phase": 1.5
       }
      },
@@ -591,7 +1586,7 @@
    "tone": "eerie"
   },
   {
-   "narration": "The children stayed. And stayed. The sky turned dark, and the whole park grew quiet and cold.",
+   "narration": "Then a small, wobbly voice asked, \"Who is going to tell us when it's time to go?\"",
    "world": "toon_night_park",
    "camera": {
     "x": 300,
@@ -600,11 +1595,11 @@
      "kf": [
       [
        0,
-       1.5
+       1.7399999999999998
       ],
       [
        "@end",
-       1.7999999999999998
+       1.44
       ]
      ]
     }
@@ -625,18 +1620,44 @@
      "skin": "light",
      "hair": "brown",
      "extras": [],
-     "eye": "wide",
+     "eye": "open",
      "brow": [
-      -4,
-      -4
+      10,
+      -6
      ],
-     "mood": "scared",
-     "action": "hugself",
+     "mood": "sad",
+     "action": "talk",
      "seed": 36,
+     "carry": "none",
+     "tear": {
+      "kf": [
+       [
+        0,
+        0
+       ],
+       [
+        2.0,
+        0.55
+       ]
+      ]
+     },
+     "talk": {
+      "sin": {
+       "base": 0.5,
+       "amp": 0.5,
+       "rate": 10,
+       "gate": [
+        [
+         "@Who",
+         "@end-1.0"
+        ]
+       ]
+      }
+     },
      "bounce": {
       "sin": {
-       "amp": 3,
-       "rate": 30,
+       "amp": 1.5,
+       "rate": 2.5,
        "phase": 1.5
       }
      },
@@ -668,227 +1689,6 @@
      },
      "y": 1240.0,
      "x": 300.0
-    }
-   ],
-   "popups": [],
-   "music": {
-    "pad": 0.75,
-    "prog": [
-     [
-      38,
-      45,
-      50,
-      53
-     ],
-     [
-      38,
-      45,
-      50,
-      52
-     ],
-     [
-      37,
-      44,
-      49,
-      52
-     ],
-     [
-      38,
-      45,
-      50,
-      53
-     ]
-    ],
-    "drone": {
-     "from": 0.5,
-     "peak": 0.34
-    },
-    "pluck": {
-     "step": 0.42,
-     "notes": [
-      0,
-      0,
-      1,
-      0,
-      0,
-      1,
-      0,
-      2
-     ],
-     "vol": 0.8,
-     "scale": [
-      45,
-      46,
-      48,
-      51,
-      52
-     ],
-     "len": 0.7
-    }
-   },
-   "tone": "tense"
-  },
-  {
-   "narration": "Then a small, wobbly voice asked, \"Who is going to tell us it's time?\"",
-   "world": "toon_night_park",
-   "camera": {
-    "x": 300,
-    "y": 1100,
-    "z": {
-     "kf": [
-      [
-       0,
-       1.7399999999999998
-      ],
-      [
-       "@end",
-       1.44
-      ]
-     ]
-    }
-   },
-   "things": [
-    {
-     "type": "human",
-     "id": "boy",
-     "scale": 1.0,
-     "face": 1,
-     "show": [
-      -0.1,
-      null
-     ],
-     "role": "boy",
-     "gender": "male",
-     "age": "child",
-     "skin": "brown",
-     "hair": "black",
-     "extras": [],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "clasp",
-     "seed": 38,
-     "tear": {
-      "kf": [
-       [
-        0,
-        0
-       ],
-       [
-        2.0,
-        0.55
-       ]
-      ]
-     },
-     "bounce": {
-      "sin": {
-       "amp": 1.5,
-       "rate": 2.5,
-       "phase": 0.0
-      }
-     },
-     "t_offset": 1.48,
-     "look": {
-      "step": [
-       [
-        0,
-        [
-         0.6,
-         0.0
-        ]
-       ],
-       [
-        3.8999999999999995,
-        [
-         0.1,
-         0.85
-        ]
-       ],
-       [
-        5.3999999999999995,
-        [
-         0.6,
-         0.0
-        ]
-       ]
-      ]
-     },
-     "y": 1240.0,
-     "x": 130.0
-    },
-    {
-     "type": "human",
-     "id": "girl",
-     "scale": 1.0,
-     "face": -1,
-     "show": [
-      -0.1,
-      null
-     ],
-     "role": "girl",
-     "gender": "female",
-     "age": "child",
-     "skin": "light",
-     "hair": "brown",
-     "extras": [],
-     "eye": "open",
-     "brow": [
-      10,
-      -6
-     ],
-     "mood": "sad",
-     "action": "hugself",
-     "seed": 36,
-     "tear": {
-      "kf": [
-       [
-        0,
-        0
-       ],
-       [
-        2.0,
-        0.55
-       ]
-      ]
-     },
-     "bounce": {
-      "sin": {
-       "amp": 1.5,
-       "rate": 2.5,
-       "phase": 1.5
-      }
-     },
-     "t_offset": 0.74,
-     "look": {
-      "step": [
-       [
-        0,
-        [
-         0.6,
-         0.0
-        ]
-       ],
-       [
-        2.5,
-        [
-         0.1,
-         0.85
-        ]
-       ],
-       [
-        3.4,
-        [
-         0.6,
-         0.0
-        ]
-       ]
-      ]
-     },
-     "y": 1240.0,
-     "x": 470.0
     }
    ],
    "popups": [],
@@ -945,7 +1745,7 @@
    "tone": "sad"
   },
   {
-   "narration": "Nobody had ever known that it meant goodnight.",
+   "narration": "Nobody had known it meant goodnight, until now.",
    "world": "toon_night_park",
    "camera": {
     "x": 300,
@@ -987,6 +1787,7 @@
      "mood": "sad",
      "action": "wipe",
      "seed": 36,
+     "carry": "none",
      "tear": {
       "kf": [
        [
@@ -1091,23 +1892,173 @@
    "tone": "tender"
   },
   {
-   "narration": "Next dusk the gregarious gardener returned, and every child was waiting for him.",
-   "world": "toon_sunset_park",
+   "narration": "At sunrise the gardener woke, sniffled, and hurried out to the park with his whistle in his hand.",
+   "world": "toon_dawn_street",
    "camera": {
-    "x": {
-     "lin": [
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
       [
        0,
-       350
+       1.7399999999999998
       ],
       [
        "@end",
-       250
+       1.44
       ]
      ]
-    },
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "gardener",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "gardener",
+     "gender": "male",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 26,
+     "carry": "whistle",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.0,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        0.6,
+        130.0
+       ],
+       [
+        "@end-1.0",
+        470.0
+       ]
+      ]
+     }
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "That evening the gregarious gardener returned, and every single child was already waiting for him.",
+   "world": "toon_dusk_park",
+   "camera": {
+    "x": 300,
     "y": 1100,
-    "z": 1.5
+    "z": {
+     "kf": [
+      [
+       0,
+       1.5
+      ],
+      [
+       "@end",
+       1.7999999999999998
+      ]
+     ]
+    }
    },
    "things": [
     {
@@ -1176,7 +2127,7 @@
      "type": "human",
      "id": "boy",
      "scale": 0.92,
-     "face": -1,
+     "face": 1,
      "show": [
       -0.1,
       null
@@ -1195,6 +2146,7 @@
      "mood": "happy",
      "action": "cheer",
      "seed": 38,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
@@ -1254,6 +2206,7 @@
      "mood": "happy",
      "action": "wave",
      "seed": 36,
+     "carry": "none",
      "bounce": {
       "sin": {
        "amp": 4,
@@ -1289,6 +2242,427 @@
      },
      "y": 1240.0,
      "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "He blew it once, softly, and the whole park walked home together, chattering and yawning all the way.",
+   "world": "toon_dusk_park",
+   "camera": {
+    "x": {
+     "lin": [
+      [
+       0,
+       250
+      ],
+      [
+       "@end",
+       350
+      ]
+     ]
+    },
+    "y": 1100,
+    "z": 1.5
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "gardener",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "gardener",
+     "gender": "male",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "stand",
+     "seed": 26,
+     "carry": "whistle",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.0,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 130.0
+    },
+    {
+     "type": "human",
+     "id": "boy",
+     "scale": 0.92,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "boy",
+     "gender": "male",
+     "age": "child",
+     "skin": "brown",
+     "hair": "black",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "laugh",
+     "seed": 38,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 0.0
+      }
+     },
+     "t_offset": 1.48,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        3.8999999999999995,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        5.3999999999999995,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 300.0
+    },
+    {
+     "type": "human",
+     "id": "girl",
+     "scale": 0.92,
+     "face": -1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "girl",
+     "gender": "female",
+     "age": "child",
+     "skin": "light",
+     "hair": "brown",
+     "extras": [],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "laugh",
+     "seed": 36,
+     "carry": "none",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 0.74,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        3.4,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": 470.0
+    }
+   ],
+   "popups": [],
+   "music": {
+    "pad": 0.85,
+    "prog": [
+     [
+      48,
+      55,
+      60,
+      64
+     ],
+     [
+      45,
+      52,
+      57,
+      60
+     ],
+     [
+      53,
+      57,
+      60,
+      65
+     ],
+     [
+      55,
+      59,
+      62,
+      67
+     ]
+    ],
+    "pluck": {
+     "step": 0.5,
+     "notes": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      5,
+      4
+     ],
+     "vol": 1.0,
+     "scale": [
+      72,
+      74,
+      76,
+      79,
+      81,
+      84,
+      88
+     ],
+     "len": 1.2
+    }
+   },
+   "tone": "joyful"
+  },
+  {
+   "narration": "Now when the whistle blows at dusk, every child knows it means that someone is waiting.",
+   "world": "toon_sunset_street",
+   "camera": {
+    "x": 300,
+    "y": 1100,
+    "z": {
+     "kf": [
+      [
+       0,
+       1.7399999999999998
+      ],
+      [
+       "@end",
+       1.44
+      ]
+     ]
+    }
+   },
+   "things": [
+    {
+     "type": "human",
+     "id": "gardener",
+     "scale": 1.0,
+     "face": 1,
+     "show": [
+      -0.1,
+      null
+     ],
+     "role": "gardener",
+     "gender": "male",
+     "age": "adult",
+     "skin": "fair",
+     "hair": "brown",
+     "extras": [
+      "mustache"
+     ],
+     "eye": "happy",
+     "brow": [
+      -6,
+      -4
+     ],
+     "mood": "happy",
+     "action": "cheer",
+     "seed": 26,
+     "carry": "whistle",
+     "bounce": {
+      "sin": {
+       "amp": 4,
+       "rate": 5,
+       "phase": 1.5
+      }
+     },
+     "t_offset": 3.33,
+     "look": {
+      "step": [
+       [
+        0,
+        [
+         0.6,
+         0.0
+        ]
+       ],
+       [
+        2.5,
+        [
+         0.1,
+         0.85
+        ]
+       ],
+       [
+        4.0,
+        [
+         0.6,
+         0.0
+        ]
+       ]
+      ]
+     },
+     "y": 1240.0,
+     "x": {
+      "kf": [
+       [
+        0.6,
+        130.0
+       ],
+       [
+        "@end-1.0",
+        470.0
+       ]
+      ]
+     }
+    },
+    {
+     "type": "sparkle",
+     "x": 130.0,
+     "y": 1120.0,
+     "scale": 1.1,
+     "show": [
+      "@someone is waiting",
+      "@someone is waiting+1.3"
+     ],
+     "dx": -1,
+     "n": 6
     }
    ],
    "popups": [],
