@@ -284,6 +284,9 @@ def _vthing(th, u, clk, pos):
         rec = DZ.PROPS.get(th.get("item"))
         if rec:
             fl = float(th.get("float") or 0.0)
+            bob = th.get("bob")
+            if bob:                                            # a hop or flutter: [amplitude in px, rate]
+                y = y - abs(math.sin(t * float(bob[1]))) * float(bob[0]) * s
             if fl:                                             # hovering: a small shadow on the ground, the object bobbing and tilting gently in the air
                 V.ground_shadow(x, y, s * 0.45)
                 V.cv.save()

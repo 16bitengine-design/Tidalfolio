@@ -746,7 +746,34 @@ def _background_people(sc, si, stage, actors, cast):
         th["x"] = {"kf": [[0, x], ["@end", x + face * 110.0]]} if walk else x
         out.append(th)
         used += 1
+    thing = _background_creature(sc, si, stage)
+    if thing:
+        out.append(thing)
     return out
+
+
+def _background_creature(sc, si, stage):
+    """one animal, bird or vehicle in the background: cars and buses drive across behind the street, birds cross the sky, a dog or a cat
+    strolls through the park or the shop. Never named, never at night (the caller already skipped those scenes)."""
+    street = ["bg_car_red", "bg_bus", "bg_car_blue", "bg_dog", "bg_car_yellow", "bg_bird"]
+    park = ["bg_bird", "bg_dog", "bg_bird2", "bg_cat", "bg_bird", "bg_dog"]
+    shop = ["bg_cat", None, "bg_dog", None]
+    pool = {"street": street, "park": park, "shop": shop}.get(stage)
+    if not pool:
+        return None
+    item = pool[(si * 5 + 1) % len(pool)]
+    if not item:
+        return None
+    right = si % 2 == 0
+    th = {"type": "prop", "id": f"bgthing{si}", "item": item, "face": 1 if right else -1, "show": [-0.1]}
+    if item.startswith("bg_car") or item == "bg_bus":
+        th.update(scale=0.62, y=1140.0, x={"kf": [[0, -260.0 if right else 920.0], ["@end", 920.0 if right else -260.0]]})
+    elif "bird" in item:
+        th.update(scale=1.15, y=1240.0, float=560.0 + (si % 3) * 70, bob=[7, 10.0], x={"kf": [[0, -80.0 if right else 700.0], ["@end", 700.0 if right else -80.0]]})
+    else:
+        x0 = 40.0 if right else 560.0
+        th.update(scale=0.62, y=1190.0, bob=[3, 7.0], x={"kf": [[0, x0], ["@end", x0 + (190.0 if right else -190.0)]]})
+    return th
 
 
 def _camera(mode, stage, sky=False):
