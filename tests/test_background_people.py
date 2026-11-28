@@ -20,3 +20,12 @@ def test_background_creatures():
             assert t["item"].startswith("bg_") and t["x"]["kf"]
     assert any("car" in i or "bus" in i for i in seen) and any("bird" in i for i in seen)
     assert SB._background_creature({}, 0, "office") is None
+
+
+def test_background_scenery():
+    park = SB._background_scenery({"narration": "A walk."}, 0, "park")
+    forest = SB._background_scenery({"narration": "He ran into the forest."}, 0, "park")
+    assert park and len(forest) > len(park) and all(t["item"].startswith("bg_") for t in park + forest)
+    assert SB._background_scenery({"narration": "Hi."}, 1, "street")
+    assert SB._background_scenery({"narration": "Hi."}, 0, "home") == []
+    assert SB._background_scenery({"narration": "Hi.", "scenery": False}, 0, "park") == []

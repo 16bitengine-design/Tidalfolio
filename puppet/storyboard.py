@@ -709,6 +709,32 @@ def _actor_things(a, cast, scene, crowd, centre_x, nar_end):
     return things
 
 
+FOREST_WORDS = re.compile(r"\b(forest|woods|woodland|trees|jungle|wood)\b", re.I)
+
+
+def _background_scenery(sc, si, stage):
+    """set dressing behind the main characters. A park gets trees, pines, bushes and flowers (a thick forest when the line says forest, woods or trees),
+    a street gets lamp posts, trees and bushes, a shop front a flower box and a bush. Home, kitchen, office and classroom get none."""
+    if sc.get("scenery") is False or stage not in ("park", "street", "shop"):
+        return []
+    forest = bool(FOREST_WORDS.search(sc.get("narration", "")))
+    trees = ["bg_tree", "bg_pine", "bg_tree_gold", "bg_pine_dark"]
+    if stage == "park" or forest:
+        base = [("bg_pine_dark", -10, 1.15), ("bg_pine", 95, 0.9), ("bg_tree", 205, 0.95), ("bg_pine", 330, 0.8), ("bg_tree_gold", 440, 1.0), ("bg_pine_dark", 560, 1.1),
+                ("bg_pine", 650, 0.9)] if forest else \
+               [(trees[si % 4], 40, 0.95), ("bg_bush", 200, 0.9), (trees[(si + 2) % 4], 600, 1.0), ("bg_flowers", 470, 1.0), ("bg_fence", 340, 0.9)]
+    elif stage == "street":
+        base = [("bg_lamp", 70 if si % 2 else 560, 1.0), (trees[(si + 1) % 4], 590 if si % 2 else 30, 0.8), ("bg_bush", 330, 0.75)] if si % 3 else \
+               [("bg_lamp", 330, 0.9), ("bg_tree", 560, 0.8), ("bg_flowers", 120, 0.9)]
+    else:
+        base = [("bg_flowers", 40 if si % 2 else 590, 1.0), ("bg_bush", 590 if si % 2 else 40, 0.8)]
+    out = []
+    for k, (item, x, sc_) in enumerate(base):
+        out.append({"type": "prop", "id": f"bgs{si}_{k}", "item": item, "x": float(x), "y": 1150.0 + (k % 3) * 18 if "tree" in item or "pine" in item or item == "bg_lamp" else 1195.0,
+                    "scale": sc_ * (1.1 if forest else 0.85), "face": 1, "show": [-0.1]})
+    return out
+
+
 BG_ROLES = {"street": ("office worker", "mail carrier", "girl", "grandfather", "mother", "boy", "neighbour", "student"),
             "park": ("gardener", "girl", "boy", "grandmother", "father", "student", "neighbour"),
             "shop": ("girl", "grandfather", "mother", "boy", "student", "neighbour", "office worker"),
@@ -816,6 +842,7 @@ def _compile_scenes(scene_list, cast):
         centre_x = sum(slots) / len(slots) if slots else 330
         crowd = (len(actors) if is_h else sum(1 for a in actors if a.get("at", "ground_mid") in GROUND and cast[a["who"]]["species"] == "eagle"))
         things = _stage_things(stage)
+        things += _background_scenery(sc, si, stage)                   # trees, a forest, bushes, flowers, lamp posts: set dressing behind everyone
         things += _background_people(sc, si, stage, actors, cast)      # passers-by behind the main characters, so the world feels lived in
         for k_, pr in enumerate(sc.get("props") or []):                   # set pieces the writer designed, drawn behind the people
             if isinstance(pr, dict) and pr.get("item") in _ALL_PROPS:
