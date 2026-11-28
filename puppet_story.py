@@ -20,7 +20,7 @@ def main():
     ap.add_argument("--ensure", type=int, help="write stories until this many unrendered ones are queued")
     ap.add_argument("--count", type=int, default=0, help="write this many new stories")
     ap.add_argument("--idea")
-    ap.add_argument("--parts", type=int, choices=[2, 3, 4], help="how many parts (default: random 2 to 4)")
+    ap.add_argument("--parts", type=int, choices=[1, 2, 3, 4], help="how many parts (default: 1, a single video; repository variable STORY_PARTS=auto gives 2 to 4)")
     ap.add_argument("--series", choices=["Funny People", "Bird Banter", "Funny Animals"])
     ap.add_argument("--storyboard", help="skip the AI: validate this storyboard JSON file and queue it")
     a = ap.parse_args()

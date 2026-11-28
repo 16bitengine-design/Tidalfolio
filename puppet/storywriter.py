@@ -108,8 +108,12 @@ def give_back_idea(idea):
 
 
 def choose_parts(log=print):
-    """How many parts the next story gets (2 to 4). With real results it learns from viewer drop-off between parts:
-    if Part 2 keeps fewer than ~45% of Part 1's views, stories get shorter; if it keeps over 80%, they may run longer."""
+    """How many parts the next story gets. Every story is ONE video (one part) unless the repository variable STORY_PARTS is
+    set to "auto" (2 to 4 parts: with real results it learns from viewer drop-off between parts: if Part 2 keeps fewer than
+    ~45% of Part 1's views, stories get shorter; if it keeps over 80%, they may run longer) or to a number from 1 to 4."""
+    mode = os.environ.get("STORY_PARTS", "1").strip().lower()
+    if mode in ("1", "2", "3", "4"):
+        return int(mode)
     default = random.choice([2, 3, 3, 4])
     try:
         rows = json.loads((ROOT / "metrics" / "videos.json").read_text())
@@ -134,7 +138,22 @@ def unrendered():
     return [q for q in _lines(QUEUE) if q not in done and (SCRIPTS / q).exists()]
 
 
-def system_prompt(n_lo, n_hi, n_parts=3):
+ONE_VIDEO_BLOCK = """ONE STORY, ONE VIDEO: the whole story is told in a SINGLE video, so write exactly ONE part: "parts": [{"scenes": [...]}]. There is no Part 2 and nobody will watch anything after it.
+- The story must be complete inside this one video: the hook, the conflict, the turn and the emotional resolution with the haunting last line all fit in it. Never end on a cliffhanger, never "to be continued", never an announcement of another video.
+- COLD OPEN: scene 1 opens on the most striking moment of the story, already happening: the problem, the accusation, the spill, the gasp. Never a quiet scene-setting line ("It was a sunny morning", "There was a baker ...", "Once ..."); say who and what is wrong in the first sentence, in at most 12 words.
+- The one uncommon word appears exactly once in the narration."""
+
+
+def system_prompt(n_lo, n_hi, n_parts=1):
+    text = _system_prompt_text(n_lo, n_hi, n_parts)
+    if n_parts == 1:
+        text = re.sub(r"STORY IN PARTS:.*?(?=\nLENGTH:)", lambda m: ONE_VIDEO_BLOCK + "\n", text, flags=re.S)
+        text = text.replace("EACH PART (not the whole story) must run", "THE VIDEO must run").replace("words per part", "words in total")
+        text = text.replace("Does the part's last image make the viewer want the next part (or, in the last part, sit quietly for a second)?", "Does the last image make the viewer sit quietly for a second?")
+    return text
+
+
+def _system_prompt_text(n_lo, n_hi, n_parts=3):
     parts_text = f"{n_parts}"
     return f"""You write short animated fable videos for "tidalfolio", a comedy channel about everyday people. A video is a handful of scenes drawn by code
 (bold cartoon style) and told by ONE narrator: a middle-aged man with a warm baritone, a gifted storyteller telling a tale he knows by heart.
@@ -256,7 +275,7 @@ def critique_scored(G, sb):
     text = "\n".join(f"PART {pi}:\n" + "\n".join(f"  {n}. {sc['narration']}" for n, sc in enumerate(part["scenes"], 1))
                      for pi, part in enumerate(sb["parts"], 1))
     try:
-        r = json.loads(G.call_openai([{"role": "system", "content": CRITIC_PROMPT}, {"role": "user", "content": f"Title: {sb.get('title')}\nThis story has {len(sb['parts'])} parts. Part {len(sb['parts'])} is the LAST part: it is supposed to resolve the story, so judge q10 only on parts 1 to {len(sb['parts']) - 1} and judge how the last part lands under q8 and q9 instead.\n{text}"}], 0.3))
+        r = json.loads(G.call_openai([{"role": "system", "content": CRITIC_PROMPT}, {"role": "user", "content": f"Title: {sb.get('title')}\n" + ("This story is ONE single video (one part) that must resolve completely inside it: score q10 as 5 (there is no next part) and judge how the ending lands under q8 and q9 instead.\n" if len(sb['parts']) == 1 else f"This story has {len(sb['parts'])} parts. Part {len(sb['parts'])} is the LAST part: it is supposed to resolve the story, so judge q10 only on parts 1 to {len(sb['parts']) - 1} and judge how the last part lands under q8 and q9 instead.\n") + text}], 0.3))
     except (ValueError, SystemExit):
         return [], None                         # the editor is a bonus: never block a story because it failed to answer
     scores = r.get("scores") or {}
@@ -275,7 +294,7 @@ def critique(G, sb):
     return critique_scored(G, sb)[0]
 
 
-PREMISE_PROMPT = """You are the head of story development for a deadpan comedy channel about everyday people. Pitch %d completely different story premises for one %d-part story.
+PREMISE_PROMPT = """You are the head of story development for a deadpan comedy channel about everyday people. Pitch %d completely different story premises for one %s.
 Each must be specific and odd, not a stock situation (no lost wallets, mixed-up coffee orders or surprise parties). Each needs a first-three-seconds hook, one moment that would genuinely move a viewer carried by an object or a gesture, one early detail that pays off late, and an ending a viewer would retell.
 Reply with ONE JSON object: {"premises": [{"logline": "two sentences", "hook": "what the first line shows", "heart": "the moving moment", "payoff": "the early detail and how it pays off"}]}"""
 
@@ -289,7 +308,7 @@ def pick_premise(G, n_parts, brief_hint, log=print):
     if n < 2:
         return None
     try:
-        cands = json.loads(G.call_openai([{"role": "system", "content": PREMISE_PROMPT % (n, n_parts)},
+        cands = json.loads(G.call_openai([{"role": "system", "content": PREMISE_PROMPT % (n, "single-video story (it must finish inside one 45 to 60 second video)" if n_parts == 1 else f"{n_parts}-part story")},
                                           {"role": "user", "content": brief_hint}], 1.0)).get("premises") or []
         cands = [c for c in cands if isinstance(c, dict) and c.get("logline")]
         if len(cands) < 2:
@@ -806,7 +825,7 @@ def _write_story(G, idea, series, parts, log):
         hint = (f"Series: {series} ({SERIES[series]}). " + (f"The protagonist is a {lead_gender} character, a fresh kind of person (not: {', '.join(last_roles)}). " if not idea else "")
                 + (f"Titles already used (be different): {'; '.join(titles[-15:])}. " if titles else ""))
         idea = pick_premise(G, n_parts, hint, log)
-    brief = (f"Write the next story for the series \"{series}\" ({SERIES[series]}), told in exactly {n_parts} parts. "
+    brief = (f"Write the next story for the series \"{series}\" ({SERIES[series]}), " + ("told as ONE single video (one part, complete in itself). " if n_parts == 1 else f"told in exactly {n_parts} parts. ")
              + (f"Story idea to use: {idea}. " if idea else "Invent a fresh, specific premise. ")
              + (f"THE PROTAGONIST (the first entry of 'cast') MUST BE A {lead_gender.upper()} {lead.upper()} (\"role\": \"{lead}\", \"gender\": \"{lead_gender}\"; {PERSONA.get(lead, 'a distinct character')}). " if lead else "")
              + (f"THE PROTAGONIST (the first entry of 'cast') is a {lead_gender.upper()} character YOU INVENT for this story: a fresh profession, hobby or kind of person that suits the premise, designed with a full \"design\" (see the stage rules). The last stories were led by: {', '.join(last_roles)}: do NOT use those again, and give the rest of the cast different roles too, so this story does not feel like a repeat. " if not idea else "")
@@ -837,7 +856,7 @@ def _write_story(G, idea, series, parts, log):
     msgs.append({"role": "assistant", "content": raw})
     word = bible["uncommon_word"]["word"].strip()
     uw_part = random.randint(1, n_parts)
-    log(f"Plan: \"{bible['title']}\" in {n_parts} parts; the uncommon word goes in part {uw_part}.")
+    log(f"Plan: \"{bible['title']}\" " + ("as one video" if n_parts == 1 else f"in {n_parts} parts; the uncommon word goes in part {uw_part}") + ".")
 
     done = []
     for k in range(1, n_parts + 1):                                               # ---- 2. the parts, one at a time
@@ -875,7 +894,7 @@ def _write_story(G, idea, series, parts, log):
                 raise e
         if not bad:
             names = _save_story(sb, scripts, series, number, n_parts)
-            log(f"Wrote {n_parts} parts (check round {rnd}): {', '.join(names)}, queued in order.")
+            log(f"Wrote {'one video' if n_parts == 1 else f'{n_parts} parts'} (check round {rnd}): {', '.join(names)}, queued in order.")
             return names
         by_part = {}
         for m in bad:
